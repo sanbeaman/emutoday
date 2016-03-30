@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "stylus": "^0.54.2",
+    "vueify": "^8.3.6"
+  },
+  "dependencies": {
+    "anytime": "^1.4.2",
+    "ckeditor": "^4.5.7",
+    "foundation-sites": "^6.2.0",
+    "laravel-elixir": "^4.0.0"
+  }
+}
