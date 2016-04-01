@@ -25,7 +25,7 @@ class StoryController extends Controller
     */
     public function index()
     {
-        $storys = $this->storys->with('author')->orderBy('published_at', 'desc')->paginate(10);
+        $storys = $this->storys->with('author')->orderBy('created_at', 'desc')->paginate(10);
 
         return view('admin.story.index', compact('storys'));
     }
@@ -64,7 +64,7 @@ class StoryController extends Controller
                 ]);
 
         }
-        
+
         flash()->success('Story has been created.');
         return redirect(route('admin.story.edit', $story->id));//->with('status', 'Story has been created.');
 
@@ -80,7 +80,7 @@ class StoryController extends Controller
     public function update(Requests\UpdateStoryRequest $request, $id)
     {
         $story = $this->storys->findOrFail($id);
-        $story->fill($request->only('title', 'slug', 'subtitle', 'published_at', 'teaser','content','story_type'))->save();
+        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','story_type'))->save();
         flash()->success('Story has been updated.');
         return redirect(route('admin.story.edit', $story->id));
         //return redirect(route('admin.story.edit', $story->id))->with('status', 'Story has been updated.');

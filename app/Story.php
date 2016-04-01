@@ -19,9 +19,9 @@ class Story extends Model
          *
          * @var array
          */
-    protected $fillable = ['author_id', 'title', 'slug','subtitle', 'teaser', 'content','published_at','story_type'];
+    protected $fillable = ['author_id', 'title', 'slug','subtitle', 'teaser', 'content','publish_start','publish_end', 'is_featured', 'is_live' ,'story_type'];
 
-    protected $dates = ['published_at'];
+    protected $dates = ['publish_start', 'publish_end'];
 
     /**
      * [setPublishedAtAttribute description]
@@ -29,7 +29,7 @@ class Story extends Model
      */
     public function setPublishedAtAttribute($value)
     {
-        $this->attributes['published_at'] = $value ?: null;
+        $this->attributes['publish_start'] = $value ?: null;
     }
 
     /**

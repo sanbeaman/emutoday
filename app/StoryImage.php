@@ -9,7 +9,6 @@ class StoryImage extends Model
 {
     protected $fillable = ['story_id',
                             'is_active',
-                            'is_featured',
                             'image_name',
                             'image_path',
                             'caption',

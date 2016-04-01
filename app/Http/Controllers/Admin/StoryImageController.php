@@ -46,7 +46,6 @@ class StoryImageController extends Controller
        //create new instance of model to save from form
        $storyImage = $this->storyImages->findOrFail($id);
        $storyImage->is_active = $request->get('is_active');
-       $storyImage->is_featured = $request->get('is_featured');
        $this->formatCheckboxValue($storyImage);
        $storyImage->caption = $request->get('caption');
        $storyImage->teaser = $request->get('teaser');
@@ -146,41 +145,7 @@ class StoryImageController extends Controller
         return view('admin.storyimages.edit', compact('storyImage'));
     }
 
-    public function zupdate(Requests\StoryImage_UpdateRequest $request, $id)
-    {
-        $storyImage = $this->storyImages->findOrFail($id);
-        $storyImage->is_active = $request->get('is_active');
-        $storyImage->is_featured = $request->get('is_featured');
-        $this->formatCheckboxValue($storyImage);
-        $storyImage->caption = $request->get('caption');
-        $storyImage->teaser = $request->get('teaser');
-        $storyImage->moretext = $request->get('moretext');
-
-
-
-        if ( ! empty(Input::file('image'))){
-
-            $destinationFolder = $storyImage->image_path;
-
-            $imgFile = Input::file('image');
-            $imgFilePath = $imgFile->getRealPath();
-            $imgFileName = $storyImage->image_name . '.' . $storyImage->image_extension;
-
-
-            $image = Image::make($imgFilePath)
-             ->save(public_path() . $destinationFolder . $imgFileName)
-             ->fit(100)
-             ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
-
-        }
-
-        $storyImage->save();
-        flash()->success('Story Image has been Updated.');
-        return redirect(route('admin.storyimages.index'));//->with('status', 'Story Image has been Updated.');
-    //    return view('backend.storyimages.edit', compact('storyImage'));
-
-    }
-
+    
     public function show($id)
     {
         $storyImage = $this->storyImages->findOrFail($id);
@@ -223,7 +188,7 @@ class StoryImageController extends Controller
     {
 
        $storyImage->is_active = ($storyImage->is_active == null) ? 0 : 1;
-       $storyImage->is_featured = ($storyImage->is_featured == null) ? 0 : 1;
+
     }
 
 
