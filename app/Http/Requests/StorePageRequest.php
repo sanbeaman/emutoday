@@ -24,10 +24,8 @@ class StorePageRequest extends Request
     public function rules()
     {
         return [
-            'title' => ['required'],
-           'uri' => ['required', 'unique:pages'],
-           'name' => ['unique:pages'],
-           'content' => ['required']
+            'template' => ['required'],
+           'start_date' => ['required']
         ];
     }
 }

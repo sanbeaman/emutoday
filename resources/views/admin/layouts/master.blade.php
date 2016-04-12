@@ -23,6 +23,7 @@
           <li><a href="{{ route('admin.users.index') }}">Users</a></li>
           <li><a href="{{ route('admin.story.index') }}">Story Posts</a></li>
           <li><a href="{{ route('admin.storyimages.index') }}">Story Images</a></li>
+          <li><a href="{{ route('admin.pages.index') }}">Pages</a></li>
         </ul>
       </div>
       <div class="top-bar-right">

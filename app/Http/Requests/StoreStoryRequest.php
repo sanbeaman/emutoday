@@ -23,13 +23,26 @@ class StoreStoryRequest extends Request
      */
     public function rules()
     {
-        return [
-               'title' => ['required'],
-                'slug' => ['required'],
-                'subtitle' => ['required'],
-                'teaser' => ['required'],
-                'published_at' => ['date_format:Y-m-d H:i:s'],
-                'content' => ['required']
-        ];
+        $rules = $this->rules;
+        $storytype = $this->input('story_type');
+        if ($storytype == 'storyexternal') {
+            $rules['title'] = 'required';
+            $rules['slug'] = 'required';
+        } else {
+            $rules['title'] = 'required';
+            $rules['slug'] = 'required';
+            $rules['content'] = 'required';
+        }
+        return $rules;
     }
+
+    //     return [
+    //            'title' => ['required'],
+    //             'slug' => ['required'],
+    //             'story_type' => ['required'],
+    //             'content' => ['required_unless:story_type,storyexternal'],
+    //             'published_at' => ['date_format:Y-m-d H:i:s']
+    //
+    //     ];
+    // }
 }

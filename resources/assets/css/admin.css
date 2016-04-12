@@ -1,0 +1,9 @@
+div .input-group {
+    margin-bottom: 2px;
+}
+
+textarea .teaser,
+.input-group .teaser {
+  height: 100px;
+  min-height: 100px;
+}

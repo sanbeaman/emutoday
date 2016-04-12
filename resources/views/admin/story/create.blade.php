@@ -10,7 +10,7 @@
         'method' => $story->exists ? 'put' : 'post',
         'route' => $story->exists ? ['admin.story.update', $story->id] : ['admin.story.store']
     ]) !!}
-
+    <h3>{{'Type:'. $story->story_type}}</h3>
     <div class="input-group">
         {!! Form::label('title') !!}
         {!! Form::text('title', null, ['class' => 'form-control']) !!}
@@ -42,8 +42,13 @@
         </div>
     </div>
     <div class="input-group">
-        {!! Form::label('storyTypes', 'StoryTypes:') !!}
-        {!! Form::select('storyTypes', $storyTypes, null, ['class' => 'form-control']) !!}
+        {!! Form::label('story_type', 'StoryTypes:') !!}
+        @if (is_string($stypes))
+            {!! Form::text('story_type', $stypes, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+        @else
+        {!! Form::select('story_type', $stypes, null, ['class' => 'form-control']) !!}
+    @endif
+
     </div>
 
 

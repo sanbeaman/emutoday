@@ -404,6 +404,13 @@ img.news-icon{
    background-color: #fff;
     margin: 0;
 }
+#four-stories-bar .column p{
+    font-size: .9rem;
+    line-height: 1.2rem;
+    padding: .2rem 0;
+   background-color: #fff;
+    margin: 0;
+}
 #four-stories-bar .stories-content {
     margin: 0;
     padding: .5rem .8rem .8rem;

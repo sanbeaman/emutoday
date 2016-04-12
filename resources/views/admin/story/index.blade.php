@@ -3,12 +3,15 @@
 @section('title', 'Story')
 
 @section('content')
-    <a href="{{ route('admin.story.create') }}" class="button">Create New Story</a>
+    <a href="{{ route('admin_story_setup', ['stype' => 'storybasic']) }}" class="button">Create News Story</a>
+    <a href="{{ route('admin_story_setup', ['stype' => 'story']) }}" class="button">Create Promoted Story</a>
+    <a href="{{ route('admin_story_setup', ['stype' => 'storyexternal']) }}" class="button">Create External Story</a>
 
     <table class="hover">
         <thead>
             <tr>
                 <th>id</th>
+                <th>Type</th>
                 <th>Title</th>
                 <th>Slug</th>
                 <th>Author</th>
@@ -21,6 +24,7 @@
             @foreach($storys as $story)
                 <tr class="{{ $story->published_highlight }}">
                     <td>{{ $story->id }}</td>
+                    <td>{{ $story->story_type }}</td>
                     <td>
                         <a href="{{ route('admin.story.show', $story->id) }}">{{ $story->title }}</a>
                     </td>

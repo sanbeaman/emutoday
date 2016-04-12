@@ -50,7 +50,7 @@
             </div>
             <div class="input-group">
                 {!! Form::label('story_type','Story Type') !!}
-                {!! Form::text('story_type', $story->story_type, ['class' => 'form-control', 'disabled' => 'disabled']) !!}
+                {!! Form::text('story_type', $story->story_type, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
             </div>
             {!! Form::submit($story->exists ? 'Save Story' : 'Create New Story', ['class' => 'button']) !!}
 
@@ -62,7 +62,18 @@
         <div class="medium-6 columns">
 
             <!--     add image asset -->
+            @if (count($story->storyImages) < 3)
+              <form action="addimage" method="POST">
+                  {{ csrf_field() }}
+                <button class="hollow button" href="#">Add Image</button>
+
+              </form>
+
+
+          @endif
+
             @each('admin.story.subviews.storyimage', $story->storyImages, 'storyImage')
+
             <!-- list all image assets -->
 
 
@@ -71,6 +82,7 @@
 @endsection
 @section('footer')
     @parent
+      <script src="{{ theme('js/ckeditor/ckeditor.js') }}"></script>
     <script>
 
                             CKEDITOR.replace('teaser',

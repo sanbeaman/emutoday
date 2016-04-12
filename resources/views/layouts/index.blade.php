@@ -45,7 +45,8 @@
         </div>
         <div class="column">
           <img class="topic-image" src="images/front-boxes/bridges.png" alt="story image">
-           <div class="stories-content"> <div class="stories-text-content" data-equalizer-watch="" style="height: 66px;">
+           <div class="stories-content">
+             <div class="stories-text-content" data-equalizer-watch="" style="height: 66px;">
              <p>Noted EMU director Wallace Bridges named Fulbright Scholar</p>
            </div>
            <p class="button-group">

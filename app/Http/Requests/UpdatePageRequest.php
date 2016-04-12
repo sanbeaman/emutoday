@@ -24,10 +24,8 @@ class UpdatePageRequest extends Request
     public function rules()
     {
         return [
-          'title' => ['required'],
-            'uri' => ['required', 'unique:pages,uri,'.$this->route('pages')],
-            'name' => ['unique:pages,name,'.$this->route('pages')],
-            'content' => ['required']
+            'template' => ['required'],
+           'start_date' => ['required']
         ];
     }
 }

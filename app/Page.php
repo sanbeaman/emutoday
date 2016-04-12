@@ -2,32 +2,16 @@
 
 namespace emutoday;
 
-use Baum\Node;
+use Illuminate\Database\Eloquent\Model;
 
-class Page extends Node
+class Page extends Model
 {
-    protected $fillable = ['title','name','uri', 'content', 'template', 'hidden'];
 
-    public function updateOrder($order, $orderPage)
-    {
-        $orderPage = $this->findOrFail($orderPage);
-
-        if ($order == 'before') {
-            $this->moveToLeftOf($orderPage);
-        } elseif ($order == 'after') {
-            $this->moveToRightOf($orderPage);
-        } elseif ($order == 'childOf') {
-            $this->makeChildOf($orderPage);
-        }
-    }
-
-    public function setNameAttribute($value)
-    {
-        $this->attributes['name'] = $value ?: null;
-    }
-
-    public function setTemplateAttribute($value)
-    {
-        $this->attributes['template'] = $value ?: null;
+     protected $fillable = ['template', 'uri', 'start_date', 'end_date', 'user_id'];
+     
+    public function storys(){
+        return $this->belongsToMany('emutoday\Storys')
+            ->withPivot('page_position', 'note')
+            ->withTimestamps();
     }
 }

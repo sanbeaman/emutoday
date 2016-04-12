@@ -8,6 +8,7 @@
   "dependencies": {
     "anytime": "^1.4.2",
     "ckeditor": "^4.5.7",
+    "foundation-datepicker": "^1.5.1",
     "foundation-sites": "^6.2.0",
     "laravel-elixir": "^4.0.0"
   }

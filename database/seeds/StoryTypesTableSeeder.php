@@ -11,23 +11,32 @@ class StoryTypesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('storytypes')->truncate();
-        DB::table('storytypes')->insert([
+        DB::table('story_types')->truncate();
+        DB::table('story_types')->insert([
             [
-                'name' => 'Basic Story',
-                'shortname' => 'storybasic'
+                'name' => 'News Story',
+                'shortname' => 'storybasic',
+                'level' => 0
             ],
             [
                 'name' => 'Promoted Story',
-                'shortname' => 'storypromoted'
+                'shortname' => 'storypromoted',
+                'level' => 1
             ],
             [
                 'name' => 'Student Profile',
-                'shortname' => 'storystudent'
+                'shortname' => 'storystudent',
+                'level' => 1
             ],
             [
                 'name' => 'Magazine Story',
-                'shortname' => 'storymagazine'
+                'shortname' => 'storymagazine',
+                'level' => 1
+            ],
+            [
+                'name' => 'External Story',
+                'shortname' => 'storyexternal',
+                'level' => 0
             ],
 
         ]);

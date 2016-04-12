@@ -21,20 +21,31 @@ Route::group(['middleware' => ['web']], function() {
     Route::get('admin/users/{users}/confirm', ['as' => 'admin.users.confirm', 'uses' => 'Admin\UsersController@confirm']);
     Route::resource('admin/users', 'Admin\UsersController', ['except' => ['show'] ]);
 
-    Route::get('backend/pages/{pages}/confirm', ['as' => 'backend.pages.confirm', 'uses' => 'backend\PagesController@confirm']);
-    Route::resource('backend/pages', 'Backend\PagesController', ['except' => ['show'] ]);
+    // Route::get('backend/pages/{pages}/confirm', ['as' => 'backend.pages.confirm', 'uses' => 'backend\PagesController@confirm']);
+    // Route::resource('backend/pages', 'Backend\PagesController', ['except' => ['show'] ]);
+    //
+    // Route::get('backend/blog/{blog}/confirm', ['as' => 'backend.blog.confirm', 'uses' => 'Backend\BlogController@confirm']);
+    // Route::resource('backend/blog', 'Backend\BlogController');
+    //
+    Route::get('admin/story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
 
-    Route::get('backend/blog/{blog}/confirm', ['as' => 'backend.blog.confirm', 'uses' => 'Backend\BlogController@confirm']);
-    Route::resource('backend/blog', 'Backend\BlogController');
-
+    // Route::get('admin/story/create/{stype}/', ['as' => 'admin_story_create', 'uses' => 'Admin\StoryController@create']);
     Route::get('admin/story/{story}/confirm', ['as' => 'admin.story.confirm', 'uses' => 'Admin\StoryController@confirm']);
+    // Route::get('admin/storyType/{storyType?}', ['as' => 'admin.storyType', 'uses' => 'Admin\StoryController@build']);
+    // Route::get('admin/storyType/story/{story}', ['as' => 'admin.storyType.story', 'uses' => 'Admin\StoryController@build']);
+    Route::post('admin/story/{id}/addimage', 'Admin\StoryController@addImage');
+
     Route::resource('admin/story', 'Admin\StoryController');
 
+    // Route::get('admin/storyType/{storyType?}', function ($storyType = null ) {
+    //     return 'storyType='. $storyType;
+    // });
 
     Route::get('admin/storyimages/{storyimages}/confirm', ['as' => 'admin.storyimages.confirm', 'uses' => 'Admin\StoryImageController@confirm']);
+
     Route::resource('admin/storyimages', 'Admin\StoryImageController');
 
-
+    Route::resource('admin/pages', 'Admin\PagesController');
 
     Route::get('admin/dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);
 

@@ -1,14 +1,13 @@
 
-<div class="callout small">
-{!! Form::model($storyImage,[
-   'method' => 'patch',
-   'route' => ['admin.storyimages.update', $storyImage->id],
-   'files' => true
-]) !!}
-
-<h4>{{$storyImage->image_type}}</h4>
-
+<div class="imgform callout small">
 <div class="row">
+   {!! Form::model($storyImage,[
+      'method' => 'patch',
+      'route' => ['admin.storyimages.update', $storyImage->id],
+      'files' => true
+   ]) !!}
+   {{$storyImage->image_type}}
+
 @if($storyImage->is_active != 0)
    <div class="small-3 column">
       <img class="float-center" src="/imgs/story/thumbnails/{{ 'thumb-' . $storyImage->image_name . '.' .
@@ -56,12 +55,48 @@ $storyImage->image_extension . '?'. 'time='. time() }}">
       </div>
    </div>
 </div>
-
-
-
-   <div class="input-group">
+<div class="input-group">
    {!! Form::submit('Upload Photo', array('class'=>'button')) !!}
+
+
    </div>
 
+
+
    {!! Form::close() !!}
+
+   @if($storyImage->image_type == 'imagehero')
+      {!! Form::model($storyImage, ['route' => ['admin.storyimages.destroy', $storyImage->id],
+      'method' => 'DELETE',
+      'class' => 'form',
+      'files' => true]
+      ) !!}
+
+      <div class="form-group">
+
+           {!! Form::submit('Delete Image', array('class'=>'button alert', 'Onclick' => 'return ConfirmDelete();')) !!}
+
+      </div>
+
+      {!! Form::close() !!}
+   @endif
+   
+
 </div>
+
+@section('footer')
+    @parent
+    <script>
+
+        function ConfirmDelete()
+        {
+            var x = confirm("Are you sure you want to delete?");
+            if (x)
+                return true;
+            else
+                return false;
+        }
+
+    </script>
+
+@endsection

@@ -23,6 +23,22 @@ class Story extends Model
 
     protected $dates = ['publish_start', 'publish_end'];
 
+    
+
+
+    public function addImage($stype)
+    {
+
+        return $this->storyImages()->create([
+            'image_name'=> 'img' . $this->id . '_'. $stype,
+            'image_type'=> 'image'.$stype,
+        ]);
+        // $storyImage = $story->storyImages()->create([
+        //         'image_name'=> 'img' . $story->id . '_hero',
+        //         'image_type'=> 'imagehero',
+        //     ]);
+    }
+
     /**
      * [setPublishedAtAttribute description]
      * @param [type] $value [description]
@@ -78,6 +94,14 @@ class Story extends Model
         return $this->belongsTo('emutoday\StoryType', 'story_type');
     }
 
+    /**
+     * Inverse Many-to-Many relationship for page layouts
+     * @return [type] [description]
+     */
+    public function pages()
+    {
+        return $this->belongsToMany('emutoday\Page');
+    }
 
 
 

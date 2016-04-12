@@ -162,7 +162,11 @@ return [
         Baum\Providers\BaumServiceProvider::class,
         Lewis\Presenter\PresenterServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class
+        Intervention\Image\ImageServiceProvider::class,
+
+        Clockwork\Support\Laravel\ClockworkServiceProvider::class,
+
+        Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
 
     ],
 
@@ -215,7 +219,10 @@ return [
 
         'Flash'      => Laracasts\Flash\Flash::class,
 
-        'Image'     => Intervention\Image\Facades\Image::class
+
+        'Image'     => Intervention\Image\Facades\Image::class,
+
+        'Clockwork' => Clockwork\Support\Laravel\Facade::class,
 
 
 
