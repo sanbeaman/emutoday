@@ -7,6 +7,8 @@ Route::group(['middleware' => ['web']], function() {
 
     Route::get('/', 'MainController@index');
 
+
+
     Route::controller('auth/password', 'Auth\PasswordController', [
         'getEmail' => 'auth.password.email',
         'getReset' => 'auth.password.reset'
@@ -42,9 +44,9 @@ Route::group(['middleware' => ['web']], function() {
     // });
 
     Route::get('admin/storyimages/{storyimages}/confirm', ['as' => 'admin.storyimages.confirm', 'uses' => 'Admin\StoryImageController@confirm']);
-
     Route::resource('admin/storyimages', 'Admin\StoryImageController');
 
+    Route::get('admin/pages/{page}/confirm', ['as' => 'admin.pages.confirm', 'uses' => 'Admin\PagesController@confirm']);
     Route::resource('admin/pages', 'Admin\PagesController');
 
     Route::get('admin/dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);

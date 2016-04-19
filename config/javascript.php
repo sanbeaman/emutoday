@@ -13,7 +13,7 @@ return [
     | Example: 'footer' or ['footer', 'bottom']
     |
     */
-    'bind_js_vars_to_this_view' => 'layouts/footscripts',
+    'bind_js_vars_to_this_view' => 'include/js','admin/layouts/scriptshead', 'public/layouts/scriptshead',
 
     /*
     |--------------------------------------------------------------------------
@@ -25,6 +25,6 @@ return [
     | That way, you can access vars, like "SomeNamespace.someVariable."
     |
     */
-    'js_namespace' => 'emutoday'
+    'js_namespace' => 'JSvars'
 
 ];

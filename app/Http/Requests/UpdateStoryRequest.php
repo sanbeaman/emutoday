@@ -26,9 +26,6 @@ class UpdateStoryRequest extends Request
         return [
             'title' => ['required'],
              'slug' => ['required'],
-             'subtitle' => ['required'],
-             'teaser' => ['required'],
-             'published_at' => ['date_format:Y-m-d H:i:s'],
              'content' => ['required']
         ];
     }

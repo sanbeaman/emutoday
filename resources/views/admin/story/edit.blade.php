@@ -8,58 +8,54 @@
   @endsection
 @section('content')
     <div class="row">
-        <div class="medium-6 columns">
-            <div class="row column">
-                {{ csrf_field() }}
-                {!! Form::model($story, [
-                'method' => $story->exists ? 'put' : 'post',
-                'route' => $story->exists ? ['admin.story.update', $story->id] : ['admin.story.store']
-                    ])
-                    !!}
-                <div class="input-group">
-                    {!! Form::label('title') !!}
-                    {!! Form::text('title', null, ['class' => 'form-control']) !!}
-                </div>
-                <div class="input-group">
-                    {!! Form::label('slug') !!}
-                    {!! Form::text('slug', null, ['class' => 'form-control']) !!}
-                </div>
-                <div class="input-group">
-                    {!! Form::label('subtitle') !!}
-                    {!! Form::text('subtitle', null, ['class' => 'form-control']) !!}
-                </div>
+      <div class="medium-6 columns">
+        <div class="row column">
+          {!! Form::model($story, [
+            'method' => 'put',
+            'route' => ['admin.story.update', $story->id]
+          ])
+          !!}
+          <div class="input-group">
+            {!! Form::label('title') !!}
+            {!! Form::text('title', null, ['class' => 'form-control']) !!}
+          </div>
+          <div class="input-group">
+            {!! Form::label('slug') !!}
+            {!! Form::text('slug', null, ['class' => 'form-control']) !!}
+          </div>
+          <div class="input-group">
+            {!! Form::label('subtitle') !!}
+            {!! Form::text('subtitle', null, ['class' => 'form-control']) !!}
+          </div>
+          <div class="input-group teaser">
+            {!! Form::label('teaser') !!}
+            {!! Form::textarea('teaser', null, ['class' => 'form-control']) !!}
+          </div>
+          <div class="input-group">
+            {!! Form::label('content') !!}
+            {!! Form::textarea('content', null, ['class' => 'form-control']) !!}
+          </div>
+          <div class="input-group">
+            <div class="small-3 column">
+              {!! Form::label('publish_start') !!}
+              {!! Form::text('publish_start', null, ['class' => 'form-control']) !!}
             </div>
-            <div class="input-group row">
-                <div class="small-2 columns">
-                    {!! Form::label('published_at') !!}
-                </div>
-                <div class="small-10 columns">
-                    {!! Form::text('published_at', null, ['class' => 'form-control']) !!}
-                </div>
+            <div class="small-3 column">
+              {!! Form::label('publish_end') !!}
+              {!! Form::text('publish_end', null, ['class' => 'form-control']) !!}
             </div>
-            <div class="row column">
-
-
-            <div class="input-group teaser">
-                {!! Form::label('teaser') !!}
-                {!! Form::textarea('teaser', null, ['class' => 'form-control']) !!}
+            <div class="small-3 column">
+              {!! Form::label('story_type','Story Type') !!}
+              {!! Form::text('story_type', $story->story_type, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
             </div>
-            <div class="input-group">
-                {!! Form::label('content') !!}
-                {!! Form::textarea('content', null, ['class' => 'form-control']) !!}
-            </div>
-            <div class="input-group">
-                {!! Form::label('story_type','Story Type') !!}
-                {!! Form::text('story_type', $story->story_type, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
-            </div>
-            {!! Form::submit($story->exists ? 'Save Story' : 'Create New Story', ['class' => 'button']) !!}
-
-            {!! Form::close() !!}
-                </div>
+              <div class="small-3 column">
+                  {!! Form::submit($story->exists ? 'Save Story' : 'Create New Story', ['class' => 'button']) !!}
+              </div>
+          </div>
+          {!! Form::close() !!}
         </div>
-
-
-        <div class="medium-6 columns">
+      </div>
+      <div class="medium-6 columns">
 
             <!--     add image asset -->
             @if (count($story->storyImages) < 3)
@@ -120,6 +116,23 @@
 
                                 slugElement.val(this.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, ''));
                             });
+
+                            $(function(){
+                            		$('#publish_start').fdatepicker({
+                            			format: 'yyyy-mm-dd hh:ii',
+                            			disableDblClickSelection: true,
+                            			language: 'en',
+                            			pickTime: true
+                            		});
+                            		$('#publish_end').fdatepicker({
+                            			format: 'yyyy-mm-dd hh:ii',
+                            			disableDblClickSelection: true,
+                            			language: 'en',
+                            			pickTime: true
+                            		});
+
+
+                            	});
                 </script>
                 <!-- add additional script to bottom of body like js/main.js
                 or add Jquery or similiar calls from inside script tags

@@ -4,7 +4,6 @@
     <div id="left">
         <table id="table1">
             <colgroup>
-                <col width="50"/>
                 <col width="100"/>
                 <col width="300"/>
             </colgroup>
@@ -12,24 +11,17 @@
                 <tr>
                     <td class="redips-single">
                         {{-- <img src="{{$story->grabStoryImageByType('imagemain')->mainImageURL() }}" id="{{$story->id}}" class="redips-drag orange" alt="feature-image"></a> --}}
-
-                        @if($story->is_featured)
-                            <div id="drag-{{$story->id}}x" class="redips-drag orange"></a>{{$story->id}}</div>
-                        @else
-                            <div id="drag-{{$story->id}}" class="redips-drag blue"></a>{{$story->id}}</div>
-                        @endif
-
-
-                        {{-- <div id="{{$storyImage->id}}" class="redips-drag orange"><img src="{{$storyImage->thumbnailImageURL() }}" id="{{$storyImage->id}}" class="redips-drag orange" alt="feature-image"></a></div> --}}
+                        
+                        <div id="{{$story->id}}" class="redips-drag orange">{{$story->grabStoryImageByType('imagemain')->mainImageURL()}} </div>
                     </td>
-                    <td class="redips-mark story-type">
-                        {{$story->story_type}}
-                    </td>
-                    <td class="redips-mark story-title">
-                        {{$story->title}}
+                    <td>
+                        Title = {{$story->title}} Type = {{$story->story_type}}
                     </td>
                 </tr>
                 @endforeach
+            <tr>
+                <td class="redips-trash">Trash</td>
+            </tr>
         </table>
     </div>
 
@@ -40,10 +32,10 @@
             <col width="400" />
         </colgroup>
         <tr>
-            <td id="emuhome0" class="redips-mark hero"></td>
+            <td id="emuhome0"></td>
         </tr>
         <tr>
-            <td class="redips-mark">
+            <td>
 
 
             <table class="four-stories-bar">
@@ -67,11 +59,6 @@
     <!-- display block content -->
     <div id="message"/>
         </div>
-        <!-- buttons -->
-    <div id="buttons">
-    	<input type="button" value="Reset" class="button" onclick="javascript:reset()"/>
-    	<input type="button" value="Relocate" class="button" onclick="javascript:reloc()"/>
-    </div>
 
 
 </div> <!-- END redips-drag -->

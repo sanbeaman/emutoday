@@ -30,7 +30,7 @@
 		</div>
 		<div class="medium-2 columns">
 			<div class="input-group">
-			  <p>Active?</p>
+				{!! Form::label('Active?') !!}
 			  <div class="switch medium">
 				<input class="switch-input" id="yes-no" type="checkbox" name="is_active">
 				<label class="switch-paddle" for="yes-no">
@@ -52,13 +52,13 @@
 	<script>
 	$(function(){
 		$('#start_date').fdatepicker({
-			format: 'mm-dd-yyyy hh:ii',
+			format: 'yyyy-mm-dd hh:ii:ss',
 			disableDblClickSelection: true,
 			language: 'en',
 			pickTime: true
 		});
 		$('#end_date').fdatepicker({
-			format: 'mm-dd-yyyy hh:ii',
+			format: 'yyyy-mm-dd hh:ii:ss',
 			disableDblClickSelection: true,
 			language: 'en',
 			pickTime: true

@@ -7,6 +7,7 @@
     <title>@yield('title')  &mdash; EMU</title>
     @include('public.layouts.styles')
     @include('public.layouts.scriptshead')
+    @include('include.js')
 
   </head>
   <body>

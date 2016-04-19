@@ -11,7 +11,7 @@
     @section('scripthead')
           @include('admin.layouts.scriptshead')
     @show
-
+    @include('include.js')
   </head>
 
   <body>

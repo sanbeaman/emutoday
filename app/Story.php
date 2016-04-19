@@ -23,7 +23,7 @@ class Story extends Model
 
     protected $dates = ['publish_start', 'publish_end'];
 
-    
+
 
 
     public function addImage($stype)
@@ -43,7 +43,7 @@ class Story extends Model
      * [setPublishedAtAttribute description]
      * @param [type] $value [description]
      */
-    public function setPublishedAtAttribute($value)
+    public function setPublishStartAttribute($value)
     {
         $this->attributes['publish_start'] = $value ?: null;
     }

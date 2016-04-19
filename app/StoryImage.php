@@ -33,4 +33,9 @@ class StoryImage extends Model
     {
         return $this->image_path . $this->filename;
     }
+    
+    public function thumbnailImageURL()
+    {
+        return $this->image_path . 'thumbnails/thumb-' . $this->filename;
+    }
 }

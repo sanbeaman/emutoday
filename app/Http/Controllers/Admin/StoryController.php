@@ -88,10 +88,12 @@ class StoryController extends Controller
 
         //dd($request->input('storyTypes'));
         //
+        $pubEndDate = $request->publish_end == null ? null:  \Carbon\Carbon::parse($request->publish_end);
+
         $story = $this->storys->create(
         // ['author_id' => auth()->user()->id] + ['story_type' => $request->input('story_type') ] +  $request->only('title', 'slug', 'subtitle', 'published_at', 'teaser','content')
 
-         ['author_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'published_at', 'teaser','content', 'story_type')
+         ['author_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'teaser','content', 'publish_start', 'story_type') + ['publish_end' => $pubEndDate ]
 
         );
 
@@ -163,7 +165,11 @@ class StoryController extends Controller
     public function update(Requests\UpdateStoryRequest $request, $id)
     {
         $story = $this->storys->findOrFail($id);
-        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','story_type'))->save();
+
+        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','story_type'));
+        $story->publish_start = \Carbon\Carbon::parse($request->publish_start);
+        $story->publish_end = $request->publish_end == null ? null:  \Carbon\Carbon::parse($request->publish_end);
+        $story->save();
         flash()->success('Story has been updated.');
         return redirect(route('admin.story.edit', $story->id));
         //return redirect(route('admin.story.edit', $story->id))->with('status', 'Story has been updated.');

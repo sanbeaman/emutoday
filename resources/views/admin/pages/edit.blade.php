@@ -4,15 +4,16 @@
           @parent
           	<link rel="stylesheet" href="{{ theme('css/my-redips.css') }}" type="text/css" media="screen" />
           <script src="{{ theme('js/redips-drag-min.js') }}"></script>
-        <script src="{{ theme('js/my-redips.js') }}"></script>
+
     @endsection
 @section('content')
-
+<div class="column row">
+	{!! Form::model($page, [
+		'method' =>  'put',
+		'route' => ['admin.pages.update', $page->id]
+	]) !!}
 	<div class="row">
-		{!! Form::model($page, [
-			'method' =>  'put',
-			'route' => ['admin.pages.update', $page->id]
-		]) !!}
+
 		<div class="medium-2 columns">
 		    <div class="input-group">
 		        {!! Form::label('template') !!}
@@ -27,13 +28,13 @@
 		</div>
 		<div class="medium-2 columns">
 				{!! Form::label('start_date') !!}
-				{!! Form::text('start_date', $page->start_date, ['class' => 'form-control']) !!}
+				{!! Form::text('start_date', null, ['class' => 'form-control']) !!}
 		</div>
 		<div class="medium-2 columns">
 				{!! Form::label('end_date') !!}
-				{!! Form::text('end_date', $page->end_date, ['class' => 'form-control']) !!}
+				{!! Form::text('end_date', null, ['class' => 'form-control']) !!}
 		</div>
-		<div class="medium-2 columns">
+		<div class="medium-1 columns">
 			<div class="input-group">
 			 {!! Form::label('is_active') !!}
 			  <div class="switch medium">
@@ -47,28 +48,43 @@
 
 			</div>
 		</div>
+		<div class="medium-2 columns">
+			<div class="input-group">
+ 				{!! Form::label('story_ids') !!}
+				{!! Form::text('story_ids', null, ['id'=> 'story_ids',  'class' => 'form-control', 'readonly' => 'readonly']) !!}
+			</div>
+		</div>
+		<div class="medium-1 columns">
 		{!! Form::submit('Update Page', ['class' => 'button']) !!}
 
 		{!! Form::close() !!}
+		</div>
+
 	</div> <!-- END Row top page input -->
 
 	<div class="row">
 		@include('admin.pages.templates.homeemutoday')
+
+
+
 	</div> <!-- END Row bottom page layout form -->
 
+</div>
 @endsection
 @section('scriptsfooter')
 	@parent
+	    <script src="{{ theme('js/my-redips.js') }}"></script>
+		
 	<script>
 	$(function(){
 		$('#start_date').fdatepicker({
-			format: 'mm-dd-yyyy hh:ii',
+			format: 'yyyy-mm-dd hh:ii',
 			disableDblClickSelection: true,
 			language: 'en',
 			pickTime: true
 		});
 		$('#end_date').fdatepicker({
-			format: 'mm-dd-yyyy hh:ii',
+			format: 'yyyy-mm-dd hh:ii',
 			disableDblClickSelection: true,
 			language: 'en',
 			pickTime: true
