@@ -54,4 +54,28 @@ class MainController extends Controller
         return view('public.index', compact('page', 'storyImages', 'heroImg', 'barImgs'));
 
     }
+
+    public function main($story_type, $id)
+    {
+        $story = $this->storys->findOrFail($id);
+
+        $sideStorysFeatured = $this->storys->where([
+            ['story_type', 'storypromoted'],
+            ['id', '<>', $id],
+            ])->orderBy('created_at', 'desc')->take(3)->get();
+        $sideStorysStudent = $this->storys->where([
+            ['story_type', 'storystudent'],
+            ['id', '<>', $id],
+        ])->orderBy('created_at', 'desc')->take(3)->get();
+
+        JavaScript::put([
+            'jsis' => 'hi',
+            'cdnow' => Carbon::now(),
+            'cdstart' => Carbon::now()->subDays(7),
+            'cdend' => Carbon::now()->addDays(7),
+            'cstory' => $story
+        ]);
+        return view('public.story.main', compact('story', 'sideStorysFeatured', 'sideStorysStudent'));
+
+    }
 }

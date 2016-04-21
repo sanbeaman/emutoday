@@ -5,8 +5,6 @@ The ORDER of ROUTES is critical
 */
 Route::group(['middleware' => ['web']], function() {
 
-    Route::get('/', 'MainController@index');
-
 
 
     Route::controller('auth/password', 'Auth\PasswordController', [
@@ -19,7 +17,10 @@ Route::group(['middleware' => ['web']], function() {
       'getLogout' => 'auth.logout'
     ]);
     //watch out for match anything ROUTES
-
+    // Route::get('page/{id}', ['as' => 'story_page', function($id) {
+    //         return ' id=' . $id;
+    //
+    // }]);
     Route::get('admin/users/{users}/confirm', ['as' => 'admin.users.confirm', 'uses' => 'Admin\UsersController@confirm']);
     Route::resource('admin/users', 'Admin\UsersController', ['except' => ['show'] ]);
 
@@ -54,7 +55,10 @@ Route::group(['middleware' => ['web']], function() {
     Route::get('api/story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
     Route::resource('api/story', 'Api\StoryController');
 
-    // Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
+    Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
+
+
+    Route::get('/{story_type}/{id}', 'MainController@main');
     // Route::resource('/', 'MainController');
 
     // Route::get('main', function ()    {

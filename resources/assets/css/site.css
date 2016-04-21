@@ -422,7 +422,7 @@ img.news-icon{
 
 /*News Headline bar*/
 #news-headline-bar > .row > .columns > .row {
-    background-image: url("../../images/1sq.gif");
+    background-image: url('../../assets/imgs/home/1sq.gif');
     background-position: 0 58px;
     background-repeat: repeat-x;
     overflow: hidden;

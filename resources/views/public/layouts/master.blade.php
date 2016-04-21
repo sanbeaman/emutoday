@@ -8,7 +8,6 @@
     @include('public.layouts.styles')
     @include('public.layouts.scriptshead')
     @include('include.js')
-
   </head>
   <body>
     <div class="off-canvas-wrapper">
@@ -38,7 +37,7 @@
                     <div class="large-9 large-push-3 medium-10 medium-push-2 small-10 small-push-2 columns">
                       <div class="row">
                         <div class="large-5 medium-7 small-12 columns">
-                          <h1><a href="#"><span class="first-word">EMU</span> Today</a></h1>
+                          <h1><a href="#"><span class="first-word">EMU</span> Today!</a></h1>
                         </div>
                         <div class="large-7 medium-5 small-12 columns">
                           <ul>

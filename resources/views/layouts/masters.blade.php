@@ -5,6 +5,7 @@
 @section('head')
     @include('public.layouts.styles')
     @include('public.layouts.scriptshead')
+  
 @endsection
 
 
