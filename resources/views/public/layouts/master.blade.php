@@ -50,7 +50,7 @@
                     <div class="large-3 large-pull-9 medium-2 medium-pull-10 small-2 small-pull-10 columns">
                       <div id="logo-box" data-equalizer-watch>
                         <a href="http://www.emich.edu">
-                          <img data-interchange="[themes/default/assets/imgs/home/emu.png, small], [themes/default/assets/imgs/home/blockewhiteplain.png, medium], [themes/default/assets/imgs/home/logo.png, large]">
+                          <img data-interchange="[/themes/default/assets/imgs/home/emu.png, small], [/themes/default/assets/imgs/home/blockewhiteplain.png, medium], [/themes/default/assets/imgs/home/logo.png, large]">
                         </a>
                       </div><!-- logo-box -->
                     </div><!-- large-3 -->

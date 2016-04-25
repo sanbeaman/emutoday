@@ -100,6 +100,12 @@ class PagesController extends Controller
              //array_push($storyIDsForPivotArray, $pushval);
          }
         $page->storys()->sync($storyIDsForPivotArray);
+        $page->uri = $request->uri;
+        $page->start_date = \Carbon\Carbon::parse($request->start_date);
+        $page->end_date = \Carbon\Carbon::parse($request->end_date);
+        $page->is_active = $request->is_active;
+        $page->save();
+
         //$story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','story_type'))->save();
         flash()->success('Page has been updated.');
         return redirect(route('admin.pages.edit', $page->id));

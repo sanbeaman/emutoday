@@ -25,9 +25,14 @@ class MainController extends Controller
     public function index(Page $pages)
     {
         $currentDateTime = Carbon::now();
-
-        $page = $this->pages->whereBetween('start_date',[Carbon::now()->subDays(7), Carbon::now()->addDays(7)] )->first();
+        $page = $this->pages->where([
+            ['start_date', '<=', $currentDateTime],
+            ['end_date', '>=', $currentDateTime],
+        ])->first();
+      //  $page = $this->pages->whereBetween('start_date',[Carbon::now()->subDays(7), Carbon::now()->addDays(7)] )->first();
         // $storys = $page->storys()->get();
+
+
         $currentStorys = $page->storys()->get();
         $currentStorysBasic = $this->storys->where('story_type', 'storybasic')->paginate(5);
         $barImgs = collect();

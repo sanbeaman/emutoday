@@ -5,7 +5,7 @@
     <a href="#"><img src="{{$sideitems->first()->grabStoryImageByType('imagesmall')->mainImageURL()}}" /></a>
     <ul class="feature-list">
     @foreach($sideitems as $sideitem)
-        <li><a href="#">{{ $sideitem->grabStoryImageByType('imagesmall')->caption }}</a></li>
+        <li><a href="/{{$sideitem->story_type}}/{{$sideitem->id}}">{{ $sideitem->grabStoryImageByType('imagesmall')->caption }}</a></li>
     @endforeach
     </ul>
 </div>

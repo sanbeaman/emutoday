@@ -40,6 +40,8 @@ Route::group(['middleware' => ['web']], function() {
 
     Route::resource('admin/story', 'Admin\StoryController');
 
+    Route::get('admin/announcement/{announcement}/confirm', ['as' => 'admin.announcement.confirm', 'uses' => 'Admin\AnnouncementController@confirm']);
+    Route::resource('admin/announcement', 'Admin\AnnouncementController');
     // Route::get('admin/storyType/{storyType?}', function ($storyType = null ) {
     //     return 'storyType='. $storyType;
     // });
