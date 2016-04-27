@@ -127,17 +127,22 @@
 
 /* Medium and up */
 @media screen and (min-width: 40em) {
+  .column,
+  .columns {
+      padding-left: .6rem;
+      padding-right: .6rem;
+  }
 
 
 }
 
 /* Medium only */
 @media screen and (min-width: 40em) and (max-width: 63.9375em) {
-    .column,
+    /*.column,
     .columns {
         padding-left: 30px;
         padding-right: 30px;
-    }
+    }*/
 
     .featurepadding{
        padding-left: 0;
@@ -246,11 +251,11 @@
 
 /* Large and up */
 @media screen and (min-width: 64em) {
-    .column,
+    /*.column,
     .columns {
-        padding-left: 50px;
-        padding-right: 50px;
-    }
+        padding-left: .6rem;
+        padding-right: .6rem;
+    }*/
 
 }
 

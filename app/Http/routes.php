@@ -3,6 +3,9 @@
 *************
 The ORDER of ROUTES is critical
 */
+use emutoday\Building;
+use Illuminate\Support\Facades\Input;
+
 Route::group(['middleware' => ['web']], function() {
 
 
@@ -57,10 +60,21 @@ Route::group(['middleware' => ['web']], function() {
     Route::get('api/story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
     Route::resource('api/story', 'Api\StoryController');
 
-    Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
+
+    Route::get('fetch/buildings', function() {
+      $text = Input::get('q');
+      return Building::likeSearch('name', $text)->get();
+
+    
+      //return Building::ofMapType('illustrated')->get();
+    });
 
 
-    Route::get('/{story_type}/{id}', 'MainController@main');
+
+
+    Route::get('storytype/{story_type}/{id}', 'MainController@main');
+
+      Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
     // Route::resource('/', 'MainController');
 
     // Route::get('main', function ()    {

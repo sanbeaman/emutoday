@@ -65,7 +65,7 @@ elixir(function(mix) {
     |
     |--***--***--***--***--***--
      */
-
+mix.browserify('main.js');
   /*
   |---------------------------
   | Public StyleSheet mix
@@ -84,7 +84,8 @@ elixir(function(mix) {
     mix.styles([
           nodePath + 'foundation-sites/dist/foundation.css',
           nodePath + 'foundation-datepicker/css/foundation-datepicker.css',
-          'admin.css'
+          'admin.css',
+          'site-mediaqueries.css'
         ], 'public/themes/default/assets/css/admin-styles.css');
   /*
   |---------------------------
@@ -115,6 +116,6 @@ elixir(function(mix) {
 
 
 
-  //  mix.browserify('main.js');
+
 
 });

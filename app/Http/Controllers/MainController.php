@@ -8,6 +8,8 @@ use emutoday\Http\Requests;
 
 use emutoday\Story;
 use emutoday\Page;
+use emutoday\Announcement;
+
 use Carbon\Carbon;
 use JavaScript;
 
@@ -15,10 +17,11 @@ class MainController extends Controller
 {
     protected $pages;
 
-    public function __construct(Page $pages, Story $storys)
+    public function __construct(Page $pages, Story $storys, Announcement $announcements)
     {
         $this->pages = $pages;
         $this->storys = $storys;
+        $this->announcements = $announcements;
 
     }
 
@@ -35,6 +38,7 @@ class MainController extends Controller
 
         $currentStorys = $page->storys()->get();
         $currentStorysBasic = $this->storys->where('story_type', 'storybasic')->paginate(5);
+        $currentAnnouncements = $this->announcements->paginate(5);
         $barImgs = collect();
         foreach ($page->storys as $story) {
             if ($story->pivot->page_position === 0) {
@@ -56,7 +60,7 @@ class MainController extends Controller
             'currentPage' => $page
         ]);
 
-        return view('public.index', compact('page', 'storyImages', 'heroImg', 'barImgs'));
+        return view('public.index', compact('page', 'storyImages', 'heroImg', 'barImgs', 'currentStorysBasic', 'currentAnnouncements'));
 
     }
 

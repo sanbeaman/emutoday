@@ -6,6 +6,8 @@
   <script src="{{ theme('js/ckeditor/ckeditor.js') }}"></script>
 @endsection
 @section('content')
+<div class="row">
+  <div class="medium-6 columns">
     {!! Form::model($announcement, [
         'method' => $announcement->exists ? 'put' : 'post',
         'route' => $announcement->exists ? ['admin.announcement.update', $announcement->id] : ['admin.announcement.store']
@@ -21,29 +23,36 @@
     </div>
 
     <div class="form-group row">
-      <div class="medium-2 columns">
+      <div class="medium-3 columns">
           {!! Form::label('start_date') !!}
           {!! Form::text('start_date', null, ['class' => 'form-control']) !!}
       </div>
-      <div class="medium-2 columns">
+      <div class="medium-3 columns">
           {!! Form::label('end_date') !!}
           {!! Form::text('end_date', null, ['class' => 'form-control']) !!}
       </div>
-    </div>
-    <div class="form-group row">
-      <div class="medium-2 columns">
-          {!! Form::label('is_approved') !!}
-          {!! Form::radio('is_approved', null, ['class' => 'form-control']) !!}
-      </div>
-      <div class="medium-2 columns">
-          {!! Form::label('is_promoted') !!}
-          {!! Form::radio('is_promoted', null, ['class' => 'form-control']) !!}
-      </div>
+        <fieldset class="medium-3 columns">
+          <legend>{!! Form::label('is_approved') !!}</legend>
+            {{ Form::radio('is_approved', 1) }}{!! Form::label('is_approved', 'yes') !!}
+            {{ Form::radio('is_approved', 0) }}{!! Form::label('is_approved', 'no') !!}
+          </fieldset>
+        <fieldset class="medium-3 columns">
+        <legend>  {!! Form::label('is_promoted') !!}</legend>
+          {!! Form::radio('is_promoted', 1) !!}{!! Form::label('is_promoted', 'yes') !!}
+          {!! Form::radio('is_promoted', 0) !!}{!! Form::label('is_promoted', 'no') !!}
+      </fieldset>
     </div>
 
     {!! Form::submit($announcement->exists ? 'Save Announcement' : 'Create New Announcement', ['class' => 'button']) !!}
 
     {!! Form::close() !!}
+  </div>
+    <div class="medium-6 columns">
+      <a href="{{ route('admin.announcement.create') }}" class="button">Create New Announcement</a>
+
+    </div>
+
+
 @endsection
 @section('footer')
     @parent
@@ -68,7 +77,7 @@
                                     { name: 'about', groups: [ 'about' ] }
                                 ],
                                 removeButtons: 'Underline,Subscript,Superscript,Cut,Undo,Redo,Copy,Paste,PasteText,PasteFromWord,Scayt,Link,Unlink,Anchor,Image,Table,SpecialChar,Maximize,Source,NumberedList,BulletedList,Indent,Outdent,Blockquote,About',
-                                height : 50,
+                                height : 110,
                                 toolbar : 'simple'
                             })
 

@@ -1,15 +1,26 @@
-//browserify entrypoiny
-var Vue = require('vue');
+import Vue from 'vue';
+import VueResource from 'vue-resource';
 
-import Drew from './components/Drew.vue';
+import VueTypeaheadMixin from 'vue-typeahead'
+import VueTypeaheadTemplate from './components/template.html'
+Vue.use(VueResource);
+
+Vue.component('typeahead', {
+  template: VueTypeaheadTemplate,
+  mixins: [VueTypeaheadMixin],
+  data(){
+    return {
+      src: 'fetch/buildings',
+      data: {},
+      onHit (item) {
+
+      }
+
+    }
+  }
+});
 
 
 new Vue({
-  el: '#app',
-
-  components: { Drew },
-
-  ready() {
-      alert('Main Vue Ready!');
-  }
+    el: '#vueapp'
 });

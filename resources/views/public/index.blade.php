@@ -1,5 +1,8 @@
 @extends('public.layouts.master')
 @section('content')
+<div id="vueapp">
+   <typeahead></typeahead>
+</div>
   <div id="content-area">
     <div id="news-bar">
       <div class="row">
@@ -10,7 +13,7 @@
         <div id="featured-text" class="large-5 medium-12 small-12 columns">
           <h3>{{$heroImg->caption}}</h3>
           <p>{{$heroImg->teaser}}</p>
-          <p class="button-group"><a href="/{{$heroImg->story->story_type}}/{{$heroImg->story->id}}" class="button">{{$heroImg->moretext}}</a></p>
+          <p class="button-group"><a href="storytype/{{$heroImg->story->story_type}}/{{$heroImg->story->id}}" class="button">{{$heroImg->moretext}}</a></p>
         </div>
       </div>
     </div>
@@ -20,41 +23,46 @@
           <h5 class="subhead-title">Featured News Stories</h5>
         </div>
       </div>
-      <div class="row small-up-1 medium-up-2 large-up-4">
+      <div class="row small-up-2 medium-up-2 large-up-4">
         @each('public.layouts.components.smallimg', $barImgs, 'barImg')
       </div>
     </div>
-        <div id="news-headline-bar">
-       <div class="row">
-            <div class="large-9 medium-8 small-12 columns manageleftpadding">
-                <div class="row">
-                    <div class="large-6 medium-6 small-6 columns">
-                    <h5 class="subhead-title">News Headlines</h5>
-                    </div>
-                    <div class="large-6 medium-6 small-6 columns">
-                    <h6 class="subhead-title goright"><a href="news/index.html">See All Headlines</a></h6>
-                    </div>
-                </div>
-                <div id="newshub-headlines-front">
-                   <ul>
-                       <li><a href="news/story.html">The imaginary test story title goes here</a></li>
-                       <li><a href="news/story-calendar.html">Eastern Michigan University faculty to host Education Summit</a></li>
-
-                       <li><a href="">President Martin's farewell message to Eastern Michigan University community</a></li>
-                       <li><a href="">EMU Office of International Students to change name</a></li>
-                       <li><a href="">Eastern Michigan University to become tobacco-free July 1</a></li>
-                       <li><a href="">EMU’s Inkstains Writing Camps to help young would-be authors experience the power of words, story-telling</a></li>
+    <div id="news-headline-bar">
+      <div class="row">
+         <div class="large-9 medium-8 small-12 columns manageleftpadding">
+           <div class="row">
+             <ul class="tabs" data-tabs id="newshub-tabs">
+                  <li class="tabs-title is-active"><a href="#newshub-headlines-front" aria-selected="true"><p class="subhead-title">News Headlines</p></a></li>
+                  <li class="tabs-title"><a href="#newshub-announcements-front"><p class="subhead-title">Announcements</p></a></li>
+                </ul>
+                <div class="tabs-content" data-tabs-content="newshub-tabs">
+                  <div class="tabs-panel newshub-tab-front is-active" id="newshub-headlines-front">
+                    <ul>
+                      @foreach ($currentStorysBasic as $basicstory)
+                      <li><a href="/news/{{$basicstory->id}}">{{$basicstory->title}}</a></li>
+                      @endforeach
                     </ul>
+                  </div>
+                  <div class="tabs-panel newshub-tab-front" id="newshub-announcements-front">
+                    <ul>
+                      @foreach ($currentAnnouncements as $announcement)
+                      <li><a href="/announcement/{{$announcement->id}}">{{$announcement->title}}</a></li>
+                      @endforeach
+                    </ul>
+                  </div>
                 </div>
-            </div>
-           <div class="large-3 medium-3 small-12 columns">
-                <div class="featured-content-block">
-                    <h6 class="headline-block">Featured video</h6>
-                    <a href="https://www.youtube.com/watch?v=v-3BGoQtOsY" target="blank"><img src="#" alt="featured video"></a>
-                    <p><a href="https://www.youtube.com/watch?v=v-3BGoQtOsY" target="blank">Out of the Park Lunch by the Lake All-Campus Picnic</a></p>
-               </div>
            </div>
-       </div>
+         </div>
+         <div class="large-3 medium-3 small-12 columns">
+              <div class="featured-content-block">
+                  <h6 class="headline-block">Featured video</h6>
+                  <a href="https://www.youtube.com/watch?v=v-3BGoQtOsY" target="blank"><img src="#" alt="featured video"></a>
+                  <p><a href="https://www.youtube.com/watch?v=v-3BGoQtOsY" target="blank">Out of the Park Lunch by the Lake All-Campus Picnic</a></p>
+             </div>
+         </div>
+
+      </div>
+ </div>
      </div>
      <div id="active-bar">
        <div id="containingbox" class="row">

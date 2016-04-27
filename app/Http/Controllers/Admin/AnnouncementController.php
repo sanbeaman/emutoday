@@ -53,7 +53,9 @@ class AnnouncementController extends Controller
         'title' => $request->title,
         'announcement' => $request->announcement,
         'start_date' => \Carbon\Carbon::parse($request->start_date),
-        'end_date' => \Carbon\Carbon::parse($request->end_date)
+        'end_date' => \Carbon\Carbon::parse($request->end_date),
+        'is_approved' => $request->is_approved,
+        'is_promoted' => $request->is_promoted
     ];
       $announcement = $this->announcements->create($data);
       flash()->success('Announcement has been created.');
