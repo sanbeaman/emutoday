@@ -1,63 +1,87 @@
 <template>
   <div>
+    <h2>EventForm</h2>
+    <typeahead inline-template>
+    <div class="typeahead">
+      <div class="column row">
 
 
-  <input type="text"
-    v-model="query"
-    v-on="keyup: search">
+        <!-- optional indicators -->
+        <i class="fa fa-spinner fa-spin" v-if="loading"></i>
+        <template v-else>
+            <i class="fa fa-search" v-show="isEmpty"></i>
+            <i class="fa fa-times" v-show="isDirty" @click="reset"></i>
+        </template>
+        <div class="small-6 columns">
+          <!-- the input field -->
+          <input type="text"
+                 placeholder="..."
+                 autocomplete="on"
+                 v-model="query"
+                 @keydown.down="down"
+                 @keydown.up="up"
+                 @keydown.enter="hit"
+                 @keydown.esc="reset"
+                 @blur="reset"
+                 @input="update"/>
 
-  <div class="results">
-    <div v-for="item in buildings">
-      <p>{{ item.name }}</p>
-      </div>
+
+          <!-- the list -->
+          <ul v-show="hasItems">
+              <li v-for="item in items" :class="activeClass($index)" @mousedown="hit" @mousemove="setActive($index)">
+                  <span class="name" v-text="item.name"></span>
+              </li>
+          </ul>
+        </div>
+        <div class="small-6 columns">
+          <span>{{building}}</span>
+        </div>
+
+        </div>
     </div>
-    <autocomplete
-      name="buildings"
-      url="fetch/buildings"
-      anchor="name"
-      label="alias"
-      model="vModelLike">
-  </autocomplete>
+</typeahead>
+
   </div>
 </template>
+<style>
+  .typeahead ul  {
+    list-style-type: none;
+    border: 1px solid #ddd;
+  }
+  .typeahead ul li.active {
+    background-color: #ccc;
+  }
+</style>
+
 <script>
-import Autocomplete from './vue-autocomplete.vue'
-  export default {
-      components: { Autocomplete },
-      props: ['buildings'],
-      data() {
-      return {
-        vModelLike: "",
-        data: {}
-      };
-    },
+
+import VueTypeaheadMixin from 'vue-typeahead'
+
+export default {
+  components: {
+    'typeahead': {
+      props: ['building'],
+      mixins: [VueTypeaheadMixin],
+      data:function() {
+        return {
+          src: 'fetch/buildings',
+          data: {},
+          onHit (item) {
+            this.building = item.name;
 
 
-    ready() {
-      this.$http.get('fetch/buildings')
-        .then(function (response) {
+          },
+          prepareResponseData(data){
+            // data =
+            return data;
+          },
 
-        //get status
-        response.status;
-
-        //get all headers
-        response.headers('expires');
-
-        //set data on vm
-        this.$set('buildings', response.data)
-
-        }, function (response) {
-
-        //error call back
-        });
-
-    },
-
-    methods: {
-      search() {
+        }
+      },
+      methods: {
 
       }
     }
   }
-
+}
 </script>

@@ -1,7 +1,7 @@
 @extends('public.layouts.master')
 @section('content')
 <div id="vueapp">
-   <typeahead></typeahead>
+   <event-form></event-form>
 </div>
   <div id="content-area">
     <div id="news-bar">

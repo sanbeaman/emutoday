@@ -25,6 +25,7 @@
           <li><a href="{{ route('admin.storyimages.index') }}">Story Images</a></li>
           <li><a href="{{ route('admin.pages.index') }}">Pages</a></li>
           <li><a href="{{ route('admin.announcement.index') }}">Announcements</a></li>
+          <li><a href="{{ route('admin.event.index') }}">Events</a></li>
         </ul>
       </div>
       <div class="top-bar-right">

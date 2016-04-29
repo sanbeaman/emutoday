@@ -13,6 +13,17 @@ class Event extends Model
    */
   protected $table = 'cea_events';
 
+  /**
+   * [$fillable description]
+   * @var [type]
+   */
+  protected $fillable = ['author_id', 'title', 'short_title', 'location', 'start_date', 'end_date', 'all_day', 'no_end_time', 'description'];
 
-  
+/**
+ * [$dates description]
+ * @var [type]
+ */
+  protected $dates = ['start_date', 'end_date'];
+
+
 }

@@ -25,6 +25,9 @@ class Building extends Model
   }
 
   public function scopeLikeSearch($query, $field, $value){
-    return $query->where($field, 'LIKE', "%$value%");
+    return $query->where([
+      ['map', 'illustrated'],
+      [$field, 'LIKE', "%$value%"],
+    ]);
   }
 }

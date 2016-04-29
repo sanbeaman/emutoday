@@ -61,11 +61,11 @@ Route::group(['middleware' => ['web']], function() {
     Route::resource('api/story', 'Api\StoryController');
 
 
+    Route::resource('admin/event', 'Admin\EventController');
+
     Route::get('fetch/buildings', function() {
       $text = Input::get('q');
       return Building::likeSearch('name', $text)->get();
-
-    
       //return Building::ofMapType('illustrated')->get();
     });
 
