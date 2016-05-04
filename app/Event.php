@@ -3,6 +3,7 @@
 namespace emutoday;
 
 use Illuminate\Database\Eloquent\Model;
+use emutoday\Category;
 
 class Event extends Model
 {
@@ -17,7 +18,7 @@ class Event extends Model
    * [$fillable description]
    * @var [type]
    */
-  protected $fillable = ['author_id', 'title', 'short_title', 'location', 'start_date', 'end_date', 'all_day', 'no_end_time', 'description'];
+  protected $fillable = ['author_id', 'title', 'short_title', 'location', 'start_date', 'start_time', 'end_date', 'end_time' ,'all_day', 'no_end_time', 'description'];
 
 /**
  * [$dates description]
@@ -26,4 +27,17 @@ class Event extends Model
   protected $dates = ['start_date', 'end_date'];
 
 
+  public function categories()
+  {
+    return $this->belongsToMany('emutoday\Category', 'category_event');
+  }
+
+  /**
+   * get a list of the categories associated with this Event
+   * @return [Array]
+   */
+  public function getCategoryListAttribute()
+  {
+    return $this->categories->lists('id')->all();
+  }
 }

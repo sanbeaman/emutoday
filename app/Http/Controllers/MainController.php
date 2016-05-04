@@ -40,6 +40,8 @@ class MainController extends Controller
         $currentStorysBasic = $this->storys->where('story_type', 'storybasic')->paginate(5);
         $currentAnnouncements = $this->announcements->paginate(5);
         $barImgs = collect();
+
+
         foreach ($page->storys as $story) {
             if ($story->pivot->page_position === 0) {
                 $heroImg = $story->storyImages()->where('image_type', 'imagehero')->first();
@@ -48,6 +50,7 @@ class MainController extends Controller
             }
 
         }
+        
 
         $storyImages = $page->storyImages();
 

@@ -25,8 +25,7 @@ class UpdateStoryRequest extends Request
     {
         return [
             'title' => ['required'],
-             'slug' => ['required'],
-             'content' => ['required']
+             'slug' => ['required']
         ];
     }
 }

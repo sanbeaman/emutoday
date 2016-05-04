@@ -36,7 +36,7 @@
       </div>
     </div>
     <div class="container">
-      <div class="row">
+      <div class="row column">
           <h3>@yield('title')</h3>
           @include('flash::message')
           @include('admin/partials.errors')

@@ -6,7 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
-
+    /**
+     * [$fillable description]
+     * @var [type]
+     */
+    protected $fillable = [
+      'name'
+    ];
     /**
      * Get the manyToMany relationship from Story
      * @return [type] [description]

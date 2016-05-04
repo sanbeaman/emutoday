@@ -28,11 +28,19 @@
         {!! Form::label('teaser') !!}
         {!! Form::textarea('teaser', null, ['class' => 'form-control']) !!}
     </div>
+    @if($story->story_type == 'storyexternal')
 
+    <div class="input-group">
+        {!! Form::label('external_link') !!}
+        {!! Form::text('external_link', null, ['class' => 'form-control']) !!}
+    </div>
+  @else
     <div class="input-group">
         {!! Form::label('content') !!}
         {!! Form::textarea('content', null, ['class' => 'form-control']) !!}
     </div>
+  @endif
+
     <div class="input-group">
         <div class="small-1 column">
                 {!! Form::label('publish_start') !!}
@@ -89,7 +97,11 @@
                    height : 50,
                    toolbar : 'simple'
                 })
-                CKEDITOR.replace('content');
+
+                if (JSvars.storytype != 'storyexternal'){
+                    CKEDITOR.replace('content');
+                }
+
 
 
         $('input[name=title]').on('blur', function () {

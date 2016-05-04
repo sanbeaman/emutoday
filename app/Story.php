@@ -19,7 +19,7 @@ class Story extends Model
          *
          * @var array
          */
-    protected $fillable = ['author_id', 'title', 'slug','subtitle', 'teaser', 'content','publish_start','publish_end', 'is_featured', 'is_live' ,'story_type'];
+    protected $fillable = ['author_id', 'title', 'slug','subtitle', 'teaser', 'content', 'external_link', 'publish_start','publish_end', 'is_featured', 'is_live' ,'story_type'];
 
     protected $dates = ['publish_start', 'publish_end'];
 
@@ -83,6 +83,15 @@ class Story extends Model
     public function tags()
     {
         return $this->belongsToMany('emutoday\Tag', "story_tag")->withTimestamps();
+    }
+
+    /**
+     * get a list of the tags associated with this Story
+     * @return [Array]
+     */
+    public function getTagListAttribute()
+    {
+      return $this->tags->lists('id')->all();
     }
 
     /**

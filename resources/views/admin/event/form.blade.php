@@ -5,6 +5,11 @@
   @endsection
 @section('content')
 
+
+
+    <div id="vueapp">
+
+
     {!! Form::model($event, [
         'method' => $event->exists ? 'put' : 'post',
         'route' => $event->exists ? ['admin.event.update', $event->id] : ['admin.event.store']
@@ -18,6 +23,7 @@
         {!! Form::label('short_title') !!}
         {!! Form::text('short_title', null, ['class' => 'form-control']) !!}
       </div>
+       <event-form></event-form>
       <div class="form-group row">
         {!! Form::label('location') !!}
         {!! Form::text('location', null, ['class' => 'form-control']) !!}
@@ -25,6 +31,10 @@
       <div class="form-group row">
         {!! Form::label('description') !!}
         {!! Form::text('description', null, ['class' => 'form-control']) !!}
+      </div>
+      <div class="input-group">
+          {!! Form::label('category_list', 'Tags:') !!}
+          {!! Form::select('category_list[]',$categories, $event->categories->lists('id')->toArray() , ['class' => 'form-control', 'multiple']) !!}
       </div>
     <div class="row">
       <div class="small-12 medium-3 columns">
@@ -54,6 +64,8 @@
 
 
     {!! Form::close() !!}
+
+    </div>
 @endsection
 @section('footer')
   @parent

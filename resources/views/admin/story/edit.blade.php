@@ -31,18 +31,30 @@
             {!! Form::label('teaser') !!}
             {!! Form::textarea('teaser', null, ['class' => 'form-control']) !!}
           </div>
+          @if($story->story_type == 'storyexternal')
+
           <div class="input-group">
-            {!! Form::label('content') !!}
-            {!! Form::textarea('content', null, ['class' => 'form-control']) !!}
+              {!! Form::label('external_link') !!}
+              {!! Form::text('external_link', null, ['class' => 'form-control']) !!}
           </div>
+        @else
+          <div class="input-group">
+              {!! Form::label('content') !!}
+              {!! Form::textarea('content', null, ['class' => 'form-control']) !!}
+          </div>
+        @endif
+        <div class="input-group">
+            {!! Form::label('tag_list', 'Tags:') !!}
+            {!! Form::select('tag_list[]',$tags, $story->tags->lists('id')->toArray() , ['class' => 'form-control', 'multiple']) !!}
+        </div>
           <div class="input-group">
             <div class="small-3 column">
-              {!! Form::label('publish_start') !!}
-              {!! Form::text('publish_start', null, ['class' => 'form-control']) !!}
+              {!! Form::label('start_date') !!}
+              {!! Form::text('start_date', null, ['class' => 'form-control']) !!}
             </div>
             <div class="small-3 column">
-              {!! Form::label('publish_end') !!}
-              {!! Form::text('publish_end', null, ['class' => 'form-control']) !!}
+              {!! Form::label('end_date') !!}
+              {!! Form::text('end_date', null, ['class' => 'form-control']) !!}
             </div>
             <div class="small-3 column">
               {!! Form::label('story_type','Story Type') !!}
@@ -58,7 +70,7 @@
       <div class="medium-6 columns">
 
             <!--     add image asset -->
-            @if (count($story->storyImages) < 3)
+            @if ($story->storyImages()->count() < 3)
               <form action="addimage" method="POST">
                   {{ csrf_field() }}
                 <button class="hollow button" href="#">Add Image</button>
@@ -102,7 +114,10 @@
                                 height : 50,
                                 toolbar : 'simple'
                             })
-                            CKEDITOR.replace('content');
+                            if (JSvars.storytype != 'storyexternal'){
+                                CKEDITOR.replace('content');
+                            }
+
 
 
 
@@ -118,13 +133,13 @@
                             });
 
                             $(function(){
-                            		$('#publish_start').fdatepicker({
+                            		$('#start_date').fdatepicker({
                             			format: 'yyyy-mm-dd hh:ii',
                             			disableDblClickSelection: true,
                             			language: 'en',
                             			pickTime: true
                             		});
-                            		$('#publish_end').fdatepicker({
+                            		$('#end_date').fdatepicker({
                             			format: 'yyyy-mm-dd hh:ii',
                             			disableDblClickSelection: true,
                             			language: 'en',

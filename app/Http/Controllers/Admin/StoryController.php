@@ -4,10 +4,12 @@ namespace emutoday\Http\Controllers\Admin;
 
 use emutoday\Story;
 use emutoday\StoryImage;
+use emutoday\Tag;
 
 use Illuminate\Http\Request;
 use emutoday\Http\Requests;
 
+use JavaScript;
 
 class StoryController extends Controller
 {
@@ -32,19 +34,25 @@ class StoryController extends Controller
 
     public function setup($stype)
     {
+
+
         $story = new Story;
         if ($stype != 'story' ) {
             $story->story_type = $stype;
-            if ($stype == 'storyexternal'){
-                    return view('admin.story.external', compact('story', 'stype'));
-            } else {
-                $stypes = $stype;
-                return view('admin.story.create', compact('story', 'stypes'));
-            }
+            // if ($stype == 'storyexternal'){
+            //         return view('admin.story.external', compact('story', 'stype'));
+            // } else {
+                $stypes = $story->story_type;
+                // return view('admin.story.create', compact('story', 'stypes'));
+            // }
         } else {
             $stypes = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-            return view('admin.story.create', compact('story', 'stypes'));
+            // return view('admin.story.create', compact('story', 'stypes'));
         }
+        JavaScript::put([
+            'storytype' => $stype
+        ]);
+        return view('admin.story.create', compact('story', 'stypes'));
 
 
     }
@@ -88,12 +96,14 @@ class StoryController extends Controller
 
         //dd($request->input('storyTypes'));
         //
-        $pubEndDate = $request->publish_end == null ? null:  \Carbon\Carbon::parse($request->publish_end);
+        //
+        $pubStartDate = $request->start_date == null ?\Carbon\Carbon::now() : \Carbon\Carbon::parse($request->start_date) ;
+        $pubEndDate = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
 
         $story = $this->storys->create(
         // ['author_id' => auth()->user()->id] + ['story_type' => $request->input('story_type') ] +  $request->only('title', 'slug', 'subtitle', 'published_at', 'teaser','content')
 
-         ['author_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'teaser','content', 'publish_start', 'story_type') + ['publish_end' => $pubEndDate ]
+         ['author_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'teaser','content', 'external_link', 'story_type') + ['start_date' => $pubStartDate] + ['end_date' => $pubEndDate ]
 
         );
 
@@ -150,26 +160,35 @@ class StoryController extends Controller
     public function edit($id)
     {
         $story = $this->storys->findOrFail($id);
-        $storytype = $story->story_type;
 
-        if ($storytype == 'storyexternal') {
-            return view('admin.story.editexternal', compact('story'));
+        $tags = \emutoday\Tag::lists('name', 'id');
 
-        } else {
-            return view('admin.story.edit', compact('story'));
-        }
-
+        JavaScript::put([
+              'storytype' => $story->story_type
+          ]);
+        return view('admin.story.edit', compact('story', 'tags'));
 
 
     }
     public function update(Requests\UpdateStoryRequest $request, $id)
     {
+
+      // dd($request->input('tags'));
+
         $story = $this->storys->findOrFail($id);
 
-        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','story_type'));
-        $story->publish_start = \Carbon\Carbon::parse($request->publish_start);
-        $story->publish_end = $request->publish_end == null ? null:  \Carbon\Carbon::parse($request->publish_end);
+        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','external_link', 'story_type'));
+        $story->start_date = \Carbon\Carbon::parse($request->start_date);
+        $story->end_date = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
         $story->save();
+        $taglistRequest = $request->input('tag_list') == null ? [] : $request->input('tag_list');
+        $story->tags()->sync($taglistRequest);
+
+
+
+        // $story->syncTags($story, $request->input('tag_list'));
+
+
         flash()->success('Story has been updated.');
         return redirect(route('admin.story.edit', $story->id));
         //return redirect(route('admin.story.edit', $story->id))->with('status', 'Story has been updated.');
@@ -212,6 +231,12 @@ class StoryController extends Controller
         $story->delete();
         flash()->warning('Story has been deleted.');
         return redirect(route('admin.story.index'));//->with('status', 'Story has been deleted.');
+    }
+
+    private function syncTags(Story $story, array $tags)
+    {
+      $story->tags()->sync($tags);
+
     }
 
 }

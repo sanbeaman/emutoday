@@ -4,6 +4,8 @@
 The ORDER of ROUTES is critical
 */
 use emutoday\Building;
+use emutoday\Event;
+
 use Illuminate\Support\Facades\Input;
 
 Route::group(['middleware' => ['web']], function() {
@@ -60,7 +62,13 @@ Route::group(['middleware' => ['web']], function() {
     Route::get('api/story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
     Route::resource('api/story', 'Api\StoryController');
 
+    Route::resource('api/events', 'Api\EventsController');
 
+    Route::get('api/events', function() {
+      return emutoday\Event::latest()->get();
+    });
+
+    Route::get('admin/event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
     Route::resource('admin/event', 'Admin\EventController');
 
     Route::get('fetch/buildings', function() {

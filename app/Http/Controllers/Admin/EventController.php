@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use emutoday\Http\Requests;
 
 use emutoday\Event;
+use emutoday\Category;
 
 class EventController extends Controller
 {
@@ -36,7 +37,9 @@ class EventController extends Controller
      */
     public function create(Event $event)
     {
-        return view('admin.event.form', compact('event'));
+      //  $categories = \emutoday\Category::lists('category', 'id');
+
+        return view('admin.event.create', compact('event','categories'));
     }
 
     /**
@@ -82,7 +85,8 @@ class EventController extends Controller
     public function edit($id)
     {
       $event = $this->events->findOrFail($id);
-      return view('admin.event.form', compact('event'));
+      $categories = \emutoday\Category::lists('category', 'id');
+      return view('admin.event.form', compact('event', 'categories'));
     }
 
     /**
@@ -97,6 +101,16 @@ class EventController extends Controller
         //
     }
 
+    /**
+     * Confirm the deletion of the event
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function confirm($id)
+    {
+        $event = $this->events->findOrFail($id);
+        return view('admin.event.confirm', compact('event'));
+    }
     /**
      * Remove the specified resource from storage.
      *

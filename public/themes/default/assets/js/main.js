@@ -1,4 +1,15 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/json/stringify"), __esModule: true };
+},{"core-js/library/fn/json/stringify":2}],2:[function(require,module,exports){
+var core  = require('../../modules/_core')
+  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
+module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
+  return $JSON.stringify.apply($JSON, arguments);
+};
+},{"../../modules/_core":3}],3:[function(require,module,exports){
+var core = module.exports = {version: '2.3.0'};
+if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+},{}],4:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -91,7 +102,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],2:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -391,7 +402,7 @@ function format (id) {
   return id.match(/[^\/]+\.vue$/)[0]
 }
 
-},{}],3:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * Before Interceptor.
  */
@@ -411,7 +422,7 @@ module.exports = {
 
 };
 
-},{"../util":26}],4:[function(require,module,exports){
+},{"../util":29}],7:[function(require,module,exports){
 /**
  * Base client.
  */
@@ -478,7 +489,7 @@ function parseHeaders(str) {
     return headers;
 }
 
-},{"../../promise":19,"../../util":26,"./xhr":7}],5:[function(require,module,exports){
+},{"../../promise":22,"../../util":29,"./xhr":10}],8:[function(require,module,exports){
 /**
  * JSONP client.
  */
@@ -528,7 +539,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":19,"../../util":26}],6:[function(require,module,exports){
+},{"../../promise":22,"../../util":29}],9:[function(require,module,exports){
 /**
  * XDomain client (Internet Explorer).
  */
@@ -567,7 +578,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":19,"../../util":26}],7:[function(require,module,exports){
+},{"../../promise":22,"../../util":29}],10:[function(require,module,exports){
 /**
  * XMLHttp client.
  */
@@ -619,7 +630,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":19,"../../util":26}],8:[function(require,module,exports){
+},{"../../promise":22,"../../util":29}],11:[function(require,module,exports){
 /**
  * CORS Interceptor.
  */
@@ -658,7 +669,7 @@ function crossOrigin(request) {
     return (requestUrl.protocol !== originUrl.protocol || requestUrl.host !== originUrl.host);
 }
 
-},{"../util":26,"./client/xdr":6}],9:[function(require,module,exports){
+},{"../util":29,"./client/xdr":9}],12:[function(require,module,exports){
 /**
  * Header Interceptor.
  */
@@ -686,7 +697,7 @@ module.exports = {
 
 };
 
-},{"../util":26}],10:[function(require,module,exports){
+},{"../util":29}],13:[function(require,module,exports){
 /**
  * Service for sending network requests.
  */
@@ -786,7 +797,7 @@ Http.headers = {
 
 module.exports = _.http = Http;
 
-},{"../promise":19,"../util":26,"./before":3,"./client":4,"./cors":8,"./header":9,"./interceptor":11,"./jsonp":12,"./method":13,"./mime":14,"./timeout":15}],11:[function(require,module,exports){
+},{"../promise":22,"../util":29,"./before":6,"./client":7,"./cors":11,"./header":12,"./interceptor":14,"./jsonp":15,"./method":16,"./mime":17,"./timeout":18}],14:[function(require,module,exports){
 /**
  * Interceptor factory.
  */
@@ -833,7 +844,7 @@ function when(value, fulfilled, rejected) {
     return promise.then(fulfilled, rejected);
 }
 
-},{"../promise":19,"../util":26}],12:[function(require,module,exports){
+},{"../promise":22,"../util":29}],15:[function(require,module,exports){
 /**
  * JSONP Interceptor.
  */
@@ -853,7 +864,7 @@ module.exports = {
 
 };
 
-},{"./client/jsonp":5}],13:[function(require,module,exports){
+},{"./client/jsonp":8}],16:[function(require,module,exports){
 /**
  * HTTP method override Interceptor.
  */
@@ -872,7 +883,7 @@ module.exports = {
 
 };
 
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /**
  * Mime Interceptor.
  */
@@ -910,7 +921,7 @@ module.exports = {
 
 };
 
-},{"../util":26}],15:[function(require,module,exports){
+},{"../util":29}],18:[function(require,module,exports){
 /**
  * Timeout Interceptor.
  */
@@ -942,7 +953,7 @@ module.exports = function () {
     };
 };
 
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /**
  * Install plugin.
  */
@@ -997,7 +1008,7 @@ if (window.Vue) {
 
 module.exports = install;
 
-},{"./http":10,"./promise":19,"./resource":20,"./url":21,"./util":26}],17:[function(require,module,exports){
+},{"./http":13,"./promise":22,"./resource":23,"./url":24,"./util":29}],20:[function(require,module,exports){
 /**
  * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
  */
@@ -1178,7 +1189,7 @@ p.catch = function (onRejected) {
 
 module.exports = Promise;
 
-},{"../util":26}],18:[function(require,module,exports){
+},{"../util":29}],21:[function(require,module,exports){
 /**
  * URL Template v2.0.6 (https://github.com/bramstein/url-template)
  */
@@ -1330,7 +1341,7 @@ exports.encodeReserved = function (str) {
     }).join('');
 };
 
-},{}],19:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /**
  * Promise adapter.
  */
@@ -1441,7 +1452,7 @@ p.always = function (callback) {
 
 module.exports = Promise;
 
-},{"./lib/promise":17,"./util":26}],20:[function(require,module,exports){
+},{"./lib/promise":20,"./util":29}],23:[function(require,module,exports){
 /**
  * Service for interacting with RESTful services.
  */
@@ -1553,7 +1564,7 @@ Resource.actions = {
 
 module.exports = _.resource = Resource;
 
-},{"./util":26}],21:[function(require,module,exports){
+},{"./util":29}],24:[function(require,module,exports){
 /**
  * Service for URL templating.
  */
@@ -1685,7 +1696,7 @@ function serialize(params, obj, scope) {
 
 module.exports = _.url = Url;
 
-},{"../util":26,"./legacy":22,"./query":23,"./root":24,"./template":25}],22:[function(require,module,exports){
+},{"../util":29,"./legacy":25,"./query":26,"./root":27,"./template":28}],25:[function(require,module,exports){
 /**
  * Legacy Transform.
  */
@@ -1733,7 +1744,7 @@ function encodeUriQuery(value, spaces) {
         replace(/%20/g, (spaces ? '%20' : '+'));
 }
 
-},{"../util":26}],23:[function(require,module,exports){
+},{"../util":29}],26:[function(require,module,exports){
 /**
  * Query Parameter Transform.
  */
@@ -1759,7 +1770,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":26}],24:[function(require,module,exports){
+},{"../util":29}],27:[function(require,module,exports){
 /**
  * Root Prefix Transform.
  */
@@ -1777,7 +1788,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":26}],25:[function(require,module,exports){
+},{"../util":29}],28:[function(require,module,exports){
 /**
  * URL Template (RFC 6570) Transform.
  */
@@ -1795,7 +1806,7 @@ module.exports = function (options) {
     return url;
 };
 
-},{"../lib/url-template":18}],26:[function(require,module,exports){
+},{"../lib/url-template":21}],29:[function(require,module,exports){
 /**
  * Utility functions.
  */
@@ -1919,105 +1930,7 @@ function merge(target, source, deep) {
     }
 }
 
-},{}],27:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _vue = require('vue');
-
-var _vue2 = _interopRequireDefault(_vue);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-  data: function data() {
-    return {
-      items: [],
-      query: '',
-      current: -1,
-      loading: false
-    };
-  },
-  ready: function ready() {
-    if (!this.$http) {
-      this.warn('`vue-resource` plugin');
-    }
-
-    if (!this.src) {
-      this.warn('`src` property');
-    }
-
-    if (!this.onHit) {
-      this.warn('`onHit` method');
-    }
-  },
-
-
-  computed: {
-    hasItems: function hasItems() {
-      return this.items.length > 0;
-    },
-    isEmpty: function isEmpty() {
-      return !this.query;
-    },
-    isDirty: function isDirty() {
-      return !!this.query;
-    }
-  },
-
-  methods: {
-    warn: function warn(msg) {
-      _vue2.default.util.warn('Typeahead requires the ' + msg);
-    },
-    update: function update() {
-      if (!this.query) {
-        this.reset();
-        return;
-      }
-
-      this.loading = true;
-
-      this.$http.get(this.src, Object.assign({ q: this.query }, this.data)).then(function (response) {
-        if (this.query) {
-          var data = response.data;
-          data = this.prepareResponseData ? this.prepareResponseData(data) : data;
-          this.items = !!this.limit ? data.slice(0, this.limit) : data;
-          this.current = -1;
-          this.loading = false;
-        }
-      }.bind(this));
-    },
-    reset: function reset() {
-      this.items = [];
-      this.query = '';
-      this.loading = false;
-    },
-    setActive: function setActive(index) {
-      this.current = index;
-    },
-    activeClass: function activeClass(index) {
-      return {
-        active: this.current == index
-      };
-    },
-    hit: function hit() {
-      if (this.current === -1) return;
-
-      this.onHit(this.items[this.current]);
-    },
-    up: function up() {
-      if (this.current > 0) this.current--;else if (this.current == -1) this.current = this.items.length - 1;else this.current = -1;
-    },
-    down: function down() {
-      if (this.current < this.items.length - 1) this.current++;else this.current = -1;
-    }
-  }
-};
-
-},{"vue":28}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v1.0.21
@@ -11943,7 +11856,7 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":1}],29:[function(require,module,exports){
+},{"_process":4}],31:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 exports.insert = function (css) {
@@ -11963,51 +11876,196 @@ exports.insert = function (css) {
   return elem
 }
 
-},{}],30:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n.typeahead ul  {\n  list-style-type: none;\n  border: 1px solid #ddd;\n}\n.typeahead ul li.active {\n  background-color: #ccc;\n}\n")
+},{}],32:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n")
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+module.exports = {
+	data: function data() {
+		return {
+			sdate: '',
+			edate: '',
+			stime: '',
+			buildings: [],
+			data: {},
+			event: {},
+			vModelLike: "",
+			formInputs: {},
+			formErrors: {}
+		};
+	},
+	props: {
+		//add props
+	},
+	computed: {},
+	methods: {
+		fetchEvents: function fetchEvents() {
+			this.$http.get('/api/events', function (data) {
+				this.buildings = data;
+			});
+		},
+		fetchBuildingList: function fetchBuildingList() {
+			this.$http.get('/fetch/buildings', function (data) {
+				this.buildings = data;
+			});
+		},
+		updateEvent: function updateEvent() {
+			var resource = this.$resource('api/events/:id');
+			resource.update({ id: 1 }, { name: 'tester' }, function (events) {
+				this.event = events;
+			}.bind(this));
+		},
+		submitForm: function submitForm() {
+			console.log('this.event=' + this.event + 'datepickervalue=' + this.sdate);
+			this.start_date = this.sdate;
+			this.$http.post('/api/events', this.event).then(function (response) {
+				//get status
+				response.status;
 
-var _vueTypeahead = require('vue-typeahead');
+				//get all headers
+				response.headers();
+				//get 'expirese' header
+				response.headers('expires');
 
-var _vueTypeahead2 = _interopRequireDefault(_vueTypeahead);
+				//set data on vm
+				//this.$set(this.event, response.data);
+			}, function (response) {
+				console.log(response);
+			});
+		}
+	},
+	watch: {},
+	created: function created() {
+		// this.fetchEvents();
+	},
+	components: {
+		autocomplete: require('./vue-autocomplete.vue'),
+		'datepicker': require('../vendor/datepicker.vue')
+	},
+	events: {
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+		/**
+  *	Global Autocomplete Callback Event
+  *
+  *	@event-name autocomplete:{event-name}
+  *	@param {String} name name of auto
+  *	@param {Object} data
+  *	@param {Object} json - ajax-loaded only
+  */
 
-exports.default = {
-  components: {
-    'typeahead': {
-      props: ['building'],
-      mixins: [_vueTypeahead2.default],
-      data: function data() {
-        return {
-          src: 'fetch/buildings',
-          data: {},
-          onHit: function onHit(item) {
-            this.building = item.name;
-          },
-          prepareResponseData: function prepareResponseData(data) {
-            // data =
-            return data;
-          }
-        };
-      },
-      methods: {}
-    }
-  }
+		// Autocomplete on before ajax progress
+		'autocomplete:before-ajax': function autocompleteBeforeAjax(name, data) {
+			console.log('before-ajax', name, data);
+		},
+
+		// Autocomplete on ajax progress
+		'autocomplete:ajax-progress': function autocompleteAjaxProgress(name, data) {
+			console.log('ajax-progress', data);
+		},
+
+		// Autocomplete on ajax loaded
+		'autocomplete:ajax-loaded': function autocompleteAjaxLoaded(name, data, json) {
+			console.log('ajax-loaded', data, json);
+		},
+
+		// Autocomplete on focus
+		'autocomplete:focus': function autocompleteFocus(name, evt) {
+			console.log('focus', name, evt);
+		},
+
+		// Autocomplete on input
+		'autocomplete:input': function autocompleteInput(name, data) {
+			console.log('input', data);
+		},
+
+		// Autocomplete on blur
+		'autocomplete:blur': function autocompleteBlur(name, evt) {
+			console.log('blur', evt);
+		},
+
+		// Autocomplete on show
+		'autocomplete:show': function autocompleteShow(name) {
+			console.log('show', name);
+		},
+
+		// Autocomplete on selected
+		'autocomplete:selected': function autocompleteSelected(name, data) {
+			console.log('selected', data);
+			this.event.location = data.name;
+			//	this.data = data;
+			console.log('data.name', data.name);
+		},
+
+		// Autocomplete on hide
+		'autocomplete:hide': function autocompleteHide(name) {
+			console.log('hide', name);
+		},
+
+		/**
+  *	Spesific Autocomplete Callback Event By Name
+  *
+  *	@event-name autocomplete-{component-name}:{event-name}
+  *	@param {String} name name of auto
+  *	@param {Object} data
+  *	@param {Object} json - ajax-loaded only
+  */
+
+		// Autocomplete on before ajax progress
+		'autocomplete-locationlist:before-ajax': function autocompleteLocationlistBeforeAjax(data) {
+			console.log('before-ajax-locationlist', data);
+		},
+
+		// Autocomplete on ajax progress
+		'autocomplete-locationlist:ajax-progress': function autocompleteLocationlistAjaxProgress(data) {
+			console.log('ajax-progress-locationlist', data);
+		},
+
+		// Autocomplete on ajax loaded
+		'autocomplete-locationlist:ajax-loaded': function autocompleteLocationlistAjaxLoaded(data, json) {
+			console.log('ajax-loaded-locationlist', data, json);
+		},
+
+		// Autocomplete-locationlist on focus
+		'autocomplete-locationlist:focus': function autocompleteLocationlistFocus(evt) {
+			console.log('focus-locationlist', evt);
+		},
+
+		// Autocomplete-locationlist on input
+		'autocomplete-locationlist:input': function autocompleteLocationlistInput(data) {
+			console.log('input-locationlist', data);
+		},
+
+		// Autocomplete-locationlist on blur
+		'autocomplete-locationlist:blur': function autocompleteLocationlistBlur(evt) {
+			console.log('blur-locationlist', evt);
+		},
+
+		// Autocomplete-locationlist on show
+		'autocomplete-locationlist:show': function autocompleteLocationlistShow() {
+			console.log('show-locationlist');
+		},
+
+		// Autocomplete-locationlist on selected
+		'autocomplete-locationlist:selected': function autocompleteLocationlistSelected(data) {
+			console.log('selected-locationlist', data);
+		},
+
+		// Autocomplete-locationlist on hide
+		'autocomplete-locationlist:hide': function autocompleteLocationlistHide() {
+			console.log('hide-locationlist');
+		}
+
+	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div>\n    <h2>EventForm</h2>\n    <typeahead inline-template=\"\">\n    <div class=\"typeahead\">\n      <div class=\"column row\">\n\n\n        <!-- optional indicators -->\n        <i class=\"fa fa-spinner fa-spin\" v-if=\"loading\"></i>\n        <template v-else=\"\">\n            <i class=\"fa fa-search\" v-show=\"isEmpty\"></i>\n            <i class=\"fa fa-times\" v-show=\"isDirty\" @click=\"reset\"></i>\n        </template>\n        <div class=\"small-6 columns\">\n          <!-- the input field -->\n          <input type=\"text\" placeholder=\"...\" autocomplete=\"on\" v-model=\"query\" @keydown.down=\"down\" @keydown.up=\"up\" @keydown.enter=\"hit\" @keydown.esc=\"reset\" @blur=\"reset\" @input=\"update\">\n\n\n          <!-- the list -->\n          <ul v-show=\"hasItems\">\n              <li v-for=\"item in items\" :class=\"activeClass($index)\" @mousedown=\"hit\" @mousemove=\"setActive($index)\">\n                  <span class=\"name\" v-text=\"item.name\"></span>\n              </li>\n          </ul>\n        </div>\n        <div class=\"small-6 columns\">\n          <span>{{building}}</span>\n        </div>\n\n        </div>\n    </div>\n</typeahead>\n\n  </div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\n  <form @submit.prevent=\"submitForm\" class=\"large-8\">\n    <div class=\"row column\">\n      <div class=\"form-group\">\n        <input class=\"form-control title\" type=\"text\" name=\"title\" placeholder=\"Title\" v-model=\"event.title\">\n      </div>\n      <div class=\"form-group\">\n        <input class=\"form-control short-title\" name=\"short_title\" placeholder=\"Short Title\" v-model=\"event.short_title\">\n      </div>\n      <div class=\"form-group\">\n        <autocomplete id=\"location\" class=\"form-control location\" name=\"locationlist\" placeholder=\"Type Here\" url=\"/fetch/buildings\" param=\"q\" anchor=\"name\" label=\"alias\" model=\"vModelLike\">\n        </autocomplete>\n      </div>\n    </div>\n  <div class=\"row\">\n    <div class=\"small-2 column\">\n      <label for=\"start_date\" class=\"middle\">Start Date:</label>\n    </div>\n    <div class=\"small-4 columns\">\n      <datepicker id=\"start-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"start-date\" :value.sync=\"sdate\"></datepicker>\n    </div>\n    <div class=\"small-2 column\">\n      <label for=\"start-time\" class=\"middle\">Start Time:</label>\n    </div>\n    <div class=\"medium-4 columns\">\n      <input id=\"start-time\" type=\"time\" v-model=\"event.start_time\">\n    </div>\n  </div>\n  <div class=\"row\">\n    <div class=\"small-2 column\">\n      <label for=\"end-date\" class=\"middle\">End Date:</label>\n    </div>\n    <div class=\"small-4 columns\">\n      <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"sdate\"></datepicker>\n    </div>\n    <div class=\"small-2 column\">\n      <label for=\"end-time\" class=\"middle\">End Time:</label>\n    </div>\n    <div class=\"medium-4 columns\">\n      <input id=\"end-time\" type=\"time\">\n    </div>\n  </div>\n  <div class=\"row\">\n    <button class=\"button\" type=\"submit\">Publish</button>\n  </div>\n</form>\n         <!-- <form method=\"POST\" @submit.prevent=\"submitForm\">\n           {!! csrf_field() !!}\n\n           <div class=\"form-group\">\n               <input class=\"form-control title\" type=\"text\" name=\"title\" placeholder=\"Title\" v-model=\"formInputs.title\">\n               <span v-if=\"formErrors['title']\" class=\"error\">@{{ formErrors['title'] }}</span>\n           </div>\n\n           <div class=\"form-group\">\n               <input class=\"form-control short_name\" name=\"short_name\" placeholder=\"Short Name\" v-model=\"formInputs.short_name\">\n               <span v-if=\"formErrors['short_name']\" class=\"error\">@{{ formErrors['short_name'] }}</span>\n           </div>\n\n           <button class=\"button\" type=\"submit\">Publish</button>\n\n\n         </form> -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventForm.vue"
   module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n.typeahead ul  {\n  list-style-type: none;\n  border: 1px solid #ddd;\n}\n.typeahead ul li.active {\n  background-color: #ccc;\n}\n"] = false
+    require("vueify-insert-css").cache["\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -12016,33 +12074,434 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":28,"vue-hot-reload-api":2,"vue-typeahead":27,"vueify-insert-css":29}],31:[function(require,module,exports){
+},{"../vendor/datepicker.vue":35,"./vue-autocomplete.vue":33,"vue":30,"vue-hot-reload-api":5,"vueify-insert-css":31}],33:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n.transition, .autocomplete, .showAll-transition, .autocomplete ul, .autocomplete ul li a{\n\ttransition:all 0.3s ease-out;\n\t-moz-transition:all 0.3s ease-out;\n\t-webkit-transition:all 0.3s ease-out;\n\t-o-transition:all 0.3s ease-out;\n}\n\n.autocomplete ul{\n\tfont-family: sans-serif;\n\tposition: absolute;\n\tlist-style: none;\n\tbackground: #f8f8f8;\n\tpadding: 10px 0;\n\tmargin: 0;\n\tdisplay: inline-block;\n\tmin-width: 15%;\n\tmargin-top: 10px;\n}\n\n.autocomplete ul:before{\n\tcontent: \"\";\n\tdisplay: block;\n\tposition: absolute;\n\theight: 0;\n\twidth: 0;\n\tborder: 10px solid transparent;\n\tborder-bottom: 10px solid #f8f8f8;\n\tleft: 46%;\n\ttop: -20px\n}\n\n.autocomplete ul li a{\n\ttext-decoration: none;\n\tdisplay: block;\n\tbackground: #f8f8f8;\n\tcolor: #2b2b2b;\n\tpadding: 5px;\n\tpadding-left: 10px;\n}\n\n.autocomplete ul li a:hover, .autocomplete ul li.focus-list a{\n\tcolor: white;\n\tbackground: #2F9AF7;\n}\n\n.autocomplete ul li a span{\n\tdisplay: block;\n\tmargin-top: 3px;\n\tcolor: grey;\n\tfont-size: 13px;\n}\n\n.autocomplete ul li a:hover span, .autocomplete ul li.focus-list a span{\n\tcolor: white;\n}\n\n.showAll-transition{\n\topacity: 1;\n\theight: 50px;\n\toverflow: hidden;\n}\n\n.showAll-enter{\n\topacity: 0.3;\n\theight: 0;\n}\n\n.showAll-leave{\n\tdisplay: none;\n}\n\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/*! Copyright (c) 2016 Naufal Rabbani (http://github.com/BosNaufal)
+* Licensed Under MIT (http://opensource.org/licenses/MIT)
+*
+* Version 0.0.1
+*
+*/
+
+// Transition (Optional)
+// Vue.transition('showAll',{});
+
+exports.default = {
+	props: {
+		id: String,
+		class: String,
+		name: String,
+		placeholder: String,
+
+		model: String, // v-model like
+
+		// Anchor of AJAX list
+		anchor: {
+			type: String,
+			required: true
+		},
+
+		// Label of AJAX list
+		label: String,
+
+		// ajax URL will be get
+		url: {
+			type: String,
+			required: true
+		},
+
+		// query param
+		param: {
+			type: String,
+			default: 'q'
+		},
+
+		// add 'limit' query to AJAX URL will be fetched
+		limit: {
+			type: String,
+			default: ''
+		}
+	},
+
+	data: function data() {
+		return {
+			showList: false,
+			type: "",
+			json: [],
+
+			// Get the original data
+			cleanUp: function cleanUp(data) {
+				return JSON.parse((0, _stringify2.default)(data));
+			},
+
+
+			focusList: ""
+		};
+	},
+
+
+	watch: {
+		type: function type(val, old) {
+			// Sync parent model with $data.type
+			return this.$parent.$data[this.model] = val;
+		}
+	},
+
+	methods: {
+		input: function input(val) {
+			this.showList = true;
+
+			// Callback Event
+			this.$dispatch('autocomplete:input', this.$get('name'), val);
+			this.$dispatch('autocomplete-' + this.$get('name') + ':input', val);
+
+			this.$emit('getData', val);
+			return this.$parent.$data[this.model] = val;
+		},
+		showAll: function showAll() {
+			this.json = [];
+			this.$emit('getData', "");
+
+			// Callback Event
+			this.$dispatch('autocomplete:show', this.$get('name'));
+			this.$dispatch('autocomplete-' + this.$get('name') + ':show');
+
+			this.showList = true;
+		},
+		hideAll: function hideAll(e) {
+			var _this = this;
+
+			// Callback Event
+			this.$dispatch('autocomplete:blur', this.$get('name'), e);
+			this.$dispatch('autocomplete-' + this.$get('name') + ':blur', e);
+
+			setTimeout(function () {
+
+				// Callback Event
+				_this.$dispatch('autocomplete:hide', _this.$get('name'));
+				_this.$dispatch('autocomplete-' + _this.$get('name') + ':hide');
+
+				_this.showList = false;
+			}, 250);
+		},
+		focus: function focus(e) {
+			this.focusList = 0;
+
+			// Callback Event
+			this.$dispatch('autocomplete:focus', this.$get('name'), e);
+			this.$dispatch('autocomplete-' + this.$get('name') + ':focus', e);
+		},
+		mousemove: function mousemove(i) {
+			this.focusList = i;
+		},
+		keydown: function keydown(e) {
+			var key = e.keyCode;
+
+			// Disable when list isn't showing up
+			if (!this.showList) return;
+
+			switch (key) {
+				case 40:
+					//down
+					this.focusList++;
+					break;
+				case 38:
+					//up
+					this.focusList--;
+					break;
+				case 13:
+					//enter
+					this.$emit('selectList', this.json[this.focusList]);
+					this.showList = false;
+					break;
+				case 27:
+					//esc
+					this.showList = false;
+					break;
+			}
+
+			// When cursor out of range
+			var listLength = this.json.length - 1;
+			this.focusList = this.focusList > listLength ? 0 : this.focusList < 0 ? listLength : this.focusList;
+		},
+		activeClass: function activeClass(i) {
+			return {
+				'focus-list': i == this.focusList
+			};
+		}
+	},
+
+	events: {
+		selectList: function selectList(data) {
+			var clean = this.cleanUp(data);
+
+			// Put the selected data to type (model)
+			this.type = clean[this.anchor];
+
+			this.showList = false;
+
+			/**
+   * Callback Event
+   * Deep clone of the original object
+   */
+			this.$dispatch('autocomplete:selected', this.$get('name'), clean);
+			this.$dispatch('autocomplete-' + this.$get('name') + ':selected', clean);
+		},
+		getData: function getData(val) {
+			var self = this;
+
+			if (this.url != null) {
+
+				// Callback Event
+				this.$dispatch('autocomplete:before-ajax', self.$get('name'), val);
+				this.$dispatch('autocomplete-' + self.$get('name') + ':before-ajax', val);
+
+				var ajax = new XMLHttpRequest();
+
+				var limit;
+				if (this.$get('limit') != '') {
+					this.limit = parseFloat(this.limit);
+					limit = this.limit != "" ? '&limit=' + this.limit : '';
+				} else {
+					limit = '';
+				}
+
+				ajax.open('GET', this.url + '?' + this.param + '=' + val + limit, true);
+				ajax.send();
+
+				ajax.addEventListener('progress', function (data) {
+					if (data.lengthComputable) {
+
+						// Callback Event
+						self.$dispatch('autocomplete:ajax-progress', self.$get('name'), data);
+						self.$dispatch('autocomplete-' + self.$get('name') + ':ajax-progress', data);
+					}
+				});
+
+				ajax.addEventListener('loadend', function (data) {
+					var json = JSON.parse(this.responseText);
+
+					// Callback Event
+					self.$dispatch('autocomplete:ajax-loaded', self.$get('name'), this, json);
+					self.$dispatch('autocomplete-' + self.$get('name') + ':ajax-loaded', this, json);
+
+					self.json = json;
+				});
+			}
+		}
+	},
+
+	created: function created() {
+		// Sync parent model with $data.type
+		this.type = this.$parent.$data[this.model];
+	}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<input type=\"text\" :id=\"id\" :class=\"class\" :name=\"name\" :placeholder=\"placeholder\" v-model=\"type\" @input=\"input(type)\" @dblclick=\"showAll\" @blur=\"hideAll\" @keydown=\"keydown\" @focus=\"focus\">\n\n<div class=\"autocomplete transition autocomplete-{{ name }}\" id=\"autocomplete-{{ name }}\" v-show=\"showList\">\n\t<ul>\n\t\t<li v-for=\"data in json\" transition=\"showAll\" :class=\"activeClass($index)\">\n\n\t\t\t<a href=\"#\" @click.prevent=\"$emit('selectList',data)\" @mousemove=\"mousemove($index)\">\n\t\t\t\t<b>{{ data[anchor] }}</b>\n\t\t\t\t<span>{{ data[label] }}</span>\n\t\t\t</a>\n\n\t\t</li>\n\t</ul>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/vue-autocomplete.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n.transition, .autocomplete, .showAll-transition, .autocomplete ul, .autocomplete ul li a{\n\ttransition:all 0.3s ease-out;\n\t-moz-transition:all 0.3s ease-out;\n\t-webkit-transition:all 0.3s ease-out;\n\t-o-transition:all 0.3s ease-out;\n}\n\n.autocomplete ul{\n\tfont-family: sans-serif;\n\tposition: absolute;\n\tlist-style: none;\n\tbackground: #f8f8f8;\n\tpadding: 10px 0;\n\tmargin: 0;\n\tdisplay: inline-block;\n\tmin-width: 15%;\n\tmargin-top: 10px;\n}\n\n.autocomplete ul:before{\n\tcontent: \"\";\n\tdisplay: block;\n\tposition: absolute;\n\theight: 0;\n\twidth: 0;\n\tborder: 10px solid transparent;\n\tborder-bottom: 10px solid #f8f8f8;\n\tleft: 46%;\n\ttop: -20px\n}\n\n.autocomplete ul li a{\n\ttext-decoration: none;\n\tdisplay: block;\n\tbackground: #f8f8f8;\n\tcolor: #2b2b2b;\n\tpadding: 5px;\n\tpadding-left: 10px;\n}\n\n.autocomplete ul li a:hover, .autocomplete ul li.focus-list a{\n\tcolor: white;\n\tbackground: #2F9AF7;\n}\n\n.autocomplete ul li a span{\n\tdisplay: block;\n\tmargin-top: 3px;\n\tcolor: grey;\n\tfont-size: 13px;\n}\n\n.autocomplete ul li a:hover span, .autocomplete ul li.focus-list a span{\n\tcolor: white;\n}\n\n.showAll-transition{\n\topacity: 1;\n\theight: 50px;\n\toverflow: hidden;\n}\n\n.showAll-enter{\n\topacity: 0.3;\n\theight: 0;\n}\n\n.showAll-leave{\n\tdisplay: none;\n}\n\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"babel-runtime/core-js/json/stringify":1,"vue":30,"vue-hot-reload-api":5,"vueify-insert-css":31}],34:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
-var _EventForm = require('./components/EventForm.vue');
-
-var _EventForm2 = _interopRequireDefault(_EventForm);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Vue = require('vue');
 
 Vue.use(_vueResource2.default);
+//
+// var autocomplete = require('./components/vue-autocomplete.vue')
+//
+//
+// Vue.component('autocomplete', autocomplete)
 
 new Vue({
-    el: '#vueapp',
+  el: '#vueapp',
+  components: {
+    eventform: require('./components/EventForm.vue')
 
-    components: { EventForm: _EventForm2.default },
-
-    ready: function ready() {
-        alert('vue ready');
-    }
+  },
+  ready: function ready() {
+    alert('vue ready');
+  }
 });
 
-},{"./components/EventForm.vue":30,"vue":28,"vue-resource":16}]},{},[31]);
+},{"./components/EventForm.vue":32,"vue":30,"vue-resource":19}],35:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n.datetime-picker[_v-2ce18150] {\n    position: relative;\n    display: inline-block;\n    font-family: \"Segoe UI\",\"Lucida Grande\",Helvetica,Arial,\"Microsoft YaHei\";\n    -webkit-font-smoothing: antialiased;\n    color: #333;\n}\n\n.datetime-picker *[_v-2ce18150] {\n    box-sizing: border-box;\n}\n\n.datetime-picker input[_v-2ce18150] {\n    width: 100%;\n    padding: 5px 10px;\n    height: 30px;\n    outline: 0 none;\n    border: 1px solid #ccc;\n    font-size: 13px;\n}\n\n.datetime-picker .picker-wrap[_v-2ce18150] {\n    position: absolute;\n    z-index: 1000;\n    width: 238px;\n    height: 280px;\n    margin-top: 2px;\n    background-color: #fff;\n    box-shadow: 0 0 6px #ccc;\n}\n\n.datetime-picker table[_v-2ce18150] {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    text-align: center;\n    font-size: 13px;\n}\n\n.datetime-picker tr[_v-2ce18150] {\n    height: 34px;\n    border: 0 none;\n}\n\n.datetime-picker th[_v-2ce18150], .datetime-picker td[_v-2ce18150] {\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    width: 34px;\n    height: 34px;\n    padding: 0;\n    border: 0 none;\n    line-height: 34px;\n    text-align: center;\n}\n\n.datetime-picker td[_v-2ce18150] {\n    cursor: pointer;\n}\n\n.datetime-picker td[_v-2ce18150]:hover {\n    background-color: #f0f0f0;\n}\n\n.datetime-picker td.date-pass[_v-2ce18150], .datetime-picker td.date-future[_v-2ce18150] {\n    color: #aaa;\n}\n\n.datetime-picker td.date-active[_v-2ce18150] {\n    background-color: #ececec;\n    color: #3bb4f2;\n}\n\n.datetime-picker .date-head[_v-2ce18150] {\n    background-color: #3bb4f2;\n    text-align: center;\n    color: #fff;\n    font-size: 14px;\n}\n\n.datetime-picker .date-days[_v-2ce18150] {\n    color: #3bb4f2;\n    font-size: 14px;\n}\n\n.datetime-picker .show-year[_v-2ce18150] {\n    display: inline-block;\n    min-width: 62px;\n    vertical-align: middle;\n}\n\n.datetime-picker .show-month[_v-2ce18150] {\n    display: inline-block;\n    min-width: 28px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-2ce18150],\n.datetime-picker .btn-next[_v-2ce18150] {\n    cursor: pointer;\n    display: inline-block;\n    padding: 0 10px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-2ce18150]:hover,\n.datetime-picker .btn-next[_v-2ce18150]:hover {\n    background: rgba(16, 160, 234, 0.5);\n}\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    props: {
+        width: { type: String, default: '238px' },
+        readonly: { type: Boolean, default: false },
+        value: { type: String, default: '' },
+        format: { type: String, default: 'YYYY-MM-DD' }
+    },
+    data: function data() {
+        return {
+            show: false,
+            days: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            date: [],
+            now: new Date()
+        };
+    },
+
+    watch: {
+        now: function now() {
+            this.update();
+        },
+        show: function show() {
+            this.update();
+        }
+    },
+    methods: {
+        close: function close() {
+            this.show = false;
+        },
+        update: function update() {
+            var arr = [];
+            var time = new Date(this.now);
+            time.setMonth(time.getMonth(), 1); // the first day
+            var curFirstDay = time.getDay();
+            curFirstDay === 0 && (curFirstDay = 7);
+            time.setDate(0); // the last day
+            var lastDayCount = time.getDate();
+            for (var i = curFirstDay; i > 0; i--) {
+                arr.push({
+                    text: lastDayCount - i + 1,
+                    time: new Date(time.getFullYear(), time.getMonth(), lastDayCount - i + 1),
+                    status: 'date-pass'
+                });
+            }
+
+            time.setMonth(time.getMonth() + 2, 0); // the last day of this month
+            var curDayCount = time.getDate();
+            time.setDate(1); // fix bug when month change
+            var value = this.value || this.stringify(new Date());
+            for (var _i = 0; _i < curDayCount; _i++) {
+                var tmpTime = new Date(time.getFullYear(), time.getMonth(), _i + 1);
+                var status = '';
+                this.stringify(tmpTime) === value && (status = 'date-active');
+                arr.push({
+                    text: _i + 1,
+                    time: tmpTime,
+                    status: status
+                });
+            }
+
+            var j = 1;
+            while (arr.length < 42) {
+                arr.push({
+                    text: j,
+                    time: new Date(time.getFullYear(), time.getMonth() + 1, j),
+                    status: 'date-future'
+                });
+                j++;
+            }
+            this.date = arr;
+        },
+        yearClick: function yearClick(flag) {
+            this.now.setFullYear(this.now.getFullYear() + flag);
+            this.now = new Date(this.now);
+        },
+        monthClick: function monthClick(flag) {
+            this.now.setMonth(this.now.getMonth() + flag);
+            this.now = new Date(this.now);
+        },
+        pickDate: function pickDate(index) {
+            this.show = false;
+            this.now = new Date(this.date[index].time);
+            this.value = this.stringify();
+        },
+        parse: function parse(str) {
+            var time = new Date(str);
+            return isNaN(time.getTime()) ? null : time;
+        },
+        stringify: function stringify() {
+            var time = arguments.length <= 0 || arguments[0] === undefined ? this.now : arguments[0];
+            var format = arguments.length <= 1 || arguments[1] === undefined ? this.format : arguments[1];
+
+            var year = time.getFullYear();
+            var month = time.getMonth() + 1;
+            var date = time.getDate();
+            var monthName = this.months[time.getMonth()];
+
+            var map = {
+                YYYY: year,
+                MMM: monthName,
+                MM: ('0' + month).slice(-2),
+                M: month,
+                DD: ('0' + date).slice(-2),
+                D: date
+            };
+            return format.replace(/Y+|M+|D+/g, function (str) {
+                return map[str];
+            });
+        }
+    },
+    ready: function ready() {
+        var _this = this;
+
+        this.now = this.parse(this.value) || new Date();
+        document.addEventListener('click', function (e) {
+            if (!_this.$el.contains(e.target)) {
+                _this.close();
+            }
+        }, false);
+    },
+    beforeDestroy: function beforeDestroy() {
+        document.removeEventListener('click', this.close, false);
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"datetime-picker\" :style=\"{ width: width }\" _v-2ce18150=\"\">\n    <input type=\"text\" :style=\"styleObj\" :readonly=\"readonly\" :value=\"value\" @click=\"show = !show\" _v-2ce18150=\"\">\n    <div class=\"picker-wrap\" v-show=\"show\" _v-2ce18150=\"\">\n        <table class=\"date-picker\" _v-2ce18150=\"\">\n            <thead _v-2ce18150=\"\">\n                <tr class=\"date-head\" _v-2ce18150=\"\">\n                    <th colspan=\"4\" _v-2ce18150=\"\">\n                        <span class=\"btn-prev\" @click=\"yearClick(-1)\" _v-2ce18150=\"\">&lt;</span>\n                        <span class=\"show-year\" _v-2ce18150=\"\">{{now.getFullYear()}}</span>\n                        <span class=\"btn-next\" @click=\"yearClick(1)\" _v-2ce18150=\"\">&gt;</span>\n                    </th>\n                    <th colspan=\"3\" _v-2ce18150=\"\">\n                        <span class=\"btn-prev\" @click=\"monthClick(-1)\" _v-2ce18150=\"\">&lt;</span>\n                        <span class=\"show-month\" _v-2ce18150=\"\">{{months[now.getMonth()]}}</span>\n                        <span class=\"btn-next\" @click=\"monthClick(1)\" _v-2ce18150=\"\">&gt;</span>\n                    </th>\n                </tr>\n                <tr class=\"date-days\" _v-2ce18150=\"\">\n                    <th v-for=\"day in days\" _v-2ce18150=\"\">{{day}}</th>\n                </tr>\n            </thead>\n            <tbody _v-2ce18150=\"\">\n                <tr v-for=\"i in 6\" _v-2ce18150=\"\">\n                    <td v-for=\"j in 7\" :class=\"date[i * 7 + j] &amp;&amp; date[i * 7 + j].status\" :date=\"date[i * 7 + j] &amp;&amp; date[i * 7 + j].date\" @click=\"pickDate(i * 7 + j)\" _v-2ce18150=\"\">{{date[i * 7 + j] &amp;&amp; date[i * 7 + j].text}}</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/vendor/datepicker.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n.datetime-picker[_v-2ce18150] {\n    position: relative;\n    display: inline-block;\n    font-family: \"Segoe UI\",\"Lucida Grande\",Helvetica,Arial,\"Microsoft YaHei\";\n    -webkit-font-smoothing: antialiased;\n    color: #333;\n}\n\n.datetime-picker *[_v-2ce18150] {\n    box-sizing: border-box;\n}\n\n.datetime-picker input[_v-2ce18150] {\n    width: 100%;\n    padding: 5px 10px;\n    height: 30px;\n    outline: 0 none;\n    border: 1px solid #ccc;\n    font-size: 13px;\n}\n\n.datetime-picker .picker-wrap[_v-2ce18150] {\n    position: absolute;\n    z-index: 1000;\n    width: 238px;\n    height: 280px;\n    margin-top: 2px;\n    background-color: #fff;\n    box-shadow: 0 0 6px #ccc;\n}\n\n.datetime-picker table[_v-2ce18150] {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    text-align: center;\n    font-size: 13px;\n}\n\n.datetime-picker tr[_v-2ce18150] {\n    height: 34px;\n    border: 0 none;\n}\n\n.datetime-picker th[_v-2ce18150], .datetime-picker td[_v-2ce18150] {\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    width: 34px;\n    height: 34px;\n    padding: 0;\n    border: 0 none;\n    line-height: 34px;\n    text-align: center;\n}\n\n.datetime-picker td[_v-2ce18150] {\n    cursor: pointer;\n}\n\n.datetime-picker td[_v-2ce18150]:hover {\n    background-color: #f0f0f0;\n}\n\n.datetime-picker td.date-pass[_v-2ce18150], .datetime-picker td.date-future[_v-2ce18150] {\n    color: #aaa;\n}\n\n.datetime-picker td.date-active[_v-2ce18150] {\n    background-color: #ececec;\n    color: #3bb4f2;\n}\n\n.datetime-picker .date-head[_v-2ce18150] {\n    background-color: #3bb4f2;\n    text-align: center;\n    color: #fff;\n    font-size: 14px;\n}\n\n.datetime-picker .date-days[_v-2ce18150] {\n    color: #3bb4f2;\n    font-size: 14px;\n}\n\n.datetime-picker .show-year[_v-2ce18150] {\n    display: inline-block;\n    min-width: 62px;\n    vertical-align: middle;\n}\n\n.datetime-picker .show-month[_v-2ce18150] {\n    display: inline-block;\n    min-width: 28px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-2ce18150],\n.datetime-picker .btn-next[_v-2ce18150] {\n    cursor: pointer;\n    display: inline-block;\n    padding: 0 10px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-2ce18150]:hover,\n.datetime-picker .btn-next[_v-2ce18150]:hover {\n    background: rgba(16, 160, 234, 0.5);\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":30,"vue-hot-reload-api":5,"vueify-insert-css":31}]},{},[34]);
 
 //# sourceMappingURL=main.js.map
