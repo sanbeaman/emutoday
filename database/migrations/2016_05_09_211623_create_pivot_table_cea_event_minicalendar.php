@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLocalCategoryEventTable extends Migration
+class CreatePivotTableCeaEventMinicalendar extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +12,9 @@ class CreateLocalCategoryEventTable extends Migration
      */
     public function up()
     {
-        Schema::create('category_event', function (Blueprint $table) {
+        Schema::create('cea_event_minicalendar', function (Blueprint $table) {
             $table->integer('event_id');
-            $table->integer('category_id');
-            $table->primary(['event_id', 'category_id']);
-            $table->timestamps();
+            $table->integer('mini_calendar_id');
         });
     }
 
@@ -27,6 +25,6 @@ class CreateLocalCategoryEventTable extends Migration
      */
     public function down()
     {
-        Schema::drop('category_event');
+        Schema::drop('cea_event_minicalendar');
     }
 }

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddTimestampsToCeaEventsTable extends Migration
+class RenameCeaEventCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,8 @@ class AddTimestampsToCeaEventsTable extends Migration
      */
     public function up()
     {
-        Schema::table('cea_events', function (Blueprint $table) {
-          $table->timestamps();
-        });
+      Schema::rename('cea_event_categories', 'cea_category_event');
+
     }
 
     /**
@@ -24,8 +23,6 @@ class AddTimestampsToCeaEventsTable extends Migration
      */
     public function down()
     {
-        Schema::table('cea_events', function (Blueprint $table) {
-            $table->dropColumn(['created_at', 'updated_at']);
-        });
+      Schema::rename( 'cea_category_event', 'cea_event_categories');
     }
 }

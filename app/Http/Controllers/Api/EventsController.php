@@ -72,9 +72,17 @@ class EventsController extends ApiController
 
 
     $validation = \Validator::make( $request->all(), [
-                                  'title' => 'required',
-                                  'location' => 'required',
-                                  'start_date' => 'required',
+                                  'title'           => 'required',
+                                  'location'        => 'required',
+                                  'start_date'      => 'required|date',
+                                  'end_date'        => 'required|date',
+                                  'categories'      => 'required',
+                                  'description'     => 'required',
+                                  'contact_person'  => 'required',
+                                  'contact_phone'  => 'required',
+                                  'contact_email'  => 'required|email'
+
+
                                ]);
 
      if( $validation->fails() )

@@ -13,6 +13,7 @@ Route::group(['prefix' => 'api'], function() {
     Route::get('events/{id}/categories', 'Api\CategoriesController@index');
    Route::resource('events', 'Api\EventsController');
    Route::resource('categories', 'Api\CategoriesController', ['only'=>['index', 'show']] );
+    Route::resource('minicalendars', 'Api\MiniCalendarsController', ['only'=>['index', 'show']] );
    Route::get('buildings', function() {
      $text = Input::get('q');
      return Building::likeSearch('name', $text)->get();

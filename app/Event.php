@@ -27,10 +27,24 @@ class Event extends Model
   protected $dates = ['start_date', 'end_date'];
 
 
+  public function minicalendars()
+  {
+    return $this->belongsToMany('emutoday\MiniCalendar', 'cea_event_minicalendar', 'event_id', 'mini_calendar_id');
+  }
+  /**
+   * get a list of the mini calendars associated with this Event
+   * @return [Array]
+   */
+  public function getMiniCalendarListAttribute()
+  {
+    return $this->minicalendars->lists('id')->all();
+  }
+
   public function categories()
   {
-    return $this->belongsToMany('emutoday\Category', 'category_event', 'event_id', 'category_id');
+    return $this->belongsToMany('emutoday\Category', 'cea_category_event', 'event_id', 'category_id');
   }
+
 
   /**
    * get a list of the categories associated with this Event
