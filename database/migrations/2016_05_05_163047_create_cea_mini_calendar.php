@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class RearrangeCeaBuildingsTable extends Migration
+class CreateCeaMiniCalendar extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,11 @@ class RearrangeCeaBuildingsTable extends Migration
      */
     public function up()
     {
-        Schema::table('cea_buildings', function (Blueprint $table) {
-          $table->string('name')->after('id')->change();
-
+        Schema::create('cea_mini_calendars', function (Blueprint $table) {
+            $table->increments('id')->unsigned();
+            $table->string('calendar');
+            $table->string('slug');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class RearrangeCeaBuildingsTable extends Migration
      */
     public function down()
     {
-        Schema::table('cea_buildings', function (Blueprint $table) {
-
-        });
+        Schema::drop('cea_mini_calendars');
     }
 }

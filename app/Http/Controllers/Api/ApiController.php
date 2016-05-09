@@ -2,10 +2,11 @@
 
 namespace emutoday\Http\Controllers\Api;
 
-use Illuminate\Routing\Controller as BaseController;
+use emutoday\Http\Controllers\Controller as Controller;
+use Illuminate\Http\Response as IlluminateResponse;
 
 
-class ApiController extends BaseController
+class ApiController extends Controller
 {
     /**
      * [$statusCode description]
@@ -42,7 +43,7 @@ class ApiController extends BaseController
      */
     public function respondNotFound($message = 'Not Found!')
     {
-        return $this->setStatusCode(404)->respondWithError($message);
+        return $this->setStatusCode(IlluminateResponse::HTTP_NOT_FOUND)->respondWithError($message);
 
     }
 
@@ -80,6 +81,14 @@ class ApiController extends BaseController
                 'message' => $message,
                 'status_code' => $this->getStatusCode()
             ]
+        ]);
+    }
+
+    public function respondCreated($message)
+    {
+
+        return $this->setStatusCode(201)->respond([
+          'message' => $message
         ]);
     }
 }

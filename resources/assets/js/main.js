@@ -2,7 +2,10 @@ var Vue = require('vue');
 
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
-// 
+
+var vueForm = require('vue-form');
+Vue.use(vueForm);
+//
 // var autocomplete = require('./components/vue-autocomplete.vue')
 //
 //

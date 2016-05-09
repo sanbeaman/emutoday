@@ -25,7 +25,7 @@ class EventController extends Controller
      */
     public function index()
     {
-      $events = $this->events->orderBy('created_at', 'desc')->paginate(10);
+      $events = $this->events->orderBy('start_date', 'desc')->paginate(10);
 
       return view('admin.event.index', compact('events'));
     }

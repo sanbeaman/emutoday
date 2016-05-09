@@ -19,7 +19,7 @@
             @foreach($events as $event)
                 <tr class="">
                     <td>{{ $event->id }}</td>
-                    <td>{{isset($event->short_title) ? $event->short_title : $event->title }}</td>
+                    <td>{{ $event->title }}</td>
                     <td>{{ $event->start_date}}</td>
                     <td>{{ $event->end_date }}</td>
                     <td>

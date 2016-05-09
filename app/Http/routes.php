@@ -8,9 +8,19 @@ use emutoday\Event;
 
 use Illuminate\Support\Facades\Input;
 
+Route::group(['prefix' => 'api'], function() {
+  //events api
+    Route::get('events/{id}/categories', 'Api\CategoriesController@index');
+   Route::resource('events', 'Api\EventsController');
+   Route::resource('categories', 'Api\CategoriesController', ['only'=>['index', 'show']] );
+   Route::get('buildings', function() {
+     $text = Input::get('q');
+     return Building::likeSearch('name', $text)->get();
+     //return Building::ofMapType('illustrated')->get();
+   });
+});
+
 Route::group(['middleware' => ['web']], function() {
-
-
 
     Route::controller('auth/password', 'Auth\PasswordController', [
         'getEmail' => 'auth.password.email',
@@ -62,20 +72,20 @@ Route::group(['middleware' => ['web']], function() {
     Route::get('api/story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
     Route::resource('api/story', 'Api\StoryController');
 
-    Route::resource('api/events', 'Api\EventsController');
+    // Route::resource('api/events', 'Api\EventsController');
 
-    Route::get('api/events', function() {
-      return emutoday\Event::latest()->get();
-    });
+    // Route::get('api/events', function() {
+    //   return emutoday\Event::latest()->get();
+    // });
 
     Route::get('admin/event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
     Route::resource('admin/event', 'Admin\EventController');
 
-    Route::get('fetch/buildings', function() {
-      $text = Input::get('q');
-      return Building::likeSearch('name', $text)->get();
-      //return Building::ofMapType('illustrated')->get();
-    });
+    // Route::get('fetch/buildings', function() {
+    //   $text = Input::get('q');
+    //   return Building::likeSearch('name', $text)->get();
+    //   //return Building::ofMapType('illustrated')->get();
+    // });
 
 
 

@@ -4,20 +4,24 @@ namespace emutoday\Http\Controllers\Api;
 
 
 use emutoday\Event;
-
+use emutoday\Emutoday\Transformers\EventTransformer;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class EventsController extends ApiController
 {
+  /**
+   * @var emutoday\Emutoday\Transformers\EventTransformer
+   */
+  protected $eventTransformer;
 
-    protected $events;
-
-  public function __construct(Event $events)
+  function __construct(EventTransformer $eventTransformer)
   {
-      $this->events = $events;
+      $this->eventTransformer = $eventTransformer;
+    //  $this->beforeFilter('auth.basic', ['on' => 'post']);
   }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,7 +29,19 @@ class EventsController extends ApiController
      */
     public function index()
     {
-        return Event::latest()->get();
+
+      // Current Issues:
+      // 1. to many - must paginate
+      // 2. Now way to attach metadata
+      // 3. Linking db structurte to the API Output.. need to hide some data
+      // 4. No error Checking
+
+      $events = Event::all();
+
+      return $this->respond([
+          'data' => $this->eventTransformer->transformCollection($events->all())
+      ]);
+        //return Event::latest()->get();
     }
 
     /**
@@ -46,34 +62,75 @@ class EventsController extends ApiController
      */
     public function store(Request $request)
     {
+      //return some kind of Response
+      // 400  'bad request'
+      // 403 Forbidden
+      //
+      // 422 'unprocessable entity'
+      //
+    //  if (! Input::get('title') or ! Input::get('location'))
 
-      $this->validate($request, [
-       'title' => 'required|max:100',
-       'location'       => 'required',
-       'start-date'     => 'required',
-       'start-time'     => 'required',
-      //  'end-date'       => 'required',
-      //  'categories'     => 'required',
-      //  'description'    => 'required',
-      //  'contact-person' => 'required,fullname',
-      //  'contact-phone'  => 'required,phone',
-      //  'contact-email'  => 'required,email',
-       ]);
 
-      $eventStartDate = $request->start_date == null ? \Carbon\Carbon::now() : \Carbon\Carbon::parse($request->start_date) ;
-      // $pubEndDate = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
-      //
-      // $story = $this->storys->create(
-      // // ['author_id' => auth()->user()->id] + ['story_type' => $request->input('story_type') ] +  $request->only('title', 'slug', 'subtitle', 'published_at', 'teaser','content')
-      //
-      //  ['author_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'teaser','content', 'external_link', 'story_type') + ['start_date' => $pubStartDate] + ['end_date' => $pubEndDate ]
-      //
-      // );
-      //
+    $validation = \Validator::make( $request->all(), [
+                                  'title' => 'required',
+                                  'location' => 'required',
+                                  'start_date' => 'required',
+                               ]);
 
-      return $this->events->create(
-        ['author_id' => auth()->user()->id] + $request->only('title','short_title','location', 'start_time') + ['start_date' => $eventStartDate]
-        );
+     if( $validation->fails() )
+     {
+      //  return $this->setStatusCode(422)
+      //              ->respondWithError($validation->errors()->getMessages());
+       //
+       return json_encode([
+               'errors' => $validation->errors()->getMessages(),
+               'code' => 422
+            ]);
+     }
+
+    // if (! $request->input('title') or ! $request->input('location'))
+    //   {
+    //       return $this->setStatusCode(422)
+    //                   ->respondWithError('Parameters failed validation for an event');
+    //   }
+
+      // Event::create(Input::all());
+      Event::create($request->all());
+      return $this->setStatusCode(201)->respondCreated('Event successfully created.');
+      // $validation = \Illuminate\Support\Facades\Validator::make(
+      //   $request->only('title','location','start_date', 'start_time'),[
+      //    'title' => 'required|max:100',
+      //    'location'       => 'required',
+      //    'start_date'     => 'required',
+      //    'start_time'     => 'required',
+      //   ]);
+
+
+        // if($validation->passes())
+        // {
+        //   $event = new Event;
+        //   $event->author_id       = auth()->user()->id;
+        //   $event->title           = $request->get('title');
+        //   $event->short_title     = $request->get('short_title');
+        //   $event->location        = $request->get('location');
+        //   $event->start_date      = \Carbon\Carbon::parse($request->get(start_date));
+        //   $event->start_time     = \Carbon\Carbon::parse($request->get(start_time));
+        //
+        //   if($event->save()) {
+        //     return response()->json([
+        //             'success' => true,
+        //             'message' => 'record updated'
+        //         ], 200);
+        //   }
+        // }
+        //
+        // $errors = $validation->errors();
+        // $errors =  json_decode($errors);
+        //
+        // return response()->json([
+        //   'success' => false,
+        //   'message' => $errors
+        // ], 422);
 
     }
 
@@ -85,7 +142,17 @@ class EventsController extends ApiController
      */
     public function show($id)
     {
-        //
+      $event = Event::find($id);
+
+      if (! $event)
+      {
+          return $this->respondNotFound('Event Does Not Exist!');
+      }
+
+      return $this->respond([
+          'data' => $this->eventTransformer->transform($event)
+
+      ]);
     }
 
     /**

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableCeaBuildings extends Migration
+class CreateLocalCeaBuildingTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateTableCeaBuildings extends Migration
     public function up()
     {
         Schema::create('cea_buildings', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
-            $table->string('alias')->nullable();
-            $table->string('name');
-            $table->decimal('longitude', 9, 6);
-            $table->decimal('latitude', 9, 9);
-            $table->string('map');
+          $table->increments('id')->unsigned();
+          $table->string('name');
+          $table->string('alias')->nullable();
+          $table->float('longitude', 10, 6);
+          $table->float('latitude', 10, 6);
+          $table->string('map');
             $table->timestamps();
         });
     }

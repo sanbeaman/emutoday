@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAnnouncementsTable extends Migration
+class CreateLocalAnnouncementsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,16 @@ class CreateAnnouncementsTable extends Migration
     public function up()
     {
         Schema::create('announcements', function (Blueprint $table) {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->integer('author_id');
-            $table->string('title');
-            $table->string('announcement');
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
-            $table->boolean('is_approved');
-            $table->boolean('is_promoted');
+          $table->string('title');
+          $table->string('announcement');
+          $table->dateTime('start_date');
+          $table->time('start_time');
+          $table->dateTime('end_date')->nullable();
+          $table->time('end_time')->nullable();
+          $table->boolean('is_approved');
+          $table->boolean('is_promoted');
             $table->timestamps();
         });
     }

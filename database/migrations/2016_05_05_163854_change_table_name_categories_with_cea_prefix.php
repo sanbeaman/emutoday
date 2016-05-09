@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddFilenameColToStoryImagesTable extends Migration
+class ChangeTableNameCategoriesWithCeaPrefix extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,7 @@ class AddFilenameColToStoryImagesTable extends Migration
      */
     public function up()
     {
-        Schema::table('story_images', function (Blueprint $table) {
-            $table->string('filename');
-        });
+        Schema::rename('categories','cea_categories');
     }
 
     /**
@@ -24,8 +22,6 @@ class AddFilenameColToStoryImagesTable extends Migration
      */
     public function down()
     {
-        Schema::table('story_images', function (Blueprint $table) {
-                $table->dropColumn('filename');
-        });
+        Schema::rename('cea_categories','categories');
     }
 }

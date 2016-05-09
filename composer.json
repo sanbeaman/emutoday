@@ -15,12 +15,12 @@
         "doctrine/dbal": "^2.5",
         "intervention/image": "^2.3",
         "laracasts/flash": "^2.0",
-        "laracasts/utilities": "^2.1"
+        "laracasts/utilities": "^2.1",
+        "phpunit/phpunit": "^4.8"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~4.0",
         "symfony/css-selector": "2.8.*|3.0.*",
         "symfony/dom-crawler": "2.8.*|3.0.*",
         "laravel/homestead": "^3.0",

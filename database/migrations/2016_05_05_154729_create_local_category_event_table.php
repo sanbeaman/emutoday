@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStoryTypeTable extends Migration
+class CreateLocalCategoryEventTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,10 @@ class CreateStoryTypeTable extends Migration
      */
     public function up()
     {
-        Schema::create('storytypes', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('shortname');
+        Schema::create('category_event', function (Blueprint $table) {
+            $table->integer('event_id');
+            $table->integer('category_id');
+            $table->primary(['event_id', 'category_id']);
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class CreateStoryTypeTable extends Migration
      */
     public function down()
     {
-        Schema::drop('storytypes');
+        Schema::drop('category_event');
     }
 }

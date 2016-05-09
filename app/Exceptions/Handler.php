@@ -8,6 +8,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -44,13 +45,17 @@ class Handler extends ExceptionHandler
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $e)
-    {/*
+    {
         if ($e instanceof ModelNotFoundException) {
-            return redirect()->back()->withErrors([
-                'error' => 'Could not find matching record.'
-            ]);
+
+          return response()->json([
+            'error' => ['message' => 'resource not found']
+          ], 404);
+            // return redirect()->back()->withErrors([
+            //     'error' => 'Could not find matching record.'
+            // ]);
         }
-        */
+
         return parent::render($request, $e);
     }
 }
