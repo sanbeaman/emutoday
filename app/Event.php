@@ -4,6 +4,7 @@ namespace emutoday;
 
 use Illuminate\Database\Eloquent\Model;
 use emutoday\Category;
+use Laracasts\Presenter\PresentableTrait;
 
 class Event extends Model
 {
@@ -13,6 +14,10 @@ class Event extends Model
    * @var string
    */
   protected $table = 'cea_events';
+
+
+  use PresentableTrait;
+  protected $presenter = 'emutoday\Presenters\EventPresenter';
 
   /**
    * [$fillable description]

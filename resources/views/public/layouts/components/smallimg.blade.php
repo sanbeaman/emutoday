@@ -1,5 +1,5 @@
 <div class="column">
-  <img class="topic-image" src="{{$barImg->mainImageURL()}}" alt="story image">
+  <img class="topic-image" src="{{$barImg->present()->mainImageURL}}" alt="story image">
   <div class="stories-content">
     <div class="stories-text-content" data-equalizer-watch="" style="height: 66px;">
       <p>{{$barImg->caption}}</p>

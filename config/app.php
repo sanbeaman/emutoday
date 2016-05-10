@@ -160,7 +160,6 @@ return [
         Laracasts\Flash\FlashServiceProvider::class,
 
         Baum\Providers\BaumServiceProvider::class,
-        Lewis\Presenter\PresenterServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 

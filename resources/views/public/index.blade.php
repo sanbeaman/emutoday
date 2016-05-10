@@ -6,7 +6,7 @@
       <div class="row">
         <h3 class="news-caps manageleftpadding">Featured!</h3>
         <div class="large-7 medium-12 small-12 columns manageleftpadding">
-          <img src="{{$heroImg->mainImageURL()}}" alt="featured image">
+          <img src="{{$heroImg->present()->mainImageURL}}" alt="featured image">
         </div>
         <div id="featured-text" class="large-5 medium-12 small-12 columns">
           <h3>{{$heroImg->caption}}</h3>
@@ -73,42 +73,17 @@
                 </div>
                 <div id="newshub-calendar-front">
                    <ul class="calendar-event-group">
-                       <li class="row calendar-unit">
-                            <div class="large-2 medium-2 small-2 columns nopadding date-box">
-                                <p>Sep</p>
-                                <p>9</p>
-                            </div>
-                           <div class="large-10 medium-10 small-10 columns">
-                            <p class="datecontent-box"><a href="">WELCOME! President’s Picnic and McKenny Hall Open House</a></p>
-                           </div>
-                       </li>
-                       <li class="row calendar-unit">
-                            <div class="large-2 medium-2 small-2 columns nopadding date-box">
-                                <p>Sep</p>
-                                <p>10</p>
-                            </div>
-                           <div class="large-10 medium-10 small-10 columns">
-                            <p class="datecontent-box"><a href="">Military and Veteran Student Welcome Back Cookout Fall 2015</a></p>
-                           </div>
-                       </li>
-                       <li class="row calendar-unit">
-                            <div class="large-2 medium-2 small-2 columns nopadding date-box">
-                                <p>Sep</p>
-                                <p>20</p>
-                            </div>
-                           <div class="large-10 medium-10 small-10 columns">
-                            <p class="datecontent-box"><a href="">16th Annual EMU Oozeball Tournament </a></p>
-                           </div>
-                       </li>
-                       <li class="row calendar-unit">
-                            <div class="large-2 medium-2 small-2 columns nopadding date-box">
-                                <p>Sep</p>
-                                <p>26</p>
-                            </div>
-                           <div class="large-10 medium-10 small-10 columns">
-                            <p class="datecontent-box"><a href="">5th Annual Lyla Spelbring Lectureship</a></p>
-                           </div>
-                       </li>
+                     @foreach ($events as $event)
+                        <li class="row calendar-unit">
+                          <div class="large-2 medium-2 small-2 columns nopadding date-box">
+                            <p>{{$event->present()->eventStartDateMonth}}</p>
+                              <p>{{$event->present()->eventStartDateDay}}</p>
+                          </div>
+                          <div class="large-10 medium-10 small-10 columns">
+                           <p class="datecontent-box"><a href="">{{$event->title}}</a></p>
+                          </div>
+                        </li>
+                     @endforeach
                     </ul>
                     <p><a href="">More Events</a></p>
                     </div>

@@ -21,6 +21,11 @@ Route::group(['prefix' => 'api'], function() {
    });
 });
 
+Route::group(['prefix' => 'EmuToday'], function() {
+
+    Route::resource('event', 'EmuToday\EventController', ['only'=>['index', 'show']] );
+});
+
 Route::group(['middleware' => ['web']], function() {
 
     Route::controller('auth/password', 'Auth\PasswordController', [

@@ -208,27 +208,6 @@
   </div>
   </div>
 </form>
-
-
-
-         <!-- <form method="POST" @submit.prevent="submitForm">
-           {!! csrf_field() !!}
-
-           <div class="form-group">
-               <input class="form-control title" type="text" name="title" placeholder="Title" v-model="formInputs.title">
-               <span v-if="formErrors['title']" class="error">@{{ formErrors['title'] }}</span>
-           </div>
-
-           <div class="form-group">
-               <input class="form-control short_name" name="short_name" placeholder="Short Name" v-model="formInputs.short_name">
-               <span v-if="formErrors['short_name']" class="error">@{{ formErrors['short_name'] }}</span>
-           </div>
-
-           <button class="button" type="submit">Publish</button>
-
-
-         </form> -->
-
 </template>
 <style scoped>
       label {

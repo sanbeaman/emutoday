@@ -4,9 +4,13 @@ namespace emutoday;
 
 use Illuminate\Database\Eloquent\Model;
 use emutoday\Story;
+use Laracasts\Presenter\PresentableTrait;
 
 class StoryImage extends Model
 {
+    use PresentableTrait;
+    protected $presenter = 'emutoday\Presenters\StoryImagePresenter';
+
     protected $fillable = ['story_id',
                             'is_active',
                             'image_name',
@@ -29,13 +33,13 @@ class StoryImage extends Model
         return $this->belongsTo(Story::class);
     }
 
-    public function mainImageURL()
-    {
-        return $this->image_path . $this->filename;
-    }
-    
-    public function thumbnailImageURL()
-    {
-        return $this->image_path . 'thumbnails/thumb-' . $this->filename;
-    }
+    // public function mainImageURL()
+    // {
+    //     return $this->image_path . $this->filename;
+    // }
+    //
+    // public function thumbnailImageURL()
+    // {
+    //     return $this->image_path . 'thumbnails/thumb-' . $this->filename;
+    // }
 }

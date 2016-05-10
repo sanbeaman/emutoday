@@ -9,6 +9,7 @@ use emutoday\Http\Requests;
 use emutoday\Story;
 use emutoday\Page;
 use emutoday\Announcement;
+use emutoday\Event;
 
 use Carbon\Carbon;
 use JavaScript;
@@ -17,11 +18,13 @@ class MainController extends Controller
 {
     protected $pages;
 
-    public function __construct(Page $pages, Story $storys, Announcement $announcements)
+    public function __construct(Page $pages, Story $storys, Announcement $announcements, Event $events)
     {
         $this->pages = $pages;
         $this->storys = $storys;
         $this->announcements = $announcements;
+        $this->events = $events;
+
 
     }
 
@@ -50,7 +53,8 @@ class MainController extends Controller
             }
 
         }
-        
+        // $events = $this->events->where(['start_date', '>=', $currentDateTime])->orderBy('start_date','desc')->take(4);
+        $events = $this->events->orderBy('start_date','desc')->paginate(4);
 
         $storyImages = $page->storyImages();
 
@@ -63,7 +67,7 @@ class MainController extends Controller
             'currentPage' => $page
         ]);
 
-        return view('public.index', compact('page', 'storyImages', 'heroImg', 'barImgs', 'currentStorysBasic', 'currentAnnouncements'));
+        return view('public.index', compact('page', 'storyImages', 'heroImg', 'barImgs', 'currentStorysBasic', 'currentAnnouncements', 'events'));
 
     }
 

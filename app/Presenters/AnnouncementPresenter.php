@@ -2,15 +2,11 @@
 
 namespace emutoday\Presenters;
 
-use Lewis\Presenter\AbstractPresenter;
+use Laracasts\Presenter\Presenter;
 
-class AnnouncementPresenter extends AbstractPresenter
+class AnnouncementPresenter extends Presenter
 {
-  public function __construct($object)
-  {
-      parent::__construct($object);
-  }
-
+  
 
   public function timelineHighlight()
   {

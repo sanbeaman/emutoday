@@ -56,7 +56,7 @@ elixir(function(mix) {
     //mix.sass('foundation_backend.scss');
 
     mix.browserify('main.js');
-    
+
     // Combine Styles for the public facing site pages
     /*
     |--***--***--***--***--***--
@@ -76,7 +76,8 @@ elixir(function(mix) {
     mix.styles([
         nodePath + 'foundation-sites/dist/foundation.css',
         'site.css',
-        'site-mediaqueries.css'
+        'site-mediaqueries.css',
+        'tweeks.css'
       ], 'public/themes/default/assets/css/public-styles.css');
   /*
   |---------------------------
