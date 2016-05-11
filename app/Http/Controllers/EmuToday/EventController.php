@@ -18,7 +18,8 @@ class EventController extends Controller
 
   public function index()
   {
-    $cd = Carbon::now()->addMonth();
+
+    $cd = Carbon::now()->subYear();
     $dayInMonth = $cd->day;
     $monthArray = [];
     $cd_dayMonthStarts = $cd->firstOfMonth()->dayOfWeek;
@@ -39,10 +40,20 @@ class EventController extends Controller
     // $monthDayCollection = collect($monthArray);
 
 
+    $firstOfYear =  Carbon::create($cd->year,1,1);
+    $lastDayOfYear = Carbon::create($cd->year,12,31);
 
+  //  $groupedevents = $this->events->whereBetween('start_date', [$firstOfYear, $lastDayOfYear])->get();
+    $monthNumber = $cd->month;
+    $events_this_year = Event::where( \DB::raw('YEAR(start_date)'), '=', date('Y') )->get();
+    $events_this_month = Event::where( \DB::raw('MONTH(start_date)'), '=', $monthNumber )->get();
+    $events = $this->events->where('start_date', '>', $cd )->orderBy('start_date', 'asc')->get();
 
-
-    $events = $this->events->orderBy('start_date', 'desc')->paginate(10);
+    $groupedevents = $events_this_month->groupBy(function ($item, $key) {
+        $startdate = $item['start_date'];
+        return $startdate->day;
+      //  return substr($item['account_id'], -3);
+    });
     JavaScript::put([
         'jsis' => 'hi',
         'currentDate' => Carbon::now(),
@@ -52,6 +63,7 @@ class EventController extends Controller
         'firstOfMonthDayNumber' => $cd->firstOfMonth()->format('w'),
         'dayArray' => $monthArray,
         'dayInMonth' => $dayInMonth,
+        'groupedevents' => $groupedevents,
 
 
 

@@ -1,15 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = { "default": require("core-js/library/fn/json/stringify"), __esModule: true };
-},{"core-js/library/fn/json/stringify":2}],2:[function(require,module,exports){
-var core  = require('../../modules/_core')
-  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
-module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
-  return $JSON.stringify.apply($JSON, arguments);
-};
-},{"../../modules/_core":3}],3:[function(require,module,exports){
-var core = module.exports = {version: '2.3.0'};
-if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-},{}],4:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -102,526 +91,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],5:[function(require,module,exports){
-; (function () {
-    var vueForm = {};
-    vueForm.install = function (Vue) {
-
-        function closest(elem, selector) {
-            var matchesSelector = elem.matches || elem.webkitMatchesSelector || elem.mozMatchesSelector || elem.msMatchesSelector;
-            while (elem) {
-                if (matchesSelector.call(elem, selector)) {
-                    return elem;
-                } else {
-                    elem = elem.parentElement;
-                }
-            }
-            return null;
-        }
-
-        function removeClassWithPrefix(el, prefix) {
-            var classes = el.className.split(" ").filter(function (c) {
-                return c.lastIndexOf(prefix, 0) !== 0;
-            });
-            el.className = (classes.join(" ")).trim();
-        }
-
-        var emailRegExp = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i, // from angular
-            urlRegExp = /^(http\:\/\/|https\:\/\/)(.{4,})$/,
-            dirtyClass = 'vf-dirty',
-            pristineClass = 'vf-pristine',
-            validClass = 'vf-valid',
-            invalidClass = 'vf-invalid',
-            submittedClass = 'vf-submitted',
-            touchedClass = 'vf-touched',
-            untouchedClass = 'vf-untouched',
-            attrs = [
-                'type',
-                'required',
-                'pattern',
-                'multiple',
-                'minlength',
-                'maxlength',
-                'min',
-                'max',
-                'custom-validator'
-            ],
-            attrsWithValue = [
-                'minlength',
-                'maxlength',
-                'min',
-                'max',
-                'pattern'
-            ];
-
-        var validators = {
-            required: function (value) {
-                if (Vue.util.isArray(value)) {
-                    return !!value.length;
-                }
-                return !!value;
-            },
-            email: function (value, multiple) {
-                return emailRegExp.test(value);
-            },
-            number: function (value) {
-                return !isNaN(value);
-            },
-            url: function (value) {
-                return urlRegExp.test(value);
-            },
-            minlength: function (value, length) {
-                return value.length >= length;
-            },
-            maxlength: function (value, length) {
-                return length >= value.length;
-            },
-            pattern: function (value, pattern) {
-                var patternRegExp = new RegExp('^' + pattern + '$');
-                return patternRegExp.test(value);
-            },
-            min: function (value, min) {
-                return value * 1 >= min * 1;
-            },
-            max: function (value, max) {
-                return max * 1 >= value * 1;
-            }
-        };
-        
-        // check if an attribute exists, static or binding.
-        // if it is a binding, watch it and re-validate on change
-        function checkAttribute($this, scope, attribute, objectBinding) {
-            var vueFormCtrl = $this._vueFormCtrl;
-            var binding = typeof objectBinding[attribute] !== 'undefined' ? objectBinding[attribute] + '' : Vue.util.getBindAttr($this.el, attribute);
-            if (binding) {
-                scope.$watch(binding, function (value, oldValue) {
-                    vueFormCtrl[attribute] = value;
-                    if (attribute === 'type') {
-                        delete vueFormCtrl.validators[oldValue];
-                        vueFormCtrl.validators[value] = validators[value];
-                    } else if (attribute === 'custom-validator') {
-                        vueFormCtrl.validators[attribute] = scope.$eval(binding);
-                    } else {
-                        vueFormCtrl.validators[attribute] = validators[attribute];
-                        if (value === false || typeof value === 'undefined') {
-                            vueFormCtrl.validators[attribute] = false;
-                        }
-                    }
-                    if ($this._vueForm) {
-                        vueFormCtrl.validate();
-                    } else {
-                        // this is for when an input is inside a v-if
-                        // and will not be inserted into the dom for 
-                        // some time
-                        Vue.nextTick(function () {
-                            Vue.nextTick(function () {
-                                vueFormCtrl.validate();
-                            });
-                        });
-                    }
-                }, { immediate: true });
-            }
-            var staticAttr = $this.el.getAttribute(attribute);
-            if (staticAttr !== null) {
-                vueFormCtrl[attribute] = staticAttr || true;
-                if (attribute === 'type') {
-                    vueFormCtrl.validators[staticAttr] = validators[staticAttr];
-                } else if (attribute === 'custom-validator') {
-                    vueFormCtrl.validators[attribute] = scope[staticAttr];
-                } else {
-                    vueFormCtrl.validators[attribute] = validators[attribute];
-                }
-            }
-
-        }
-
-        Vue.directive('form', {
-            id: 'form',
-            priority: 10001,
-            bind: function () {
-                var el = this.el,
-                    formName = el.getAttribute('name'),
-                    hook = el.getAttribute('hook'),
-                    vm = this.vm,
-                    self = this,
-                    controls = {};
-
-                el.noValidate = true;
-
-                var state = this._state = {
-                    $name: formName,
-                    $dirty: false,
-                    $pristine: true,
-                    $valid: true,
-                    $invalid: false,
-                    $submitted: false,
-                    $touched: false,
-                    $untouched: true,
-                    $error: {}
-                };
-
-                // set inital state
-                vm.$set(formName, state);
-                Vue.util.addClass(el, pristineClass);
-                Vue.util.addClass(el, validClass);
-                Vue.util.addClass(el, untouchedClass);
-
-                var vueForm = this.el._vueForm = {
-                    name: formName,
-                    state: state,
-                    controls: controls,                    
-                    addControl: function (ctrl) {
-                        controls[ctrl.name] = ctrl;
-                    },
-                    removeControl: function (ctrl) {
-                        this.removeError(ctrl.name);
-                        delete controls[ctrl.name];
-                        this.checkValidity();
-                    },
-                    setData: function (key, data) {
-                        vm.$set(formName + '.' + key, data);
-                    },
-                    removeError: function (key) {
-                        state.$error[key] = false;
-                        delete state.$error[key];
-                    },
-                    checkValidity: function () {
-                        var isValid = true;
-                        Object.keys(controls).forEach(function (ctrl) {
-                            if (controls[ctrl].state.$invalid) {
-                                isValid = false;
-                            }
-                        });
-                        this.setValidity(isValid);
-                    },
-                    setValidity: function (isValid) {
-                        state.$valid = isValid;
-                        state.$invalid = !isValid;
-                        if (isValid) {
-                            Vue.util.addClass(el, validClass);
-                            Vue.util.removeClass(el, invalidClass);
-                            removeClassWithPrefix(el, invalidClass + '-');
-                        } else {
-                            Vue.util.removeClass(el, validClass);
-                            Vue.util.addClass(el, invalidClass);
-                        }
-                    },
-                    setDirty: function () {
-                        state.$dirty = true;
-                        state.$pristine = false;
-                        Vue.util.addClass(el, dirtyClass);
-                        Vue.util.removeClass(el, pristineClass);
-                    },
-                    setPristine: function () {
-                        state.$dirty = false;
-                        state.$pristine = true;
-                        Object.keys(controls).forEach(function (ctrl) {
-                            controls[ctrl].setPristine();
-                        });
-                        vueForm.setSubmitted(false);
-                        Vue.util.removeClass(el, dirtyClass);
-                        Vue.util.addClass(el, pristineClass);
-                    },
-                    setSubmitted: function (isSubmitted) {
-                        state.$submitted = isSubmitted;
-                        if (isSubmitted) {
-                            Vue.util.addClass(el, submittedClass);
-                        } else {
-                            Vue.util.removeClass(el, submittedClass);
-                        }
-                    }, 
-                    setTouched: function () {                        
-                        state.$touched = true;
-                        state.$untouched = false;
-                        Vue.util.addClass(el, touchedClass);
-                        Vue.util.removeClass(el, untouchedClass);              
-                    },
-                    setUntouched: function () {                        
-                        state.$touched = false;
-                        state.$untouched = true;                        
-                        Vue.util.removeClass(el, touchedClass);
-                        Vue.util.addClass(el, untouchedClass);
-                        Object.keys(controls).forEach(function (ctrl) {
-                            controls[ctrl].setUntouched();
-                        });                                           
-                    }
-                };
-
-                if (hook) {
-                    vm[hook](vueForm);
-                }
-
-                this._submitEvent = function () {
-                    vueForm.setSubmitted(true);
-                };
-                Vue.util.on(el, 'submit', this._submitEvent);
-            },
-            update: function () {
-
-            },
-            unbind: function () {
-                Vue.util.off(this.el, 'submit', this._submitEvent);
-                delete this.el._vueForm;
-            }
-        });
-
-        Vue.directive('formCtrl', {
-            id: 'formCtrl',
-            priority: 10000,
-            deep: true,
-            bind: function () {
-                var inputName = this.el.getAttribute('name'),
-                    boundInputName = this.el.getAttribute(':name') || this.el.getAttribute('v-bind:name'),
-                    objectBindingExp = this.el.getAttribute(':') || this.el.getAttribute('v-bind'),
-                    vModel = this.el.getAttribute('v-model'),
-                    hook = this.el.getAttribute('hook'),
-                    vm = this.vm,
-                    el = this.el,
-                    self = this,
-                    scope, objectBinding;
-
-                if (this._scope) {
-                    // is inside loop   
-                    scope = this._scope;
-                } else {
-                    scope = this.vm;
-                }
-
-                if (boundInputName) {
-                    scope.$watch(boundInputName, function (value) {
-                        inputName = value;
-                    }, {
-                        immediate: true                    
-                    });
-                }
-                
-                if(objectBindingExp !== null) {                   
-                    objectBinding = scope.$eval(objectBindingExp);               
-                    if (objectBinding.name) {
-                        inputName = objectBinding.name;
-                    }
-                }
-
-                if (!inputName) {
-                    console.warn('Name attribute must be populated');
-                    return;
-                }
-
-                var state = self._state = {
-                    $name: inputName,
-                    $dirty: false,
-                    $pristine: true,
-                    $valid: true,
-                    $invalid: false,
-                    $touched: false,
-                    $untouched: true,
-                    $error: {}
-                };
-
-                var vueFormCtrl = el._vueFormCtrl = self._vueFormCtrl = {
-                    el: el,
-                    name: inputName,
-                    state: state,
-                    setVadility: function (key, isValid) {
-                        var vueForm = self._vueForm;
-
-                        if (!vueForm) {
-                            return;
-                        }
-
-                        if (typeof key === 'boolean') {
-                            // when key is boolean, we are setting 
-                            // overall field vadility
-                            state.$valid = isValid;
-                            state.$invalid = !isValid;
-
-                            if (isValid) {
-                                vueForm.removeError(inputName);
-                                Vue.util.addClass(el, validClass);
-                                Vue.util.removeClass(el, invalidClass);
-                            } else {
-                                Vue.util.removeClass(el, validClass);
-                                Vue.util.addClass(el, invalidClass);
-                            }
-                            vueForm.checkValidity();
-                            return;
-                        }
-
-                        key = Vue.util.camelize(key);
-                        if (isValid) {
-                            vueForm.setData(inputName + '.$error.' + key, false);
-                            delete state.$error[key];
-                            removeClassWithPrefix(el, invalidClass + '-');
-                        } else {
-                            vueForm.setData(inputName + '.$error.' + key, true);
-                            vueForm.setData('$error.' + inputName, state);
-                            Vue.util.addClass(el, invalidClass + '-' + key);
-                        }
-                    },
-                    setDirty: function () {
-                        state.$dirty = true;
-                        state.$pristine = false;
-                        self._vueForm.setDirty();
-                        Vue.util.addClass(el, dirtyClass);
-                        Vue.util.removeClass(el, pristineClass);
-                    },
-                    setPristine: function () {
-                        state.$dirty = false;
-                        state.$pristine = true;
-                        Vue.util.removeClass(el, dirtyClass);
-                        Vue.util.addClass(el, pristineClass);
-                    },
-                    setTouched: function (isTouched) {                        
-                        state.$touched = true;
-                        state.$untouched = false;
-                        self._vueForm.setTouched();
-                        Vue.util.addClass(el, touchedClass);
-                        Vue.util.removeClass(el, untouchedClass); 
-                    },       
-                    setUntouched: function (isTouched) {                        
-                        state.$touched = false;
-                        state.$untouched = true;
-                        Vue.util.removeClass(el, touchedClass);
-                        Vue.util.addClass(el, untouchedClass);
-                    },                                 
-                    validators: {},
-                    error: {},
-                    validate: function () {
-                        var isValid = true,
-                            _this = this,
-                            value = self._value;
-                            
-                        Object.keys(this.validators).forEach(function (validator) {
-                            var args = [value];
-
-                            if (_this.validators[validator] === false) {
-                                _this.setVadility(validator, true);
-                                return;
-                            }
-
-                            if (!_this.validators[validator]) {
-                                return;
-                            }                           
-                            
-                            // if not the required validator and value is 
-                            // falsy but not a number, do not validate
-                            if (validator !== 'required' && !value && typeof value !== 'number') {
-                                _this.setVadility(validator, true);
-                                return;
-                            }
-
-                            if (validator === 'email') {
-                                args.push(_this.multiple);
-                            } else if (attrsWithValue.indexOf(validator) !== -1) {
-                                args.push(_this[validator]);
-                            }
-
-                            if (!_this.validators[validator].apply(this, args)) {
-                                isValid = false;
-                                _this.setVadility(validator, false);
-                            } else {
-                                _this.setVadility(validator, true);
-                            }
-
-                        });
-
-                        _this.setVadility(true, isValid);
-
-                        return isValid;
-                    }
-                };  
-                    
-                // add to validators depending on element attributes 
-                attrs.forEach(function (attr) {
-                    checkAttribute(self, scope, attr, objectBinding || {});
-                });
-                
-                // find parent form             
-                var form;
-                if (el.form) {
-                    init(el.form._vueForm);
-                } else {
-                    // this is either a non form element node 
-                    // or a detached node (inside v-if)
-                    form = closest(el, 'form[name]');
-                    if (form && form._vueForm) {
-                        init(form._vueForm);
-                    } else {
-                        // must be detached
-                        setTimeout(function () {
-                            form = el.form || closest(el, 'form[name]');
-                            init(form._vueForm);
-                        }, 0);
-                    }
-                }
-
-                function init(vueForm) {
-                    if (!vueForm) {
-                        return;
-                    }
-                    self._vueForm = vueForm;
-                                   
-                    // register the form control
-                    vueForm.addControl(vueFormCtrl);                 
-                                                                                                        
-                    // set inital state
-                    vueForm.setData(inputName, state);
-                    Vue.util.addClass(el, pristineClass);
-                    Vue.util.addClass(el, validClass);
-                    Vue.util.addClass(el, untouchedClass);
-                    
-                    Vue.util.on(el, 'blur', vueFormCtrl.setTouched);
-
-                    var first = true;
-                    if (vModel) {
-                        scope.$watch(vModel, function (value, oldValue) {
-                            if (!first) {
-                                vueFormCtrl.setDirty();
-                            }
-                            first = false;
-                            self._value = value;
-                            vueFormCtrl.validate(value);                            
-                        }, { immediate: true });
-                    }
-
-                };
-
-                if (hook) {
-                    vm[hook](vueFormCtrl);
-                }
-
-            },
-            update: function (value, oldValue) {
-                if (typeof value === 'undefined') {
-                    return;
-                }
-                if (this._notfirst) {
-                    this._vueFormCtrl.setDirty();
-                }
-                this._notfirst = true;
-                this._value = value;
-                this._vueFormCtrl.validate(value);                
-            },
-            unbind: function () {
-                this._vueForm.removeControl(this._vueFormCtrl);
-                Vue.util.off(this.el, 'blur', this._vueFormCtrl.setTouched);
-                delete this.el._vueFormCtrl;                
-            }
-        });
-
-    }
-
-    if (typeof exports == "object") {
-        module.exports = vueForm;
-    } else if (typeof define == "function" && define.amd) {
-        define([], function () { return vueForm });
-    } else if (window.Vue) {
-        window.vueForm = vueForm;
-        Vue.use(vueForm);
-    }
-
-})();
-},{}],6:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -921,7 +391,7 @@ function format (id) {
   return id.match(/[^\/]+\.vue$/)[0]
 }
 
-},{}],7:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 /**
  * Before Interceptor.
  */
@@ -941,7 +411,7 @@ module.exports = {
 
 };
 
-},{"../util":30}],8:[function(require,module,exports){
+},{"../util":26}],4:[function(require,module,exports){
 /**
  * Base client.
  */
@@ -1008,7 +478,7 @@ function parseHeaders(str) {
     return headers;
 }
 
-},{"../../promise":23,"../../util":30,"./xhr":11}],9:[function(require,module,exports){
+},{"../../promise":19,"../../util":26,"./xhr":7}],5:[function(require,module,exports){
 /**
  * JSONP client.
  */
@@ -1058,7 +528,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":23,"../../util":30}],10:[function(require,module,exports){
+},{"../../promise":19,"../../util":26}],6:[function(require,module,exports){
 /**
  * XDomain client (Internet Explorer).
  */
@@ -1097,7 +567,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":23,"../../util":30}],11:[function(require,module,exports){
+},{"../../promise":19,"../../util":26}],7:[function(require,module,exports){
 /**
  * XMLHttp client.
  */
@@ -1149,7 +619,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":23,"../../util":30}],12:[function(require,module,exports){
+},{"../../promise":19,"../../util":26}],8:[function(require,module,exports){
 /**
  * CORS Interceptor.
  */
@@ -1188,7 +658,7 @@ function crossOrigin(request) {
     return (requestUrl.protocol !== originUrl.protocol || requestUrl.host !== originUrl.host);
 }
 
-},{"../util":30,"./client/xdr":10}],13:[function(require,module,exports){
+},{"../util":26,"./client/xdr":6}],9:[function(require,module,exports){
 /**
  * Header Interceptor.
  */
@@ -1216,7 +686,7 @@ module.exports = {
 
 };
 
-},{"../util":30}],14:[function(require,module,exports){
+},{"../util":26}],10:[function(require,module,exports){
 /**
  * Service for sending network requests.
  */
@@ -1316,7 +786,7 @@ Http.headers = {
 
 module.exports = _.http = Http;
 
-},{"../promise":23,"../util":30,"./before":7,"./client":8,"./cors":12,"./header":13,"./interceptor":15,"./jsonp":16,"./method":17,"./mime":18,"./timeout":19}],15:[function(require,module,exports){
+},{"../promise":19,"../util":26,"./before":3,"./client":4,"./cors":8,"./header":9,"./interceptor":11,"./jsonp":12,"./method":13,"./mime":14,"./timeout":15}],11:[function(require,module,exports){
 /**
  * Interceptor factory.
  */
@@ -1363,7 +833,7 @@ function when(value, fulfilled, rejected) {
     return promise.then(fulfilled, rejected);
 }
 
-},{"../promise":23,"../util":30}],16:[function(require,module,exports){
+},{"../promise":19,"../util":26}],12:[function(require,module,exports){
 /**
  * JSONP Interceptor.
  */
@@ -1383,7 +853,7 @@ module.exports = {
 
 };
 
-},{"./client/jsonp":9}],17:[function(require,module,exports){
+},{"./client/jsonp":5}],13:[function(require,module,exports){
 /**
  * HTTP method override Interceptor.
  */
@@ -1402,7 +872,7 @@ module.exports = {
 
 };
 
-},{}],18:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * Mime Interceptor.
  */
@@ -1440,7 +910,7 @@ module.exports = {
 
 };
 
-},{"../util":30}],19:[function(require,module,exports){
+},{"../util":26}],15:[function(require,module,exports){
 /**
  * Timeout Interceptor.
  */
@@ -1472,7 +942,7 @@ module.exports = function () {
     };
 };
 
-},{}],20:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * Install plugin.
  */
@@ -1527,7 +997,7 @@ if (window.Vue) {
 
 module.exports = install;
 
-},{"./http":14,"./promise":23,"./resource":24,"./url":25,"./util":30}],21:[function(require,module,exports){
+},{"./http":10,"./promise":19,"./resource":20,"./url":21,"./util":26}],17:[function(require,module,exports){
 /**
  * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
  */
@@ -1708,7 +1178,7 @@ p.catch = function (onRejected) {
 
 module.exports = Promise;
 
-},{"../util":30}],22:[function(require,module,exports){
+},{"../util":26}],18:[function(require,module,exports){
 /**
  * URL Template v2.0.6 (https://github.com/bramstein/url-template)
  */
@@ -1860,7 +1330,7 @@ exports.encodeReserved = function (str) {
     }).join('');
 };
 
-},{}],23:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /**
  * Promise adapter.
  */
@@ -1971,7 +1441,7 @@ p.always = function (callback) {
 
 module.exports = Promise;
 
-},{"./lib/promise":21,"./util":30}],24:[function(require,module,exports){
+},{"./lib/promise":17,"./util":26}],20:[function(require,module,exports){
 /**
  * Service for interacting with RESTful services.
  */
@@ -2083,7 +1553,7 @@ Resource.actions = {
 
 module.exports = _.resource = Resource;
 
-},{"./util":30}],25:[function(require,module,exports){
+},{"./util":26}],21:[function(require,module,exports){
 /**
  * Service for URL templating.
  */
@@ -2215,7 +1685,7 @@ function serialize(params, obj, scope) {
 
 module.exports = _.url = Url;
 
-},{"../util":30,"./legacy":26,"./query":27,"./root":28,"./template":29}],26:[function(require,module,exports){
+},{"../util":26,"./legacy":22,"./query":23,"./root":24,"./template":25}],22:[function(require,module,exports){
 /**
  * Legacy Transform.
  */
@@ -2263,7 +1733,7 @@ function encodeUriQuery(value, spaces) {
         replace(/%20/g, (spaces ? '%20' : '+'));
 }
 
-},{"../util":30}],27:[function(require,module,exports){
+},{"../util":26}],23:[function(require,module,exports){
 /**
  * Query Parameter Transform.
  */
@@ -2289,7 +1759,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":30}],28:[function(require,module,exports){
+},{"../util":26}],24:[function(require,module,exports){
 /**
  * Root Prefix Transform.
  */
@@ -2307,7 +1777,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":30}],29:[function(require,module,exports){
+},{"../util":26}],25:[function(require,module,exports){
 /**
  * URL Template (RFC 6570) Transform.
  */
@@ -2325,7 +1795,7 @@ module.exports = function (options) {
     return url;
 };
 
-},{"../lib/url-template":22}],30:[function(require,module,exports){
+},{"../lib/url-template":18}],26:[function(require,module,exports){
 /**
  * Utility functions.
  */
@@ -2449,7 +1919,7 @@ function merge(target, source, deep) {
     }
 }
 
-},{}],31:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v1.0.21
@@ -12375,529 +11845,146 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":4}],32:[function(require,module,exports){
-var inserted = exports.cache = {}
-
-exports.insert = function (css) {
-  if (inserted[css]) return
-  inserted[css] = true
-
-  var elem = document.createElement('style')
-  elem.setAttribute('type', 'text/css')
-
-  if ('textContent' in elem) {
-    elem.textContent = css
-  } else {
-    elem.styleSheet.cssText = css
-  }
-
-  document.getElementsByTagName('head')[0].appendChild(elem)
-  return elem
-}
-
-},{}],33:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n      label[_v-54816970] {\n           display: block;\n           /*margin-bottom: 1.5em;*/\n       }\n\n       label > span[_v-54816970] {\n           display: inline-block;\n           width: 8em;\n           vertical-align: top;\n       }\n.valid-titleField[_v-54816970] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.no-input[_v-54816970] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.invalid-input[_v-54816970] {\n  background-color: rgba(236, 88, 64, 0.1);\n  border: 1px dotted red;\n}\n.invalid[_v-54816970] {\n  color: #ff0000;\n}\n\nfieldset label.radiobtns[_v-54816970]  {\n  display: inline;\n  margin: 4px;\n  padding: 2px;\n}\n\n")
-'use strict';
-
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-module.exports = {
-  data: function data() {
-    return {
-      sdate: '',
-      edate: '',
-      stime: '',
-      rdate: '',
-      ticketoptions: [{ text: 'Online', value: 'online' }, { text: 'Phone', value: 'phone' }, { text: 'Ticket Office', value: 'office' }, { text: 'Online, Phone and Ticket Office', value: 'all' }, { text: 'Other', value: 'other' }],
-      participants: [{ text: 'Open to Public', value: 'public' }, { text: 'Students Only', value: 'students' }, { text: 'Invitation Only', value: 'invite' }, { text: 'Tickets Required', value: 'tickets' }],
-      buildings: [],
-      categories: {},
-      minicalendars: {},
-      data: {},
-      eventform: {},
-      newevent: {},
-      response: {},
-      formStatus: {},
-      vModelLike: "",
-      formInputs: {},
-      formErrors: {}
-    };
-  },
-  props: {
-    //add props
-  },
-  computed: {},
-  methods: {
-    fetchEvents: function fetchEvents() {
-      this.$http.get('/api/events', function (data) {
-        this.events = data;
-      });
-    },
-    fetchCategoryList: function fetchCategoryList() {
-      this.$http.get('/api/categories').then(function (response) {
-        console.log('response->categories=' + (0, _stringify2.default)(response.data));
-        this.categories = response.data.data;
-      }, function (response) {
-        //  this.$set(this.formErrors, response.data);
-        console.log(response);
-      });
-    },
-    fetchMiniCalendarList: function fetchMiniCalendarList() {
-      this.$http.get('/api/minicalendars').then(function (response) {
-        console.log('response->minicalendars=' + (0, _stringify2.default)(response.data));
-        this.minicalendars = response.data.data;
-      }, function (response) {
-        //  this.$set(this.formErrors, response.data);
-        console.log(response);
-      });
-    },
-    fetchBuildingList: function fetchBuildingList() {
-      this.$http.get('api/buildings', function (data) {
-        this.buildings = data;
-      });
-    },
-    updateEvent: function updateEvent() {
-      var resource = this.$resource('api/events/:id');
-      resource.update({ id: 1 }, { name: 'tester' }, function (events) {
-        this.newevent = events;
-      }.bind(this));
-    },
-    submitForm: function submitForm() {
-      //  console.log('this.eventform=' + this.eventform.$valid);
-      this.newevent.start_date = this.sdate;
-      this.newevent.end_date = this.edate;
-      this.newevent.reg_deadline = this.rdate;
-      this.$http.post('/api/events', this.newevent).then(function (response) {
-        //get status
-
-        response.status;
-        console.log('response.status=' + response.status);
-        console.log('response.ok=' + response.ok);
-        console.log('response.statusText=' + response.statusText);
-        console.log('response.request=' + (0, _stringify2.default)(response.request));
-
-        //get all headers
-        response.headers();
-        //get 'expirese' header
-        response.headers('expires');
-
-        //set data on vm
-        if (response.data.errors) {
-          this.formErrors = response.data.errors;
-        } else {
-          this.formErrors = {};
-        }
-
-        console.log('json-' + (0, _stringify2.default)(response.data));
-      }, function (response) {
-        //  this.$set(this.formErrors, response.data);
-        console.log(response);
-      });
-    }
-  },
-  watch: {},
-  created: function created() {
-    this.fetchCategoryList();
-    this.fetchMiniCalendarList();
-  },
-  components: {
-    autocomplete: require('./vue-autocomplete.vue'),
-    'datepicker': require('../vendor/datepicker.vue')
-
-  },
-  events: {
-
-    /**
-    *	Global Autocomplete Callback Event
-    *
-    *	@event-name autocomplete:{event-name}
-    *	@param {String} name name of auto
-    *	@param {Object} data
-    *	@param {Object} json - ajax-loaded only
-    */
-
-    // Autocomplete on before ajax progress
-    'autocomplete:before-ajax': function autocompleteBeforeAjax(name, data) {
-      console.log('before-ajax', name, data);
-    },
-
-    // Autocomplete on ajax progress
-    'autocomplete:ajax-progress': function autocompleteAjaxProgress(name, data) {
-      console.log('ajax-progress', data);
-    },
-
-    // Autocomplete on ajax loaded
-    'autocomplete:ajax-loaded': function autocompleteAjaxLoaded(name, data, json) {
-      console.log('ajax-loaded', data, json);
-    },
-
-    // Autocomplete on focus
-    'autocomplete:focus': function autocompleteFocus(name, evt) {
-      console.log('focus', name, evt);
-    },
-
-    // Autocomplete on input
-    'autocomplete:input': function autocompleteInput(name, data) {
-      console.log('input', data);
-    },
-
-    // Autocomplete on blur
-    'autocomplete:blur': function autocompleteBlur(name, evt) {
-      console.log('blur', evt);
-    },
-
-    // Autocomplete on show
-    'autocomplete:show': function autocompleteShow(name) {
-      console.log('show', name);
-    },
-
-    // Autocomplete on selected
-    'autocomplete:selected': function autocompleteSelected(name, data) {
-      console.log('selected', data);
-      this.newevent.location = data.name;
-      //	this.data = data;
-      console.log('data.name', data.name);
-    },
-
-    // Autocomplete on hide
-    'autocomplete:hide': function autocompleteHide(name) {
-      console.log('hide', name);
-    },
-
-    /**
-    *	Spesific Autocomplete Callback Event By Name
-    *
-    *	@event-name autocomplete-{component-name}:{event-name}
-    *	@param {String} name name of auto
-    *	@param {Object} data
-    *	@param {Object} json - ajax-loaded only
-    */
-
-    // Autocomplete on before ajax progress
-    'autocomplete-locationlist:before-ajax': function autocompleteLocationlistBeforeAjax(data) {
-      console.log('before-ajax-locationlist', data);
-    },
-
-    // Autocomplete on ajax progress
-    'autocomplete-locationlist:ajax-progress': function autocompleteLocationlistAjaxProgress(data) {
-      console.log('ajax-progress-locationlist', data);
-    },
-
-    // Autocomplete on ajax loaded
-    'autocomplete-locationlist:ajax-loaded': function autocompleteLocationlistAjaxLoaded(data, json) {
-      console.log('ajax-loaded-locationlist', data, json);
-    },
-
-    // Autocomplete-locationlist on focus
-    'autocomplete-locationlist:focus': function autocompleteLocationlistFocus(evt) {
-      console.log('focus-locationlist', evt);
-    },
-
-    // Autocomplete-locationlist on input
-    'autocomplete-locationlist:input': function autocompleteLocationlistInput(data) {
-      console.log('input-locationlist', data);
-    },
-
-    // Autocomplete-locationlist on blur
-    'autocomplete-locationlist:blur': function autocompleteLocationlistBlur(evt) {
-      console.log('blur-locationlist', evt);
-    },
-
-    // Autocomplete-locationlist on show
-    'autocomplete-locationlist:show': function autocompleteLocationlistShow() {
-      console.log('show-locationlist');
-    },
-
-    // Autocomplete-locationlist on selected
-    'autocomplete-locationlist:selected': function autocompleteLocationlistSelected(data) {
-      console.log('selected-locationlist', data);
-    },
-
-    // Autocomplete-locationlist on hide
-    'autocomplete-locationlist:hide': function autocompleteLocationlistHide() {
-      console.log('hide-locationlist');
-    }
-
-  }
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <form @submit.prevent=\"submitForm\" _v-54816970=\"\">\n    <div class=\"row\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" _v-54816970=\"\">\n      <div class=\"small-12 column\" _v-54816970=\"\">\n        <label _v-54816970=\"\">Title\n        <input v-model=\"newevent.title\" name=\"title\" type=\"text\" _v-54816970=\"\">\n        <p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-54816970=\"\">Need a Title!</p>\n      </label>\n      </div>\n    </div>\n    <div class=\"row\" _v-54816970=\"\">\n      <div class=\"small-12 column\" _v-54816970=\"\">\n      <label _v-54816970=\"\">Short Title\n        <input v-model=\"newevent.short_title\" type=\"text\" placeholder=\"Short Title\" name=\"short-title\" _v-54816970=\"\">\n      </label>\n    </div>\n    </div>\n    <div class=\"row\" v-bind:class=\"[formErrors.location ? 'invalid-input' : '']\" _v-54816970=\"\">\n      <div class=\"small-12 column\" _v-54816970=\"\">\n      <label _v-54816970=\"\">Location\n        <autocomplete id=\"location\" class=\"location\" name=\"locationlist\" placeholder=\"Type Here\" url=\"/api/buildings\" param=\"q\" anchor=\"name\" label=\"alias\" model=\"vModelLike\" _v-54816970=\"\">\n        </autocomplete>\n        <p v-if=\"formErrors.location\" class=\"help-text invalid\" _v-54816970=\"\">Need a Location!</p>\n      </label>\n    </div>\n    </div>\n  <div class=\"row\" _v-54816970=\"\">\n    <div class=\"medium-4 columns\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" _v-54816970=\"\">\n      <label for=\"start-date\" _v-54816970=\"\">Start Date:</label>\n      <datepicker id=\"start-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"start-date\" :value.sync=\"sdate\" aria-describedby=\"errorStartDate\" _v-54816970=\"\"></datepicker>\n      <p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-54816970=\"\">Need a Start Date</p>\n    </div>\n    <div class=\"medium-4 columns\" _v-54816970=\"\">\n      <label for=\"start-time\" _v-54816970=\"\">Start Time:</label>\n      <input id=\"start-time\" type=\"time\" v-model=\"newevent.start_time\" _v-54816970=\"\">\n    </div>\n    <fieldset class=\"medium-4 columns\" _v-54816970=\"\">\n      <label for=\"all-day\" _v-54816970=\"\">All Day?</label>\n      <label for=\"allDayYes\" class=\"radiobtns\" _v-54816970=\"\">Yes</label><input type=\"radio\" name=\"all-day\" id=\"allDayYes\" value=\"1\" v-model=\"newevent.all_day\" _v-54816970=\"\">\n      <label for=\"allDayNo\" class=\"radiobtns\" _v-54816970=\"\">No</label><input type=\"radio\" name=\"all-day\" id=\"allDayNo\" value=\"0\" v-model=\"newevent.all_day\" _v-54816970=\"\">\n    </fieldset>\n  </div>\n  <div class=\"row\" _v-54816970=\"\">\n    <div class=\"medium-4 column\" v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" _v-54816970=\"\">\n      <label for=\"end-date\" _v-54816970=\"\">End Date:</label>\n      <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\" _v-54816970=\"\"></datepicker>\n    </div>\n    <div class=\"medium-4 column\" _v-54816970=\"\">\n      <label for=\"end-time\" _v-54816970=\"\">Start Time:</label>\n      <input id=\"end-time\" type=\"time\" v-model=\"newevent.end_time\" _v-54816970=\"\">\n    </div>\n    <fieldset class=\"small-4 columns\" _v-54816970=\"\">\n      <label _v-54816970=\"\">No End Date:</label>\n      <label for=\"end-time-yes\" class=\"radiobtns\" _v-54816970=\"\">yes</label><input id=\"end-time-yes\" name=\"no-end-time\" type=\"radio\" value=\"1\" v-model=\"newevent.no_end_time\" _v-54816970=\"\">\n      <label for=\"end-time-no\" class=\"radiobtns\" _v-54816970=\"\">no</label><input id=\"end-time-no\" name=\"no-end-time\" type=\"radio\" value=\"0\" v-model=\"newevent.no_end_time\" _v-54816970=\"\">\n    </fieldset>\n  </div>\n  <div class=\"row\" v-bind:class=\"[formErrors.categories ? 'invalid-input' : '']\" _v-54816970=\"\">\n    <div class=\"small-12 column\" _v-54816970=\"\">\n      <label for=\"categories\" _v-54816970=\"\">Categories:</label>\n      <select v-model=\"newevent.categories\" id=\"categories\" multiple=\"multiple\" class=\"multiselect\" _v-54816970=\"\">\n        <option v-for=\"category in categories\" :value=\"category.id\" _v-54816970=\"\">\n          {{category.category}}\n        </option>\n    </select>\n  </div>\n</div>\n<div class=\"row\" v-bind:class=\"[formErrors.contact_person ? 'invalid-input' : '']\" _v-54816970=\"\">\n<div class=\"small-12 column\" _v-54816970=\"\">\n  <label _v-54816970=\"\">Contact Person\n    <input v-model=\"newevent.contact_person\" name=\"contact-person\" type=\"text\" _v-54816970=\"\">\n    <p v-if=\"formErrors.contact_person\" class=\"help-text invalid\" _v-54816970=\"\">Need a Contact Person!</p>\n  </label>\n</div>\n</div>\n<div class=\"row\" v-bind:class=\"[formErrors.contact_phone? 'invalid-input' : '']\" _v-54816970=\"\">\n  <div class=\"small-12 column\" _v-54816970=\"\">\n  <label _v-54816970=\"\">Contact Phone <em _v-54816970=\"\">(ex. 734.487.1849)</em>\n    <input v-model=\"newevent.contact_phone\" v-bind:class=\"[formErrors.contact_phone ? 'invalid-input' : '']\" name=\"contact-phone\" type=\"text\" _v-54816970=\"\">\n    <p v-if=\"formErrors.contact_phone\" class=\"help-text invalid\" _v-54816970=\"\">Need a Contact Phone!</p>\n  </label>\n</div>\n</div>\n<div class=\"row\" v-bind:class=\"[formErrors.contact_email? 'invalid-input' : '']\" _v-54816970=\"\">\n  <div class=\"small-12 column\" _v-54816970=\"\">\n  <label _v-54816970=\"\">Contact Email: <em _v-54816970=\"\">(ex. janedoe@emich.edu)</em>\n    <input v-model=\"newevent.contact_email\" v-bind:class=\"[formErrors.contact_email ? 'invalid-input' : '']\" name=\"contact-email\" type=\"text\" _v-54816970=\"\">\n    <p v-if=\"formErrors.contact_email\" class=\"help-text invalid\" _v-54816970=\"\">Need a Contact Email!</p>\n  </label>\n</div>\n</div>\n<div class=\"row\" _v-54816970=\"\">\n    <div class=\"small-12 column\" _v-54816970=\"\">\n  <label _v-54816970=\"\">Contact Fax: <em _v-54816970=\"\">(ex. 734.487.1849)</em>\n    <input v-model=\"newevent.contact_fax\" v-bind:class=\"[formErrors.contact_fax ? 'invalid-input' : '']\" name=\"contact-fax\" type=\"text\" _v-54816970=\"\">\n  </label>\n</div>\n</div>\n<div class=\"row\" _v-54816970=\"\">\n    <div class=\"small-12 column\" _v-54816970=\"\">\n  <label _v-54816970=\"\">Related Link: <em _v-54816970=\"\">(ex. http://www.emich.edu/calendar)</em>\n    <input v-model=\"newevent.related_link_1\" v-bind:class=\"[formErrors.related_link_1 ? 'invalid-input' : '']\" name=\"related-link-1\" type=\"text\" _v-54816970=\"\">\n  </label>\n  <label _v-54816970=\"\">Related Link: <em _v-54816970=\"\">(ex. http://www.emich.edu/calendar)</em>\n    <input v-model=\"newevent.related_link_2\" v-bind:class=\"[formErrors.related_link_2 ? 'invalid-input' : '']\" name=\"related-link-2\" type=\"text\" _v-54816970=\"\">\n  </label>\n  <label _v-54816970=\"\">Related Link: <em _v-54816970=\"\">(ex. http://www.emich.edu/calendar)</em>\n    <input v-model=\"newevent.related_link_1\" v-bind:class=\"[formErrors.related_link_1 ? 'invalid-input' : '']\" name=\"related-link-1\" type=\"text\" _v-54816970=\"\">\n  </label>\n</div>\n</div>\n<div class=\"row\" _v-54816970=\"\">\n    <div class=\"small-12 column\" _v-54816970=\"\">\n  <label for=\"reg-deadline\" _v-54816970=\"\">Registration Deadline  </label>\n    <datepicker id=\"reg-deadline\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"reg-deadline\" :value.sync=\"rdate\" _v-54816970=\"\"></datepicker>\n</div>\n</div>\n<div class=\"row\" _v-54816970=\"\">\n  <div class=\"medium-6 columns\" _v-54816970=\"\">\n    <label _v-54816970=\"\">Event Cost\n      <input v-model=\"newevent.event_cost\" v-bind:class=\"[formErrors.event_cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"text\" _v-54816970=\"\">\n    </label>\n  </div>\n  <fieldset class=\"small-4 columns\" _v-54816970=\"\">\n    <label _v-54816970=\"\">Free</label>\n    <label for=\"free-yes\" class=\"radiobtns\" _v-54816970=\"\">yes</label><input id=\"free-yes\" name=\"free-time\" type=\"radio\" value=\"1\" v-model=\"newevent.free\" _v-54816970=\"\">\n    <label for=\"free-no\" class=\"radiobtns\" _v-54816970=\"\">no</label><input id=\"free-no\" name=\"free-time\" type=\"radio\" value=\"0\" v-model=\"newevent.free\" _v-54816970=\"\">\n  </fieldset>\n</div>\n<div class=\"row\" _v-54816970=\"\">\n  <div class=\"small-12 column\" _v-54816970=\"\">\n  <label _v-54816970=\"\">Tickets Available\n    <select v-model=\"newevent.tickets\" _v-54816970=\"\">\n      <option v-for=\"ticketoption in ticketoptions\" v-bind:value=\"ticketoption.value\" _v-54816970=\"\">\n       {{ ticketoption.text }}\n     </option>\n  </select>\n  </label>\n  <template v-if=\"newevent.tickets == 'online' || newevent.tickets == 'all'\">\n    <label _v-54816970=\"\">Link: <em _v-54816970=\"\">(ex. http://www.emich.edu/calendar)</em>\n      <input v-model=\"newevent.ticket_details_online\" v-bind:class=\"[formErrors.ticket_details_online ? 'invalid-input' : '']\" name=\"ticket-details-online\" type=\"text\" _v-54816970=\"\">\n    </label>\n  </template>\n  <template v-if=\"newevent.tickets == 'phone' || newevent.tickets == 'all'\">\n    <label _v-54816970=\"\">Tickets by Phone <em _v-54816970=\"\">(ex. 734.487.1849)</em>\n      <input v-model=\"newevent.ticket_details_phone\" v-bind:class=\"[formErrors.ticket_details_phone ? 'invalid-input' : '']\" name=\"ticket-details-phone\" type=\"text\" _v-54816970=\"\">\n    </label>\n  </template>\n  <template v-if=\"newevent.tickets == 'office' || newevent.tickets == 'all'\">\n    <label _v-54816970=\"\">Address\n      <input v-model=\"newevent.ticket_details_office\" v-bind:class=\"[formErrors.ticket_details_office ? 'invalid-input' : '']\" name=\"ticket-details-office\" type=\"text\" _v-54816970=\"\">\n    </label>\n  </template>\n  <template v-if=\"newevent.tickets == 'other'\">\n    <label _v-54816970=\"\">Other\n      <input v-model=\"newevent.ticket_details_other\" v-bind:class=\"[formErrors.ticket_details_other ? 'invalid-input' : '']\" name=\"ticket-details-other\" type=\"text\" _v-54816970=\"\">\n    </label>\n  </template>\n</div>\n</div>\n<div class=\"row\" _v-54816970=\"\">\n  <div class=\"small-12 column\" _v-54816970=\"\">\n  <label _v-54816970=\"\">Participants\n    <select v-model=\"newevent.participants\" _v-54816970=\"\">\n      <option v-for=\"participant in participants\" v-bind:value=\"participant.value\" _v-54816970=\"\">\n       {{ participant.text }}\n     </option>\n  </select>\n  </label>\n</div>\n</div>\n<div class=\"row\" _v-54816970=\"\">\n  <fieldset class=\"small-4 columns\" _v-54816970=\"\">\n    <label for=\"lbc-reviewed\" _v-54816970=\"\">LBC Approved: (pre-approval required)</label>\n    <label for=\"lbc-yes\" class=\"radiobtns\" _v-54816970=\"\">yes</label><input id=\"lbc-reviewed-yes\" name=\"lbc-reviewed\" type=\"radio\" value=\"1\" v-model=\"newevent.lbc_reviewed\" _v-54816970=\"\">\n    <label for=\"lbc-no\" class=\"radiobtns\" _v-54816970=\"\">no</label><input id=\"lbc-reviewed-no\" name=\"lbc-reviewed\" type=\"radio\" value=\"0\" v-model=\"newevent.lbc_reviewed\" _v-54816970=\"\">\n  </fieldset>\n</div>\n<div class=\"row\" v-bind:class=\"[formErrors.description ? 'invalid-input' : '']\" _v-54816970=\"\">\n    <div class=\"small-12 column\" _v-54816970=\"\">\n  <label _v-54816970=\"\">Description</label>\n    <textarea v-model=\"newevent.description\" v-bind:class=\"[formErrors.description ? 'invalid-input' : '']\" name=\"description\" type=\"textarea\" _v-54816970=\"\"></textarea>\n    <p v-if=\"formErrors.description\" class=\"help-text invalid\" _v-54816970=\"\">Need a Description!</p>\n  </div>\n</div>\n<div class=\"row\" _v-54816970=\"\">\n    <div class=\"small-12 column\" _v-54816970=\"\">\n  <label _v-54816970=\"\">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</label>\n  <select v-model=\"newevent.mini_calendar\" id=\"mini_calendar\" _v-54816970=\"\">\n    <option v-for=\"minicalendar in minicalendars\" :value=\"minicalendar.id\" _v-54816970=\"\">\n      {{minicalendar.calendar}}\n    </option>\n</select>\n</div>\n</div>\n  <div class=\"row\" _v-54816970=\"\">\n      <div class=\"small-12 column\" _v-54816970=\"\">\n    <button class=\"button\" type=\"submit\" _v-54816970=\"\">Publish</button>\n  </div>\n  </div>\n</form>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventForm.vue"
-  module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n      label[_v-54816970] {\n           display: block;\n           /*margin-bottom: 1.5em;*/\n       }\n\n       label > span[_v-54816970] {\n           display: inline-block;\n           width: 8em;\n           vertical-align: top;\n       }\n.valid-titleField[_v-54816970] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.no-input[_v-54816970] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.invalid-input[_v-54816970] {\n  background-color: rgba(236, 88, 64, 0.1);\n  border: 1px dotted red;\n}\n.invalid[_v-54816970] {\n  color: #ff0000;\n}\n\nfieldset label.radiobtns[_v-54816970]  {\n  display: inline;\n  margin: 4px;\n  padding: 2px;\n}\n\n"] = false
-    document.head.removeChild(__vueify_style__)
-  })
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"../vendor/datepicker.vue":36,"./vue-autocomplete.vue":34,"babel-runtime/core-js/json/stringify":1,"vue":31,"vue-hot-reload-api":6,"vueify-insert-css":32}],34:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n.transition, .autocomplete, .showAll-transition, .autocomplete ul, .autocomplete ul li a{\n\ttransition:all 0.3s ease-out;\n\t-moz-transition:all 0.3s ease-out;\n\t-webkit-transition:all 0.3s ease-out;\n\t-o-transition:all 0.3s ease-out;\n}\n\n.autocomplete ul{\n\tfont-family: sans-serif;\n\tposition: absolute;\n\tlist-style: none;\n\tbackground: #f8f8f8;\n\tpadding: 10px 0;\n\tmargin: 0;\n\tdisplay: inline-block;\n\tmin-width: 15%;\n\tmargin-top: 10px;\n}\n\n.autocomplete ul:before{\n\tcontent: \"\";\n\tdisplay: block;\n\tposition: absolute;\n\theight: 0;\n\twidth: 0;\n\tborder: 10px solid transparent;\n\tborder-bottom: 10px solid #f8f8f8;\n\tleft: 46%;\n\ttop: -20px\n}\n\n.autocomplete ul li a{\n\ttext-decoration: none;\n\tdisplay: block;\n\tbackground: #f8f8f8;\n\tcolor: #2b2b2b;\n\tpadding: 5px;\n\tpadding-left: 10px;\n}\n\n.autocomplete ul li a:hover, .autocomplete ul li.focus-list a{\n\tcolor: white;\n\tbackground: #2F9AF7;\n}\n\n.autocomplete ul li a span{\n\tdisplay: block;\n\tmargin-top: 3px;\n\tcolor: grey;\n\tfont-size: 13px;\n}\n\n.autocomplete ul li a:hover span, .autocomplete ul li.focus-list a span{\n\tcolor: white;\n}\n\n.showAll-transition{\n\topacity: 1;\n\theight: 50px;\n\toverflow: hidden;\n}\n\n.showAll-enter{\n\topacity: 0.3;\n\theight: 0;\n}\n\n.showAll-leave{\n\tdisplay: none;\n}\n\n")
+},{"_process":1}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
-
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*! Copyright (c) 2016 Naufal Rabbani (http://github.com/BosNaufal)
-* Licensed Under MIT (http://opensource.org/licenses/MIT)
-*
-* Version 0.0.1
-*
-*/
-
-// Transition (Optional)
-// Vue.transition('showAll',{});
-
 exports.default = {
-	props: {
-		id: String,
-		class: String,
-		name: String,
-		placeholder: String,
-
-		model: String, // v-model like
-
-		// Anchor of AJAX list
-		anchor: {
-			type: String,
-			required: true
-		},
-
-		// Label of AJAX list
-		label: String,
-
-		// ajax URL will be get
-		url: {
-			type: String,
-			required: true
-		},
-
-		// query param
-		param: {
-			type: String,
-			default: 'q'
-		},
-
-		// add 'limit' query to AJAX URL will be fetched
-		limit: {
-			type: String,
-			default: ''
-		}
-	},
-
-	data: function data() {
-		return {
-			showList: false,
-			type: "",
-			json: [],
-
-			// Get the original data
-			cleanUp: function cleanUp(data) {
-				return JSON.parse((0, _stringify2.default)(data));
-			},
-
-
-			focusList: ""
-		};
-	},
-
-
-	watch: {
-		type: function type(val, old) {
-			// Sync parent model with $data.type
-			return this.$parent.$data[this.model] = val;
-		}
-	},
-
-	methods: {
-		input: function input(val) {
-			this.showList = true;
-
-			// Callback Event
-			this.$dispatch('autocomplete:input', this.$get('name'), val);
-			this.$dispatch('autocomplete-' + this.$get('name') + ':input', val);
-
-			this.$emit('getData', val);
-			return this.$parent.$data[this.model] = val;
-		},
-		showAll: function showAll() {
-			this.json = [];
-			this.$emit('getData', "");
-
-			// Callback Event
-			this.$dispatch('autocomplete:show', this.$get('name'));
-			this.$dispatch('autocomplete-' + this.$get('name') + ':show');
-
-			this.showList = true;
-		},
-		hideAll: function hideAll(e) {
-			var _this = this;
-
-			// Callback Event
-			this.$dispatch('autocomplete:blur', this.$get('name'), e);
-			this.$dispatch('autocomplete-' + this.$get('name') + ':blur', e);
-
-			setTimeout(function () {
-
-				// Callback Event
-				_this.$dispatch('autocomplete:hide', _this.$get('name'));
-				_this.$dispatch('autocomplete-' + _this.$get('name') + ':hide');
-
-				_this.showList = false;
-			}, 250);
-		},
-		focus: function focus(e) {
-			this.focusList = 0;
-
-			// Callback Event
-			this.$dispatch('autocomplete:focus', this.$get('name'), e);
-			this.$dispatch('autocomplete-' + this.$get('name') + ':focus', e);
-		},
-		mousemove: function mousemove(i) {
-			this.focusList = i;
-		},
-		keydown: function keydown(e) {
-			var key = e.keyCode;
-
-			// Disable when list isn't showing up
-			if (!this.showList) return;
-
-			switch (key) {
-				case 40:
-					//down
-					this.focusList++;
-					break;
-				case 38:
-					//up
-					this.focusList--;
-					break;
-				case 13:
-					//enter
-					this.$emit('selectList', this.json[this.focusList]);
-					this.showList = false;
-					break;
-				case 27:
-					//esc
-					this.showList = false;
-					break;
-			}
-
-			// When cursor out of range
-			var listLength = this.json.length - 1;
-			this.focusList = this.focusList > listLength ? 0 : this.focusList < 0 ? listLength : this.focusList;
-		},
-		activeClass: function activeClass(i) {
-			return {
-				'focus-list': i == this.focusList
-			};
-		}
-	},
-
-	events: {
-		selectList: function selectList(data) {
-			var clean = this.cleanUp(data);
-
-			// Put the selected data to type (model)
-			this.type = clean[this.anchor];
-
-			this.showList = false;
-
-			/**
-   * Callback Event
-   * Deep clone of the original object
-   */
-			this.$dispatch('autocomplete:selected', this.$get('name'), clean);
-			this.$dispatch('autocomplete-' + this.$get('name') + ':selected', clean);
-		},
-		getData: function getData(val) {
-			var self = this;
-
-			if (this.url != null) {
-
-				// Callback Event
-				this.$dispatch('autocomplete:before-ajax', self.$get('name'), val);
-				this.$dispatch('autocomplete-' + self.$get('name') + ':before-ajax', val);
-
-				var ajax = new XMLHttpRequest();
-
-				var limit;
-				if (this.$get('limit') != '') {
-					this.limit = parseFloat(this.limit);
-					limit = this.limit != "" ? '&limit=' + this.limit : '';
-				} else {
-					limit = '';
-				}
-
-				ajax.open('GET', this.url + '?' + this.param + '=' + val + limit, true);
-				ajax.send();
-
-				ajax.addEventListener('progress', function (data) {
-					if (data.lengthComputable) {
-
-						// Callback Event
-						self.$dispatch('autocomplete:ajax-progress', self.$get('name'), data);
-						self.$dispatch('autocomplete-' + self.$get('name') + ':ajax-progress', data);
-					}
-				});
-
-				ajax.addEventListener('loadend', function (data) {
-					var json = JSON.parse(this.responseText);
-
-					// Callback Event
-					self.$dispatch('autocomplete:ajax-loaded', self.$get('name'), this, json);
-					self.$dispatch('autocomplete-' + self.$get('name') + ':ajax-loaded', this, json);
-
-					self.json = json;
-				});
-			}
-		}
-	},
-
-	created: function created() {
-		// Sync parent model with $data.type
-		this.type = this.$parent.$data[this.model];
-	}
+    created: function created() {
+        alert('EVENT FOAM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+    }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<input type=\"text\" :id=\"id\" :class=\"class\" :name=\"name\" :placeholder=\"placeholder\" v-model=\"type\" @input=\"input(type)\" @dblclick=\"showAll\" @blur=\"hideAll\" @keydown=\"keydown\" @focus=\"focus\">\n\n<div class=\"autocomplete transition autocomplete-{{ name }}\" id=\"autocomplete-{{ name }}\" v-show=\"showList\">\n\t<ul>\n\t\t<li v-for=\"data in json\" transition=\"showAll\" :class=\"activeClass($index)\">\n\n\t\t\t<a href=\"#\" @click.prevent=\"$emit('selectList',data)\" @mousemove=\"mousemove($index)\">\n\t\t\t\t<b>{{ data[anchor] }}</b>\n\t\t\t\t<span>{{ data[label] }}</span>\n\t\t\t</a>\n\n\t\t</li>\n\t</ul>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/vue-autocomplete.vue"
-  module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n.transition, .autocomplete, .showAll-transition, .autocomplete ul, .autocomplete ul li a{\n\ttransition:all 0.3s ease-out;\n\t-moz-transition:all 0.3s ease-out;\n\t-webkit-transition:all 0.3s ease-out;\n\t-o-transition:all 0.3s ease-out;\n}\n\n.autocomplete ul{\n\tfont-family: sans-serif;\n\tposition: absolute;\n\tlist-style: none;\n\tbackground: #f8f8f8;\n\tpadding: 10px 0;\n\tmargin: 0;\n\tdisplay: inline-block;\n\tmin-width: 15%;\n\tmargin-top: 10px;\n}\n\n.autocomplete ul:before{\n\tcontent: \"\";\n\tdisplay: block;\n\tposition: absolute;\n\theight: 0;\n\twidth: 0;\n\tborder: 10px solid transparent;\n\tborder-bottom: 10px solid #f8f8f8;\n\tleft: 46%;\n\ttop: -20px\n}\n\n.autocomplete ul li a{\n\ttext-decoration: none;\n\tdisplay: block;\n\tbackground: #f8f8f8;\n\tcolor: #2b2b2b;\n\tpadding: 5px;\n\tpadding-left: 10px;\n}\n\n.autocomplete ul li a:hover, .autocomplete ul li.focus-list a{\n\tcolor: white;\n\tbackground: #2F9AF7;\n}\n\n.autocomplete ul li a span{\n\tdisplay: block;\n\tmargin-top: 3px;\n\tcolor: grey;\n\tfont-size: 13px;\n}\n\n.autocomplete ul li a:hover span, .autocomplete ul li.focus-list a span{\n\tcolor: white;\n}\n\n.showAll-transition{\n\topacity: 1;\n\theight: 50px;\n\toverflow: hidden;\n}\n\n.showAll-enter{\n\topacity: 0.3;\n\theight: 0;\n}\n\n.showAll-leave{\n\tdisplay: none;\n}\n\n"] = false
-    document.head.removeChild(__vueify_style__)
-  })
+  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventFoam.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"vue":31,"vue-hot-reload-api":6,"vueify-insert-css":32}],35:[function(require,module,exports){
+},{"vue":27,"vue-hot-reload-api":2}],29:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _EventViewTopBar = require('./EventViewTopBar.vue');
+
+var _EventViewTopBar2 = _interopRequireDefault(_EventViewTopBar);
+
+var _EventViewSideBar = require('./EventViewSideBar.vue');
+
+var _EventViewSideBar2 = _interopRequireDefault(_EventViewSideBar);
+
+var _EventViewContent = require('./EventViewContent.vue');
+
+var _EventViewContent2 = _interopRequireDefault(_EventViewContent);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+    components: { EventViewTopBar: _EventViewTopBar2.default, EventViewSideBar: _EventViewSideBar2.default, EventViewContent: _EventViewContent2.default },
+    ready: function ready() {
+        alert('!!!!!!!!!!!!!!!!!! EventView');
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<event-view-top-bar></event-view-top-bar>\n<div id=\"calendar-content-bar\">\n  <div class=\"row\">\n    <event-view-side-bar></event-view-side-bar>\n    <event-view-content></event-view-content>\n  </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventView.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"./EventViewContent.vue":30,"./EventViewSideBar.vue":31,"./EventViewTopBar.vue":32,"vue":27,"vue-hot-reload-api":2}],30:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    ready: function ready() {
+        alert('EventViewContent>>>>>>>>>EventViewContent');
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"large-9 medium-12 small-12 columns\">\n    <div id=\"calendarfeed\" class=\"week-2016W192\">\n    @foreach ($events as $event)\n        <h4>{{ $event-&gt;present()-&gt;eventListDateString }}</h4>\n        <div class=\"event\">\n          <h6><a href=\"#\" id=\"{{ $event->id }}\">{{$event-&gt;title}}</a></h6>\n          <p>{{ $event-&gt;present()-&gt;displayTimeRange }}</p>\n          <p>\n            <a href=\"#\" class=\"external\">{{$event-&gt;location}}</a>\n          </p>\n          <div class=\"details\" style=\"display: none;\"></div>\n        </div>\n        @endforeach\n  </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewContent.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":27,"vue-hot-reload-api":2}],31:[function(require,module,exports){
+"use strict";
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div id=\"calendar-nav\" class=\"large-3  hide-for-small columns\">\n    <div class=\"calendar-box\">\n      <div class=\"row\">\n          <div class=\"large-12 columns\">\n            <div class=\"calendar\">\n              <div class=\"month\">\n                <a href=\"#\" class=\"back\"></a>\n                <a href=\"#\" class=\"next\"></a>\n                <h5>{{$cd-&gt;format('M')}}</h5>\n                <p>{{$cd-&gt;format('Y')}}</p>\n               JSvars\n              </div>\n              <ul class=\"weekdays\">\n                <li><span href=\"#\">Sun</span></li>\n                <li><span href=\"#\">Mon</span></li>\n                <li><span href=\"#\">Tue</span></li>\n                <li><span href=\"#\">Wed</span></li>\n                <li><span href=\"#\">Thu</span></li>\n                <li><span href=\"#\">Fri</span></li>\n                <li><span href=\"#\">Sat</span></li>\n              </ul>\n              <ul>\n                @for ($i = 0; $i &lt; count($monthArray) ; $i++)\n\n                  @if($monthArray[$i] == $dayInMonth)\n                    <li><a href=\"#\" class=\"active\">{{$monthArray[$i]}}</a></li>\n                  @else\n                <li><a href=\"#\" class=\"\">{{$monthArray[$i]}}</a></li>\n              @endif\n                @endfor\n              </ul>\n            </div>\n          </div>\n        </div>\n      <div id=\"month\" class=\"month-2016-05\">\n\n      </div>\n    </div>\n    <div class=\"calendar-categories\">\n      <h5>Categories</h5><ul class=\"events\">\n        <li class=\"active\"><a href=\"/emu-today/calendar/\" id=\"cat-all-events\">All Events</a></li>\n        <li><a href=\"/emu-today/calendar/?category=alumni\" id=\"cat-alumni\">Alumni</a>            </li>\n        <li><a href=\"/emu-today/calendar/?category=arts\" id=\"cat-arts\">Arts</a><span class=\"hidden\">&nbsp;</span>                    <ul style=\"display: none;\">\n          <li><a href=\"/emu-today/calendar/?category=comedy\" id=\"cat-comedy\">Comedy</a></li>\n          <li><a href=\"/emu-today/calendar/?category=concerts\" id=\"cat-concerts\">Concerts</a></li>\n          <li><a href=\"/emu-today/calendar/?category=dance\" id=\"cat-dance\">Dance</a></li>\n          <li><a href=\"/emu-today/calendar/?category=film\" id=\"cat-film\">Film</a></li>\n          <li><a href=\"/emu-today/calendar/?category=galleries-exhibits\" id=\"cat-galleries-exhibits\">Galleries and Exhibits</a></li>\n          <li><a href=\"/emu-today/calendar/?category=music\" id=\"cat-music\">Music</a></li>\n          <li><a href=\"/emu-today/calendar/?category=performance\" id=\"cat-performance\">Performance</a></li>\n          <li><a href=\"/emu-today/calendar/?category=recitals\" id=\"cat-recitals\">Recitals</a></li>\n          <li><a href=\"/emu-today/calendar/?category=spoken-word\" id=\"cat-spoken-word\">Spoken Word</a></li>\n          <li><a href=\"/emu-today/calendar/?category=theatre\" id=\"cat-theatre\">Theatre</a></li>\n        </ul>\n      </li>\n      <li><a href=\"/emu-today/calendar/?category=conferences-workshops\" id=\"cat-conferences-workshops\">Conferences/Workshops</a>            </li>\n      <li><a href=\"/emu-today/calendar/?category=general\" id=\"cat-general\">General Events</a><span class=\"hidden\">&nbsp;</span>                    <ul style=\"display: none;\">\n        <li><a href=\"/emu-today/calendar/?category=camps\" id=\"cat-camps\">Camps</a></li>\n        <li><a href=\"/emu-today/calendar/?category=commencement\" id=\"cat-commencement\">Commencement</a></li>\n        <li><a href=\"/emu-today/calendar/?category=homecoming\" id=\"cat-homecoming\">Homecoming</a></li>\n        <li><a href=\"/emu-today/calendar/?category=important-dates\" id=\"cat-important-dates\">Important Dates</a></li>\n      </ul>\n    </li>\n    <li><a href=\"/emu-today/calendar/?category=lbc-approved\" id=\"cat-lbc-approved\">LBC Approved Events</a>            </li>\n    <li><a href=\"/emu-today/calendar/?category=lectures-presentations\" id=\"cat-lectures-presentations\">Lectures/Presentations</a>            </li>\n    <li><a href=\"/emu-today/calendar/?category=meetings\" id=\"cat-meetings\">Meetings</a>            </li>\n    <li><a href=\"/emu-today/calendar/?category=sports-recreation\" id=\"cat-sports-recreation\">Sports/Recreation</a><span class=\"hidden\">&nbsp;</span>                    <ul style=\"display: none;\">\n      <li><a href=\"/emu-today/calendar/?category=club-sports\" id=\"cat-club-sports\">Club Sports</a></li>\n      <li><a href=\"/emu-today/calendar/?category=intramurals\" id=\"cat-intramurals\">Intramurals</a></li>\n      <li><a href=\"/emu-today/calendar/?category=varsity-athletics\" id=\"cat-varsity-athletics\">Varsity Athletics</a></li>\n    </ul>\n  </li>\n</ul>\n</div>\n<div class=\"calendar-categories\">\n<h5>Other Calendars</h5>\n<ul>\n  <li><a href=\"http://art.emich.edu/events/upcoming\">Art Galleries</a></li>\n  <li><a href=\"http://www.emueagles.com/calendar.aspx\">Athletics</a></li>\n  <li><a href=\"http://www.emich.edu/hr/calendar/\">Holiday &amp; Payroll</a></li>\n  <li><a href=\"http://www.emich.edu/emutheatre/\">Theatre</a></li>\n</ul>\n</div>\n<div class=\"submit-calendar\">\n<a href=\"manage/\" class=\"button emu-button\">Submit an Event</a>\n</div>\n<div class=\"ypsi-graphic\">\n<a href=\"http://visitypsinow.com/local-events/\"><img src=\"{{ theme('imgs/emu-today/calendar/visit-ypsi.png') }}\" alt=\"Visit Ypsi Calendar\"></a>\n\n</div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewSideBar.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":27,"vue-hot-reload-api":2}],32:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    ready: function ready() {
+        alert('EventView>>>>>>>>>EventViewBar');
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div id=\"graybar\">\n  <div class=\"row\">\n    <div class=\"large-3 hide-for-small noleftpadding columns\">\n      <h4>Calendars</h4>\n    </div>\n    <div class=\"large-9 medium-12 small-12 columns\">\n      <div class=\"row\">\n        <div class=\"large-3 medium-3 small-3 columns\">\n          <h4>Events</h4>\n        </div>\n        <div id=\"before-after\" class=\"large-9 medium-9 small-9 columns\">\n          <a id=\"week-2016W182\" class=\"week-arrow leftnav\" href=\"/emu-today/calendar/?show=2016W182\">  <i class=\"fi-arrow-left calstyle1\"></i></a> Week of May 10 | <a href=\"/emu-today/calendar/\" id=\"today-2016W192.2016-05\" class=\"today\">Today</a> <a id=\"week-2016W202\" class=\"week-arrow rightnav\" href=\"/emu-today/calendar/?show=2016W202\">\n            <i class=\"fi-arrow-right calstyle1\"></i>\n          </a>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewTopBar.vue"
+  if (!module.hot.data) {
+    hotAPI.createRecord(id, module.exports)
+  } else {
+    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":27,"vue-hot-reload-api":2}],33:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
+
+var _EventView = require('./components/EventView.vue');
+
+var _EventView2 = _interopRequireDefault(_EventView);
+
+var _EventFoam = require('./components/EventFoam.vue');
+
+var _EventFoam2 = _interopRequireDefault(_EventFoam);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12905,173 +11992,18 @@ var Vue = require('vue');
 
 Vue.use(_vueResource2.default);
 
-var vueForm = require('vue-form');
-Vue.use(vueForm);
-//
-// var autocomplete = require('./components/vue-autocomplete.vue')
-//
-//
-// Vue.component('autocomplete', autocomplete)
-
 new Vue({
   el: '#vueapp',
-  components: {
-    eventform: require('./components/EventForm.vue')
 
+  components: {
+    EventView: _EventView2.default, EventFoam: _EventFoam2.default
   },
+
   ready: function ready() {
     alert('vue ready');
   }
 });
 
-},{"./components/EventForm.vue":33,"vue":31,"vue-form":5,"vue-resource":20}],36:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n.datetime-picker[_v-2ce18150] {\n    position: relative;\n    display: inline-block;\n    font-family: \"Segoe UI\",\"Lucida Grande\",Helvetica,Arial,\"Microsoft YaHei\";\n    -webkit-font-smoothing: antialiased;\n    color: #333;\n}\n\n.datetime-picker *[_v-2ce18150] {\n    box-sizing: border-box;\n}\n\n.datetime-picker input[_v-2ce18150] {\n    width: 100%;\n    padding: 5px 10px;\n    height: 30px;\n    outline: 0 none;\n    border: 1px solid #ccc;\n    font-size: 13px;\n}\n\n.datetime-picker .picker-wrap[_v-2ce18150] {\n    position: absolute;\n    z-index: 1000;\n    width: 238px;\n    height: 280px;\n    margin-top: 2px;\n    background-color: #fff;\n    box-shadow: 0 0 6px #ccc;\n}\n\n.datetime-picker table[_v-2ce18150] {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    text-align: center;\n    font-size: 13px;\n}\n\n.datetime-picker tr[_v-2ce18150] {\n    height: 34px;\n    border: 0 none;\n}\n\n.datetime-picker th[_v-2ce18150], .datetime-picker td[_v-2ce18150] {\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    width: 34px;\n    height: 34px;\n    padding: 0;\n    border: 0 none;\n    line-height: 34px;\n    text-align: center;\n}\n\n.datetime-picker td[_v-2ce18150] {\n    cursor: pointer;\n}\n\n.datetime-picker td[_v-2ce18150]:hover {\n    background-color: #f0f0f0;\n}\n\n.datetime-picker td.date-pass[_v-2ce18150], .datetime-picker td.date-future[_v-2ce18150] {\n    color: #aaa;\n}\n\n.datetime-picker td.date-active[_v-2ce18150] {\n    background-color: #ececec;\n    color: #3bb4f2;\n}\n\n.datetime-picker .date-head[_v-2ce18150] {\n    background-color: #3bb4f2;\n    text-align: center;\n    color: #fff;\n    font-size: 14px;\n}\n\n.datetime-picker .date-days[_v-2ce18150] {\n    color: #3bb4f2;\n    font-size: 14px;\n}\n\n.datetime-picker .show-year[_v-2ce18150] {\n    display: inline-block;\n    min-width: 62px;\n    vertical-align: middle;\n}\n\n.datetime-picker .show-month[_v-2ce18150] {\n    display: inline-block;\n    min-width: 28px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-2ce18150],\n.datetime-picker .btn-next[_v-2ce18150] {\n    cursor: pointer;\n    display: inline-block;\n    padding: 0 10px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-2ce18150]:hover,\n.datetime-picker .btn-next[_v-2ce18150]:hover {\n    background: rgba(16, 160, 234, 0.5);\n}\n")
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    props: {
-        width: { type: String, default: '238px' },
-        readonly: { type: Boolean, default: false },
-        value: { type: String, default: '' },
-        format: { type: String, default: 'YYYY-MM-DD' }
-    },
-    data: function data() {
-        return {
-            show: false,
-            days: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-            months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            date: [],
-            now: new Date()
-        };
-    },
-
-    watch: {
-        now: function now() {
-            this.update();
-        },
-        show: function show() {
-            this.update();
-        }
-    },
-    methods: {
-        close: function close() {
-            this.show = false;
-        },
-        update: function update() {
-            var arr = [];
-            var time = new Date(this.now);
-            time.setMonth(time.getMonth(), 1); // the first day
-            var curFirstDay = time.getDay();
-            curFirstDay === 0 && (curFirstDay = 7);
-            time.setDate(0); // the last day
-            var lastDayCount = time.getDate();
-            for (var i = curFirstDay; i > 0; i--) {
-                arr.push({
-                    text: lastDayCount - i + 1,
-                    time: new Date(time.getFullYear(), time.getMonth(), lastDayCount - i + 1),
-                    status: 'date-pass'
-                });
-            }
-
-            time.setMonth(time.getMonth() + 2, 0); // the last day of this month
-            var curDayCount = time.getDate();
-            time.setDate(1); // fix bug when month change
-            var value = this.value || this.stringify(new Date());
-            for (var _i = 0; _i < curDayCount; _i++) {
-                var tmpTime = new Date(time.getFullYear(), time.getMonth(), _i + 1);
-                var status = '';
-                this.stringify(tmpTime) === value && (status = 'date-active');
-                arr.push({
-                    text: _i + 1,
-                    time: tmpTime,
-                    status: status
-                });
-            }
-
-            var j = 1;
-            while (arr.length < 42) {
-                arr.push({
-                    text: j,
-                    time: new Date(time.getFullYear(), time.getMonth() + 1, j),
-                    status: 'date-future'
-                });
-                j++;
-            }
-            this.date = arr;
-        },
-        yearClick: function yearClick(flag) {
-            this.now.setFullYear(this.now.getFullYear() + flag);
-            this.now = new Date(this.now);
-        },
-        monthClick: function monthClick(flag) {
-            this.now.setMonth(this.now.getMonth() + flag);
-            this.now = new Date(this.now);
-        },
-        pickDate: function pickDate(index) {
-            this.show = false;
-            this.now = new Date(this.date[index].time);
-            this.value = this.stringify();
-        },
-        parse: function parse(str) {
-            var time = new Date(str);
-            return isNaN(time.getTime()) ? null : time;
-        },
-        stringify: function stringify() {
-            var time = arguments.length <= 0 || arguments[0] === undefined ? this.now : arguments[0];
-            var format = arguments.length <= 1 || arguments[1] === undefined ? this.format : arguments[1];
-
-            var year = time.getFullYear();
-            var month = time.getMonth() + 1;
-            var date = time.getDate();
-            var monthName = this.months[time.getMonth()];
-
-            var map = {
-                YYYY: year,
-                MMM: monthName,
-                MM: ('0' + month).slice(-2),
-                M: month,
-                DD: ('0' + date).slice(-2),
-                D: date
-            };
-            return format.replace(/Y+|M+|D+/g, function (str) {
-                return map[str];
-            });
-        }
-    },
-    ready: function ready() {
-        var _this = this;
-
-        this.now = this.parse(this.value) || new Date();
-        document.addEventListener('click', function (e) {
-            if (!_this.$el.contains(e.target)) {
-                _this.close();
-            }
-        }, false);
-    },
-    beforeDestroy: function beforeDestroy() {
-        document.removeEventListener('click', this.close, false);
-    }
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"datetime-picker\" :style=\"{ width: width }\" _v-2ce18150=\"\">\n    <input type=\"text\" :style=\"styleObj\" :readonly=\"readonly\" :value=\"value\" @click=\"show = !show\" _v-2ce18150=\"\">\n    <div class=\"picker-wrap\" v-show=\"show\" _v-2ce18150=\"\">\n        <table class=\"date-picker\" _v-2ce18150=\"\">\n            <thead _v-2ce18150=\"\">\n                <tr class=\"date-head\" _v-2ce18150=\"\">\n                    <th colspan=\"4\" _v-2ce18150=\"\">\n                        <span class=\"btn-prev\" @click=\"yearClick(-1)\" _v-2ce18150=\"\">&lt;</span>\n                        <span class=\"show-year\" _v-2ce18150=\"\">{{now.getFullYear()}}</span>\n                        <span class=\"btn-next\" @click=\"yearClick(1)\" _v-2ce18150=\"\">&gt;</span>\n                    </th>\n                    <th colspan=\"3\" _v-2ce18150=\"\">\n                        <span class=\"btn-prev\" @click=\"monthClick(-1)\" _v-2ce18150=\"\">&lt;</span>\n                        <span class=\"show-month\" _v-2ce18150=\"\">{{months[now.getMonth()]}}</span>\n                        <span class=\"btn-next\" @click=\"monthClick(1)\" _v-2ce18150=\"\">&gt;</span>\n                    </th>\n                </tr>\n                <tr class=\"date-days\" _v-2ce18150=\"\">\n                    <th v-for=\"day in days\" _v-2ce18150=\"\">{{day}}</th>\n                </tr>\n            </thead>\n            <tbody _v-2ce18150=\"\">\n                <tr v-for=\"i in 6\" _v-2ce18150=\"\">\n                    <td v-for=\"j in 7\" :class=\"date[i * 7 + j] &amp;&amp; date[i * 7 + j].status\" :date=\"date[i * 7 + j] &amp;&amp; date[i * 7 + j].date\" @click=\"pickDate(i * 7 + j)\" _v-2ce18150=\"\">{{date[i * 7 + j] &amp;&amp; date[i * 7 + j].text}}</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/vendor/datepicker.vue"
-  module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n.datetime-picker[_v-2ce18150] {\n    position: relative;\n    display: inline-block;\n    font-family: \"Segoe UI\",\"Lucida Grande\",Helvetica,Arial,\"Microsoft YaHei\";\n    -webkit-font-smoothing: antialiased;\n    color: #333;\n}\n\n.datetime-picker *[_v-2ce18150] {\n    box-sizing: border-box;\n}\n\n.datetime-picker input[_v-2ce18150] {\n    width: 100%;\n    padding: 5px 10px;\n    height: 30px;\n    outline: 0 none;\n    border: 1px solid #ccc;\n    font-size: 13px;\n}\n\n.datetime-picker .picker-wrap[_v-2ce18150] {\n    position: absolute;\n    z-index: 1000;\n    width: 238px;\n    height: 280px;\n    margin-top: 2px;\n    background-color: #fff;\n    box-shadow: 0 0 6px #ccc;\n}\n\n.datetime-picker table[_v-2ce18150] {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    text-align: center;\n    font-size: 13px;\n}\n\n.datetime-picker tr[_v-2ce18150] {\n    height: 34px;\n    border: 0 none;\n}\n\n.datetime-picker th[_v-2ce18150], .datetime-picker td[_v-2ce18150] {\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    width: 34px;\n    height: 34px;\n    padding: 0;\n    border: 0 none;\n    line-height: 34px;\n    text-align: center;\n}\n\n.datetime-picker td[_v-2ce18150] {\n    cursor: pointer;\n}\n\n.datetime-picker td[_v-2ce18150]:hover {\n    background-color: #f0f0f0;\n}\n\n.datetime-picker td.date-pass[_v-2ce18150], .datetime-picker td.date-future[_v-2ce18150] {\n    color: #aaa;\n}\n\n.datetime-picker td.date-active[_v-2ce18150] {\n    background-color: #ececec;\n    color: #3bb4f2;\n}\n\n.datetime-picker .date-head[_v-2ce18150] {\n    background-color: #3bb4f2;\n    text-align: center;\n    color: #fff;\n    font-size: 14px;\n}\n\n.datetime-picker .date-days[_v-2ce18150] {\n    color: #3bb4f2;\n    font-size: 14px;\n}\n\n.datetime-picker .show-year[_v-2ce18150] {\n    display: inline-block;\n    min-width: 62px;\n    vertical-align: middle;\n}\n\n.datetime-picker .show-month[_v-2ce18150] {\n    display: inline-block;\n    min-width: 28px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-2ce18150],\n.datetime-picker .btn-next[_v-2ce18150] {\n    cursor: pointer;\n    display: inline-block;\n    padding: 0 10px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-2ce18150]:hover,\n.datetime-picker .btn-next[_v-2ce18150]:hover {\n    background: rgba(16, 160, 234, 0.5);\n}\n"] = false
-    document.head.removeChild(__vueify_style__)
-  })
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":31,"vue-hot-reload-api":6,"vueify-insert-css":32}]},{},[35]);
+},{"./components/EventFoam.vue":28,"./components/EventView.vue":29,"vue":27,"vue-resource":16}]},{},[33]);
 
 //# sourceMappingURL=main.js.map

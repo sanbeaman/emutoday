@@ -10,7 +10,14 @@ use Illuminate\Support\Facades\Input;
 
 Route::group(['prefix' => 'api'], function() {
   //events api
-    Route::get('events/{id}/categories', 'Api\CategoriesController@index');
+  Route::get('eventview', function() {
+    return view('public.event.home');
+  });
+  Route::get('eventfoam', function() {
+    return view('public.event.form');
+  });
+  Route::get('calendar/events', 'Api\EventsController@byDate');
+  Route::get('events/{id}/categories', 'Api\CategoriesController@index');
    Route::resource('events', 'Api\EventsController');
    Route::resource('categories', 'Api\CategoriesController', ['only'=>['index', 'show']] );
     Route::resource('minicalendars', 'Api\MiniCalendarsController', ['only'=>['index', 'show']] );

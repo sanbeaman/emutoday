@@ -22,6 +22,8 @@ class EventsController extends ApiController
     //  $this->beforeFilter('auth.basic', ['on' => 'post']);
   }
 
+
+
     /**
      * Display a listing of the resource.
      *
@@ -44,6 +46,12 @@ class EventsController extends ApiController
         //return Event::latest()->get();
     }
 
+
+    public function byDate(Request $request)
+    {
+      return $request->all();
+
+    }
     /**
      * Show the form for creating a new resource.
      *

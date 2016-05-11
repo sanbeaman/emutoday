@@ -3,20 +3,16 @@ var Vue = require('vue');
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
 
-var vueForm = require('vue-form');
-Vue.use(vueForm);
-//
-// var autocomplete = require('./components/vue-autocomplete.vue')
-//
-//
-// Vue.component('autocomplete', autocomplete)
+import EventView from './components/EventView.vue';
+import EventFoam from './components/EventFoam.vue';
 
 new Vue({
     el: '#vueapp',
-    components: {
-      eventform: require('./components/EventForm.vue')
 
+    components: {
+      EventView, EventFoam
     },
+    
     ready() {
       alert('vue ready');
     }
