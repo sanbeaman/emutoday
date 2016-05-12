@@ -5,6 +5,7 @@ namespace emutoday;
 use Illuminate\Database\Eloquent\Model;
 use emutoday\Category;
 use Laracasts\Presenter\PresentableTrait;
+use Carbon\Carbon;
 
 class Event extends Model
 {
@@ -58,5 +59,18 @@ class Event extends Model
   public function getCategoryListAttribute()
   {
     return $this->categories->lists('id')->all();
+  }
+
+  public function getStartDateYearAttribute()
+  {
+    $dt = $this->start_date;
+     return $dt->year;
+  }
+
+
+  public function scopeAfterThisDate($query, $date)
+  {
+
+     return $query->where('start_date', '>', $date);
   }
 }

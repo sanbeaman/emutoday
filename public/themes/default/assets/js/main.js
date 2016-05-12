@@ -1,4 +1,15 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/json/stringify"), __esModule: true };
+},{"core-js/library/fn/json/stringify":2}],2:[function(require,module,exports){
+var core  = require('../../modules/_core')
+  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
+module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
+  return $JSON.stringify.apply($JSON, arguments);
+};
+},{"../../modules/_core":3}],3:[function(require,module,exports){
+var core = module.exports = {version: '2.3.0'};
+if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
+},{}],4:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -91,7 +102,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],2:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -391,7 +402,7 @@ function format (id) {
   return id.match(/[^\/]+\.vue$/)[0]
 }
 
-},{}],3:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * Before Interceptor.
  */
@@ -411,7 +422,7 @@ module.exports = {
 
 };
 
-},{"../util":26}],4:[function(require,module,exports){
+},{"../util":29}],7:[function(require,module,exports){
 /**
  * Base client.
  */
@@ -478,7 +489,7 @@ function parseHeaders(str) {
     return headers;
 }
 
-},{"../../promise":19,"../../util":26,"./xhr":7}],5:[function(require,module,exports){
+},{"../../promise":22,"../../util":29,"./xhr":10}],8:[function(require,module,exports){
 /**
  * JSONP client.
  */
@@ -528,7 +539,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":19,"../../util":26}],6:[function(require,module,exports){
+},{"../../promise":22,"../../util":29}],9:[function(require,module,exports){
 /**
  * XDomain client (Internet Explorer).
  */
@@ -567,7 +578,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":19,"../../util":26}],7:[function(require,module,exports){
+},{"../../promise":22,"../../util":29}],10:[function(require,module,exports){
 /**
  * XMLHttp client.
  */
@@ -619,7 +630,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":19,"../../util":26}],8:[function(require,module,exports){
+},{"../../promise":22,"../../util":29}],11:[function(require,module,exports){
 /**
  * CORS Interceptor.
  */
@@ -658,7 +669,7 @@ function crossOrigin(request) {
     return (requestUrl.protocol !== originUrl.protocol || requestUrl.host !== originUrl.host);
 }
 
-},{"../util":26,"./client/xdr":6}],9:[function(require,module,exports){
+},{"../util":29,"./client/xdr":9}],12:[function(require,module,exports){
 /**
  * Header Interceptor.
  */
@@ -686,7 +697,7 @@ module.exports = {
 
 };
 
-},{"../util":26}],10:[function(require,module,exports){
+},{"../util":29}],13:[function(require,module,exports){
 /**
  * Service for sending network requests.
  */
@@ -786,7 +797,7 @@ Http.headers = {
 
 module.exports = _.http = Http;
 
-},{"../promise":19,"../util":26,"./before":3,"./client":4,"./cors":8,"./header":9,"./interceptor":11,"./jsonp":12,"./method":13,"./mime":14,"./timeout":15}],11:[function(require,module,exports){
+},{"../promise":22,"../util":29,"./before":6,"./client":7,"./cors":11,"./header":12,"./interceptor":14,"./jsonp":15,"./method":16,"./mime":17,"./timeout":18}],14:[function(require,module,exports){
 /**
  * Interceptor factory.
  */
@@ -833,7 +844,7 @@ function when(value, fulfilled, rejected) {
     return promise.then(fulfilled, rejected);
 }
 
-},{"../promise":19,"../util":26}],12:[function(require,module,exports){
+},{"../promise":22,"../util":29}],15:[function(require,module,exports){
 /**
  * JSONP Interceptor.
  */
@@ -853,7 +864,7 @@ module.exports = {
 
 };
 
-},{"./client/jsonp":5}],13:[function(require,module,exports){
+},{"./client/jsonp":8}],16:[function(require,module,exports){
 /**
  * HTTP method override Interceptor.
  */
@@ -872,7 +883,7 @@ module.exports = {
 
 };
 
-},{}],14:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /**
  * Mime Interceptor.
  */
@@ -910,7 +921,7 @@ module.exports = {
 
 };
 
-},{"../util":26}],15:[function(require,module,exports){
+},{"../util":29}],18:[function(require,module,exports){
 /**
  * Timeout Interceptor.
  */
@@ -942,7 +953,7 @@ module.exports = function () {
     };
 };
 
-},{}],16:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /**
  * Install plugin.
  */
@@ -997,7 +1008,7 @@ if (window.Vue) {
 
 module.exports = install;
 
-},{"./http":10,"./promise":19,"./resource":20,"./url":21,"./util":26}],17:[function(require,module,exports){
+},{"./http":13,"./promise":22,"./resource":23,"./url":24,"./util":29}],20:[function(require,module,exports){
 /**
  * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
  */
@@ -1178,7 +1189,7 @@ p.catch = function (onRejected) {
 
 module.exports = Promise;
 
-},{"../util":26}],18:[function(require,module,exports){
+},{"../util":29}],21:[function(require,module,exports){
 /**
  * URL Template v2.0.6 (https://github.com/bramstein/url-template)
  */
@@ -1330,7 +1341,7 @@ exports.encodeReserved = function (str) {
     }).join('');
 };
 
-},{}],19:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /**
  * Promise adapter.
  */
@@ -1441,7 +1452,7 @@ p.always = function (callback) {
 
 module.exports = Promise;
 
-},{"./lib/promise":17,"./util":26}],20:[function(require,module,exports){
+},{"./lib/promise":20,"./util":29}],23:[function(require,module,exports){
 /**
  * Service for interacting with RESTful services.
  */
@@ -1553,7 +1564,7 @@ Resource.actions = {
 
 module.exports = _.resource = Resource;
 
-},{"./util":26}],21:[function(require,module,exports){
+},{"./util":29}],24:[function(require,module,exports){
 /**
  * Service for URL templating.
  */
@@ -1685,7 +1696,7 @@ function serialize(params, obj, scope) {
 
 module.exports = _.url = Url;
 
-},{"../util":26,"./legacy":22,"./query":23,"./root":24,"./template":25}],22:[function(require,module,exports){
+},{"../util":29,"./legacy":25,"./query":26,"./root":27,"./template":28}],25:[function(require,module,exports){
 /**
  * Legacy Transform.
  */
@@ -1733,7 +1744,7 @@ function encodeUriQuery(value, spaces) {
         replace(/%20/g, (spaces ? '%20' : '+'));
 }
 
-},{"../util":26}],23:[function(require,module,exports){
+},{"../util":29}],26:[function(require,module,exports){
 /**
  * Query Parameter Transform.
  */
@@ -1759,7 +1770,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":26}],24:[function(require,module,exports){
+},{"../util":29}],27:[function(require,module,exports){
 /**
  * Root Prefix Transform.
  */
@@ -1777,7 +1788,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":26}],25:[function(require,module,exports){
+},{"../util":29}],28:[function(require,module,exports){
 /**
  * URL Template (RFC 6570) Transform.
  */
@@ -1795,7 +1806,7 @@ module.exports = function (options) {
     return url;
 };
 
-},{"../lib/url-template":18}],26:[function(require,module,exports){
+},{"../lib/url-template":21}],29:[function(require,module,exports){
 /**
  * Utility functions.
  */
@@ -1919,7 +1930,7 @@ function merge(target, source, deep) {
     }
 }
 
-},{}],27:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v1.0.21
@@ -11845,7 +11856,27 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":1}],28:[function(require,module,exports){
+},{"_process":4}],31:[function(require,module,exports){
+var inserted = exports.cache = {}
+
+exports.insert = function (css) {
+  if (inserted[css]) return
+  inserted[css] = true
+
+  var elem = document.createElement('style')
+  elem.setAttribute('type', 'text/css')
+
+  if ('textContent' in elem) {
+    elem.textContent = css
+  } else {
+    elem.styleSheet.cssText = css
+  }
+
+  document.getElementsByTagName('head')[0].appendChild(elem)
+  return elem
+}
+
+},{}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11868,7 +11899,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":27,"vue-hot-reload-api":2}],29:[function(require,module,exports){
+},{"vue":30,"vue-hot-reload-api":5}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11883,20 +11914,17 @@ var _EventViewSideBar = require('./EventViewSideBar.vue');
 
 var _EventViewSideBar2 = _interopRequireDefault(_EventViewSideBar);
 
-var _EventViewContent = require('./EventViewContent.vue');
-
-var _EventViewContent2 = _interopRequireDefault(_EventViewContent);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import EventViewContent from './EventViewContent.vue'
 exports.default = {
-    components: { EventViewTopBar: _EventViewTopBar2.default, EventViewSideBar: _EventViewSideBar2.default, EventViewContent: _EventViewContent2.default },
+    components: { EventViewTopBar: _EventViewTopBar2.default, EventViewSideBar: _EventViewSideBar2.default },
     ready: function ready() {
         alert('!!!!!!!!!!!!!!!!!! EventView');
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<event-view-top-bar></event-view-top-bar>\n<div id=\"calendar-content-bar\">\n  <div class=\"row\">\n    <event-view-side-bar></event-view-side-bar>\n    <event-view-content></event-view-content>\n  </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<event-view-top-bar></event-view-top-bar>\n<div id=\"calendar-content-bar\">\n  <div class=\"row\">\n    <event-view-side-bar></event-view-side-bar>\n    <!-- <event-view-content></event-view-content> -->\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -11908,46 +11936,100 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./EventViewContent.vue":30,"./EventViewSideBar.vue":31,"./EventViewTopBar.vue":32,"vue":27,"vue-hot-reload-api":2}],30:[function(require,module,exports){
+},{"./EventViewSideBar.vue":34,"./EventViewTopBar.vue":35,"vue":30,"vue-hot-reload-api":5}],34:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n.events li span.badge {\n  margin-left: 10px;\n}\n")
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    ready: function ready() {
-        alert('EventViewContent>>>>>>>>>EventViewContent');
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+  data: function data() {
+    return {
+      categories: {}
+    };
+  },
+  props: {
+    //add props
+  },
+  computed: {},
+  methods: {
+    fetchEvents: function fetchEvents() {
+      this.$http.get('/api/events', function (data) {
+        this.events = data;
+      });
+    },
+    fetchCategoryList: function fetchCategoryList() {
+      this.$http.get('/api/active-categories').then(function (response) {
+        // console.log('response->categories=' + JSON.stringify(response.data));
+        this.categories = response.data;
+      }, function (response) {
+        //  this.$set(this.formErrors, response.data);
+        console.log(response);
+      });
+    },
+
+    submitForm: function submitForm() {
+      //  console.log('this.eventform=' + this.eventform.$valid);
+      this.newevent.start_date = this.sdate;
+      this.newevent.end_date = this.edate;
+      this.newevent.reg_deadline = this.rdate;
+      this.$http.post('/api/events', this.newevent).then(function (response) {
+        //get status
+
+        response.status;
+        console.log('response.status=' + response.status);
+        console.log('response.ok=' + response.ok);
+        console.log('response.statusText=' + response.statusText);
+        console.log('response.request=' + (0, _stringify2.default)(response.request));
+
+        //get all headers
+        response.headers();
+        //get 'expirese' header
+        response.headers('expires');
+
+        //set data on vm
+        if (response.data.errors) {
+          this.formErrors = response.data.errors;
+        } else {
+          this.formErrors = {};
+        }
+
+        console.log('json-' + (0, _stringify2.default)(response.data));
+      }, function (response) {
+        //  this.$set(this.formErrors, response.data);
+        console.log(response);
+      });
     }
+  },
+  watch: {},
+  created: function created() {
+    this.fetchCategoryList();
+  },
+  components: {},
+  events: {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"large-9 medium-12 small-12 columns\">\n    <div id=\"calendarfeed\" class=\"week-2016W192\">\n    @foreach ($events as $event)\n        <h4>{{ $event-&gt;present()-&gt;eventListDateString }}</h4>\n        <div class=\"event\">\n          <h6><a href=\"#\" id=\"{{ $event->id }}\">{{$event-&gt;title}}</a></h6>\n          <p>{{ $event-&gt;present()-&gt;displayTimeRange }}</p>\n          <p>\n            <a href=\"#\" class=\"external\">{{$event-&gt;location}}</a>\n          </p>\n          <div class=\"details\" style=\"display: none;\"></div>\n        </div>\n        @endforeach\n  </div>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewContent.vue"
-  if (!module.hot.data) {
-    hotAPI.createRecord(id, module.exports)
-  } else {
-    hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":27,"vue-hot-reload-api":2}],31:[function(require,module,exports){
-"use strict";
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div id=\"calendar-nav\" class=\"large-3  hide-for-small columns\">\n    <div class=\"calendar-box\">\n      <div class=\"row\">\n          <div class=\"large-12 columns\">\n            <div class=\"calendar\">\n              <div class=\"month\">\n                <a href=\"#\" class=\"back\"></a>\n                <a href=\"#\" class=\"next\"></a>\n                <h5>{{$cd-&gt;format('M')}}</h5>\n                <p>{{$cd-&gt;format('Y')}}</p>\n               JSvars\n              </div>\n              <ul class=\"weekdays\">\n                <li><span href=\"#\">Sun</span></li>\n                <li><span href=\"#\">Mon</span></li>\n                <li><span href=\"#\">Tue</span></li>\n                <li><span href=\"#\">Wed</span></li>\n                <li><span href=\"#\">Thu</span></li>\n                <li><span href=\"#\">Fri</span></li>\n                <li><span href=\"#\">Sat</span></li>\n              </ul>\n              <ul>\n                @for ($i = 0; $i &lt; count($monthArray) ; $i++)\n\n                  @if($monthArray[$i] == $dayInMonth)\n                    <li><a href=\"#\" class=\"active\">{{$monthArray[$i]}}</a></li>\n                  @else\n                <li><a href=\"#\" class=\"\">{{$monthArray[$i]}}</a></li>\n              @endif\n                @endfor\n              </ul>\n            </div>\n          </div>\n        </div>\n      <div id=\"month\" class=\"month-2016-05\">\n\n      </div>\n    </div>\n    <div class=\"calendar-categories\">\n      <h5>Categories</h5><ul class=\"events\">\n        <li class=\"active\"><a href=\"/emu-today/calendar/\" id=\"cat-all-events\">All Events</a></li>\n        <li><a href=\"/emu-today/calendar/?category=alumni\" id=\"cat-alumni\">Alumni</a>            </li>\n        <li><a href=\"/emu-today/calendar/?category=arts\" id=\"cat-arts\">Arts</a><span class=\"hidden\">&nbsp;</span>                    <ul style=\"display: none;\">\n          <li><a href=\"/emu-today/calendar/?category=comedy\" id=\"cat-comedy\">Comedy</a></li>\n          <li><a href=\"/emu-today/calendar/?category=concerts\" id=\"cat-concerts\">Concerts</a></li>\n          <li><a href=\"/emu-today/calendar/?category=dance\" id=\"cat-dance\">Dance</a></li>\n          <li><a href=\"/emu-today/calendar/?category=film\" id=\"cat-film\">Film</a></li>\n          <li><a href=\"/emu-today/calendar/?category=galleries-exhibits\" id=\"cat-galleries-exhibits\">Galleries and Exhibits</a></li>\n          <li><a href=\"/emu-today/calendar/?category=music\" id=\"cat-music\">Music</a></li>\n          <li><a href=\"/emu-today/calendar/?category=performance\" id=\"cat-performance\">Performance</a></li>\n          <li><a href=\"/emu-today/calendar/?category=recitals\" id=\"cat-recitals\">Recitals</a></li>\n          <li><a href=\"/emu-today/calendar/?category=spoken-word\" id=\"cat-spoken-word\">Spoken Word</a></li>\n          <li><a href=\"/emu-today/calendar/?category=theatre\" id=\"cat-theatre\">Theatre</a></li>\n        </ul>\n      </li>\n      <li><a href=\"/emu-today/calendar/?category=conferences-workshops\" id=\"cat-conferences-workshops\">Conferences/Workshops</a>            </li>\n      <li><a href=\"/emu-today/calendar/?category=general\" id=\"cat-general\">General Events</a><span class=\"hidden\">&nbsp;</span>                    <ul style=\"display: none;\">\n        <li><a href=\"/emu-today/calendar/?category=camps\" id=\"cat-camps\">Camps</a></li>\n        <li><a href=\"/emu-today/calendar/?category=commencement\" id=\"cat-commencement\">Commencement</a></li>\n        <li><a href=\"/emu-today/calendar/?category=homecoming\" id=\"cat-homecoming\">Homecoming</a></li>\n        <li><a href=\"/emu-today/calendar/?category=important-dates\" id=\"cat-important-dates\">Important Dates</a></li>\n      </ul>\n    </li>\n    <li><a href=\"/emu-today/calendar/?category=lbc-approved\" id=\"cat-lbc-approved\">LBC Approved Events</a>            </li>\n    <li><a href=\"/emu-today/calendar/?category=lectures-presentations\" id=\"cat-lectures-presentations\">Lectures/Presentations</a>            </li>\n    <li><a href=\"/emu-today/calendar/?category=meetings\" id=\"cat-meetings\">Meetings</a>            </li>\n    <li><a href=\"/emu-today/calendar/?category=sports-recreation\" id=\"cat-sports-recreation\">Sports/Recreation</a><span class=\"hidden\">&nbsp;</span>                    <ul style=\"display: none;\">\n      <li><a href=\"/emu-today/calendar/?category=club-sports\" id=\"cat-club-sports\">Club Sports</a></li>\n      <li><a href=\"/emu-today/calendar/?category=intramurals\" id=\"cat-intramurals\">Intramurals</a></li>\n      <li><a href=\"/emu-today/calendar/?category=varsity-athletics\" id=\"cat-varsity-athletics\">Varsity Athletics</a></li>\n    </ul>\n  </li>\n</ul>\n</div>\n<div class=\"calendar-categories\">\n<h5>Other Calendars</h5>\n<ul>\n  <li><a href=\"http://art.emich.edu/events/upcoming\">Art Galleries</a></li>\n  <li><a href=\"http://www.emueagles.com/calendar.aspx\">Athletics</a></li>\n  <li><a href=\"http://www.emich.edu/hr/calendar/\">Holiday &amp; Payroll</a></li>\n  <li><a href=\"http://www.emich.edu/emutheatre/\">Theatre</a></li>\n</ul>\n</div>\n<div class=\"submit-calendar\">\n<a href=\"manage/\" class=\"button emu-button\">Submit an Event</a>\n</div>\n<div class=\"ypsi-graphic\">\n<a href=\"http://visitypsinow.com/local-events/\"><img src=\"{{ theme('imgs/emu-today/calendar/visit-ypsi.png') }}\" alt=\"Visit Ypsi Calendar\"></a>\n\n</div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div id=\"calendar-nav\" class=\"large-3  hide-for-small columns\">\n    <div class=\"calendar-box\">\n      <div class=\"row\">\n          <div class=\"large-12 columns\">\n            <div class=\"calendar\">\n              <div class=\"month\">\n                <a href=\"#\" class=\"back\"></a>\n                <a href=\"#\" class=\"next\"></a>\n                <h5>May</h5>\n                <p>2016</p>\n              </div>\n              <ul class=\"weekdays\">\n                <li><span href=\"#\">Sun</span></li>\n                <li><span href=\"#\">Mon</span></li>\n                <li><span href=\"#\">Tue</span></li>\n                <li><span href=\"#\">Wed</span></li>\n                <li><span href=\"#\">Thu</span></li>\n                <li><span href=\"#\">Fri</span></li>\n                <li><span href=\"#\">Sat</span></li>\n              </ul>\n              <ul>\n                <li v-for=\"day in daysInMonth\">\n                  {{ day}}\n                </li>\n              </ul>\n            </div>\n          </div>\n        </div>\n      <div id=\"month\" class=\"month-2016-05\">\n\n      </div>\n    </div>\n    <div class=\"calendar-categories\">\n      <h5>Categories</h5><ul class=\"events\">\n        <template v-for=\"category in categories\">\n\n          <li v-if=\"category.events.length == 0 ?false:true\">\n            <a href=\"#\" aria-describedby=\"{{category.slug}}-badge\">{{category.category}}<span id=\"{{category.slug}}-badge\" class=\"secondary badge\">{{category.events.length}}<span></span></span></a>\n          </li>\n        </template>\n      </ul>\n</div>\n<div class=\"calendar-categories\">\n<h5>Other Calendars</h5>\n<ul>\n  <li><a href=\"http://art.emich.edu/events/upcoming\">Art Galleries</a></li>\n  <li><a href=\"http://www.emueagles.com/calendar.aspx\">Athletics</a></li>\n  <li><a href=\"http://www.emich.edu/hr/calendar/\">Holiday &amp; Payroll</a></li>\n  <li><a href=\"http://www.emich.edu/emutheatre/\">Theatre</a></li>\n</ul>\n</div>\n<div class=\"submit-calendar\">\n<a href=\"manage/\" class=\"button emu-button\">Submit an Event</a>\n</div>\n<div class=\"ypsi-graphic\">\n<a href=\"http://visitypsinow.com/local-events/\"><img src=\"/themes/default/assets/imgs/emu-today/calendar/visit-ypsi.png\" alt=\"Visit Ypsi Calendar\"></a>\n\n</div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewSideBar.vue"
+  module.hot.dispose(function () {
+    require("vueify-insert-css").cache["\n.events li span.badge {\n  margin-left: 10px;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":27,"vue-hot-reload-api":2}],32:[function(require,module,exports){
+},{"babel-runtime/core-js/json/stringify":1,"vue":30,"vue-hot-reload-api":5,"vueify-insert-css":31}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11971,7 +12053,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":27,"vue-hot-reload-api":2}],33:[function(require,module,exports){
+},{"vue":30,"vue-hot-reload-api":5}],36:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
@@ -12004,6 +12086,6 @@ new Vue({
   }
 });
 
-},{"./components/EventFoam.vue":28,"./components/EventView.vue":29,"vue":27,"vue-resource":16}]},{},[33]);
+},{"./components/EventFoam.vue":32,"./components/EventView.vue":33,"vue":30,"vue-resource":19}]},{},[36]);
 
 //# sourceMappingURL=main.js.map

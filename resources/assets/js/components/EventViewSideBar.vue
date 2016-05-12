@@ -7,9 +7,8 @@
               <div class="month">
                 <a href="#" class="back"></a>
                 <a href="#" class="next"></a>
-                <h5>{{$cd->format('M')}}</h5>
-                <p>{{$cd->format('Y')}}</p>
-               JSvars
+                <h5>May</h5>
+                <p>2016</p>
               </div>
               <ul class="weekdays">
                 <li><span href="#">Sun</span></li>
@@ -21,14 +20,9 @@
                 <li><span href="#">Sat</span></li>
               </ul>
               <ul>
-                @for ($i = 0; $i < count($monthArray) ; $i++)
-
-                  @if($monthArray[$i] == $dayInMonth)
-                    <li><a href="#" class="active">{{$monthArray[$i]}}</a></li>
-                  @else
-                <li><a href="#" class="">{{$monthArray[$i]}}</a></li>
-              @endif
-                @endfor
+                <li v-for="day in daysInMonth">
+                  {{ day}}
+                </li>
               </ul>
             </div>
           </div>
@@ -39,39 +33,13 @@
     </div>
     <div class="calendar-categories">
       <h5>Categories</h5><ul class="events">
-        <li class="active"><a href="/emu-today/calendar/" id="cat-all-events">All Events</a></li>
-        <li><a href="/emu-today/calendar/?category=alumni" id="cat-alumni">Alumni</a>            </li>
-        <li><a href="/emu-today/calendar/?category=arts" id="cat-arts">Arts</a><span class="hidden">&nbsp;</span>                    <ul style="display: none;">
-          <li><a href="/emu-today/calendar/?category=comedy" id="cat-comedy">Comedy</a></li>
-          <li><a href="/emu-today/calendar/?category=concerts" id="cat-concerts">Concerts</a></li>
-          <li><a href="/emu-today/calendar/?category=dance" id="cat-dance">Dance</a></li>
-          <li><a href="/emu-today/calendar/?category=film" id="cat-film">Film</a></li>
-          <li><a href="/emu-today/calendar/?category=galleries-exhibits" id="cat-galleries-exhibits">Galleries and Exhibits</a></li>
-          <li><a href="/emu-today/calendar/?category=music" id="cat-music">Music</a></li>
-          <li><a href="/emu-today/calendar/?category=performance" id="cat-performance">Performance</a></li>
-          <li><a href="/emu-today/calendar/?category=recitals" id="cat-recitals">Recitals</a></li>
-          <li><a href="/emu-today/calendar/?category=spoken-word" id="cat-spoken-word">Spoken Word</a></li>
-          <li><a href="/emu-today/calendar/?category=theatre" id="cat-theatre">Theatre</a></li>
-        </ul>
-      </li>
-      <li><a href="/emu-today/calendar/?category=conferences-workshops" id="cat-conferences-workshops">Conferences/Workshops</a>            </li>
-      <li><a href="/emu-today/calendar/?category=general" id="cat-general">General Events</a><span class="hidden">&nbsp;</span>                    <ul style="display: none;">
-        <li><a href="/emu-today/calendar/?category=camps" id="cat-camps">Camps</a></li>
-        <li><a href="/emu-today/calendar/?category=commencement" id="cat-commencement">Commencement</a></li>
-        <li><a href="/emu-today/calendar/?category=homecoming" id="cat-homecoming">Homecoming</a></li>
-        <li><a href="/emu-today/calendar/?category=important-dates" id="cat-important-dates">Important Dates</a></li>
+        <template v-for="category in categories">
+
+          <li v-if="category.events.length == 0 ?false:true">
+            <a href="#" aria-describedby="{{category.slug}}-badge">{{category.category}}<span id="{{category.slug}}-badge" class="secondary badge">{{category.events.length}}<span></a>
+          </li>
+        </template>
       </ul>
-    </li>
-    <li><a href="/emu-today/calendar/?category=lbc-approved" id="cat-lbc-approved">LBC Approved Events</a>            </li>
-    <li><a href="/emu-today/calendar/?category=lectures-presentations" id="cat-lectures-presentations">Lectures/Presentations</a>            </li>
-    <li><a href="/emu-today/calendar/?category=meetings" id="cat-meetings">Meetings</a>            </li>
-    <li><a href="/emu-today/calendar/?category=sports-recreation" id="cat-sports-recreation">Sports/Recreation</a><span class="hidden">&nbsp;</span>                    <ul style="display: none;">
-      <li><a href="/emu-today/calendar/?category=club-sports" id="cat-club-sports">Club Sports</a></li>
-      <li><a href="/emu-today/calendar/?category=intramurals" id="cat-intramurals">Intramurals</a></li>
-      <li><a href="/emu-today/calendar/?category=varsity-athletics" id="cat-varsity-athletics">Varsity Athletics</a></li>
-    </ul>
-  </li>
-</ul>
 </div>
 <div class="calendar-categories">
 <h5>Other Calendars</h5>
@@ -86,11 +54,91 @@
 <a href="manage/" class="button emu-button">Submit an Event</a>
 </div>
 <div class="ypsi-graphic">
-<a href="http://visitypsinow.com/local-events/"><img src="{{ theme('imgs/emu-today/calendar/visit-ypsi.png') }}" alt="Visit Ypsi Calendar"></a>
+<a href="http://visitypsinow.com/local-events/"><img src="/themes/default/assets/imgs/emu-today/calendar/visit-ypsi.png" alt="Visit Ypsi Calendar"></a>
 
 </div>
 </div>
 </template>
+<style>
+  .events li span.badge {
+    margin-left: 10px;
+  }
+</style>
 <script>
+module.exports  = {
+  data: function() {
+    return {
+      categories: {},
+    }
+  },
+  props: {
+    //add props
+  },
+  computed: {
 
+  },
+  methods: {
+    fetchEvents: function() {
+      this.$http.get('/api/events', function(data) {
+        this.events = data;
+      });
+    },
+    fetchCategoryList: function() {
+      this.$http.get('/api/active-categories').then(function(response){
+        // console.log('response->categories=' + JSON.stringify(response.data));
+        this.categories = response.data;
+
+      }, function(response) {
+      //  this.$set(this.formErrors, response.data);
+          console.log(response);
+      });
+    },
+
+    submitForm: function() {
+    //  console.log('this.eventform=' + this.eventform.$valid);
+      this.newevent.start_date = this.sdate;
+      this.newevent.end_date = this.edate;
+      this.newevent.reg_deadline = this.rdate;
+      this.$http.post('/api/events', this.newevent).then(function(response){
+          //get status
+
+          response.status;
+          console.log('response.status=' + response.status);
+          console.log('response.ok=' + response.ok);
+            console.log('response.statusText=' + response.statusText);
+            console.log('response.request=' + JSON.stringify(response.request));
+
+          //get all headers
+          response.headers();
+          //get 'expirese' header
+          response.headers('expires');
+
+          //set data on vm
+          if (response.data.errors){
+              this.formErrors = response.data.errors;
+          } else {
+            this.formErrors = {};
+          }
+
+          console.log('json-'+JSON.stringify(response.data));
+      }, function(response) {
+      //  this.$set(this.formErrors, response.data);
+          console.log(response);
+      });
+    }
+  },
+watch: {
+
+},
+created: function() {
+   this.fetchCategoryList();
+},
+components: {
+
+
+},
+events: {
+
+	}
+};
 </script>

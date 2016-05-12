@@ -9,6 +9,9 @@ use emutoday\Event;
 use Illuminate\Support\Facades\Input;
 
 Route::group(['prefix' => 'api'], function() {
+
+  Route::get('active-categories/{currentdate?}','Api\CategoriesController@activeCategories');
+  Route::get('calendar/events/{year?}/{month?}/{day?}','Api\EventsController@eventsByDate');
   //events api
   Route::get('eventview', function() {
     return view('public.event.home');
@@ -16,7 +19,7 @@ Route::group(['prefix' => 'api'], function() {
   Route::get('eventfoam', function() {
     return view('public.event.form');
   });
-  Route::get('calendar/events', 'Api\EventsController@byDate');
+  // Route::get('calendar/events', 'Api\EventsController@byDate');
   Route::get('events/{id}/categories', 'Api\CategoriesController@index');
    Route::resource('events', 'Api\EventsController');
    Route::resource('categories', 'Api\CategoriesController', ['only'=>['index', 'show']] );
@@ -28,9 +31,11 @@ Route::group(['prefix' => 'api'], function() {
    });
 });
 
-Route::group(['prefix' => 'EmuToday'], function() {
-
-    Route::resource('event', 'EmuToday\EventController', ['only'=>['index', 'show']] );
+Route::group(['prefix' => 'emu-today'], function() {
+  Route::get('events', function() {
+    return view('public.event.index');
+  });
+    // Route::resource('event', 'EmuToday\EventController', ['only'=>['index', 'show']] );
 });
 
 Route::group(['middleware' => ['web']], function() {

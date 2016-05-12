@@ -45,7 +45,41 @@ class EventsController extends ApiController
       ]);
         //return Event::latest()->get();
     }
+    public function eventsByDate($year = null, $month = null, $day = null)
+    {
+      $mondifier;
+      if ($year == null) {
+        $mondifier = "all";
+      } else {
+        if ($month == null) {
+          $mondifier = "Y";
+        } else {
+          if ($day == null) {
+              $mondifier = "YM";
+          } else {
+            $mondifier = "YMD";
+          }
+        }
 
+      }
+    //  $carbondate = new Carbon();
+      // if ($mondifier == 'all') {
+      //     $events = Event::all();
+      //   } else {
+          $year = 2016;
+
+          $carbondatestart = Carbon::create($year,1,1,12);
+
+          $carbondateend = Carbon::create($year,1,1,12)->addYear();
+            $events = Event::where([
+                  ['start_date', '>', $carbondatestart],
+                  ['start_date', '<', $carbondateend],
+                ])->get();
+        // }
+
+        dd($carbondatestart );
+          return $this->respond($events);
+    }
 
     public function byDate(Request $request)
     {

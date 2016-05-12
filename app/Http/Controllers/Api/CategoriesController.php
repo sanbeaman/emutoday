@@ -4,6 +4,8 @@ namespace emutoday\Http\Controllers\Api;
 
 use emutoday\Category;
 use emutoday\Event;
+use Carbon\Carbon;
+
 use emutoday\Emutoday\Transformers\CategoryTransformer;
 
 
@@ -27,12 +29,28 @@ class CategoriesController extends ApiController
      */
     public function index($eventid = null)
     {
+
       $categories = $this->getCategories($eventid);
        return $this->respond([
           'data' => $this->categoryTransformer->transformCollection($categories->all())
        ]);
     }
 
+    public function activeCategories($currentdate = null)
+    {
+
+        if ($currentdate == null) {
+          $cd = Carbon::now();
+        } else {
+            $cd = Carbon::parse($currentdate);
+        }
+
+        $activateCategories = Category::with(['events' => function($query) use ($cd) {
+              $query->where('start_date', '>', $cd)->addSelect('id','title');
+            }])->addSelect('id','category','slug')->get();
+          // $cats = Category::with('events')->afterThisDate(Carbon::now()->subYear())->get();
+          return $this->respond($activateCategories);
+    }
     /**
      * [getCategories description]
      * @param  [type] $eventid [description]
