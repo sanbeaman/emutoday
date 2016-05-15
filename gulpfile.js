@@ -76,6 +76,7 @@ elixir(function(mix) {
     mix.styles([
         nodePath + 'foundation-sites/dist/foundation.css',
         'site.css',
+        'magazine.css',
         'site-mediaqueries.css',
         'tweeks.css'
       ], 'public/themes/default/assets/css/public-styles.css');

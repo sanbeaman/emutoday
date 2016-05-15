@@ -35,6 +35,17 @@ Route::group(['prefix' => 'emu-today'], function() {
   Route::get('events', function() {
     return view('public.event.index');
   });
+
+
+  Route::get('story/{id?}', 'EmuToday\StoryController@index');
+  Route::get('news', 'EmuToday\StoryController@index');
+  Route::get('student/{id?}', 'EmuToday\StudentController@index');
+  Route::get('calendar', 'EmuToday\CalendarController@index');
+  // Route::get('magazine/index', 'EmuToday\MagazineController@index');
+  Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
+  Route::get('magazine/{year?}/{season?}/{id?}', 'EmuToday\MagazineController@article');
+
+  Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
     // Route::resource('event', 'EmuToday\EventController', ['only'=>['index', 'show']] );
 });
 
@@ -54,6 +65,12 @@ Route::group(['middleware' => ['web']], function() {
     //         return ' id=' . $id;
     //
     // }]);
+    //
+    //
+    Route::get('admin/magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
+
+    Route::resource('admin/magazine', 'Admin\MagazineController');
+
     Route::get('admin/users/{users}/confirm', ['as' => 'admin.users.confirm', 'uses' => 'Admin\UsersController@confirm']);
     Route::resource('admin/users', 'Admin\UsersController', ['except' => ['show'] ]);
 

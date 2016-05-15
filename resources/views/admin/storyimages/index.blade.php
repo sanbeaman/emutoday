@@ -23,7 +23,7 @@
                         <a href="{{ route('admin.storyimages.show', $storyImage->id) }}">{{ $storyImage->id }}</a>
                     </td>
                     <td>
-                        <img src="{{ $storyImage->thumbnailImagePath().'?'. 'time='. time() }}">
+                        <img src="{{ $storyImage->present()->thumbnailImageURL.'?'. 'time='. time() }}">
                     </td>
                     <td>{{ $storyImage->image_name }}</td>
                     <td>{{ $storyImage->story_id }}</td>

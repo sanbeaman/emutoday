@@ -74,6 +74,7 @@ class MainController extends Controller
     public function main($story_type, $id)
     {
         $story = $this->storys->findOrFail($id);
+        $mainStoryImage =  $story->storyImages()->where('image_type', 'imagemain')->first();
 
         $sideStorysFeatured = $this->storys->where([
             ['story_type', 'storypromoted'],
@@ -91,7 +92,7 @@ class MainController extends Controller
             'cdend' => Carbon::now()->addDays(7),
             'cstory' => $story
         ]);
-        return view('public.story.main', compact('story', 'sideStorysFeatured', 'sideStorysStudent'));
+        return view('public.story.main', compact('story','mainStoryImage', 'sideStorysFeatured', 'sideStorysStudent'));
 
     }
 }

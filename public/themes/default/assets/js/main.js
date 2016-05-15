@@ -19,6 +19,9 @@ var currentQueue;
 var queueIndex = -1;
 
 function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
     draining = false;
     if (currentQueue.length) {
         queue = currentQueue.concat(queue);
@@ -11892,7 +11895,7 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventFoam.vue"
+  var id = "/Users/dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventFoam.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -11929,7 +11932,7 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventView.vue"
+  var id = "/Users/dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventView.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {
@@ -12018,7 +12021,7 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewSideBar.vue"
+  var id = "/Users/dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewSideBar.vue"
   module.hot.dispose(function () {
     require("vueify-insert-css").cache["\n.events li span.badge {\n  margin-left: 10px;\n}\n"] = false
     document.head.removeChild(__vueify_style__)
@@ -12046,7 +12049,7 @@ if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
-  var id = "/Users/ext_dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewTopBar.vue"
+  var id = "/Users/dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewTopBar.vue"
   if (!module.hot.data) {
     hotAPI.createRecord(id, module.exports)
   } else {

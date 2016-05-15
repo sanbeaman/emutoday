@@ -21,9 +21,10 @@
           <li class="menu-text">EMU TODAY</li>
           <li><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
           <li><a href="{{ route('admin.users.index') }}">Users</a></li>
-          <li><a href="{{ route('admin.story.index') }}">Story Posts</a></li>
-          <li><a href="{{ route('admin.storyimages.index') }}">Story Images</a></li>
+          <li><a href="{{ route('admin.story.index') }}">Story List</a></li>
+          <li><a href="{{ route('admin.storyimages.index') }}">Images</a></li>
           <li><a href="{{ route('admin.pages.index') }}">Pages</a></li>
+          <li><a href="{{ route('admin.magazine.index') }}">Magazine</a></li>
           <li><a href="{{ route('admin.announcement.index') }}">Announcements</a></li>
           <li><a href="{{ route('admin.event.index') }}">Events</a></li>
         </ul>

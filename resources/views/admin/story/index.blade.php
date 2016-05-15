@@ -16,6 +16,7 @@
                 <th>Slug</th>
                 <th>Author</th>
                 <th>Published</th>
+                <th>Featured</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -31,6 +32,7 @@
                     <td>{{ $story->slug }}</td>
                     <td>{{ $story->author->name }}</td>
                     <td>{{ $story->published_date }}</td>
+                    <td>{{ $story->is_featured }}</td>
                     <td>
                         <a href="{{ route('admin.story.edit', $story->id) }}">
                             <i class="fi-pencil"></i>

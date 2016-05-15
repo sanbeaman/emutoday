@@ -1,5 +1,5 @@
 <!-- Event Views with Vues -->
-@extends('public.layouts.master')
+@extends('public.layouts.global')
 @section('content')
   <div id="content-area">
     <div id="calendar-bar">

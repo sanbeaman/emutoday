@@ -58,6 +58,11 @@ class PagesController extends Controller
     //    return view('admin.pages.show', compact('page'));
     }
 
+    /**
+     * Confirm the deletion of record
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
     public function confirm($id)
     {
         $page = $this->pages->findOrFail($id);
