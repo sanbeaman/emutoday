@@ -162,9 +162,6 @@ return [
         Baum\Providers\BaumServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
-
-        Clockwork\Support\Laravel\ClockworkServiceProvider::class,
-
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
 
     ],

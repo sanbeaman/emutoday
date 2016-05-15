@@ -23,8 +23,7 @@
         "mockery/mockery": "0.9.*",
         "symfony/css-selector": "2.8.*|3.0.*",
         "symfony/dom-crawler": "2.8.*|3.0.*",
-        "laravel/homestead": "^3.0",
-        "itsgoingd/clockwork": "^1.11"
+        "laravel/homestead": "^3.0"
     },
     "autoload": {
         "classmap": [
