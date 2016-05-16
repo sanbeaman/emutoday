@@ -9,6 +9,9 @@ i.fi-arrow-left.calstyle1 {
   color: #ffffff;
 }
 
+a.magazine-article-button {
+  color: #222;
+}
 /* Styles for Date Selector */
 .month {
   height: 110px;

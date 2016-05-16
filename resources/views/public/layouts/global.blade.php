@@ -40,21 +40,24 @@
                     <div class="large-9 large-push-3 medium-10 medium-push-2 small-10 small-push-2 columns">
                       <div class="row">
                         <div class="large-5 medium-7 small-12 columns">
-                          <h1><a href="#"><span class="first-word">EMU</span> Today!</a></h1>
+                          <h1><a href="/emu-today/hub"><span class="first-word">EMU</span> Today</a></h1>
                         </div>
                         <div class="large-7 medium-5 small-12 columns">
                           <ul>
                             <li class="search-area"><a class="search-glass" href="">Search</a></li>
-                            <li class="menu-area"><a class="right-off-canvas-toggle menu-icon" href="">Menu</a></li>
+                            <li class="menu-area"><a class="menu-icon" href="">Menu</a></li>
                           </ul>
                         </div>
                       </div>
                     </div><!-- large-9 -->
                     <div class="large-3 large-pull-9 medium-2 medium-pull-10 small-2 small-pull-10 columns">
                       <div id="logo-box" data-equalizer-watch>
-                        <a href="http://www.emich.edu">
+                        <a href="http://www.emich.edu"><img class="full-logo" alt="Eastern Michigan University" src="/themes/default/assets/imgs/home/logo.png"></a>
+                        <a href="http://www.emich.edu"><img class="block-e" alt="Eastern Michigan University" src="/themes/default/assets/imgs/home/blockEwhiteplain.png"></a>
+                        <a href="http://www.emich.edu"><img class="emu" alt="Eastern Michigan University" src="/themes/default/assets/imgs/home/emu.png"></a>
+                        {{-- <a href="http://www.emich.edu">
                           <img data-interchange="[/themes/default/assets/imgs/home/emu.png, small], [/themes/default/assets/imgs/home/blockewhiteplain.png, medium], [/themes/default/assets/imgs/home/logo.png, large]">
-                        </a>
+                        </a> --}}
                       </div><!-- logo-box -->
                     </div><!-- large-3 -->
                   </div><!-- row -->
@@ -67,11 +70,12 @@
                       <div class="large-12 medium-12 small-12 columns">
                         <!-- '/admin/php/top_nav.php'); -->
                         <ul>
-                          <li><a href="/emu-today/hub">Today</a></li>
-                          <li><a href="#">Calendar</a></li>
-                          <li><a href="/emu-today/announcement">Announcements</a></li>
-                          <li><a href="/emu-today/news">News</a></li>
-                          <li><a href="/emu-today/student">Student Profiles</a></li>
+
+                          <li><a class="{{ set_active('emu-today/hub', 'right-arrow')}}" href="/emu-today/hub">Today</a></li>
+                          <li ><a class="{{ set_active('emu-today/calendar', 'right-arrow')}}" href="#">Calendar</a></li>
+                          <li ><a class="{{ set_active('emu-today/announcement', 'right-arrow')}}" href="/emu-today/announcement">Announcements</a></li>
+                          <li ><a class="{{ set_active('emu-today/news', 'right-arrow')}}" href="/emu-today/news">News</a></li>
+                          <li ><a class="{{ set_active('emu-today/student', 'right-arrow', 1)}}" href="/emu-today/student">Student Profiles</a></li>
                           <li><a href="#">Athletics</a></li>
                         </ul>
                       </div>
@@ -82,20 +86,20 @@
               </div><!-- transparent-bar -->
               <div id="secondary-bar">
                 <div id="tier3-nav" class="row">
-                  <div class="large-10 large-push-2 medium-10 medium-push-2 hide-for-small columns">
-                    <!-- div row removed -->
-                    <div class="large-12 medium-12 small-12 columns">
+                  <div class="large-10 large-push-2 medium-10 medium-push-2 show-for-medium columns">
+                    <div class="row">
+                      <div class="large-12 medium-12 small-12 columns">
                       <ul>
                         <!-- '/admin/php/secondary_nav.php'); -->
-                        <li><a href="#">Media Highlights</a></li>
+                        <li><a href="#">For the Media</a></li>
                         <li><a href="/emu-today/magazine">Eastern Magazine</a></li>
                         <li><a href="#">Submit an Event</a></li>
                         <li><a href="#">Submit an Announcement</a></li>
                       </ul>
                     </div>
-                    <!-- div row removed -->
+                    </div>
                   </div>
-                  <div class="large-2 large-pull-10 medium-2 medium-pull-10 hide-for-small columns">&nbsp;</div>
+                  <div class="large-2 large-pull-10 medium-2 medium-pull-10 show-for-medium columns">&nbsp;</div>
                 </div>
               </div><!-- secondary-bar -->
             </div> <!-- all-connections -->

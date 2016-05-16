@@ -70,8 +70,8 @@
                 <h4>Winter 2016 Issue</h4>
                 <p>Axim quasperovit rem samet hilistibus eiusapiendis vel magnihilique evel ipicat.  Mus mod undenih icidem explabo rporem quaest videstor rem </p>
                 <p><a href="">Read the Digital Issue</a></p>
-                <p class="button-container"><a class="button expand magazine-button">Subscribe</a></p>
-                <p class="button-container"><a class="button expand magazine-button">Submit a story idea</a></p>
+                <p class="button-container"><a class="button expanded magazine-button">Subscribe</a></p>
+                <p class="button-container"><a class="button expanded magazine-button">Submit a story idea</a></p>
               </div>
 
             </div>

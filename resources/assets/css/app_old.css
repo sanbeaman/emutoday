@@ -1,12 +1,10 @@
 /* custom CSS styles */
 
 @import url(//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,700italic,400italic);
-@import url(http://fonts.googleapis.com/css?family=PT+Serif);
+@import url(//fonts.googleapis.com/css?family=PT+Serif);
 
 body{
-    background-color: #a9a9a9;
-
-}
+    background-color: #a9a9a9;}
 .row{
     max-width: 80em;
     }
@@ -271,9 +269,20 @@ ul.social-icons li img{
     background-repeat: no-repeat;
     background-position: 0 center;
 }
+/*#tier2-nav ul li a.right-arrow::before{
+    width: 8px;
+    padding-top: 0;
+    margin-top: 0;
+    content: url('../../images/subnav-arrow-right.png');
+    position: absolute;
+    left: 0;
+}
+#tier2-nav ul li a.right-arrow:hover::before{
+    content: url('../../images/subnav-arrow-right-over.png');
+}*/
 #tier3-nav ul{
     float: right;
-    padding: .5rem 0;
+    padding: .4rem 0;
     margin: 0;
     font-size: .8rem;
 }
@@ -405,6 +414,23 @@ img.news-icon{
 }
 
 /*News Headline bar*/
+#news-headline-bar > .row > .columns > .row {
+    background-image: url('../../assets/imgs/home/1sq.gif');
+    background-position: 0 58px;
+    background-repeat: repeat-x;
+    overflow: hidden;
+}
+.tabs li {
+    margin-bottom: .8rem;
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: none;
+    border-bottom: 1px solid #fff;
+    top: 1px;
+}
+.tabs li:last-child {
+	border-right: 1px solid #ccc;
+}
 #news-headline-bar{
     height: auto;
     color: #333;
@@ -689,7 +715,7 @@ ul.accordion {
     margin-bottom: .5rem;
     border-bottom: 1px dotted #ccc;
 }
-.accordion .accordion-item > a, .accordion dd > a {
+.accordion .accordion-navigation > a, .accordion dd > a {
     background: none;
     color: #0f654a;
     padding: .5rem 0rem .5rem 1.1rem;
@@ -697,39 +723,39 @@ ul.accordion {
     font-size: 1.1rem;
     text-decoration: none;
     border-top: 1px dotted #ccc;
-    background-image: url(../../assets/imgs/home/dial-arrow-side.png);
+    background-image: url(../../images/dial-arrow-side.png);
     background-repeat: no-repeat;
     background-position: 0 1rem;
 }
-.accordion .accordion-item:first-of-type > a, .accordion dd:first-of-type > a {
+.accordion .accordion-navigation:first-of-type > a, .accordion dd:first-of-type > a {
     /*border-top: 4px double #ccc;*/
     border-top: none;
 }
-.accordion .accordion-item > a:hover, .accordion dd > a:hover {
+.accordion .accordion-navigation > a:hover, .accordion dd > a:hover {
     background: none;
-    background-image: url(../../assets/imgs/home/dial-arrow-side.png);
+    background-image: url(../../images/dial-arrow-side.png);
     background-repeat: no-repeat;
     background-position: 0 1rem;
 }
-.accordion .accordion-item.is-active > a, .accordion dd.is-active > a {
+.accordion .accordion-navigation.active > a, .accordion dd.active > a {
     background: none;
-    background-image: url(../../assets/imgs/home/dial-arrow-down.png);
+    background-image: url(../../images/dial-arrow-down.png);
     background-repeat: no-repeat;
     background-position: 0 1.1rem;
 }
-.accordion .accordion-item.is-active > a:hover, .accordion dd.is-active > a:hover {
+.accordion .accordion-navigation.active > a:hover, .accordion dd.active > a:hover {
     background: none;
-    background-image: url(../../assets/imgs/home/dial-arrow-down.png);
+    background-image: url(../../images/dial-arrow-down.png);
     background-repeat: no-repeat;
     background-position: 0 1.1rem;
 }
-.accordion .accordion-item > .content, .accordion dd > .content {
+.accordion .accordion-navigation > .content, .accordion dd > .content {
     display: none;
     padding: 0rem 0 1rem 1.1rem;
     font-size: .9rem;
     line-height: 1.3rem;
 }
-.accordion .accordion-item > .content.is-active, .accordion dd > .content.is-active {
+.accordion .accordion-navigation > .content.active, .accordion dd > .content.active {
     display: block;
     background: none;
 }
@@ -771,6 +797,33 @@ ul.news-headlines a:hover{
     text-decoration: none;
     background-color: #f8f8f8;
 }
+/*Media Highlights*/
+/*News Headlines*/
+ul.media-highlights {
+    margin-left: 0;
+    margin-bottom: 1rem;
+    list-style: none;
+}
+ul.media-highlights li{
+    padding: .5rem 0;
+    border-bottom: 1px dotted #ccc;
+}
+ul.media-highlights li .publish-date {
+    padding: .1rem 0 0 0;
+}
+ul.media-highlights li p.source{
+    margin-bottom: 0;
+    color: #999;
+    font-size:.9rem;
+}
+ul.media-highlights a{
+    color: #333;
+}
+ul.media-highlights a:hover{
+    text-decoration: none;
+    color: #0f654a;
+}
+
 /*News Story Pages*/
 #news-story-bar{
     height: auto;
@@ -780,14 +833,18 @@ ul.news-headlines a:hover{
     z-index: 10;
     padding: .8rem 0 0 0;
 }
+p.story-publish-date {
+    font-size: .9rem;
+    color: #666;
+}
 p.story-publish-date a, p.small-return-news a{
     font-size: .9rem;
     color: #666;
      padding-top: 1.6rem;
 }
 p.small-return-news {
-    text-align: right;
-}
+    text-align: right;}
+
 #news-story-bar #title-grouping {
     border: none;
 }
@@ -814,7 +871,7 @@ p.small-return-news {
     margin: 0;
     padding: 0;
     color: #666;
-    font-size: .9rem;
+       font-size: .9rem;
 }
 #story-content p.news-contacts {
     color: #666;
@@ -992,9 +1049,6 @@ p.small-return-news {
     margin-bottom: .5rem;
     position: relative;
 }
-#homepage-hero img{
-   width: 100%;
-}
 #profiles-list .profile-content {
     margin: 0;
     padding: 0;
@@ -1011,6 +1065,9 @@ p.small-return-news {
     z-index: 10;
     padding: .8rem 0;
 }
+#profiles-list .slick-slider{
+    margin-bottom: 0;
+}
 #profiles-list li img.topic-image{
     width: 100%;
     padding: 0;
@@ -1018,6 +1075,9 @@ p.small-return-news {
 }
 #profiles-list h5{
     text-transform: uppercase;
+}
+#profiles-list li {
+    padding: 0 0.625rem 1.25rem;
 }
 #profiles-list li p{
     font-size: .9rem;
@@ -1038,6 +1098,7 @@ p.small-return-news {
     float: right;
     margin: .6rem .2rem 0;
     padding: 0;
+    cursor: pointer;
 }
 #profile-text-over-image-box{
     position: absolute;
@@ -1059,6 +1120,7 @@ p.small-return-news {
     border-top: 1px solid #ccc;
     padding-top: 1.3rem;
     margin-top: .5rem;
+
 }
 #student-feature h4{
     line-height: 1.3rem;
@@ -1068,222 +1130,75 @@ p.small-return-news {
     line-height: 1.3rem;
     font-size: 1rem;
 }
-#student-feature img{
-    width: 100%;
-}
-/*Magazine*/
-#magazine-text-over-image-box{
-    position: absolute;
-    width: 100%;
-    right: 0;
-    top: 50%;
-    padding: 1.2rem 1.5rem 1rem;
-    z-index: 800;
-    text-align: center;
-}
-#magazine-text-over-image-box a{
-    text-decoration: none;
-}
-#magazine-text-over-image-box h2{
-    color: #fff;
-    margin-bottom: .5rem;
-    font-size: 4.6rem;
-    font-weight: 600;
-    text-shadow: 3px 3px 7px rgba(0, 0, 0, 0.4);
-    line-height: 5.0rem;
-}
-#magazine-text-over-image-box p{
-    color: #fff;
-    margin-bottom: .5rem;
-    font-size: 1.5rem;
-    line-height: 1.8rem;
-    margin: 0 3rem;
-    font-weight: 600;
-    text-shadow: 3px 3px 7px rgba(0, 0, 0, 0.4);
-}
-#magazine-text-over-image-box a{
-    color: #fff;
-}
-#logo-box-magazine{
-   background-color: #0f654a;
-    position: absolute;
-    z-index: 200;
+
+/*Backward fixes*/
+
+.vis_container{
+    position: relative;
+    float: right;
     box-sizing: border-box;
-    left: 0;
-    width: 100%;
+    /*border: 1px solid #ccc;*/
     padding: 1rem;
-    margin-right: 1rem;
+    max-width: 33%;
+    margin: .5rem 0 .5rem .5rem;
 }
-h3.magazine-main-title{
-    display: none;
-}
-.centered-main-title{
-    padding: 0 10%;
-}
-#magazine-feature .row{
-    background-color: #ebedef;
-    padding: .8rem;
+.visbox{
+    position: relative;
     box-sizing: border-box;
 }
-.photo-feature-text{
-    padding: 0 0 0 .3rem;
+.viscaption{
+    position: relative;
+    box-sizing: border-box;
+    text-align: left;
+    padding: 0;
+    margin:0;
 }
-.photo-feature-text p{
-    font-size: .8rem;
-    line-height: 1.1rem;
-    margin-bottom: .5rem;
-}
-.photo-feature-text h1, .photo-feature-text h2, .photo-feature-text h3, .photo-feature-text h4, .photo-feature-text h5 {
-    font-size: 1.1rem;
-    margin-top: 0;
+#story-content .viscaption p{
+    font-size: .9rem;
     line-height: 1.3rem;
 }
-.photo-feature-text .author{
-    font-style: italic;
+#story-content .viscaption p:first-child{
+    padding-top:.5rem;
 }
-.button.magazine-button {
-    background-color: #829788;
-    border-color: #829788;
-    margin-bottom: .5rem;
-    padding-top: .6rem;
-    padding-bottom: .6rem;
-    text-transform: uppercase;
-    font-size: .9rem;
-    text-decoration: none;
-}
-.button.magazine-button:hover {
-    background-color: #0f654a;
-    border-color: #0f654a;
-}
-.magazine-details p.button-container {
-    margin-bottom: .1rem;
-}
-.magazine-details p{
-    font-size: .9rem;
-    line-height: 1.2rem;
-    margin-bottom: .6rem;
-}
-.row.collapse > .columns.cover-box{
-    padding-right: 2rem;
-}
-.row.collapse > .columns.photo-feature-text{
-    padding-left: .9rem;
-}
-h2.issue-date {
-    padding-left: 1rem;
-    color: #666;
-    font-size: 2rem;
-}
-.addthis.magazine-top{
-    padding-top: .8rem
-}
-#news-story-bar.magazine-story .magazine-titlebar{
-    width: 100%;
-    clear: both;
-    box-sizing: border-box;
-    margin-bottom: 1.5rem;
-    padding-top: .7rem;
-}
-#news-story-bar.magazine-story .magazine-titlebar+h3{
-    font-size: 1.5rem;
-    line-height: 1.8rem;
-    color: #333;
-    margin-bottom: 1.25rem;
-}
-.featured-content-block.magazine-block {
+.visbox img{
     padding: 0;
-     background-color: #fff;
-    margin-top: .6rem;
-}
-.featured-content-block.magazine-block:first-child{
-    margin-top: .6rem;
-}
-.featured-content-block.magazine-block h6.headline-block {
-    background-color: #829788;
-    color: #fff;
-    display: block;
-    left: 0;
-    padding: 0.5rem 1rem;
-    margin: 0 0 .8rem 0;
-    position: relative;
-    text-transform: uppercase;
-    top: 0;
-}
-.featured-content-block.magazine-block ul.feature-list{
-    margin-left: 1rem;
-}
-.featured-content-block.magazine-block ul.feature-list li {
-    border-bottom: 1px dotted #ccc;
-    line-height: 1.2rem;
-    padding: 0rem 0 .2rem;
-}
-.featured-content-block.magazine-block ul.feature-list li:last-child {
-    border-bottom: none;
-}
-div.featured-content-block.magazine-block + div.featured-content-block.magazine-block{
-    margin-top: .6rem;
-    margin-bottom: .6rem;
-}
-.panel.image-caption{
-    float: right;
-    width: 38%;
-    max-width: 38%;
-    margin: .5rem 0 .5rem 1.5rem;
-    background-color: #fff;
-    padding: 0;
-    border: none;
-}
-.panel.image-caption img{
-    width: 100%;
-    margin-bottom: .5rem;
-}
-#story-content .panel.image-caption p{
-    font-size: .9rem;
-    line-height: 1.2rem;
-}
-#tier1-nav h3.magazine-main-title{
-    display: none;
-    font-family: serif;
-    margin-bottom: 0;
-    }
-.magazine-descriptor-small{
-    display: none;
-    }
-#cover-grouping p, #cover-grouping a{
-    text-align: center;
-    padding-top: .5rem;
-    color: #666;
-    text-decoration: none;
-}
-#cover-grouping a:hover {
-    color: #666;
-    text-decoration: none;
-}
-#story-listing ul {
-    list-style: none;
-}
-#story-listing ul li {
-    margin-bottom: 3rem;
-    display: block;
-}
-#story-listing ul li img{
-    width: 100%;
-    }
-#story-content #story-listing h3{
-    margin-top: -.4rem;
-    }
-.current-issue-padding{
-    padding: .7rem 2.6rem 1rem;
-}
-.current-issue-info img{
-    width: 100%;
-}
-img.magazine-logo {
-    width: 100%;
-}
-.profile-text-content.magazine h3{
     margin: 0;
+    width: 100%;
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // XXLarge screens
 @media only screen and (min-width: 120.063em) {
@@ -1301,12 +1216,8 @@ img.magazine-logo {
 @media only screen and (min-width: 64.063em) { } /* min-width 1025px, large screens */
 
 @media only screen and (min-width: 64.063em) and (max-width: 90em) {
-#profiles-list {
-    padding: 0.8rem 0.6rem;
-}
-#news-story-bar, #listing-bar{
-    padding: .8rem .6rem 0 .6rem;
-}
+
+
 } /* min-width 1025px and max-width 1440px, use when QAing large screen-only issues */
 
 // Medium screens
@@ -1348,7 +1259,9 @@ img.magazine-logo {
 #tier1-nav ul li:not(.search-area){
     display: none;
 }
-
+#tier1-nav ul li.menu-area {
+    /*display: inline;*/
+}
 #tier2-nav ul{
 }
 #tier2-nav ul li a{
@@ -1368,7 +1281,7 @@ img.magazine-logo {
 }
 #base-bar .row, #base-message-bar .row{
     padding-left: 1rem;
-    padding-right: 1rem;
+    padding-rigth: 1rem;
     }
 #newshub-headlines-front ul li a{
     font-size: .9rem;
@@ -1385,6 +1298,7 @@ ul.social-icons {
     padding-right: .5rem;
     margin: 0;
 }
+
 #five-events-bar li:nth-child(n+4){
     display: none;
 }
@@ -1413,58 +1327,6 @@ ul.social-icons {
     line-height: 1.2rem;
     font-size: .9rem;
 }
-/*Magazine*/
-#magazine-text-over-image-box{
-    top: 41%;
-}
-#magazine-text-over-image-box h2{
-    font-size: 4.0rem;
-    font-weight: 600;
-    text-shadow: 3px 3px 7px rgba(0, 0, 0, 0.4);
-    line-height: 4.3rem;
-}
-#magazine-text-over-image-box p{
-    font-size: 1.3rem;
-    line-height: 1.6rem;
-    margin: 0 0rem;
-    font-weight: 600;
-    text-shadow: 3px 3px 7px rgba(0, 0, 0, 0.4);
-}
-.magazine-details p.button-container {
-    width: 50%;
-}
-.row.collapse > .columns.cover-box {
-    padding-right: 1rem;
-}
-.panel.image-caption{
-    width: 48%;
-    max-width: 48%;
-}
-#connection-bar.magazine-block #tier2-nav ul, #connection-bar.magazine-block #tier3-nav ul {
-    float: left;
-}
-#tier1-nav h3.magazine-main-title{
-    display: block;
-    font-size: 2.3rem;
-    }
-#tier1-nav h3.magazine-main-title span.magazine-descriptor{
-    display: inline-block;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 1rem;
-    }
-.magazine-descriptor-small{
-    display: none;
-    }
-#story-content #story-listing p{
-    font-size: .9rem;
-    line-height: 1.2rem;
-    }
-.current-issue-padding{
-    padding: .8rem 1rem 1rem;
-}
-
-
-
 
 } /* min-width 641px and max-width 1024px, use when QAing tablet-only issues */
 
@@ -1618,105 +1480,4 @@ ul.social-icons {
     line-height: 1.3rem;
     margin-top: 0rem;
 }
-/*Magazine*/
-#magazine-text-over-image-box{
-    /*top: 4%;*/
-    position: relative;
-    text-align:left;
-    padding-left: 1rem;
-    padding-top: .5rem;
-     padding-bottom: .0;
-}
-#magazine-text-over-image-box a{
-         color: #333;
-    }
-#magazine-text-over-image-box h2{
-    font-size: 1.7rem;
-    font-weight: 600;
-    text-shadow: none;
-    line-height: 2rem;
-    color: #333;
-}
-#magazine-text-over-image-box p{
-    font-size: 1rem;
-    line-height: 1.3rem;
-    margin: 0 0rem;
-    font-weight: normal;
-    color: #333;
-    text-shadow: none;
-}
-.centered-main-title {
-    padding: 0;
-}
-.magazine-details{
-    border-top: 1px solid #ccc;
-    padding-top:.5rem;
-    }
-.magazine-details p.button-container {
-    width: 100%;
-}
-.row.collapse > .columns.cover-box {
-    padding-right: 1rem;
-}
-.row.collapse > .columns.photo-feature-text {
-    padding-left: 0rem;
-    margin-top: .8rem;
-}
-img.topic-image.contributor {
-    width: 100%;
-    }
-p.author{
-    margin-bottom: 0;
-    }
-.panel.image-caption{
-    width: 100%;
-    max-width: 100%;
-    float; left;
-    margin-bottom: .8rem;
-    padding-bottom: .8rem;
-    border-bottom: 1px solid #ccc;
-}
-img.topic-image.magazine-cover {
-    display: none;
-    }
-.addthis.magazine-top{
-    padding-top: 0rem;
-    float: left;
-    padding-left: 1rem;
-}
-#magazine-feature .row.photo-feature-section{
-    padding-bottom: 0;
-    }
-#news-story-bar.magazine-story .magazine-titlebar+h3{
-    font-size: 1.2rem;
-    line-height: 1.4rem;
-    margin-bottom: 1.25rem;
-}
-#tier1-nav h3.magazine-main-title{
-    display: block;
-    color: #fff;
-    font-size: 2rem;
-}
-#tier1-nav h3.magazine-main-title span.magazine-descriptor{
-    display: none;
-    }
-.magazine-descriptor-small{
-    display: inline-block;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 1rem;
-    }
-#logo-box-magazine a img{
-   display: none;
-    }
-.magazine-story #cover-grouping, .magazine-story #story-listing{
-    margin-top: .6rem;
-    }
-.current-issue-padding{
-    padding: 0rem 1rem 1rem;
-}
-.story-text-teaser{
-    margin-top: 1rem;
-    padding-left: 0;
-    }
-
 } /* max-width 640px, mobile-only styles, use when QAing mobile issues */

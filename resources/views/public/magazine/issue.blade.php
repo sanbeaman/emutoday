@@ -33,11 +33,13 @@
                 <ul>
                   @foreach ($barImgs as $barImg)
                   <li class="clearfix">
+                    <a class="magazine-article-button" href="/emu-today/magazine/article/{{$barImg->story->id}}">
                     <div class="small-12 medium-5 large-3 columns nohorizontalpadding"><img src="{{$barImg->present()->mainImageURL}}"></div>
                     <div class="small-12 medium-7 large-9 columns story-text-teaser">
                         <h3>{{$barImg->caption}}</h3>
                           <p>{{$barImg->teaser}}</p>
                     </div>
+                    </a>
                   </li>
                     @endforeach
                 </ul>
@@ -50,8 +52,8 @@
                 <p><a href="">Read the Digital Issue</a></p>
               </div>
 
-              <a class="expand button magazine-button">Subscribe</a>
-              <a class="expand button magazine-button">Submit a Story Idea</a>
+              <a class="expanded button magazine-button">Subscribe</a>
+              <a class="expanded button magazine-button">Submit a Story Idea</a>
 
 
             </div>

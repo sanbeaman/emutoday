@@ -31,7 +31,7 @@
               <div id="big-feature-image">
                   <img src="{{$mainImage->present()->mainImageURL}}" alt="feature-image">
               </div>
-              <div class="magazine-titlebar"><img src="/themes/default/assets/imgs/graphic-title.png" alt="Lost Voices"></div>
+              <!-- <div class="magazine-titlebar"><img src="/themes/default/assets/imgs/graphic-title.png" alt="Lost Voices"></div> -->
               {!! $story->content !!}
               <div class="story-author">Author's name</div>
               <p class="news-contacts">Contact Author, author@emich.edu, 734.487.XXXX</p>
@@ -57,8 +57,8 @@
                 </ul>
 
               </div>
-              <a class="button magazine-button expand">Subscribe</a>
-              <a class="button magazine-button expand">Submit a Story Idea</a>
+              <a class="button magazine-button expanded">Subscribe</a>
+              <a class="button magazine-button expanded">Submit a Story Idea</a>
 
 
             </div>
