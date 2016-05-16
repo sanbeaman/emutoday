@@ -38,7 +38,7 @@ class MainController extends Controller
       //  $page = $this->pages->whereBetween('start_date',[Carbon::now()->subDays(7), Carbon::now()->addDays(7)] )->first();
         // $storys = $page->storys()->get();
 
-
+        dd($page->storys);
         // $currentStorys = $page->storys->get();
         $currentStorysBasic = $this->storys->where('story_type', 'storybasic')->paginate(5);
         $currentAnnouncements = $this->announcements->paginate(5);
