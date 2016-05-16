@@ -28,7 +28,7 @@ class MainController extends Controller
 
     }
 
-    public function index(Page $pages)
+    public function index()
     {
         $currentDateTime = Carbon::now();
         $page = $this->pages->where([
