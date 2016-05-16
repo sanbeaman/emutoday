@@ -21,7 +21,7 @@
       <img src="{{$heroImg->present()->mainImageURL}}" alt="main image">
       <div id="magazine-text-over-image-box" class="row collapse">
         <div class="centered-main-title">
-          <h2><a href="article.html">{{$heroImg->caption}}</a></h2>
+          <h2><a href="/emu-today/magazine/article/{{$heroImg->story->id}}">{{$heroImg->caption}}</a></h2>
           <p>{{$heroImg->teaser}}</p>
         </div>
       </div>
@@ -31,7 +31,7 @@
         <div class="row small-up-2 medium-up-2 large-up-5">
           @foreach ($barImgs as $barImg)
             <div class="column">
-              <a href="/admin/story/{{$barImg->story->id}}/edit">
+              <a href="/emu-today/magazine/article/{{$barImg->story->id}}">
                 <img class="topic-image" src="{{$barImg->present()->mainImageURL}}"  alt="topic image"/>
                 <div class="profile-content">
                   <div class="profile-text-content magazine" data-equalizer-watch>

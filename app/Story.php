@@ -94,6 +94,33 @@ class Story extends Model
       return $this->tags->lists('id')->all();
     }
 
+    public function getStoryFolderAttribute()
+    {
+
+      switch ($this->story_type) {
+          case 'storybasic':
+            $type = 'news';
+            break;
+          case 'storypromoted':
+            $type = 'story';
+            break;
+          case 'storystudent':
+            $type = 'student';
+            break;
+          case 'storymagazine':
+            $type = 'magazine';
+            break;
+          case 'storyexternal':
+            $type = 'external';
+            break;
+          default:
+            $type = $this->story_type;
+          }
+
+          return $type;
+
+    }
+
     /**
      * [storyTypes description]
      * @return [type] [description]
@@ -110,6 +137,22 @@ class Story extends Model
     public function pages()
     {
         return $this->belongsToMany('emutoday\Page');
+    }
+
+    public function magazine()
+    {
+      return $this->belongsToMany('emutoday\Magazine');
+    }
+
+    /** ************* QUERY SCOPES ************** */
+    /**
+     * Scope a query by story_type
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOfType($query, $type)
+    {
+        return $query->where('story_type', $type);
     }
 
 

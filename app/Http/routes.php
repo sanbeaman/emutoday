@@ -43,19 +43,21 @@ Route::group(['middleware' => ['web']], function() {
       'getLogin' => 'auth.login',
       'getLogout' => 'auth.logout'
     ]);
+
     Route::group(['prefix' => 'emu-today'], function() {
       Route::get('events', function() {
-        return view('public.event.index');
-      });
+          return view('public.event.index');
+        });
 
 
-      Route::get('story/{id?}', 'EmuToday\StoryController@index');
-      Route::get('news', 'EmuToday\StoryController@index');
-      Route::get('student/{id?}', 'EmuToday\StudentController@index');
-      Route::get('calendar', 'EmuToday\CalendarController@index');
+      Route::get('/story/{id?}', 'EmuToday\StoryController@index');
+      Route::get('/news/{id?}', 'EmuToday\StoryController@index');
+      Route::get('/student/{id?}', 'EmuToday\StudentController@index');
+      Route::get('/calendar', 'EmuToday\CalendarController@index');
       // Route::get('magazine/index', 'EmuToday\MagazineController@index');
-      Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
-      Route::get('magazine/{year?}/{season?}/{id?}', 'EmuToday\MagazineController@article');
+      Route::get('/magazine/article/{id?}', 'EmuToday\MagazineController@article');
+      Route::get('/magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
+
 
       Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
         // Route::resource('event', 'EmuToday\EventController', ['only'=>['index', 'show']] );
@@ -108,27 +110,15 @@ Route::group(['middleware' => ['web']], function() {
     Route::get('api/story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
     Route::resource('api/story', 'Api\StoryController');
 
-    // Route::resource('api/events', 'Api\EventsController');
-
-    // Route::get('api/events', function() {
-    //   return emutoday\Event::latest()->get();
-    // });
 
     Route::get('admin/event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
     Route::resource('admin/event', 'Admin\EventController');
-
-    // Route::get('fetch/buildings', function() {
-    //   $text = Input::get('q');
-    //   return Building::likeSearch('name', $text)->get();
-    //   //return Building::ofMapType('illustrated')->get();
-    // });
-
 
 
 
     Route::get('storytype/{story_type}/{id}', 'MainController@main');
 
-      Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
+    Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
     // Route::resource('/', 'MainController');
 
     // Route::get('main', function ()    {

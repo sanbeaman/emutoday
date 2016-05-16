@@ -41,10 +41,9 @@
               <div class="featured-content-block magazine-block">
                 <h6 class="headline-block">Popular stories</h6>
                 <ul class="feature-list">
-
-                  <li><a href="">EMU student Heather Irvine overcomes obstacles in life, in school and during </a></li>
-                  <li><a href="">Graduate falls in love with the beauty of Spain</a></li>
-                  <li><a href="">Moment of clarity changes student's path</a></li>
+                    @foreach ($sideStoryBlurbs as $ssblurb)
+                  <li><a href="/emu-today/{{$ssblurb->story->story_folder}}/{{$ssblurb->story->id}}">{{$ssblurb->caption}}</a></li>
+                @endforeach
 
                 </ul>
 
@@ -52,11 +51,9 @@
               <div class="featured-content-block magazine-block">
                 <h6 class="headline-block">Headlines</h6>
                 <ul class="feature-list">
-
-                  <li><a href="">Eastern’s online nursing completion program ranked best in Michigan for value, top 50 in nation</a></li>
-                  <li><a href="">Eastern Michigan University to become tobacco-free July 1</a></li>
-                  <li><a href="">Board of Regents names Presidential Search Advisory Committee, selects executive search firm</a></li>
-
+                  @foreach ($sideNewsStorys as $newsstory)
+                <li><a href="/emu-today/{{$newsstory->story_folder}}/{{$newsstory->id}}">{{$newsstory->title}}</a></li>
+                @endforeach
                 </ul>
 
               </div>

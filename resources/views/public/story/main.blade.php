@@ -21,11 +21,13 @@
             <div class="addthis"></div>
             <h3>{{ $story->title }}</h3>
             <h5>{{ $story->subtitle }}</h5>
+            @if(isset($mainStoryImage))
             <div id="big-feature-image">
               <img src="{{$mainStoryImage->present()->mainImageURL }}" alt="feature-image"></a>
 
               <div class="feature-image-caption">{{ $mainStoryImage->caption }}</div>
             </div>
+          @endif
             <div id="story-content-edit">
               {!! $story->content !!}
             </div>

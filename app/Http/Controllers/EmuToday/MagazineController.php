@@ -143,29 +143,37 @@ class MagazineController extends Controller
         return view('public.magazine.issue', compact('magazine', 'storyImages', 'barImgs'));
 
     }
-    public function article($year = null, $season = null, $id = null)
+    public function article($id)
     {
-        $currentDateTime = Carbon::now();
-        if ($year == null) {
-          $magazine = $this->magazines->where([
-              ['is_published', 1],
-              ['is_archived', 0],
-          ])->first();
-        } else {
-          $magazine = $this->magazines->where([
-              ['year', $year],
-              ['season', $season],
-          ])->first();
-        }
-
-        if ($id == null) {
-          $story = $magazine->storys()->first();
-        } else {
-          $story = $magazine->storys()->where('id', $id)->first();
-        }
-
+        $story = $this->storys->findOrFail($id);
+        $magazine = $story->magazine->first();
+        //$story = $magazine->storys()->where('id', $id)->first();
         $mainImage = $story->storyImages()->where('image_type', 'imagemain')->first();
-        return view('public.magazine.article', compact('magazine','story', 'mainImage'));
+
+        $sideFeaturedStorys = $this->storys
+                                  ->where([
+                                    ['story_type', 'storypromoted'],
+                                    ['id', '<>', $id],
+                                  ])
+                                  ->orWhere([
+                                    ['story_type', 'storystudent'],
+                                    ['id', '<>', $id],
+                                  ])
+                                  ->orderBy('created_at', 'desc')->with('storyImages')->take(3)->get();
+
+        $sideStoryBlurbs = collect();
+            foreach ($sideFeaturedStorys as $sideFeaturedStory) {
+                $sideStoryBlurbs->push($sideFeaturedStory->storyImages()->where('image_type', 'imagesmall')->first());
+            }
+
+
+        $sideNewsStorys = $this->storys
+                            ->where([
+                              ['story_type', 'storybasic'],
+                              ['id', '<>', $id],
+                                ])->orderBy('created_at', 'desc')->take(3)->get();
+
+        return view('public.magazine.article', compact('magazine','story', 'mainImage','sideStoryBlurbs','sideNewsStorys'));
 
     }
 
