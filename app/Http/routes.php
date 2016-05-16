@@ -31,23 +31,6 @@ Route::group(['prefix' => 'api'], function() {
    });
 });
 
-Route::group(['prefix' => 'emu-today'], function() {
-  Route::get('events', function() {
-    return view('public.event.index');
-  });
-
-
-  Route::get('story/{id?}', 'EmuToday\StoryController@index');
-  Route::get('news', 'EmuToday\StoryController@index');
-  Route::get('student/{id?}', 'EmuToday\StudentController@index');
-  Route::get('calendar', 'EmuToday\CalendarController@index');
-  // Route::get('magazine/index', 'EmuToday\MagazineController@index');
-  Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
-  Route::get('magazine/{year?}/{season?}/{id?}', 'EmuToday\MagazineController@article');
-
-  Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
-    // Route::resource('event', 'EmuToday\EventController', ['only'=>['index', 'show']] );
-});
 
 Route::group(['middleware' => ['web']], function() {
 
@@ -60,6 +43,24 @@ Route::group(['middleware' => ['web']], function() {
       'getLogin' => 'auth.login',
       'getLogout' => 'auth.logout'
     ]);
+    Route::group(['prefix' => 'emu-today'], function() {
+      Route::get('events', function() {
+        return view('public.event.index');
+      });
+
+
+      Route::get('story/{id?}', 'EmuToday\StoryController@index');
+      Route::get('news', 'EmuToday\StoryController@index');
+      Route::get('student/{id?}', 'EmuToday\StudentController@index');
+      Route::get('calendar', 'EmuToday\CalendarController@index');
+      // Route::get('magazine/index', 'EmuToday\MagazineController@index');
+      Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
+      Route::get('magazine/{year?}/{season?}/{id?}', 'EmuToday\MagazineController@article');
+
+      Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
+        // Route::resource('event', 'EmuToday\EventController', ['only'=>['index', 'show']] );
+    });
+
     //watch out for match anything ROUTES
     // Route::get('page/{id}', ['as' => 'story_page', function($id) {
     //         return ' id=' . $id;
