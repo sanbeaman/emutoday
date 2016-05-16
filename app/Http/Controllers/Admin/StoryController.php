@@ -214,12 +214,15 @@ class StoryController extends Controller
 
         $stype = $story->story_type;
 
-        if ($stype == 'storyexternal') {
+        if ($stype == 'external') {
             return view('admin.story.previewexternal', compact('story'));
-        } else if ($stype == 'storybasic') {
+        } else if ($stype == 'news') {
+
             return view('admin.story.previewbasic', compact('story'));
         } else {
-            return view('admin.story.preview', compact('story'));
+          $mainStoryImg = $story->storyImages->where('image_type', 'imagemain')->first();
+          $smallStoryImg = $story->storyImages->where('image_type', 'imagesmall')->first();
+            return view('admin.story.preview', compact('story','mainStoryImg','smallStoryImg'));
         }
 
 

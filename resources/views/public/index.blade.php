@@ -11,7 +11,7 @@
         <div id="featured-text" class="large-5 medium-12 small-12 columns">
           <h3>{{$heroImg->caption}}</h3>
           <p>{{$heroImg->teaser}}</p>
-          <p class="button-group"><a href="storytype/{{$heroImg->story->story_type}}/{{$heroImg->story->id}}" class="button">{{$heroImg->moretext}}</a></p>
+          <p class="button-group"><a href="/emu-today/{{$heroImg->story->story_folder}}/{{$heroImg->story->id}}" class="button">{{$heroImg->moretext}}</a></p>
         </div>
       </div>
     </div>
@@ -37,14 +37,14 @@
                   <div class="tabs-panel newshub-tab-front is-active" id="newshub-headlines-front">
                     <ul>
                       @foreach ($currentStorysBasic as $basicstory)
-                      <li><a href="/news/{{$basicstory->id}}">{{$basicstory->title}}</a></li>
+                      <li><a href="/emu-today/news/{{$basicstory->id}}">{{$basicstory->title}}</a></li>
                       @endforeach
                     </ul>
                   </div>
                   <div class="tabs-panel newshub-tab-front" id="newshub-announcements-front">
                     <ul>
                       @foreach ($currentAnnouncements as $announcement)
-                      <li><a href="/announcement/{{$announcement->id}}">{{$announcement->title}}</a></li>
+                      <li><a href="/emu-today/announcement/{{$announcement->id}}">{{$announcement->title}}</a></li>
                       @endforeach
                     </ul>
                   </div>

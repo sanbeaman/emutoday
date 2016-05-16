@@ -13,7 +13,7 @@
            <div class="large-12 medium-12 small-12 columns">
                <div id="title-grouping" class="row">
                    <div class="large-5 medium-4 small-6 columns noleftpadding"><h3 class="news-caps">News</h3></div>
-                   <div class="large-2 medium-4 small-6 columns noleftpadding"><p class="story-publish-date"><a href="">{{ $story->published_at }}</a></p></div>
+                   <div class="large-2 medium-4 small-6 columns noleftpadding"><p class="story-publish-date"><a href="">{{ $story->start_date }}</a></p></div>
                    <div class="large-5 medium-4 hide-for-small columns noleftpadding"><p class="small-return-news"><a href="#">News Home</a></p></div>
                </div>
 
@@ -23,11 +23,13 @@
         <div class="addthis"></div>
                <h3>{{ $story->title }}</h3>
             <h5>{{ $story->subtitle }}</h5>
-    <div id="big-feature-image">
-      <img src="{{$story->grabStoryImageByType('imagemain')->mainImageURL() }}" alt="feature-image"></a>
+            @if(isset($mainStoryImage))
+            <div id="big-feature-image">
+              <img src="{{$mainStoryImage->present()->mainImageURL }}" alt="feature-image"></a>
 
-        <div class="feature-image-caption">{{ $story->grabStoryImageByType('imagemain')->caption }}</div>
-    </div>
+              <div class="feature-image-caption">{{ $mainStoryImage->caption }}</div>
+            </div>
+          @endif
     <div id="story-content-edit" contenteditable="true">
       {!! $story->content !!}
     </div>
@@ -37,9 +39,9 @@
                 <div class="large-3 medium-4 small-12 columns featurepadding">
             <div class="featured-content-block">
                     <h6 class="headline-block lt-green">Featured stories</h6>
-                    <a href=""><img src="{{ $story->grabStoryImageByType('imagesmall')->mainImageURL()}}" alt="story image"></a>
+                    <a href=""><img src="{{$smallStoryImage->present()->mainImageURL }}" alt="story image"></a>
                 <ul class="feature-list">
-                       <li><a href="">{{ $story->grabStoryImageByType('imagesmall')->teaser }}</a></li>
+                       <li><a href="">{{ $smallStoryImage->teaser }}</a></li>
                        <li><a href="">An Ounce of Prevention is Worth a Great Career</a></li>
                        <li><a href="">Eating Healthy at EMU</a></li>
 

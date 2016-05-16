@@ -5,7 +5,7 @@
       <p>{{$barImg->caption}}</p>
     </div>
     <p class="button-group">
-      <a href="storytype/{{$barImg->story->story_type}}/{{$barImg->story->id}}" class="button">{{$barImg->moretext}}<i class="fi-play"></i></a>
+      <a href="/emu-today/{{$barImg->story->story_folder}}/{{$barImg->story->id}}" class="button">{{$barImg->moretext}}<i class="fi-play"></i></a>
     </p>
   </div>
 </div>

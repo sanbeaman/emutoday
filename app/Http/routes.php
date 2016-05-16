@@ -29,6 +29,9 @@ Route::group(['prefix' => 'api'], function() {
      return Building::likeSearch('name', $text)->get();
      //return Building::ofMapType('illustrated')->get();
    });
+   Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
+   Route::resource('story', 'Api\StoryController');
+
 });
 
 
@@ -43,86 +46,62 @@ Route::group(['middleware' => ['web']], function() {
       'getLogin' => 'auth.login',
       'getLogout' => 'auth.logout'
     ]);
+    // Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
 
     Route::group(['prefix' => 'emu-today'], function() {
+      Route::get('story/{id?}', 'EmuToday\StoryController@index');
+      Route::get('news/{id?}', 'EmuToday\StoryController@index');
+      Route::get('student/{id?}', 'EmuToday\StudentController@index');
+      Route::get('calendar', 'EmuToday\CalendarController@index');
+      // Route::get('magazine/index', 'EmuToday\MagazineController@index');
+      Route::get('magazine/article/{id?}', 'EmuToday\MagazineController@article');
+      Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
+
+      Route::get('hub', 'MainController@index');
+      Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
+
       Route::get('events', function() {
           return view('public.event.index');
         });
-
-
-      Route::get('/story/{id?}', 'EmuToday\StoryController@index');
-      Route::get('/news/{id?}', 'EmuToday\StoryController@index');
-      Route::get('/student/{id?}', 'EmuToday\StudentController@index');
-      Route::get('/calendar', 'EmuToday\CalendarController@index');
-      // Route::get('magazine/index', 'EmuToday\MagazineController@index');
-      Route::get('/magazine/article/{id?}', 'EmuToday\MagazineController@article');
-      Route::get('/magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
-
-
-      Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
-        // Route::resource('event', 'EmuToday\EventController', ['only'=>['index', 'show']] );
     });
 
     //watch out for match anything ROUTES
-    // Route::get('page/{id}', ['as' => 'story_page', function($id) {
-    //         return ' id=' . $id;
-    //
-    // }]);
-    //
-    //
-    Route::get('admin/magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
 
-    Route::resource('admin/magazine', 'Admin\MagazineController');
+    Route::group(['prefix' => 'admin'], function()
+    {
+      Route::get('magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
 
-    Route::get('admin/users/{users}/confirm', ['as' => 'admin.users.confirm', 'uses' => 'Admin\UsersController@confirm']);
-    Route::resource('admin/users', 'Admin\UsersController', ['except' => ['show'] ]);
+      Route::resource('magazine', 'Admin\MagazineController');
 
-    // Route::get('backend/pages/{pages}/confirm', ['as' => 'backend.pages.confirm', 'uses' => 'backend\PagesController@confirm']);
-    // Route::resource('backend/pages', 'Backend\PagesController', ['except' => ['show'] ]);
-    //
-    // Route::get('backend/blog/{blog}/confirm', ['as' => 'backend.blog.confirm', 'uses' => 'Backend\BlogController@confirm']);
-    // Route::resource('backend/blog', 'Backend\BlogController');
-    //
-    Route::get('admin/story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
-
-    // Route::get('admin/story/create/{stype}/', ['as' => 'admin_story_create', 'uses' => 'Admin\StoryController@create']);
-    Route::get('admin/story/{story}/confirm', ['as' => 'admin.story.confirm', 'uses' => 'Admin\StoryController@confirm']);
-    // Route::get('admin/storyType/{storyType?}', ['as' => 'admin.storyType', 'uses' => 'Admin\StoryController@build']);
-    // Route::get('admin/storyType/story/{story}', ['as' => 'admin.storyType.story', 'uses' => 'Admin\StoryController@build']);
-    Route::post('admin/story/{id}/addimage', 'Admin\StoryController@addImage');
-
-    Route::resource('admin/story', 'Admin\StoryController');
-
-    Route::get('admin/announcement/{announcement}/confirm', ['as' => 'admin.announcement.confirm', 'uses' => 'Admin\AnnouncementController@confirm']);
-    Route::resource('admin/announcement', 'Admin\AnnouncementController');
-    // Route::get('admin/storyType/{storyType?}', function ($storyType = null ) {
-    //     return 'storyType='. $storyType;
-    // });
-
-    Route::get('admin/storyimages/{storyimages}/confirm', ['as' => 'admin.storyimages.confirm', 'uses' => 'Admin\StoryImageController@confirm']);
-    Route::resource('admin/storyimages', 'Admin\StoryImageController');
-
-    Route::get('admin/pages/{page}/confirm', ['as' => 'admin.pages.confirm', 'uses' => 'Admin\PagesController@confirm']);
-    Route::resource('admin/pages', 'Admin\PagesController');
-
-    Route::get('admin/dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);
-
-    Route::get('api/story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
-    Route::resource('api/story', 'Api\StoryController');
+      Route::get('users/{users}/confirm', ['as' => 'admin.users.confirm', 'uses' => 'Admin\UsersController@confirm']);
+      Route::resource('users', 'Admin\UsersController', ['except' => ['show'] ]);
 
 
-    Route::get('admin/event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
-    Route::resource('admin/event', 'Admin\EventController');
+      Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
 
+      // Route::get('admin/story/create/{stype}/', ['as' => 'admin_story_create', 'uses' => 'Admin\StoryController@create']);
+      Route::get('story/{story}/confirm', ['as' => 'admin.story.confirm', 'uses' => 'Admin\StoryController@confirm']);
+      // Route::get('admin/storyType/{storyType?}', ['as' => 'admin.storyType', 'uses' => 'Admin\StoryController@build']);
+      // Route::get('admin/storyType/story/{story}', ['as' => 'admin.storyType.story', 'uses' => 'Admin\StoryController@build']);
+      Route::post('story/{id}/addimage', 'Admin\StoryController@addImage');
 
+      Route::resource('story', 'Admin\StoryController');
 
-    Route::get('storytype/{story_type}/{id}', 'MainController@main');
+      Route::get('announcement/{announcement}/confirm', ['as' => 'admin.announcement.confirm', 'uses' => 'Admin\AnnouncementController@confirm']);
+      Route::resource('announcement', 'Admin\AnnouncementController');
 
-  //  Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
-    // Route::resource('/', 'MainController');
+      Route::get('storyimages/{storyimages}/confirm', ['as' => 'admin.storyimages.confirm', 'uses' => 'Admin\StoryImageController@confirm']);
+      Route::resource('storyimages', 'Admin\StoryImageController');
 
-    // Route::get('main', function ()    {
-    // return view('layouts.main');
-    // });
+      Route::get('page/{page}/confirm', ['as' => 'admin.pages.confirm', 'uses' => 'Admin\PagesController@confirm']);
+      Route::resource('page', 'Admin\PagesController');
+
+      Route::get('dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);
+
+      Route::get('event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
+      Route::resource('event', 'Admin\EventController');
+
+    });
+
 
 });
