@@ -32,10 +32,10 @@
             <div class="large-12 medium-12 small-12 columns">
               <!-- '/admin/php/top_nav.php'); -->
               <ul>
-                <li><a href="#">Current Issue</a></li>
+                <li><a href="/emu-today/magazine/2015">Current Issue</a></li>
                 <li><a href="#">Past Issues</a></li>
                 <li><a href="#">Alumni</a></li>
-                <li><a href="#">EMU Today</a></li>
+                <li><a href="/emu-today/hub">EMU Today</a></li>
               </ul>
             </div>
           </div>

@@ -15,9 +15,9 @@
         <aside class="off-canvas position-right" id="offCanvas" data-off-canvas>
           @section('offcanvaslist')
           <ul class="off-canvas-list"><!-- include($_SERVER['DOCUMENT_ROOT'].'/emu-today/admin/php/top_nav.php'); -->
-            <li><a href="/emu-today">Today</a></li>
+            <li><a href="/emu-today/hub">Today</a></li>
             <li><a href="/emu-today/calendar">Calendar</a></li>
-            <li><a href="/emu-today/announcements">Announcements</a></li>
+            <li><a href="/emu-today/announcement">Announcements</a></li>
             <li><a href="/emu-today/news">News</a></li>
             <li><a href="/emu-today/student">Student Profiles</a></li>
             <li><a href="#">Athletics</a></li>
@@ -67,9 +67,9 @@
                       <div class="large-12 medium-12 small-12 columns">
                         <!-- '/admin/php/top_nav.php'); -->
                         <ul>
-                          <li><a href="/emu-today">Today</a></li>
-                          <li><a href="/emu-today/calendar">Calendar</a></li>
-                          <li><a href="/emu-today/announcements">Announcements</a></li>
+                          <li><a href="/emu-today/hub">Today</a></li>
+                          <li><a href="#">Calendar</a></li>
+                          <li><a href="/emu-today/announcement">Announcements</a></li>
                           <li><a href="/emu-today/news">News</a></li>
                           <li><a href="/emu-today/student">Student Profiles</a></li>
                           <li><a href="#">Athletics</a></li>

@@ -57,6 +57,8 @@ Route::group(['middleware' => ['web']], function() {
       Route::get('magazine/article/{id?}', 'EmuToday\MagazineController@article');
       Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
 
+      Route::get('announcement/{id?}', 'EmuToday\AnnouncementController@index');
+      
       Route::get('hub', 'MainController@index');
 
 
