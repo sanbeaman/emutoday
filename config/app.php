@@ -218,7 +218,6 @@ return [
 
         'Image'     => Intervention\Image\Facades\Image::class,
 
-        'Clockwork' => Clockwork\Support\Laravel\Facade::class,
 
 
 
