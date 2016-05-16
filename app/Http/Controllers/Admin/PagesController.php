@@ -77,7 +77,7 @@ class PagesController extends Controller
         //     $query->where('image_type', 'imagehero');
         // })->get();
         $storys =  $this->storys->where('story_type', '!=', 'storybasic')->orderBy('updated_at', 'desc')->get();
-        $connectedStorys = $page->storys()->get();
+        $connectedStorys = $page->storys->get();
 
         JavaScript::put([
             'jsis' => 'foobar',
