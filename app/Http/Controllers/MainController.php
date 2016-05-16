@@ -39,7 +39,7 @@ class MainController extends Controller
         // $storys = $page->storys()->get();
 
 
-        $currentStorys = $page->storys()->get();
+        // $currentStorys = $page->storys->get();
         $currentStorysBasic = $this->storys->where('story_type', 'storybasic')->paginate(5);
         $currentAnnouncements = $this->announcements->paginate(5);
         $barImgs = collect();
@@ -63,7 +63,6 @@ class MainController extends Controller
             'cdnow' => Carbon::now(),
             'cdstart' => Carbon::now()->subDays(7),
             'cdend' => Carbon::now()->addDays(7),
-            'cstorys' => $currentStorys,
             'currentPage' => $page
         ]);
 
