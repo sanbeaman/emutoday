@@ -118,7 +118,7 @@ Route::group(['middleware' => ['web']], function() {
 
     Route::get('storytype/{story_type}/{id}', 'MainController@main');
 
-    Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
+  //  Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
     // Route::resource('/', 'MainController');
 
     // Route::get('main', function ()    {
