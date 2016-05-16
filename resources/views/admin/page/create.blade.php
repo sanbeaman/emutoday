@@ -6,8 +6,9 @@
 	<div class="row">
 		{!! Form::model($page, [
 			'method' =>  'post',
-			'route' => ['admin.pages.store']
+			'route' => ['admin.page.store']
 		]) !!}
+		{{ csrf_field() }}
 		<div class="medium-2 columns">
 		    <div class="input-group">
 		        {!! Form::label('template') !!}

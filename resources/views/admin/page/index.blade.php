@@ -3,7 +3,7 @@
 @section('title', 'View Pages')
 
 @section('content')
-    <a href="{{ route('admin.pages.create') }}" class="button">Create New Page</a>
+    <a href="{{ route('admin.page.create') }}" class="button">Create New Page</a>
 
     <table class="hover">
         <thead>
@@ -21,19 +21,19 @@
         <tbody>
             @foreach($pages as $page)
                 <tr>
-                    <td><a href="{{ route('admin.pages.show', $page->id) }}">{{ $page->id }}</a></td>
+                    <td><a href="{{ route('admin.page.show', $page->id) }}">{{ $page->id }}</a></td>
                     <td>{{ $page->template }}</td>
                     <td>{{ $page->uri }}</td>
                     <td>{{ $page->start_date }}</td>
                     <td>{{ $page->end_date }}</td>
                     <td>{{ $page->updated_at}}</td>
                     <td>
-                        <a href="{{ route('admin.pages.edit', $page->id) }}">
+                        <a href="{{ route('admin.page.edit', $page->id) }}">
                             <i class="fi-pencil"></i>
                         </a>
                     </td>
                     <td>
-                        <a href="{{ route('admin.pages.confirm', $page->id) }}">
+                        <a href="{{ route('admin.page.confirm', $page->id) }}">
                             <i class="fi-trash"></i>
                         </a>
                     </td>

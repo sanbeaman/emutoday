@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use JavaScript;
 use emutoday\Http\Requests;
 
-class PagesController extends Controller
+class PageController extends Controller
 {
 
     protected $pages;
@@ -27,13 +27,13 @@ class PagesController extends Controller
     {
         $pages = $this->pages->orderBy('updated_at', 'desc')->get();
 
-        return view('admin.pages.index', compact('pages'));
+        return view('admin.page.index', compact('pages'));
     }
 
     public function create(Page $page)
     {
 
-        return view('admin.pages.create', compact('page'));
+        return view('admin.page.create', compact('page'));
     }
 
     public function store(Requests\StorePageRequest $request)
@@ -43,7 +43,7 @@ class PagesController extends Controller
 
     );
         flash()->success('Page has been created.');
-        return redirect(route('admin.pages.edit', $page->id));//->with('status', 'Story has been created.');
+        return redirect(route('admin.page.edit', $page->id));//->with('status', 'Story has been created.');
     }
 
     public function show($id)
@@ -53,7 +53,7 @@ class PagesController extends Controller
         // $storys =  $this->storys->orderBy('updated_at', 'desc')->take(8)->get();
         // $storyImages = $this->pages->storyImages();
         $storyImages = $this->pages->storyImages();
-        return view('admin.pages.preview', compact('page', 'storyImages'));
+        return view('admin.page.preview', compact('page', 'storyImages'));
 
     //    return view('admin.pages.show', compact('page'));
     }
@@ -66,7 +66,7 @@ class PagesController extends Controller
     public function confirm($id)
     {
         $page = $this->pages->findOrFail($id);
-        return view('admin.pages.confirm', compact('page'));
+        return view('admin.page.confirm', compact('page'));
     }
 
     public function edit($id)
@@ -77,13 +77,13 @@ class PagesController extends Controller
         //     $query->where('image_type', 'imagehero');
         // })->get();
         $storys =  $this->storys->where('story_type', '!=', 'storybasic')->orderBy('updated_at', 'desc')->get();
-        $connectedStorys = $page->storys->get();
+        $connectedStorys = $page->storys()->get();
 
         JavaScript::put([
             'jsis' => 'foobar',
             'storysonpage' => $connectedStorys->toArray()
         ]);
-        return view('admin.pages.edit', compact('page', 'storys', 'storyImages', 'storysWithHero'));
+        return view('admin.page.edit', compact('page', 'storys', 'storyImages', 'storysWithHero'));
     }
 
     public function update(Requests\UpdatePageRequest $request, $id)
@@ -113,7 +113,7 @@ class PagesController extends Controller
 
         //$story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','story_type'))->save();
         flash()->success('Page has been updated.');
-        return redirect(route('admin.pages.edit', $page->id));
+        return redirect(route('admin.page.edit', $page->id));
         //return redirect(route('admin.story.edit', $story->id))->with('status', 'Story has been updated.');
     }
 
@@ -123,7 +123,7 @@ class PagesController extends Controller
         $page = $this->pages->findOrFail($id);
         $page->delete();
         flash()->warning('Page has been deleted.');
-        return redirect(route('admin.pages.index'));//->with('status', 'Story has been deleted.');
+        return redirect(route('admin.page.index'));//->with('status', 'Story has been deleted.');
     }
 
 

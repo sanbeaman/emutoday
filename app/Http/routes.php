@@ -46,7 +46,7 @@ Route::group(['middleware' => ['web']], function() {
       'getLogin' => 'auth.login',
       'getLogout' => 'auth.logout'
     ]);
-    // Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
+    Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
 
     Route::group(['prefix' => 'emu-today'], function() {
       Route::get('story/{id?}', 'EmuToday\StoryController@index');
@@ -58,7 +58,7 @@ Route::group(['middleware' => ['web']], function() {
       Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
 
       Route::get('hub', 'MainController@index');
-      Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
+
 
       Route::get('events', function() {
           return view('public.event.index');
@@ -93,8 +93,8 @@ Route::group(['middleware' => ['web']], function() {
       Route::get('storyimages/{storyimages}/confirm', ['as' => 'admin.storyimages.confirm', 'uses' => 'Admin\StoryImageController@confirm']);
       Route::resource('storyimages', 'Admin\StoryImageController');
 
-      Route::get('page/{page}/confirm', ['as' => 'admin.pages.confirm', 'uses' => 'Admin\PagesController@confirm']);
-      Route::resource('page', 'Admin\PagesController');
+      Route::get('page/{page}/confirm', ['as' => 'admin.page.confirm', 'uses' => 'Admin\PageController@confirm']);
+      Route::resource('page', 'Admin\PageController');
 
       Route::get('dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);
 

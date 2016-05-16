@@ -10,8 +10,9 @@
 <div class="column row">
 	{!! Form::model($page, [
 		'method' =>  'put',
-		'route' => ['admin.pages.update', $page->id]
+		'route' => ['admin.page.update', $page->id]
 	]) !!}
+  {{ csrf_field() }}
 	<div class="row">
 
 		<div class="medium-2 columns">
@@ -63,7 +64,7 @@
 	</div> <!-- END Row top page input -->
 
 	<div class="row">
-		@include('admin.pages.templates.homeemutoday')
+		@include('admin.page.templates.homeemutoday')
 
 
 
@@ -74,7 +75,7 @@
 @section('scriptsfooter')
 	@parent
 	    <script src="{{ theme('js/my-redips.js') }}"></script>
-		
+
 	<script>
 	$(function(){
 		$('#start_date').fdatepicker({

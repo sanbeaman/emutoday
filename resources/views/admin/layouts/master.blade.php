@@ -23,7 +23,7 @@
           <li><a href="/admin/users">Users</a></li>
           <li><a href="/admin/story">Story List</a></li>
           <li><a href="/admin/storyimages">Images</a></li>
-          <li><a href="/admin/pages">Pages</a></li>
+          <li><a href="/admin/page">Pages</a></li>
           <li><a href="/admin/magazine">Magazine</a></li>
           <li><a href="/admin/announcement">Announcements</a></li>
           <li><a href="/admin/event">Events</a></li>
