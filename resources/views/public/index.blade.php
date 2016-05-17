@@ -4,7 +4,9 @@
   <div id="content-area">
     <div id="news-bar">
       <div class="row">
-        <h3 class="news-caps manageleftpadding">Featured!</h3>
+        <div class="small-12 columns">
+          <h3 class="news-caps manageleftpadding">Featured!</h3>
+        </div>
         <div class="large-7 medium-12 small-12 columns manageleftpadding">
           <img src="{{$heroImg->present()->mainImageURL}}" alt="featured image">
         </div>
@@ -21,14 +23,13 @@
           <h5 class="subhead-title">Featured News Stories</h5>
         </div>
       </div>
-      <div class="row small-up-2 medium-up-2 large-up-4">
+      <div class="row small-up-2 medium-up-2 large-up-4" data-equalizer>
         @each('public.layouts.components.smallimg', $barImgs, 'barImg')
       </div>
     </div>
     <div id="news-headline-bar">
       <div class="row">
          <div class="large-9 medium-8 small-12 columns manageleftpadding">
-           <div class="row">
              <ul class="tabs" data-tabs id="newshub-tabs">
                   <li class="tabs-title is-active"><a href="#newshub-headlines-front" aria-selected="true"><p class="subhead-title">News Headlines</p></a></li>
                   <li class="tabs-title"><a href="#newshub-announcements-front"><p class="subhead-title">Announcements</p></a></li>
@@ -49,7 +50,6 @@
                     </ul>
                   </div>
                 </div>
-           </div>
          </div>
          <div class="large-3 medium-3 small-12 columns">
               <div class="featured-content-block">
