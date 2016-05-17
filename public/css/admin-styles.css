@@ -2081,13 +2081,13 @@ h4,
 h5,
 h6 {
   font-family: "Roboto", sans-serif;
-  font-weight: normal;
+  font-weight: medium;
   font-style: normal;
   color: inherit;
   text-rendering: optimizeLegibility;
   margin-top: 0;
   margin-bottom: 0.5rem;
-  line-height: 1.4; }
+  line-height: 120%; }
   h1 small,
   h2 small,
   h3 small,
@@ -3971,7 +3971,7 @@ table.hover tr:nth-of-type(even):hover {
     display: block;
     padding: 1.25rem 1.5rem;
     line-height: 1;
-    font-size: 0.75rem; }
+    font-size: 1rem; }
     .tabs-title > a:hover {
       background: #fefefe; }
     .tabs-title > a:focus, .tabs-title > a[aria-selected='true'] {
