@@ -54,7 +54,7 @@
          <div class="large-3 medium-3 small-12 columns">
               <div class="featured-content-block">
                   <h6 class="headline-block">Featured video</h6>
-                  <a href="https://www.youtube.com/watch?v=v-3BGoQtOsY" target="blank"><img src="{{theme('imgs/home/video_featured.png')}}" alt="featured video"></a>
+                  <a href="https://www.youtube.com/watch?v=v-3BGoQtOsY" target="blank"><img src="{{'/assets/imgs/home/video_featured.png'}}" alt="featured video"></a>
                   <p><a href="https://www.youtube.com/watch?v=v-3BGoQtOsY" target="blank">Out of the Park Lunch by the Lake All-Campus Picnic</a></p>
              </div>
          </div>
@@ -108,27 +108,27 @@
                         <ul class="social-icons">
                         <li>
                             <a href="https://www.facebook.com/Eastern.Michigan.University">
-                                <img alt="Facebook" src="{{theme('imgs/icons/facebook_icon23x23.png')}}">
+                                <img alt="Facebook" src="{{'/assets/imgs/icons/facebook_icon23x23.png'}}">
                             </a>
                         </li>
                         <li>
                             <a href="http://www.emich.edu/twitter/">
-                                <img alt="Twitter" src="{{theme('imgs/icons/twitter_icon23x23.png')}}">
+                                <img alt="Twitter" src="{{'/assets/imgs/icons/twitter_icon23x23.png'}}">
                             </a>
                         </li>
                         <li>
                             <a href="https://www.youtube.com/user/emichigan08">
-                                <img alt="YouTube" src="{{theme('imgs/icons/youtube_icon23x23.png')}}">
+                                <img alt="YouTube" src="{{'/assets/imgs/icons/youtube_icon23x23.png'}}">
                             </a>
                         </li>
                         <li>
                             <a href="https://instagram.com/easternmichigan/">
-                                <img alt="Instagram" src="{{theme('imgs/icons/instagram_icon23x23.png')}}">
+                                <img alt="Instagram" src="{{'/assets/imgs/icons/instagram_icon23x23.png'}}">
                             </a>
                         </li>
                         <li>
                             <a href="https://www.linkedin.com/edu/school?id=18604">
-                                <img alt="Linked-In" src="{{theme('imgs/icons//linked-in_icon23x23.png')}}">
+                                <img alt="Linked-In" src="{{'/assets/imgs/icons//linked-in_icon23x23.png'}}">
                             </a>
                         </li>
                       </ul>

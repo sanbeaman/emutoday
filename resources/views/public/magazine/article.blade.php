@@ -25,13 +25,13 @@
               <div id="issue-grouping" class="row">
                 <div class="large-8 medium-8 small-12 columns noleftpadding"><h2 class="issue-date news-caps">{{$magazine->season}} {{$magazine->year}}</h2></div>
                 <div class="large-4 medium-4 small-12 columns noleftpadding">
-                  <div class="addthis magazine-top"><a href=""><img src="/themes/default/assets/imgs/icons/fake-addthis.png" alt="addthis "></a></div>
+                  <div class="addthis magazine-top"><a href=""><img src="/assets/imgs/icons/fake-addthis.png" alt="addthis "></a></div>
                 </div>
               </div>
               <div id="big-feature-image">
                   <img src="{{$mainImage->present()->mainImageURL}}" alt="feature-image">
               </div>
-              <!-- <div class="magazine-titlebar"><img src="/themes/default/assets/imgs/graphic-title.png" alt="Lost Voices"></div> -->
+              <!-- <div class="magazine-titlebar"><img src="/assets/imgs/graphic-title.png" alt="Lost Voices"></div> -->
               {!! $story->content !!}
               <div class="story-author">Author's name</div>
               <p class="news-contacts">Contact Author, author@emich.edu, 734.487.XXXX</p>

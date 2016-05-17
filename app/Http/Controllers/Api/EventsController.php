@@ -62,23 +62,48 @@ class EventsController extends ApiController
         }
 
       }
+
+
+      $cd = Carbon::now()->subYear();
+      $yearVar =  $cd->year;
+      $monthVar = $cd->format('F');
+      $dayInMonth = $cd->day;
+      $monthArray = [];
+      $cd_dayMonthStarts = $cd->firstOfMonth()->dayOfWeek;
+      $cd_daysInMonth = $cd->daysInMonth;
+
+      $dayCounter = 0;
+      while ($dayCounter < $cd_dayMonthStarts) {
+        $monthArray = array_add($monthArray,$dayCounter, 'x'.$dayCounter);
+        $dayCounter++;
+      }
+
+      for ($x = 1; $x <= $cd_daysInMonth; $x++){
+        $monthArray = array_add($monthArray,$dayCounter, $x);
+        $dayCounter++;
+      }
+      $totalDaysInArray = count($monthArray);
+
+      return json_encode(['yearVar'=> $yearVar,
+                          'monthVar'=> $monthVar,
+                          'monthArray'=> $monthArray,
+                          'dayInMonth' => $dayInMonth]);
     //  $carbondate = new Carbon();
       // if ($mondifier == 'all') {
       //     $events = Event::all();
       //   } else {
-          $year = 2016;
-
-          $carbondatestart = Carbon::create($year,1,1,12);
-
-          $carbondateend = Carbon::create($year,1,1,12)->addYear();
-            $events = Event::where([
-                  ['start_date', '>', $carbondatestart],
-                  ['start_date', '<', $carbondateend],
-                ])->get();
-        // }
-
-        dd($carbondatestart );
-          return $this->respond($events);
+        //   $year = 2016;
+        //
+        //   $carbondatestart = Carbon::create($year,1,1,12);
+        //
+        //   $carbondateend = Carbon::create($year,1,1,12)->addYear();
+        //     $events = Event::where([
+        //           ['start_date', '>', $carbondatestart],
+        //           ['start_date', '<', $carbondateend],
+        //         ])->get();
+        // // }
+        //
+        //   return $this->respond($events);
     }
 
     public function byDate(Request $request)

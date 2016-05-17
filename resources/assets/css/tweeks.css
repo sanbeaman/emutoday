@@ -12,6 +12,10 @@ i.fi-arrow-left.calstyle1 {
 a.magazine-article-button {
   color: #222;
 }
+
+.four-stories-block{
+  padding-bottom: 10px;
+}
 /* Styles for Date Selector */
 .month {
   height: 110px;
@@ -66,43 +70,3 @@ a.magazine-article-button {
   font-size: 12px;
   font-weight: bold;
 }
-
-.calendar ul {
-  padding: 15px;
-  background: #f3f3f3;
-  margin: 0;
-}
-.calendar ul.weekdays {
-  padding: 10px 15px 3px;
-  background: #f9f9f9;
-}
-.calendar ul li {
-  list-style-type: none;
-  display: inline-block;
-  width: 12.8%;
-  height: 25px;
-  font-size: 12px;
-  color: #888;
-  text-align: center;
-  margin-bottom: 4px;
-}
-.calendar ul li span {
-  font-size: 10px;
-  text-transform: uppercase;
-  font-weight: bold;
-}
-.calendar ul li a {
-  color: #888;
-  display: block;
-  padding: 4px 0;
-}
-.calendar ul li a:hover {
-  border-radius: 5px;
-  background: #f9f9f9;
-  color: #008cba;
-}
-.calendar ul li a.active {
-  border-radius: 5px;
-  border: 2px solid #ddd;
-  padding: 2px 0;
-}

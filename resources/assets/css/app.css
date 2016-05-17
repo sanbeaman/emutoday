@@ -1,6 +1,8 @@
 /* custom CSS styles */
-
+/*
 @import url(//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,700italic,400italic);
+@import url(http://fonts.googleapis.com/css?family=PT+Serif);*/
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,700italic,400italic);
 @import url(http://fonts.googleapis.com/css?family=PT+Serif);
 
 body{
@@ -164,10 +166,10 @@ ul.social-icons li img{
     position: relative;
     height: auto;
 }
-#transparent-bar{
+#transparent-bar {
     position:relative;
     width: 100%;
-    background-color: rgba(0, 0, 0, .5);
+    background-color: rgba(0, 0, 0, 0.7);
     z-index: 100;
     height: auto;
 }
@@ -362,13 +364,13 @@ ul.social-icons li img{
     z-index: 10;
     padding: .8rem 0;
 }
-#four-stories-bar li img.topic-image{
+#four-stories-bar  img.topic-image{
     width: 100%;
 }
 #four-stories-bar h5{
     text-transform: uppercase;
 }
-#four-stories-bar li p.button-group{
+#four-stories-bar  p.button-group{
     text-align:center;
     padding-top: .5rem;
 }
@@ -388,7 +390,7 @@ img.news-icon{
     padding: 0;
     margin: -2px 0 0;
 }
-#four-stories-bar li p{
+#four-stories-bar  p{
     font-size: .9rem;
     line-height: 1.2rem;
     padding: .2rem 0;
@@ -689,7 +691,7 @@ ul.accordion {
     margin-bottom: .5rem;
     border-bottom: 1px dotted #ccc;
 }
-.accordion .accordion-navigation > a, .accordion dd > a {
+.accordion .accordion-item > a, .accordion dd > a {
     background: none;
     color: #0f654a;
     padding: .5rem 0rem .5rem 1.1rem;
@@ -701,35 +703,35 @@ ul.accordion {
     background-repeat: no-repeat;
     background-position: 0 1rem;
 }
-.accordion .accordion-navigation:first-of-type > a, .accordion dd:first-of-type > a {
+.accordion .accordion-item:first-of-type > a, .accordion dd:first-of-type > a {
     /*border-top: 4px double #ccc;*/
     border-top: none;
 }
-.accordion .accordion-navigation > a:hover, .accordion dd > a:hover {
+.accordion .accordion-item > a:hover, .accordion dd > a:hover {
     background: none;
     background-image: url(../../assets/imgs/home/dial-arrow-side.png);
     background-repeat: no-repeat;
     background-position: 0 1rem;
 }
-.accordion .accordion-navigation.active > a, .accordion dd.active > a {
+.accordion .accordion-item.is-active > a, .accordion dd.is-active > a {
     background: none;
     background-image: url(../../assets/imgs/home/dial-arrow-down.png);
     background-repeat: no-repeat;
     background-position: 0 1.1rem;
 }
-.accordion .accordion-navigation.active > a:hover, .accordion dd.active > a:hover {
+.accordion .accordion-item.is-active > a:hover, .accordion dd.is-active > a:hover {
     background: none;
     background-image: url(../../assets/imgs/home/dial-arrow-down.png);
     background-repeat: no-repeat;
     background-position: 0 1.1rem;
 }
-.accordion .accordion-navigation > .content, .accordion dd > .content {
+.accordion .accordion-item > .content, .accordion dd > .content {
     display: none;
     padding: 0rem 0 1rem 1.1rem;
     font-size: .9rem;
     line-height: 1.3rem;
 }
-.accordion .accordion-navigation > .content.active, .accordion dd > .content.active {
+.accordion .accordion-item > .content.is-active, .accordion dd > .content.is-active {
     display: block;
     background: none;
 }

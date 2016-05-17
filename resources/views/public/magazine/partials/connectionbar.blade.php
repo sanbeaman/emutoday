@@ -18,7 +18,7 @@
           </div><!-- large-9 -->
         <div class="large-3 large-pull-9 show-for-medium columns">
             <div id="logo-box-magazine" data-equalizer-watch>
-                 <a href=""><img class="magazine-logo" alt="Eastern Michigan University" src="/themes/default/assets/imgs/magazine/eatern-mag-logo.png"></a>
+                 <a href=""><img class="magazine-logo" alt="Eastern Michigan University" src="/assets/imgs/magazine/eatern-mag-logo.png"></a>
             </div><!-- logo-box-magazine -->
           </div><!-- large-3 -->
         </div><!-- row -->

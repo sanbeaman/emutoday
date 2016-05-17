@@ -52,11 +52,11 @@
                     </div><!-- large-9 -->
                     <div class="large-3 large-pull-9 medium-2 medium-pull-10 small-2 small-pull-10 columns">
                       <div id="logo-box" data-equalizer-watch>
-                        <a href="http://www.emich.edu"><img class="full-logo" alt="Eastern Michigan University" src="/themes/default/assets/imgs/home/logo.png"></a>
-                        <a href="http://www.emich.edu"><img class="block-e" alt="Eastern Michigan University" src="/themes/default/assets/imgs/home/blockewhiteplain.png"></a>
-                        <a href="http://www.emich.edu"><img class="emu" alt="Eastern Michigan University" src="/themes/default/assets/imgs/home/emu.png"></a>
+                        <a href="http://www.emich.edu"><img class="full-logo" alt="Eastern Michigan University" src="/assets/imgs/home/logo.png"></a>
+                        <a href="http://www.emich.edu"><img class="block-e" alt="Eastern Michigan University" src="/assets/imgs/home/blockewhiteplain.png"></a>
+                        <a href="http://www.emich.edu"><img class="emu" alt="Eastern Michigan University" src="/assets/imgs/home/emu.png"></a>
                         {{-- <a href="http://www.emich.edu">
-                          <img data-interchange="[/themes/default/assets/imgs/home/emu.png, small], [/themes/default/assets/imgs/home/blockewhiteplain.png, medium], [/themes/default/assets/imgs/home/logo.png, large]">
+                          <img data-interchange="[/assets/imgs/home/emu.png, small], [/assets/imgs/home/blockewhiteplain.png, medium], [/assets/imgs/home/logo.png, large]">
                         </a> --}}
                       </div><!-- logo-box -->
                     </div><!-- large-3 -->
@@ -118,7 +118,7 @@
   <div id="base-bar">
     <div class="row">
       <div id="university-contacts" class="large-2 medium-2 hide-for-small columns noleftpadding">
-        <a href="http://www.emich.edu"><img class="bottom-logo" alt="Eastern Michigan University" src="{{ theme('imgs/home/logo.png')}}"/></a>
+        <a href="http://www.emich.edu"><img class="bottom-logo" alt="Eastern Michigan University" src="{{'/assets/imgs/home/logo.png'}}"/></a>
       </div>
       <div id="linking-lists" class="large-8 medium-10 small-12 columns noleftpadding">
                 <h6><a href="http://www.emich.edu">Eastern Michigan University, <span class="notbold">Education First</span></a></h6>
@@ -127,12 +127,12 @@
       </div>
       <div id="social-links" class="large-2 medium-12 small-12 columns noleftpadding norightpadding">
           <ul class="social-icons">
-            <li><a href="https://www.facebook.com/Eastern.Michigan.University"><img alt="Facebook" src="{{ theme('imgs/icons/facebook-base-icons.png') }}"></a></li>
-            <li><a href="http://www.emich.edu/twitter/"><img alt="Twitter" src="{{ theme('imgs/icons/twitter-base-icons.png') }}"></a></li>
-            <li><a href="https://www.youtube.com/user/emichigan08"><img alt="YouTube" src="{{ theme('imgs/icons/you-tube-base-icons.png')}}"></a></li>
-            <li><a href="https://instagram.com/easternmichigan/"><img alt="Instagram" src="{{ theme('imgs/icons/instagram-base-icons.png') }}"></a></li>
-            <li><a href="https://www.linkedin.com/edu/school?id=18604"><img alt="Linked-In" src="{{ theme('imgs/icons/linked-in-base-icons.png') }}"></a></li>
-            <li><a href="http://blogemu.com/"><img alt="Blog EMU" src="{{ theme('imgs/icons/e-base-icons.png') }}"></a></li>
+            <li><a href="https://www.facebook.com/Eastern.Michigan.University"><img alt="Facebook" src="{{'/assets/imgs/icons/facebook-base-icons.png'}}"></a></li>
+            <li><a href="http://www.emich.edu/twitter/"><img alt="Twitter" src="{{'/assets/imgs/icons/twitter-base-icons.png'}}"></a></li>
+            <li><a href="https://www.youtube.com/user/emichigan08"><img alt="YouTube" src="{{'/assets/imgs/icons/you-tube-base-icons.png'}}"></a></li>
+            <li><a href="https://instagram.com/easternmichigan/"><img alt="Instagram" src="{{'/assets/imgs/icons/instagram-base-icons.png' }}"></a></li>
+            <li><a href="https://www.linkedin.com/edu/school?id=18604"><img alt="Linked-In" src="{{'/assets/imgs/icons/linked-in-base-icons.png'}}"></a></li>
+            <li><a href="http://blogemu.com/"><img alt="Blog EMU" src="{{'/assets/imgs/icons/e-base-icons.png'}}"></a></li>
           </ul>
       </div> <!-- END social links -->
     </div>

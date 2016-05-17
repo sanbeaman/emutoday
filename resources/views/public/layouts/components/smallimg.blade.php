@@ -1,7 +1,7 @@
-<div class="column">
+<div class="column four-stories-block">
   <img class="topic-image" src="{{$barImg->present()->mainImageURL}}" alt="story image">
   <div class="stories-content">
-    <div class="stories-text-content" data-equalizer-watch="" style="height: 66px;">
+    <div class="stories-text-content">
       <p>{{$barImg->caption}}</p>
     </div>
     <p class="button-group">

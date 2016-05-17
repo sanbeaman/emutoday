@@ -48,7 +48,7 @@
         <div class="row collapse">
           <div class="large-7 large-push-5 medium-12 small-12 columns">
             <div class="row collapse photo-feature-section">
-              <div class="large-6 medium-6 small-12 columns"><img class="topic-image contributor" src="/themes/default/assets/imgs/magazine/back-page-image.jpg"  alt="back page image"/>
+              <div class="large-6 medium-6 small-12 columns"><img class="topic-image contributor" src="/assets/imgs/magazine/back-page-image.jpg"  alt="back page image"/>
               </div>
               <div class="large-6 medium-6 small-12 columns photo-feature-text ">
                 <h5>“Grand But Questionable Haven” </h5>
@@ -64,7 +64,7 @@
 
           <div class="large-5 large-pull-7 medium-12 small-12 columns">
             <div class="row collapse">
-              <div class="large-6 medium-4 small-12 columns cover-box"><img class="topic-image magazine-cover" src="/themes/default/assets/imgs/magazine/magazine-cover-winter2016.jpg"  alt="magazine image"/>
+              <div class="large-6 medium-4 small-12 columns cover-box"><img class="topic-image magazine-cover" src="/assets/imgs/magazine/magazine-cover-winter2016.jpg"  alt="magazine image"/>
               </div>
               <div class="large-6 medium-8 small-12 columns magazine-details">
                 <h4>Winter 2016 Issue</h4>

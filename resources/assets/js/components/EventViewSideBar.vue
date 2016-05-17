@@ -7,8 +7,8 @@
               <div class="month">
                 <a href="#" class="back"></a>
                 <a href="#" class="next"></a>
-                <h5>May</h5>
-                <p>2016</p>
+                <h5>{{monthVar}}</h5>
+                <p>{{yearVar}}</p>
               </div>
               <ul class="weekdays">
                 <li><span href="#">Sun</span></li>
@@ -19,12 +19,12 @@
                 <li><span href="#">Fri</span></li>
                 <li><span href="#">Sat</span></li>
               </ul>
-              <ul>
-                <li v-for="day in daysInMonth">
-                  {{ day}}
+              <ul class="days">
+                <li v-for="item in monthArray">
+                  <a v-on:click.prevent="fetchEventsByDay( item )" v-bind:class="{'active': item == currentDay }" href="#"> {{item | removex }}</a>
                 </li>
-              </ul>
-            </div>
+                </ul>
+              </div>
           </div>
         </div>
       <div id="month" class="month-2016-05">
@@ -63,12 +63,63 @@
   .events li span.badge {
     margin-left: 10px;
   }
+
+  .calendar ul {
+    padding: 15px;
+    background: #f3f3f3;
+    margin: 0;
+  }
+  .calendar ul.weekdays {
+    padding: 10px 15px 3px;
+    background: #f9f9f9;
+  }
+  .calendar ul li {
+    list-style-type: none;
+    display: inline-block;
+    width: 12.8%;
+    height: 25px;
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .calendar ul li span {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  .calendar ul li a {
+    color: #888;
+    display: block;
+    padding: 4px 0;
+  }
+  .calendar ul li a:hover {
+    border-radius: 5px;
+    background: #f9f9f9;
+    color: #008cba;
+  }
+  .calendar ul li a.active {
+    border-radius: 5px;
+    border: 2px solid #ddd;
+    padding: 2px 0;
+  }
 </style>
 <script>
 module.exports  = {
   data: function() {
     return {
       categories: {},
+      calevents: {},
+      yearVar: '',
+      monthVar: '',
+      monthArray: [],
+      currentDay: '',
+
+    }
+  },
+  filters: {
+    removex: function(value) {
+      return (value[0] == 'x') ? ' ' : value;
     }
   },
   props: {
@@ -80,7 +131,20 @@ module.exports  = {
   methods: {
     fetchEvents: function() {
       this.$http.get('/api/events', function(data) {
-        this.events = data;
+        this.monthArray = response.data.monthArray;
+        this.currentDay = response.data.dayInMonth;
+      });
+    },
+    fetchEventsByDay: function(value) {
+      alert(value);
+    },
+    fetchEventsForCalendar: function() {
+      this.$http.get('/api/calendar/events/2015/05').then(function(response) {
+        this.yearVar = response.data.yearVar;
+        this.monthVar = response.data.monthVar;
+        this.monthArray = response.data.monthArray;
+        this.currentDay = response.data.dayInMonth;
+        console.log(response.data);
       });
     },
     fetchCategoryList: function() {
@@ -131,10 +195,10 @@ watch: {
 
 },
 created: function() {
+  this.fetchEventsForCalendar();
    this.fetchCategoryList();
 },
 components: {
-
 
 },
 events: {
