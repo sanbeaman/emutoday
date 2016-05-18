@@ -5,14 +5,13 @@
       <div class="row">
         <div class="large-12 medium-12 small-12 columns">
           <div id="title-grouping" class="row">
-            <div class="large-5 medium-7 small-12 columns  noleftpadding"><h3 class="news-caps">News Headlines <a class="smaller-title" href="">[ RSS feed ]</a></h3></div>
-            <div class="large-7 medium-5 small-12 columns noleftpadding">
+            <div class="large-5 medium-7 small-12 columns"><h3 class="news-caps">News Headlines <a class="smaller-title" href="">[ RSS feed ]</a></h3></div>
+            <div class="large-7 medium-5 small-12 columns">
               <h6>{!! $storys->links() !!}</h6>
             </div>
           </div>
-
           <div class="row">
-            <div class="large-12 medium-12 small-12">
+            <div class="large-12 medium-12 small-12 columns">
 
               <ul class="news-headlines">
                 @foreach($storys as $story)
