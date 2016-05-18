@@ -5198,7 +5198,7 @@ ul.social-icons li img{
     font-weight: 400;
     font-size: 2rem;
     margin: .3rem 0 0;
-    padding: 0.3rem 0 0 0;
+    padding: 0.3rem 0 0 0.6rem;
 }
 #tier1-nav h1 a{
     color: #333;
@@ -5301,7 +5301,7 @@ ul.social-icons li img{
     position: absolute;
     z-index: 200;
     box-sizing: border-box;
-    left: 0;
+    /*left: 0;*/
     width: 100%;
     padding: 1rem;
     margin-right: 1rem;
@@ -5977,7 +5977,7 @@ p.small-return-news {
 #profile-text-over-image-box{
     position: absolute;
     width: 50%;
-    right: 0;
+    right: 1rem;
     top: 48%;
     background: rgba(0, 0, 0, .4);
     padding: 1.2rem 1.5rem 1rem;
@@ -6044,7 +6044,7 @@ p.small-return-news {
     position: absolute;
     z-index: 200;
     box-sizing: border-box;
-    left: 0;
+    /*left: 0;*/
     width: 100%;
     padding: 1rem;
     margin-right: 1rem;
