@@ -185,7 +185,7 @@ ul.social-icons li img{
     font-weight: 400;
     font-size: 2rem;
     margin: .3rem 0 0;
-    padding: 0;
+    padding: 0.3rem 0 0 0;
 }
 #tier1-nav h1 a{
     color: #333;
@@ -917,11 +917,12 @@ p.small-return-news {
 }
 #profiles-list .profile-content {
     margin: 0;
-    padding: 0;
-    /*padding: .5rem .8rem .8rem;*/
+    padding: .5rem 0 0 0;
 }
 #profiles-list .profile-text-content p {
     text-align: left;
+    font-size: 0.9rem;
+    line-height: 1.2rem;
 }
 #profiles-list{
     height: auto;
@@ -939,17 +940,17 @@ p.small-return-news {
 #profiles-list h5{
     text-transform: uppercase;
 }
-#profiles-list li p{
+/*#profiles-list  p{
     font-size: .9rem;
     line-height: 1.2rem;
     padding: 0;
     margin: 0;
-}
-#profiles-list li a{
+}*/
+#profiles-list  a{
     text-decoration: none;
     color: #333;
 }
-#profiles-list li h6{
+#profiles-list h6{
     padding: 0;
     margin: .8rem 0 .2rem 0;
     color: #0f654a;
@@ -1202,5 +1203,6 @@ img.magazine-logo {
     width: 100%;
 }
 .profile-text-content.magazine h3{
+  font-size:1.3rem;
     margin: 0;
 }

@@ -3,8 +3,14 @@
     <div id="calendarfeed" class="week-2016W192">
       <div v-for="eitem in elist">
         <div class="event">
-        <h4> {{eitem.start_date}}</h4>
-          <div class="event">
+        <h4> {{$index}} {{$key}}</h4>
+        <ul>
+          <li v-for="item in eitem">
+            {{ item.id }} {{item.title}} {{item.start_date}}
+          </li>
+        </ul>
+
+          <!-- <div class="event">
             <h6><a href="#" id="eitem.id">{{eitem.title}}</a></h6>
             <p>From {{eitem.start_time}} to {{eitem.end_date}}</p>
             <p>
@@ -26,7 +32,7 @@
                 <p>{{eitem.participants}}</p>
                 <p>LBC Approved: {{eitem.lbc_approved | yesNo }}</p>
               </div>
-            </div>
+            </div> -->
 
 
           </div>

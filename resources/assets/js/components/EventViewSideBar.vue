@@ -160,7 +160,7 @@ module.exports  = {
         this.monthVar = response.data.monthVar;
         this.monthArray = response.data.monthArray;
         this.currentDay = response.data.dayInMonth;
-        this.elist = response.data.elist;
+        this.elist = response.data.groupedByDay;
         console.log(response.data);
       });
     },

@@ -5172,6 +5172,11 @@ textarea .teaser,
   min-height: 100px;
 }
 
+/*#tier1-nav .toppad{
+  padding-top: .3rem;
+}*/
+
+
 i.fi-play {
   padding-left: 0.5rem;
 }

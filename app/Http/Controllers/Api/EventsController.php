@@ -106,16 +106,16 @@ class EventsController extends ApiController
           return Carbon::parse($item['start_date'])->day;
         });
         $uniqueByDay = $keyed->keys();
-
+        $calDaysArray = collect();
       $dayCounter = 0;
       while ($dayCounter < $cd_dayMonthStarts) {
         $dayObject = collect(['day' => 'x'.$dayCounter , 'hasevents'=> 'no']);
-        $monthArray->push($dayObject);
+        $calDaysArray->push($dayObject);
 
         //  = array_add($monthArray,$dayCounter, $dayObject);
         $dayCounter++;
       }
-      $calDaysArray = collect();
+
       for ($x = 1; $x <= $cd_daysInMonth; $x++){
         $hasevent = $uniqueByDay->contains($x)?'yes':'no';
         $dayObject = collect(['day' => $x, 'hasevents'=> $hasevent]);
@@ -125,7 +125,7 @@ class EventsController extends ApiController
         $dayCounter++;
       }
 
-      $totalDaysInArray = count($monthArray);
+      $totalDaysInArray = count($calDaysArray);
 
       return json_encode([  'groupedByDay' => $groupedByDay,
                             '______grouped_______' => $grouped,
@@ -134,7 +134,7 @@ class EventsController extends ApiController
                           'uniqueByDay'=> $uniqueByDay,
                           'yearVar'=> $yearVar,
                           'monthVar'=> $monthVar,
-                          'monthArray'=> $monthArray,
+                          'monthArray'=> $calDaysArray,
                           'dayInMonth' => $dayInMonth]);
     //  $carbondate = new Carbon();
       // if ($mondifier == 'all') {
