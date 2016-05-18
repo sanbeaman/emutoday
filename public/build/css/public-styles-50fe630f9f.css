@@ -5959,7 +5959,7 @@ p.small-return-news {
     padding: 0;
     margin: 0;
 }*/
-#profiles-list  a{
+#profiles-list .profile-content .profile-text-content a p{
     text-decoration: none;
     color: #333;
 }
