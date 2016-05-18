@@ -17,7 +17,7 @@
   @endsection
 @section('content')
   <div id="content-area">
-    <div id="homepage-hero" class="row">
+    <div id="homepage-hero" class="row column">
       <img src="{{$heroImg->present()->mainImageURL}}" alt="main image">
       <div id="magazine-text-over-image-box" class="row collapse">
         <div class="centered-main-title">
@@ -27,7 +27,7 @@
       </div>
     </div>
     <div id="profiles-list" >
-      <div class="row managehorizontalpadding" >
+      <div class="row column">
         <div class="row small-up-2 medium-up-2 large-up-5">
           @foreach ($barImgs as $barImg)
             <div class="column">

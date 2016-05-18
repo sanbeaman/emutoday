@@ -1,6 +1,14 @@
 @charset "UTF-8";
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,500,500italic,700,700italic);
 @import url(http://fonts.googleapis.com/css?family=PT+Serif);
+content: '';
+display: block;
+width: 0;
+height: 0;
+border: inset 1rem;
+border-color: transparent transparent transparent #0f654a;
+border-left-style: solid;
+border-right-width: 0;
 /**
  * Foundation for Sites by ZURB
  * Version 6.2.1
@@ -2663,7 +2671,7 @@ select {
 .accordion {
   list-style-type: none;
   background: #fefefe;
-  border: 1px solid #e6e6e6;
+  border: 1px none #e6e6e6;
   border-bottom: 0;
   border-radius: 0;
   margin-left: 0; }
@@ -2675,9 +2683,9 @@ select {
   font-size: 0.75rem;
   color: #0f654a;
   position: relative;
-  border-bottom: 1px solid #e6e6e6; }
+  border-bottom: 1px none #e6e6e6; }
   .accordion-title:hover, .accordion-title:focus {
-    background-color: #e6e6e6; }
+    background-color: #fefefe; }
   .accordion-title::before {
     content: '+';
     position: absolute;
@@ -2688,9 +2696,9 @@ select {
     content: '–'; }
 
 .accordion-content {
-  padding: 1rem;
+  padding: 0;
   display: none;
-  border-bottom: 1px solid #e6e6e6;
+  border-bottom: 1px none #e6e6e6;
   background-color: #fefefe; }
 
 .is-accordion-submenu-parent > a {
@@ -5696,53 +5704,47 @@ img.bottom-logo{
     padding: .8rem 0 0 0;
 }
 ul.accordion {
-    margin-left: 0;
-    margin-bottom: .5rem;
-    border-bottom: 1px dotted #ccc;
+  margin-left: 0;
+  margin-bottom: .5rem;
+  border-bottom: 1px dotted #ccc;
+  list-style-type: none;
 }
-.accordion .accordion-item > a, .accordion dd > a {
-    background: none;
-    color: #0f654a;
-    padding: .5rem 0rem .5rem 1.1rem;
-    display: block;
-    font-size: 1.1rem;
-    text-decoration: none;
-    border-top: 1px dotted #ccc;
-    background-image: url(../../assets/imgs/home/dial-arrow-side.png);
-    background-repeat: no-repeat;
-    background-position: 0 1rem;
+/*.accordion ul[style] {
+  list-style-type: none !important;
+
+}*/
+.accordion-title {
+  background: none;
+  color: #0f654a;
+  padding: .5rem 0rem .5rem 0;
+  display: block;
+  font-size: 1.2rem;
+  text-decoration: none;
+  border-top: 1px dotted #ccc;
 }
-.accordion .accordion-item:first-of-type > a, .accordion dd:first-of-type > a {
-    /*border-top: 4px double #ccc;*/
-    border-top: none;
+.accordion-content p {
+  font-size: 0.9rem;
+  line-height: 1.3rem;
 }
-.accordion .accordion-item > a:hover, .accordion dd > a:hover {
-    background: none;
-    background-image: url(../../assets/imgs/home/dial-arrow-side.png);
-    background-repeat: no-repeat;
-    background-position: 0 1rem;
-}
+
 .accordion .accordion-item.is-active > a, .accordion dd.is-active > a {
     background: none;
-    background-image: url(../../assets/imgs/home/dial-arrow-down.png);
-    background-repeat: no-repeat;
-    background-position: 0 1.1rem;
+
 }
-.accordion .accordion-item.is-active > a:hover, .accordion dd.is-active > a:hover {
-    background: none;
-    background-image: url(../../assets/imgs/home/dial-arrow-down.png);
-    background-repeat: no-repeat;
-    background-position: 0 1.1rem;
+.accordion .accordion-item > a:hover, .accordion dd > a:hover {
+      text-decoration: none;
+
 }
-.accordion .accordion-item > .content, .accordion dd > .content {
-    display: none;
-    padding: 0rem 0 1rem 1.1rem;
-    font-size: .9rem;
-    line-height: 1.3rem;
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
 }
-.accordion .accordion-item > .content.is-active, .accordion dd > .content.is-active {
-    display: block;
-    background: none;
+.mainContent {
+  include: .clearfix;
 }
 #title{}
 #title-grouping, #base-grouping{
@@ -5756,8 +5758,12 @@ ul.accordion {
     line-height: 1.6rem;
 }
 #title-grouping h3, #base-grouping h3{
-    line-height: 1.4rem;
+    line-height: 1.5rem;
 }
+#title-grouping ul.pagination {
+  margin: 0;
+}
+
 
 /*News Headlines*/
 .publish-date {
