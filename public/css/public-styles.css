@@ -5936,6 +5936,7 @@ p.small-return-news {
     text-align: left;
     font-size: 0.9rem;
     line-height: 1.2rem;
+    color: #333;
 }
 #profiles-list{
     height: auto;
@@ -5959,10 +5960,10 @@ p.small-return-news {
     padding: 0;
     margin: 0;
 }*/
-#profiles-list .profile-content .profile-text-content a p{
+/*#profiles-list .profile-text-content p {
     text-decoration: none;
     color: #333;
-}
+}*/
 #profiles-list h6{
     padding: 0;
     margin: .8rem 0 .2rem 0;
