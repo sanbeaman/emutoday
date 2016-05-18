@@ -7,7 +7,7 @@
         <div class="large-12 medium-12 small-12 columns">
           <div class="row managehorizontalpadding">
             <div class="large-12 medium-12 small-12 columns  noleftpadding">
-              <h3 class="cal-caps toptitle">Events Calendar</h3>
+              <h3 class="cal-caps toptitle">Events Calendar!</h3>
             </div>
           </div>
           <div id="five-events-container" class="row managehorizontalpadding">
@@ -25,7 +25,7 @@
 </div>
 @endsection
 
-@section('footer')
+@section('scriptsfooter')
   @parent
-  <script src="{{ 'js/main.js' }}"></script>
+  <script type="text/javascript" src="/js/main.js"></script>
 @endsection

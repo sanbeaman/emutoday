@@ -32,7 +32,7 @@ author{
 .nobottompadding {
     padding-bottom: 0;
 }
-.noleftpadding{
+/*.noleftpadding{
     padding-left: 0;
 }
 .norightpadding{
@@ -41,7 +41,7 @@ author{
 .nohorizontalpadding{
     padding-right: 0;
     padding-left: 0;
-}
+}*/
 /*.manageleftpadding{
     padding-left: .6rem;
 }*/
@@ -906,84 +906,6 @@ p.small-return-news {
 }
 .submit-calendar, .ypsi-graphic{
     padding: 1rem 0 .5rem .5rem;
-}
-#calendarfeed {
-    background-color: #fff;
-    padding: 0.8rem 1rem 1rem 1.5rem;
-    margin: 0;
-}
-#calendarfeed p, #calendarfeed h6{
-    padding: 0;
-    margin: 0;
-    line-height: 1.4rem;
-}
-.event{
-    margin:.8rem 0;
-}
-#calendarfeed h4{
-    padding: .8rem 0 0 0;
-    margin: .8rem 0 0  0;
-    line-height: 1.4rem;
-    font-size: 1.3rem;
-    border-top: 1px solid #ccc;
-    font-weight: 600;
-}
-#calendarfeed h4:first-child{
-    border-top: none;
-    margin-top: 0;
-}
-.details{
-    display: block;
-    margin: .8rem 1.2rem;
-}
-.details ul{
-    padding: 0;
-    margin: .4rem 0 .4rem 2rem;;
-    }
-.calendar-box caption{
-    font-weight:400;
-    margin-bottom: .3rem;
-}
-
-#calendar-bar h3.toptitle{
-    margin-bottom: 0;
-}
-#before-after{
-    padding-top: .4rem;
-    font-size: 1rem;
-    position: relative;
-}
-.week-arrow img {
-    padding: 0;
-    margin: -.2rem .2rem 0 .2rem;
-    float: none;
-}
-#calendar-nav table {
-    background-color: transparent;
-    border: none;
-    width: 100%;
-    box-sizing: border-box;
-    float: left;
-}
-#calendar-nav table caption{
-    padding: 0 1rem;
-}
-#calendar-nav table thead{
-    background-color: transparent;
-}
-#calendar-nav table tr.even, #calendar-nav table tr.alt, #calendar-nav table tr:nth-of-type(2n){
-    background-color: transparent;
-}
-#calendar-nav table tr th, #calendar-nav table tr td{
-    padding-top: .2rem;
-    padding-bottom: .2rem;
-    padding-left: 0;
-    padding-right: 0;
-    text-align: center;
-}
-.calendar-box, .calendar-categories {
-    padding-left: .8rem;
-    padding-right: .8rem;
 }
 /*Profiles*/
 #homepage-hero {

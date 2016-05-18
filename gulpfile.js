@@ -169,7 +169,7 @@ elixir(function(mix) {
     //mix.copy('node_modules/ckeditor', elixir.config.publicPath+'/js/ckeditor');
     //mix.sass('foundation_backend.scss');
 
-    mix.browserify('main.js');
+    mix.browserify('main.js', 'public/js/main.js');
 
     // Combine Styles for the public facing site pages
     /*

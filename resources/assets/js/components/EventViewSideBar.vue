@@ -1,31 +1,30 @@
 <template>
-  <div id="calendar-nav" class="large-3  hide-for-small columns">
+  <div id="calendar-nav" class="medium-4 show-for-medium columns">
     <div class="calendar-box">
       <div class="row">
-          <div class="large-12 columns">
-            <div class="calendar">
+        <div class="calendar large-12 columns" data-equalizer>
               <div class="month">
                 <a href="#" class="back"></a>
                 <a href="#" class="next"></a>
                 <h5>{{monthVar}}</h5>
                 <p>{{yearVar}}</p>
               </div>
-              <ul class="weekdays">
-                <li><span href="#">Sun</span></li>
-                <li><span href="#">Mon</span></li>
-                <li><span href="#">Tue</span></li>
-                <li><span href="#">Wed</span></li>
-                <li><span href="#">Thu</span></li>
-                <li><span href="#">Fri</span></li>
-                <li><span href="#">Sat</span></li>
-              </ul>
-              <ul class="days">
-                <li v-for="item in monthArray">
-                  <a v-on:click.prevent="fetchEventsByDay( item )" v-bind:class="{'active': item == currentDay }" href="#"> {{item | removex }}</a>
-                </li>
-                </ul>
+              <div class="weekdays row small-up-7">
+                <div class="column" data-equalizer-watch><span href="#">Sun</span></div>
+                <div class="column" data-equalizer-watch><span href="#">Mon</span></div>
+                <div class="column" data-equalizer-watch><span href="#">Tue</span></div>
+                <div class="column" data-equalizer-watch><span href="#">Wed</span></div>
+                <div class="column" data-equalizer-watch><span href="#">Thu</span></div>
+                <div class="column" data-equalizer-watch><span href="#">Fri</span></div>
+                <div class="column" data-equalizer-watch><span href="#">Sat</span></div>
               </div>
-          </div>
+              <div class="days row small-up-7">
+                <div class="column" v-for="item in monthArray" data-equalizer-watch>
+                  <a v-on:click.prevent="fetchEventsByDay( item.day )" v-bind:class="[{'active': item.day == currentDay },{'noevents': item.hasevents == haseventClass }]"  href="#"> {{item.day | removex }}</a>
+                </div>
+              </div>
+              </div>
+
         </div>
       <div id="month" class="month-2016-05">
 
@@ -54,7 +53,7 @@
 <a href="manage/" class="button emu-button">Submit an Event</a>
 </div>
 <div class="ypsi-graphic">
-<a href="http://visitypsinow.com/local-events/"><img src="/themes/default/assets/imgs/emu-today/calendar/visit-ypsi.png" alt="Visit Ypsi Calendar"></a>
+<a href="http://visitypsinow.com/local-events/"><img src="/assets/imgs/emu-today/calendar/visit-ypsi.png" alt="Visit Ypsi Calendar"></a>
 
 </div>
 </div>
@@ -69,7 +68,17 @@
     background: #f3f3f3;
     margin: 0;
   }
-  .calendar ul.weekdays {
+  .calendar .weekdays,
+  .calendar .days {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  .calendar ul.days
+   {
+     border: 1px solid  #000;
     padding: 10px 15px 3px;
     background: #f9f9f9;
   }
@@ -82,26 +91,31 @@
     color: #888;
     text-align: center;
     margin-bottom: 4px;
+
   }
   .calendar ul li span {
     font-size: 10px;
     text-transform: uppercase;
     font-weight: bold;
   }
-  .calendar ul li a {
+  .calendar  a {
     color: #888;
     display: block;
     padding: 4px 0;
+    border: 2px solid  #ddd;
   }
-  .calendar ul li a:hover {
-    border-radius: 5px;
+  .calendar a:hover {
+    /*border-radius: 5px;*/
     background: #f9f9f9;
     color: #008cba;
   }
-  .calendar ul li a.active {
-    border-radius: 5px;
-    border: 2px solid #ddd;
-    padding: 2px 0;
+  .calendar  a.active {
+    /*border-radius: 5px;*/
+      background: #ff0000;
+    /*padding: 2px 0;*/
+  }
+.calendar  a.noevents {
+       pointer-events: none;
   }
 </style>
 <script>
@@ -114,16 +128,18 @@ module.exports  = {
       monthVar: '',
       monthArray: [],
       currentDay: '',
+      haseventClass: 'no',
+      eventlist: [],
 
     }
   },
   filters: {
     removex: function(value) {
-      return (value[0] == 'x') ? ' ' : value;
+      return (value[0] == 'x') ? '_' : value;
     }
   },
   props: {
-    //add props
+     elist:{}
   },
   computed: {
 
@@ -144,6 +160,7 @@ module.exports  = {
         this.monthVar = response.data.monthVar;
         this.monthArray = response.data.monthArray;
         this.currentDay = response.data.dayInMonth;
+        this.elist = response.data.elist;
         console.log(response.data);
       });
     },

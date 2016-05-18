@@ -12,8 +12,8 @@ new Vue({
     components: {
       EventView, EventFoam
     },
-    
+
     ready() {
-      alert('vue ready');
+      // alert('vue ready');
     }
 });
