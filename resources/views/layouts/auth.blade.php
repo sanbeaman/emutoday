@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>@yield('title') &mdash; EMU TODAY</title>
-  <link rel="stylesheet" type="text/css" href="{{ theme('css/backend.css') }}">
+  @include('layouts.includes.style')
+  @include('layouts.includes.scriptshead')
 </head>
 <body>
   <div class="container">

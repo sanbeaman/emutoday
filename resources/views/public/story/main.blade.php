@@ -8,10 +8,10 @@
         <div id="title-grouping" class="row">
           <div class="large-5 medium-4 small-6 columns noleftpadding"><h3 class="news-caps">News</h3></div>
           <div class="large-2 medium-4 small-6 columns noleftpadding">
-            <p class="story-publish-date"><a href="">{{ $story->start_date }}</a></p>
+            <p class="story-publish-date">{{ $story->present()->publishedDate }}</p>
           </div>
           <div class="large-5 medium-4 hide-for-small columns noleftpadding">
-            <p class="small-return-news"><a href="#">News Home</a></p>
+            <p class="small-return-news"><a href="/emu-today/news">News Home</a></p>
           </div>
         </div>
         <!-- Story Page Content -->

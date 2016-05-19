@@ -1,5 +1,5 @@
 <div class="column">
-  <a href="emu-today/student/{{$barImg->story->id}}">
+  <a href="/emu-today/student/{{$barImg->story->id}}">
     <img class="topic-image" src="{{$barImg->present()->mainImageURL }}"  alt="topic image"/>
     <div class="profile-content">
       <div class="profile-text-content" data-equalizer-watch>

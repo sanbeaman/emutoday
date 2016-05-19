@@ -1,9 +1,12 @@
 <template>
   <div id="calendar-content-bar">
     <div class="row">
-      <event-view-side-bar :elist.sync="eventlist"></event-view-side-bar>
-
-      <event-view-content :elist.sync="eventlist"></event-view-content>
+      <div class="medium-3 show-for-medium columns">
+          <event-view-side-bar :elist.sync="eventlist"></event-view-side-bar>
+      </div>
+    <div class="medium-9 small-12 columns">
+        <event-view-content :elist.sync="eventlist"></event-view-content>
+    </div>
     </div>
   </div>
 </template>

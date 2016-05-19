@@ -1,3 +1,4 @@
+{{-- View for student Profiles Index Page --}}
 @extends('public.layouts.global')
 @section('content')
   <div id="content-area">
@@ -17,14 +18,18 @@
       </div>
           <div id="profiles-list">
               <div class="row">
-                  <div class="large-10 medium-10 small-10 columns"><h4>Recent Profiles</h4></div>
-                  <div class="large-2 medium-2 small-2 columns control-arrows"><a href=""><i class="fi-arrow-left"></i></a><a href=""><i class="fi-arrow-right"></i></a></div>
+                  <div class="large-10 medium-10 small-10 columns">
+                    <h4>Recent Profiles</h4>
+                  </div>
+                  <div class="large-2 medium-2 small-2 columns control-arrows">
+                    {{-- <a href=""><i class="fi-arrow-left"></i></a><a href=""><i class="fi-arrow-right"></i></a> --}}
+                  </div>
               </div>
 
                 <div class="row small-up-2 medium-up-3 large-up-5">
                   @each('public.student.partials.box', $barImgs, 'barImg')
                 </div>
-          
+
               <div id="student-feature">
                    <div class="row">
                        <div class="large-7 medium-12 hide-for-small columns noleftpadding managehorizontalpadding"><img src="/assets/imgs/student/profiles-feature.jpg"  alt="feature student image"/></div>

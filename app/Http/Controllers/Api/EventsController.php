@@ -45,6 +45,58 @@ class EventsController extends ApiController
       ]);
         //return Event::latest()->get();
     }
+
+    public function eventsByDay($year = null, $month = null, $day = null)
+    {
+      $mondifier;
+      if ($year == null) {
+        $mondifier = "all";
+      } else {
+        if ($month == null) {
+          $mondifier = "Y";
+        } else {
+          if ($day == null) {
+              $mondifier = "YM";
+          } else {
+            $mondifier = "YMD";
+          }
+        }
+
+      }
+
+      if ($mondifier == 'YMD') {
+        // $variations = Variation::where('created_at', '<' , $valuation->updated_at->toDateTimeString())->get();
+
+        $cdate_start = Carbon::create($year,$month,$day)->startOfDay();
+        $cdate_end = Carbon::create($year,$month,$day)->endOfDay();
+      //  dd($cdatePlusOne);
+
+
+      } else {
+        $cdate_start = Carbon::now()->startOfDay();
+        $cdate_end = Carbon::now()->endOfDay();
+      }
+
+      $eventlist = Event::where([
+        ['start_date', '>=' , $cdate_start],
+        ['start_date', '<=', $cdate_end]
+        ])->get();
+
+      $groupedByDay =  $eventlist->groupBy(function ($date){
+                return Carbon::parse($date->start_date)->format('j');
+              });
+
+        $yearVar = $cdate_start->year;
+        $monthVar = $cdate_start->format('F');
+        $monthVarUnit =  $cdate_start->month;
+        return [ 'groupedByDay' => $groupedByDay,
+                            'yearVar'=> $yearVar,
+                            'monthVar'=> $monthVar,
+                            'monthVarUnit'=> $monthVarUnit
+                          ];
+    }
+
+
     public function eventsByDate($year = null, $month = null, $day = null)
     {
       $mondifier;
@@ -62,6 +114,10 @@ class EventsController extends ApiController
         }
 
       }
+
+      // dd($mondifier);
+
+
       $cdate = Carbon::now()->subYear();
       $cdate_first = $cdate->firstOfMonth();
 
@@ -156,6 +212,7 @@ class EventsController extends ApiController
 
       $yearVar =  $cdate->year;
       $monthVar = $cdate->format('F');
+      $monthVarUnit = $cdate->month;
       $dayInMonth = $cdate->day;
       $monthArray = collect();
       $cd_dayMonthStarts = $cdate->firstOfMonth()->dayOfWeek;
@@ -199,6 +256,7 @@ class EventsController extends ApiController
       return ['calDaysArray' => $calDaysArray,
               'yearVar' => $yearVar,
               'monthVar' => $monthVar,
+                'monthVarUnit' => $monthVarUnit,
             'dayInMonth' => $dayInMonth];
           }
     public function byDate(Request $request)

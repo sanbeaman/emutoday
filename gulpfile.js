@@ -54,6 +54,7 @@ elixir(function(mix) {
           }
         );
 
+  mix.copy('node_modules/foundation-datepicker/css/foundation-datepicker.css','resources/assets/css/foundation-datepicker.css')
 
           /*
           |---------------------------
@@ -63,6 +64,7 @@ elixir(function(mix) {
 
             mix.styles([
                 'zfoundation.css',
+                'resources/assets/css/foundation-datepicker.css',
                 'app.css',
                 'tweeks.css'
               ], 'public/css/public-styles.css');
@@ -73,7 +75,7 @@ elixir(function(mix) {
            */
             mix.styles([
                 'zfoundation.css',
-                  nodePath + 'foundation-datepicker/css/foundation-datepicker.css',
+                  'resources/assets/css/foundation-datepicker.css',
                   'admin.css',
                   'tweeks.css'
                 ], 'public/css/admin-styles.css');
@@ -82,6 +84,7 @@ elixir(function(mix) {
 
   mix.copy('node_modules/motion-ui/dist/motion-ui.js', 'resources/assets/js/foundation');
   mix.copy('node_modules/foundation-sites/js/*.js', 'resources/assets/js/foundation');
+  mix.copy('node_modules/foundation-datepicker/js/foundation-datepicker.js','resources/assets/js/plugins')
 
   mix.scripts(
     [
@@ -116,15 +119,39 @@ elixir(function(mix) {
       'foundation/foundation.util.timerAndImageLoader.js',
       'foundation/foundation.util.touch.js',
       'foundation/foundation.util.triggers.js',
+      'resources/assets/js/plugins/foundation-datepicker.js',
       'app.js'
     ],
-    'public/js/public-scripts.js'
+    'resources/assets/js/foundation-all.js'
   );
 
+  /*
+  |---------------------------
+  | Admin Script Concat Mix
+  |---------------------------
+   */
+
+  mix.scripts([
+      'resources/assets/js/foundation-all.js'
+  ], 'public/js/admin-scripts.js' );
+
+  /*
+  |---------------------------
+  | Public Script Concat Mix
+  |---------------------------
+   */
+    mix.scripts([
+      'resources/assets/js/foundation-all.js'
+    ], 'public/js/public-scripts.js' );
+
   mix.copy('resources/assets/fonts/foundation-icons.*', 'public/fonts');
-  mix.version(['css/public-styles.css','js/public-scripts.js'])
+  mix.version(['css/public-styles.css','js/public-scripts.js','css/admin-styles.css','js/admin-scripts.js'])
   mix.copy('resources/assets/fonts/foundation-icons.*', 'public/build/fonts');
 
+
+  mix.browserify('main.js', 'public/js/main.js');
+
+  });
   /*
   |---------------------------
   | Public Script Concat Mix
@@ -143,13 +170,13 @@ elixir(function(mix) {
     |---------------------------
      */
 
-    mix.scripts([
-      'vendor/jquery.min.js',
-      'vendor/what-input.min.js',
-      nodePath + 'foundation-sites/dist/foundation.js',
-      nodePath + 'foundation-datepicker/js/foundation-datepicker.js',
-      'app.js'
-    ], 'js/admin-scripts.js' );
+    // mix.scripts([
+    //   'vendor/jquery.min.js',
+    //   'vendor/what-input.min.js',
+    //   nodePath + 'foundation-sites/dist/foundation.js',
+    //   nodePath + 'foundation-datepicker/js/foundation-datepicker.js',
+    //   'app.js'
+    // ], 'js/admin-scripts.js' );
 
     //mix.copy('node_modules/bootstrap-sass/assets/fonts', elixir.config.publicPath+'/fonts');
   //  mix.copy(elixir.config.assetsPath + '/foundation-icons', elixir.config.publicPath+'/fonts/foundation-icons');
@@ -169,7 +196,7 @@ elixir(function(mix) {
     //mix.copy('node_modules/ckeditor', elixir.config.publicPath+'/js/ckeditor');
     //mix.sass('foundation_backend.scss');
 
-    mix.browserify('main.js', 'public/js/main.js');
+
 
     // Combine Styles for the public facing site pages
     /*
@@ -231,9 +258,3 @@ elixir(function(mix) {
     //   'app.js'
     // ], 'public/themes/default/assets/js/admin-scripts.js' );
   //  mix.sass('app.scss');
-
-
-
-
-
-});

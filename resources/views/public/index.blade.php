@@ -5,9 +5,9 @@
     <div id="news-bar">
       <div class="row">
         <div class="small-12 columns">
-          <h3 class="news-caps manageleftpadding">Featured!</h3>
+          <h3 class="news-caps">Featured!</h3>
         </div>
-        <div class="large-7 medium-12 small-12 columns manageleftpadding">
+        <div class="large-7 medium-12 small-12 columns">
           <img src="{{$heroImg->present()->mainImageURL}}" alt="featured image">
         </div>
         <div id="featured-text" class="large-5 medium-12 small-12 columns">
@@ -19,7 +19,7 @@
     </div>
     <div id="four-stories-bar">
       <div id="news-title-bar" class="row">
-        <div class="large-12 medium-12 small-12 columns manageleftpadding">
+        <div class="large-12 medium-12 small-12 columns">
           <h5 class="subhead-title">Featured News Stories</h5>
         </div>
       </div>
@@ -29,7 +29,7 @@
     </div>
     <div id="news-headline-bar">
       <div class="row">
-         <div class="large-9 medium-8 small-12 columns manageleftpadding">
+         <div class="large-9 medium-8 small-12 columns">
              <ul class="tabs" data-tabs id="newshub-tabs">
                   <li class="tabs-title is-active"><a href="#newshub-headlines-front" aria-selected="true"><p class="subhead-title">News Headlines</p></a></li>
                   <li class="tabs-title"><a href="#newshub-announcements-front"><p class="subhead-title">Announcements</p></a></li>

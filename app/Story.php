@@ -4,6 +4,7 @@ namespace emutoday;
 
 use Illuminate\Database\Eloquent\Model;
 use emutoday\StoryImage;
+use Laracasts\Presenter\PresentableTrait;
 
 class Story extends Model
 {
@@ -14,6 +15,9 @@ class Story extends Model
      */
     protected $table = 'storys';
 
+
+    use PresentableTrait;
+    protected $presenter = 'emutoday\Presenters\StoryPresenter';
     /**
          * The attributes that are mass assignable.
          *

@@ -412,7 +412,12 @@ img.news-icon{
     padding: .8rem 0;
 }
 #newshub-headlines-front{}
-#newshub-headlines-front ul{
+
+  /* db
+  removed style from #newshub-headlines-front to class .newshub-tab-front
+  see tweeeks.css */
+
+/*#newshub-headlines-front ul{
     list-style: none;
     margin:0;
     color: #333;
@@ -432,7 +437,11 @@ img.news-icon{
 #newshub-headlines-front ul li a:hover{
     text-decoration: none;
     background-color: #f8f8f8;
-}
+}*/
+
+
+
+
 /*feature boxes*/
 .featured-content-block {
     padding: 1.5rem 1.5rem 1.1rem 1.5rem;
@@ -856,15 +865,16 @@ p.small-return-news {
 #five-events-bar h5{
     text-transform: uppercase;
 }
-#five-events-bar li p{
+#five-events-bar .calendar-content .calendar-text-content p{
     font-size: .9rem;
     line-height: 1.2rem;
     padding: 0;
     margin: 0;
 }
-#five-events-bar li h6{
+#five-events-bar  h6{
+  font-weight: normal;
     padding: 0;
-    margin: .8rem 0 .2rem 0;
+    margin: .4rem 0 .2rem 0;
     color: #0f654a;
 }
 #five-events-bar .calendar-content {
@@ -872,11 +882,7 @@ p.small-return-news {
     padding: 0;
     /*padding: .5rem .8rem .8rem;*/
 }
-.calendar-text-content p {
-    text-align: left;
-    line-height: 1.5rem;
-    margin-bottom: 0.3rem;
-}
+
 #graybar{
     width: 100%;
     padding: .3rem 0;
@@ -895,11 +901,13 @@ p.small-return-news {
    margin-top: .7rem;
     text-transform: uppercase;
     }
-#calendar-content-bar{
+ /*db Moved calendar-content-bar to tweeks*/
+
+/*#calendar-content-bar{
     padding: 0;
     margin: 0;
     background-color: #f2f2f3;
-}
+}*/
 #calendar-nav {
     padding: 1.3rem 0 0 0;
     margin: 0;
