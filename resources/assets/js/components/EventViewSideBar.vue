@@ -1,14 +1,25 @@
 <template>
+  <div class="gray-bar row">
+        <div class="large-12 column">
+          <h4>Calendars</h4>
+        </div>
+  </div>
   <div id="calendar-nav" class="medium-4 show-for-medium columns">
+
     <div class="calendar-box">
       <div class="row">
         <div class="calendar large-12 columns" data-equalizer>
-              <div class="month">
-                <a href="#" class="back"></a>
-                <a href="#" class="next"></a>
-                <h5>{{monthVar}}</h5>
-                <p>{{yearVar}}</p>
-              </div>
+          <div class="row">
+            <div class="small-3 columns">
+              <a class="text-left" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-before.png" alt="arrow"></a>
+            </div>
+            <div class="text-center small-6 columns">
+              <p>{{monthVar}} {{yearVar}}</p>
+            </div>
+            <div class="small-3 columns">
+            <a class="text-right" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-after.png" alt="arrow"></a>
+</div>
+          </div>
               <div class="weekdays row small-up-7">
                 <div class="column" data-equalizer-watch><span href="#">Sun</span></div>
                 <div class="column" data-equalizer-watch><span href="#">Mon</span></div>
@@ -19,7 +30,7 @@
                 <div class="column" data-equalizer-watch><span href="#">Sat</span></div>
               </div>
               <div class="days row small-up-7">
-                <div class="column" v-for="item in monthArray" data-equalizer-watch>
+                <div class="column" v-for="item in calDaysArray" data-equalizer-watch>
                   <a v-on:click.prevent="fetchEventsByDay( item.day )" v-bind:class="[{'active': item.day == currentDay },{'noevents': item.hasevents == haseventClass }]"  href="#"> {{item.day | removex }}</a>
                 </div>
               </div>
@@ -59,6 +70,18 @@
 </div>
 </template>
 <style>
+.calendar-text-content p {
+    text-align: left;
+}
+.gray-bar{
+    width: 100%;
+    padding: .3rem 0;
+    background-color: #bebdbd;
+}
+.gray-bar h4{
+    text-transform: uppercase;
+    color: #fff;
+}
   .events li span.badge {
     margin-left: 10px;
   }
@@ -117,6 +140,25 @@
 .calendar  a.noevents {
        pointer-events: none;
   }
+
+  .calendar-box caption{
+    font-weight:400;
+    margin-bottom: .3rem;
+}
+.calendar-caption p{
+  font-weight: 400;
+  margin-bottom: 0.3rem;
+}
+
+.calendar-caption a {
+  font-weight: 400;
+  margin-bottom: 0.3rem;
+  border: 1px none  #000;
+}
+
+#calendar-bar h3.toptitle{
+    margin-bottom: 0;
+}
 </style>
 <script>
 module.exports  = {
@@ -129,7 +171,7 @@ module.exports  = {
       monthArray: [],
       currentDay: '',
       haseventClass: 'no',
-      eventlist: [],
+      calDaysArray: [],
 
     }
   },
@@ -155,12 +197,12 @@ module.exports  = {
       alert(value);
     },
     fetchEventsForCalendar: function() {
-      this.$http.get('/api/calendar/events/2015/05').then(function(response) {
+      this.$http.get('/api/calendar/month/2015/05').then(function(response) {
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
         this.monthArray = response.data.monthArray;
         this.currentDay = response.data.dayInMonth;
-        this.elist = response.data.groupedByDay;
+        this.calDaysArray = response.data.calDaysArray;
         console.log(response.data);
       });
     },
@@ -212,7 +254,7 @@ watch: {
 
 },
 created: function() {
-  this.fetchEventsForCalendar();
+    this.fetchEventsForCalendar();
    this.fetchCategoryList();
 },
 components: {

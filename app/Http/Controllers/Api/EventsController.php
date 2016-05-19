@@ -85,19 +85,15 @@ class EventsController extends ApiController
 
         $eventlistcount = $eventlist->count();
 
-        $grouped = Event::select('id','title', 'start_date', 'end_date')->where([
-          ['start_date', '>', $cdate_monthstart],
-          ['start_date', '<', $cdate_monthend]
-          ])->orderBy('start_date', 'asc')->get();
+        $grouped = Event::select('id','title', 'start_date', 'end_date')
+                  ->where([
+                      ['start_date', '>', $cdate_monthstart],
+                      ['start_date', '<', $cdate_monthend]
+                      ])->orderBy('start_date', 'asc')->get();
 
-          // $grouped->sortBy(function ($date){
-          //   return Carbon::parse($date->start_date)->format('d');
-          // });
-
-           $groupedByDay = $grouped->groupBy(function ($date){
-            return Carbon::parse($date->start_date)->format('d');
-          });
-
+        $groupedByDay =  $grouped->groupBy(function ($date){
+                return Carbon::parse($date->start_date)->format('j');
+              });
 
 
 
@@ -127,15 +123,14 @@ class EventsController extends ApiController
 
       $totalDaysInArray = count($calDaysArray);
 
-      return json_encode([  'groupedByDay' => $groupedByDay,
-                            '______grouped_______' => $grouped,
-                          'elist' => $eventlist,
+      return [ 'groupedByDay' => $groupedByDay,
+                          'elist2' => $eventlist,
                             'eachItems' => $eventlistcount,
                           'uniqueByDay'=> $uniqueByDay,
                           'yearVar'=> $yearVar,
                           'monthVar'=> $monthVar,
                           'monthArray'=> $calDaysArray,
-                          'dayInMonth' => $dayInMonth]);
+                          'dayInMonth' => $dayInMonth];
     //  $carbondate = new Carbon();
       // if ($mondifier == 'all') {
       //     $events = Event::all();
@@ -153,7 +148,59 @@ class EventsController extends ApiController
         //
         //   return $this->respond($events);
     }
+    public function eventsInMonth($year = null, $month = null)
+    {
+      $cdate = Carbon::now()->subYear();
+      $cdate_first = $cdate->firstOfMonth();
 
+
+      $yearVar =  $cdate->year;
+      $monthVar = $cdate->format('F');
+      $dayInMonth = $cdate->day;
+      $monthArray = collect();
+      $cd_dayMonthStarts = $cdate->firstOfMonth()->dayOfWeek;
+      $cd_daysInMonth = $cdate->daysInMonth;
+
+      $cdate_monthstart = Carbon::create($yearVar, $cdate->month, 1, 12);
+      $cdate_monthend = Carbon::create($yearVar, $cdate->month, $cd_daysInMonth, 12);
+
+      $eventsInMonth = Event::select('id', 'start_date', 'end_date')->where([
+        ['start_date', '>', $cdate_monthstart],
+        ['start_date', '<', $cdate_monthend]
+        ])->get();
+
+        $keyed = $eventsInMonth->keyBy(function ($item) {
+          return Carbon::parse($item['start_date'])->day;
+        });
+        $uniqueByDay = $keyed->keys();
+
+
+        $eventlistcount = $eventsInMonth->count();
+        $calDaysArray = collect();
+      $dayCounter = 0;
+      while ($dayCounter < $cd_dayMonthStarts) {
+        $dayObject = collect(['day' => 'x'.$dayCounter , 'hasevents'=> 'no']);
+        $calDaysArray->push($dayObject);
+        $dayCounter++;
+      }
+
+      for ($x = 1; $x <= $cd_daysInMonth; $x++){
+        $hasevent = $uniqueByDay->contains($x)?'yes':'no';
+        $dayObject = collect(['day' => $x, 'hasevents'=> $hasevent]);
+        $calDaysArray->push($dayObject);
+
+        // $monthArray = array_add($monthArray,$dayCounter, $dayObject);
+        $dayCounter++;
+      }
+
+      $totalDaysInArray = count($calDaysArray);
+
+
+      return ['calDaysArray' => $calDaysArray,
+              'yearVar' => $yearVar,
+              'monthVar' => $monthVar,
+            'dayInMonth' => $dayInMonth];
+          }
     public function byDate(Request $request)
     {
       return $request->all();

@@ -3,7 +3,7 @@
     <div id="calendarfeed" class="week-2016W192">
       <div v-for="eitem in elist">
         <div class="event">
-        <h4> {{$index}} {{$key}}</h4>
+        <h4>{{monthVar}} {{$key }}</h4>
         <ul>
           <li v-for="item in eitem">
             {{ item.id }} {{item.title}} {{item.start_date}}
@@ -141,21 +141,25 @@ module.exports  = {
 
   },
   methods: {
-    fetchEvents: function() {
-      this.$http.get('/api/events', function(data) {
-        this.monthArray = response.data.monthArray;
-        this.currentDay = response.data.dayInMonth;
-      });
-    },
+    sortKeyInt: function ($key) {
+     return parseInt($key);
+   },
+    // fetchEvents: function() {
+    //   this.$http.get('/api/events', function(data) {
+    //     this.monthArray = response.data.monthArray;
+    //     this.currentDay = response.data.dayInMonth;
+    //   });
+    // },
     fetchEventsByDay: function(value) {
       alert(value);
     },
-    fetchEventsForCalendar: function() {
+    fetchEvents: function() {
       this.$http.get('/api/calendar/events/2015/05').then(function(response) {
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
         this.monthArray = response.data.monthArray;
         this.currentDay = response.data.dayInMonth;
+        this.elist = response.data.groupedByDay;
         console.log(response.data);
       });
     },
@@ -207,7 +211,7 @@ watch: {
 
 },
 created: function() {
-
+  this.fetchEvents();
 },
 components: {
 
