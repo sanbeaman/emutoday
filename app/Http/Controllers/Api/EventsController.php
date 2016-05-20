@@ -68,13 +68,13 @@ class EventsController extends ApiController
         // $variations = Variation::where('created_at', '<' , $valuation->updated_at->toDateTimeString())->get();
 
         $cdate_start = Carbon::create($year,$month,$day)->startOfDay();
-        $cdate_end = Carbon::create($year,$month,$day)->endOfDay();
+        $cdate_end = Carbon::create($year,$month,$day)->addDays(7)->endOfDay();
       //  dd($cdatePlusOne);
 
 
       } else {
         $cdate_start = Carbon::now()->startOfDay();
-        $cdate_end = Carbon::now()->endOfDay();
+        $cdate_end = Carbon::now()->addDays(7)->endOfDay();
       }
 
       $eventlist = Event::where([
@@ -90,11 +90,17 @@ class EventsController extends ApiController
         $monthVar = $cdate_start->format('F');
         $monthVarUnit =  $cdate_start->month;
         $dayVar = $cdate_start->day;
+        $firstDate = $cdate_start->format('l F j, Y');
+        $lastDate = $cdate_end->format('l F j, Y');
+
         return [ 'groupedByDay' => $groupedByDay,
                             'yearVar'=> $yearVar,
                             'monthVar'=> $monthVar,
                             'monthVarUnit'=> $monthVarUnit,
                             'dayVar' => $dayVar,
+                            'firstDate' => $firstDate,
+                            'lastDate' => $lastDate
+
                           ];
     }
 
@@ -287,7 +293,7 @@ class EventsController extends ApiController
             'dayInMonth' => $dayInMonth];
           }
 
-          
+
     public function byDate(Request $request)
     {
       return $request->all();

@@ -1,4 +1,4 @@
-{{-- Magazine Index Page --}}
+{{-- Magazine Article Page --}}
 @extends('public.layouts.global')
 @section('offcanvaslist')
   <ul class="off-canvas-list"><!-- include($_SERVER['DOCUMENT_ROOT'].'/emu-today/admin/php/top_nav.php'); -->
@@ -18,12 +18,12 @@
 @section('content')
   <div id="content-area">
       <div id="news-story-bar" class="magazine-story">
-      <div class="row">
-        <div class="large-12 medium-12 small-12 columns">
           <div id="story-content" class="row">
-            <div class="large-9 medium-8 small-12 columns noleftpadding">
+            <div class="large-9 medium-8 small-12 columns">
               <div id="issue-grouping" class="row">
-                <div class="large-8 medium-8 small-12 columns noleftpadding"><a href="/emu-today/magazine/{{$magazine->year}}"><h2 class="issue-date news-caps">{{$magazine->season}} {{$magazine->year}}</h2></a></div>
+                <div class="large-8 medium-8 small-12 columns">
+                  <a href="/emu-today/magazine/{{$magazine->year}}"><h2 class="issue-date news-caps">{{$magazine->season}} {{$magazine->year}}</h2></a>
+                </div>
                 <div class="large-4 medium-4 small-12 columns noleftpadding">
                   <div class="addthis magazine-top"><a href=""><img src="/assets/imgs/icons/fake-addthis.png" alt="addthis "></a></div>
                 </div>
@@ -37,16 +37,13 @@
               <p class="news-contacts">Contact Author, author@emich.edu, 734.487.XXXX</p>
             </div>
             <div class="large-3 medium-4 small-12 columns featurepadding">
-
               <div class="featured-content-block magazine-block">
                 <h6 class="headline-block">Popular stories</h6>
                 <ul class="feature-list">
                     @foreach ($sideStoryBlurbs as $ssblurb)
                   <li><a href="/emu-today/{{$ssblurb->story->story_folder}}/{{$ssblurb->story->id}}">{{$ssblurb->caption}}</a></li>
                 @endforeach
-
-                </ul>
-
+              </ul>
               </div>
               <div class="featured-content-block magazine-block">
                 <h6 class="headline-block">Headlines</h6>
@@ -67,8 +64,6 @@
           </div>
         </div>
 
-      </div>
-    </div>
 
   </div>   <!--end content area-->
 @endsection

@@ -61,12 +61,13 @@
                 <li><a href="">Theatre</a></li>
               </ul>
             </div>
-            <div class="submit-calendar">
-              <a class="button emu-button">Submit an Event</a>
-            </div>
             <div class="ypsi-graphic">
               <a href="http://visitypsinow.com/local-events/"><img src="/assets/imgs/calendar/visit-ypsi.png" alt="Visit Ypsi Calendar"></a>
             </div>
+            <div class="submit-calendar">
+              <a class="button emu-button">Submit an Event</a>
+            </div>
+
   </div>
 </div>
 
@@ -76,6 +77,7 @@
 
 .submit-calendar {
   padding-left: 0;
+  padding-bottom: 1rem;
 }
 .calendar-bar {
     background: ##bebdbd;
@@ -268,8 +270,17 @@ module.exports  = {
         this.currentDay = response.data.dayInMonth;
         this.calDaysArray = response.data.calDaysArray;
         console.log(response.data);
+
+        this.pushFirstDateRange();
         this.$emit('responseCategoriesEvent');
       });
+    },
+    pushFirstDateRange: function(){
+      this.eventObject.eoYear = this.yearVar;
+      this.eventObject.eoMonth = this.monthVarUnit;
+      this.eventObject.eoDay = this.currentDay;
+      this.$dispatch('change-eobject', this.eventObject);
+      console.log('change-eobject');
     },
     fetchCategoryList: function() {
 
