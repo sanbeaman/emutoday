@@ -6,13 +6,13 @@
       <div class="large-12 medium-12 small-12 columns">
         <!-- Story Page Title group -->
         <div id="title-grouping" class="row">
-          <div class="large-5 medium-4 small-6 columns noleftpadding">
+          <div class="large-7 medium-7 small-6 columns">
             <h3 class="news-caps"><span class="truemu">EMU</span> Student Profiles</h3>
           </div>
-          <div class="large-2 medium-4 small-6 columns noleftpadding">
-            <p class="story-publish-date"><a href="">{{ $story->start_date }}</a></p>
+          <div class="large-2 medium-3 small-6 columns">
+            <p class="story-publish-date">{{ $story->present()->publishedDate }}</p>
           </div>
-          <div class="large-5 medium-4 hide-for-small columns noleftpadding">&nbsp;</div>
+          <div class="large-3 medium-2 show-for-medium columns">&nbsp;</div>
         </div>
         <!-- Story Page Content -->
         <div id="story-content" class="row">
