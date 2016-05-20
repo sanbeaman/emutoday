@@ -1,13 +1,13 @@
 <template>
-  <div id="calendar-content-bar">
     <div class="row">
-      <div class="medium-3 show-for-medium columns">
+      <div id="calendar-content-bar">
+        <div class="medium-3 show-for-medium columns">
           <event-view-side-bar v-on:change-eobject="handleEventFetch"></event-view-side-bar>
       </div>
-    <div class="medium-9 small-12 columns">
+      <div class="medium-9 small-12 columns">
         <!-- <event-view-content :elist.sync="eventlist"></event-view-content> -->
         <event-view-content :elist.sync="eventlist"></event-view-content>
-    </div>
+      </div>
     </div>
   </div>
 </template>

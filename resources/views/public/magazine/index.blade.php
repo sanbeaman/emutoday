@@ -31,7 +31,7 @@
         <div class="row small-up-2 medium-up-2 large-up-5">
           @foreach ($barImgs as $barImg)
             <div class="column">
-              <a href="/emu-today/magazine/article/{{$barImg->story->id}}">
+              <a class="article-link" href="/emu-today/magazine/article/{{$barImg->story->id}}">
                 <img class="topic-image" src="{{$barImg->present()->mainImageURL}}"  alt="topic image"/>
                 <div class="profile-content">
                   <div class="profile-text-content magazine" data-equalizer-watch>

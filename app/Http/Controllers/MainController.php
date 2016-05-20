@@ -41,7 +41,7 @@ class MainController extends Controller
         $barImgs = collect();
 
         $storys = $page->storys()->get();
-      
+
         foreach ($storys as $story) {
             if ($story->pivot->page_position === 0) {
                 $heroImg = $story->storyImages()->where('image_type', 'imagehero')->first();
@@ -50,8 +50,8 @@ class MainController extends Controller
             }
 
         }
-        // $events = $this->events->where(['start_date', '>=', $currentDateTime])->orderBy('start_date','desc')->take(4);
-        $events = $this->events->orderBy('start_date','desc')->paginate(4);
+       //$events = $this->events->where(['start_date', '>=', $currentDateTime])->orderBy('start_date','desc')->get();
+        $events = $this->events->orderBy('start_date','asc')->paginate(4);
 
         $storyImages = $page->storyImages();
 

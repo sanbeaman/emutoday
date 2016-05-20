@@ -24,7 +24,7 @@ class StoryController extends Controller
         if ($id == null) {
           $storys = $this->storys->where('story_type', 'storypromoted')
                                   ->orWhere('story_type', 'storybasic')
-                                  ->orderBy('created_at', 'desc')
+                                  ->orderBy('start_date', 'desc')
                                   ->paginate(8);
                                   // dd($storys->count());
           return view('public.story.index', compact('storys'));

@@ -5175,7 +5175,14 @@ textarea .teaser,
 /*#tier1-nav .toppad{
   padding-top: .3rem;
 }*/
-
+.profile-text-content.magazine h3{
+  font-size:1.3rem;
+  margin: 0;
+  color: #222222;
+}
+.article-link a:hover p{
+  text-decoration: none;
+}
 #calendar-content-bar{
     padding: 0;
     margin: 0;
@@ -5284,8 +5291,9 @@ a.magazine-article-button {
 .four-stories-block{
   padding-bottom: 10px;
 }
+
 /* Styles for Date Selector */
-.month {
+/*.month {
   height: 110px;
   width: 100%;
   background: #0f654a;
@@ -5337,6 +5345,6 @@ a.magazine-article-button {
   color: #fff;
   font-size: 12px;
   font-weight: bold;
-}
+}*/
 
 /*# sourceMappingURL=admin-styles.css.map */

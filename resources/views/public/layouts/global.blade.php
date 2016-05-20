@@ -72,7 +72,7 @@
                         <ul>
 
                           <li><a class="{{ set_active('emu-today/hub', 'right-arrow')}}" href="/emu-today/hub">Today</a></li>
-                          <li ><a class="{{ set_active('emu-today/calendar', 'right-arrow')}}" href="#">Calendar</a></li>
+                          <li ><a class="{{ set_active('emu-today/calendar', 'right-arrow')}}" href="/emu-today/calendar">Calendar</a></li>
                           <li ><a class="{{ set_active('emu-today/announcement', 'right-arrow')}}" href="/emu-today/announcement">Announcements</a></li>
                           <li ><a class="{{ set_active('emu-today/news', 'right-arrow')}}" href="/emu-today/news">News</a></li>
                           <li ><a class="{{ set_active('emu-today/student', 'right-arrow', 1)}}" href="/emu-today/student">Student Profiles</a></li>
@@ -111,21 +111,21 @@
   <a class="exit-off-canvas"></a>
       <!-- php $wrapper->base(); -->
   <div id="base-message-bar">
-    <div class="row">
+    <div class="row column">
       <p><a href="http://www.emich.edu/tobaccofree/">Eastern Michigan University is a tobacco-free campus.</a></p>
     </div>
   </div>  <!-- END base-message-bar -->
   <div id="base-bar">
     <div class="row">
-      <div id="university-contacts" class="large-2 medium-2 hide-for-small columns noleftpadding">
+      <div id="university-contacts" class="large-2 medium-2 hide-for-small columns">
         <a href="http://www.emich.edu"><img class="bottom-logo" alt="Eastern Michigan University" src="{{'/assets/imgs/home/logo.png'}}"/></a>
       </div>
-      <div id="linking-lists" class="large-8 medium-10 small-12 columns noleftpadding">
+      <div id="linking-lists" class="large-6 medium-10 small-12 columns noleftpadding">
                 <h6><a href="http://www.emich.edu">Eastern Michigan University, <span class="notbold">Education First</span></a></h6>
                 <p>Ypsilanti, Michigan, USA 48197 | 734.487.1849</p>
                 <p><a href="http://www.emich.edu/title-nine/">Non-Discrimination Statement</a> | <a href="http://www.emich.edu/privacy/">Privacy Policy</a> | <a href="http://www.emich.edu/copyright/">Copyright <?= date('Y') ?></a></p>
       </div>
-      <div id="social-links" class="large-2 medium-12 small-12 columns noleftpadding norightpadding">
+      <div id="social-links" class="large-4 medium-12 small-12 columns noleftpadding norightpadding">
           <ul class="social-icons">
             <li><a href="https://www.facebook.com/Eastern.Michigan.University"><img alt="Facebook" src="{{'/assets/imgs/icons/facebook-base-icons.png'}}"></a></li>
             <li><a href="http://www.emich.edu/twitter/"><img alt="Twitter" src="{{'/assets/imgs/icons/twitter-base-icons.png'}}"></a></li>

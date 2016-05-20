@@ -1,21 +1,23 @@
 <template>
-<div class="calendar-sidebar-title row column">
-  <h4>Calendar</h4>
+  <div class="calendar-bar row">
+    <div class="small-12 column">
+        <h4>Calendar</h4>
+    </div>
   </div>
-  <div class="calendar-sidebar-content row">
-    <div class="calendar-box">
-    <div class="calendar large-12 columns" data-equalizer>
-      <div class="row">
-        <div class="small-3 columns">
-          <a class="text-left" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-before.png" alt="arrow"></a>
+<div class="calendar-box row">
+    <div class="small-12 columns">
+      <div class="calendar small-12 columns" data-equalizer>
+        <div class="row small-collapse">
+            <div class="small-2 columns">
+              <a id="month-prev" class="text-left" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-before.png" alt="arrow"></a>
+          </div>
+          <div class="text-center calendar-title small-8 columns">
+              <a>{{monthVar}} {{yearVar}}</a>
+          </div>
+          <div class="small-2 columns">
+            <a id="month-next" class="text-right" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-after.png" alt="arrow"></a>
+          </div>
         </div>
-        <div class="text-center small-6 columns">
-          <p>{{monthVar}} {{yearVar}}</p>
-        </div>
-        <div class="small-3 columns">
-          <a class="text-right" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-after.png" alt="arrow"></a>
-        </div>
-      </div>
       <div class="weekdays row small-up-7 small-collapse">
         <div class="column" data-equalizer-watch><span href="#">Sun</span></div>
         <div class="column" data-equalizer-watch><span href="#">Mon</span></div>
@@ -27,30 +29,74 @@
       </div>
       <div class="days row small-up-7 small-collapse">
         <div class="column" v-for="item in calDaysArray" data-equalizer-watch>
-          <a v-on:click.prevent="dispatchNewEvent( item.day )" v-bind:class="[{'active': item.day == currentDay },{'noevents': item.hasevents == haseventClass }]"  href="#"> {{item.day | removex }}</a>
+          <a v-on:click.prevent="dispatchNewEvent( item.day )" v-bind:class="[{'istoday': item.day == currentDay },{'noevents': item.hasevents == haseventClass },{'active': item.day == selectedDay}]"  href="#"> {{item.day | removex }}</a>
         </div>
       </div>
     </div>
-  </div>
-<div class="calendar-categories">
-  <h5>Categories</h5>
-  <ul class="events">
-    <template v-for="category in categories">
-      <li v-if="category.events.length == 0 ?false:true">
-        <a href="#" aria-describedby="{{category.slug}}-badge">{{category.category}}<span id="{{category.slug}}-badge" class="secondary badge">{{category.events.length}}<span></a>
-        </li>
-      </template>
-    </ul>
-  </div>
 
-
+  <div class="row calendar-categories">
+    <div class="small-12 column">
+      <h4>Categories</h4>
     </div>
+  </div>
+  <div class="row small-collapse calendar-categories">
+    <template v-for="category in categories">
+      <div class="event-category" v-if="category.events.length == 0 ?false:true">
+        <div class="small-12 medium-12 large-10  columns">
+          <a href="#" aria-describedby="{{category.slug}}-badge">{{category.category}}</a>
+        </div>
+        <div class="show-for-large large-2 columns">
+          <span id="{{category.slug}}-badge" class="secondary badge">{{category.events.length}}<span>
+          </div>
+        </div>
+      </template>
+    </div>
+    <div class="calendar-other-categories">
+              <h4>Other Calendars</h4>
+              <ul>
+
+                <li><a href="">Art Galleries</a></li>
+                <li><a href="">Athletics</a></li>
+                <li><a href="">Holiday &amp; Payroll</a></li>
+                <li><a href="">Theatre</a></li>
+              </ul>
+            </div>
+            <div class="submit-calendar">
+              <a class="button emu-button">Submit an Event</a>
+            </div>
+            <div class="ypsi-graphic">
+              <a href="http://visitypsinow.com/local-events/"><img src="/assets/imgs/calendar/visit-ypsi.png" alt="Visit Ypsi Calendar"></a>
+            </div>
+  </div>
+</div>
+
+
 </template>
 <style>
 
-.calendar-sidebar-content{
-  background: #ffffff;
+.submit-calendar {
+  padding-left: 0;
 }
+.calendar-bar {
+    background: ##bebdbd;
+}
+.calendar-bar h4 {
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.calendar-box {
+  background: #f2f2f3;
+  padding-top: 0.8rem;
+}
+.calendar-other-categories {
+  padding-top: 0.8rem;
+}
+/*.calendar-sidebar-content{
+  background: #ffffff;
+}*/
 .calendar-sidebar-title h4{
   text-transform: uppercase;
   color: #fff;
@@ -59,16 +105,22 @@
 .calendar-text-content p {
     text-align: left;
 }
-
-  .events li span.badge {
-    margin-left: 10px;
+.calendar-title p {
+  text-size:0.6rem;
+  line-height: 0.8rem;
+}
+.events-by-category .event-category a {
+  font-size: .9rem;
+}
+  .events-by-category .event-category span.badge {
+    margin-right: 0.3rem;
   }
 
-  .calendar ul {
+  /*.calendar ul {
     padding: 15px;
     background: #f3f3f3;
     margin: 0;
-  }
+  }*/
   .calendar .weekdays,
   .calendar .days {
     font-size: 12px;
@@ -94,29 +146,40 @@
     margin-bottom: 4px;
 
   }
-  .calendar ul li span {
+  .calendar .event-category span {
     font-size: 10px;
     text-transform: uppercase;
     font-weight: bold;
   }
+
   .calendar  a {
-    color: #888;
+    color: #0f654a;
     display: block;
     padding: 4px 0;
-    border: 1px solid  #fff;
+    border: 1px solid  #f2f2f3;
   }
   .calendar a:hover {
-    /*border-radius: 5px;*/
-    background: #f9f9f9;
-    color: #008cba;
+    border-radius: 5px;
+    /*background: #0f654a;*/
+    /*color: #fff;*/
+    text-decoration: none;
+    border: 1px solid  #0f654a;
+  }
+  .calendar  a.istoday {
+    border-radius: 5px;
+    border: 1px solid  #0f654a;
+    /*padding: 2px 0;*/
   }
   .calendar  a.active {
-    /*border-radius: 5px;*/
-      background: #ff0000;
+    border-radius: 5px;
+    border: 1px solid  #0f654a;
+
+      background: #fff;
     /*padding: 2px 0;*/
   }
 .calendar  a.noevents {
        pointer-events: none;
+         color: #888;
   }
 
   .calendar-box caption{
@@ -136,9 +199,7 @@
 
 
 
-.calendar-box  {
-  margin-top: 0.8rem;
-}
+
 </style>
 <script>
 module.exports  = {
@@ -152,6 +213,7 @@ module.exports  = {
       monthArray: [],
       currentDay: '',
       haseventClass: 'no',
+      selectedDay : '',
       calDaysArray: [],
       eventObject: {
         eoYear: '',
@@ -182,7 +244,8 @@ module.exports  = {
       this.eventObject.eoYear = this.yearVar;
       this.eventObject.eoMonth = this.monthVarUnit;
       this.eventObject.eoDay = value;
-      this.$dispatch('change-eobject', this.eventObject)
+      this.selectedDay = value;
+      this.$dispatch('change-eobject', this.eventObject);
 
     },
     fetchEventsByDay: function(value) {
@@ -197,7 +260,7 @@ module.exports  = {
       });
     },
     fetchEventsForCalendar: function() {
-      this.$http.get('/api/calendar/month/2015/9').then(function(response) {
+      this.$http.get('/api/calendar/month').then(function(response) {
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
         this.monthVarUnit = response.data.monthVarUnit;

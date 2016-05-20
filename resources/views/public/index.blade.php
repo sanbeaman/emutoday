@@ -85,7 +85,7 @@
                         </li>
                      @endforeach
                     </ul>
-                    <p><a href="">More Events</a></p>
+                    <p><a href="/emu-today/calendar/">More Events</a></p>
                     </div>
                 </div>
 

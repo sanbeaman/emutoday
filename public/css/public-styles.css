@@ -5164,8 +5164,8 @@ table.hover tr:nth-of-type(even):hover {
 
 /* custom CSS styles */
 
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,700italic,400italic);
-@import url(http://fonts.googleapis.com/css?family=PT+Serif);
+/*@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,700italic,400italic);
+@import url(http://fonts.googleapis.com/css?family=PT+Serif);*/
 
 body{
     background-color: #a9a9a9;
@@ -5176,7 +5176,7 @@ a {
 color: #0f654a;
 }
 a:hover{
-    text-decoration: underline;
+    text-decoration: none;
 }
 a:hover, a:focus {
     color: #0f654a;
@@ -5870,7 +5870,7 @@ ul.accordion {
   color: #0f654a;
   padding: .5rem 0rem .5rem 0;
   display: block;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   text-decoration: none;
   border-top: 1px dotted #ccc;
 }
@@ -6128,6 +6128,12 @@ p.small-return-news {
     margin: .8rem 0 .2rem 0;
     color: #0f654a;
 }
+#profiles-list .profile-text-content .magazine {
+    text-align: left;
+    font-size: 0.9rem;
+    line-height: 1.2rem;
+    color: #333;
+}
 .control-arrows img{
     float: right;
     margin: .6rem .2rem 0;
@@ -6375,15 +6381,18 @@ div.featured-content-block.magazine-block + div.featured-content-block.magazine-
 img.magazine-logo {
     width: 100%;
 }
-.profile-text-content.magazine h3{
-  font-size:1.3rem;
-    margin: 0;
-}
 
 /*#tier1-nav .toppad{
   padding-top: .3rem;
 }*/
-
+.profile-text-content.magazine h3{
+  font-size:1.3rem;
+  margin: 0;
+  color: #222222;
+}
+.article-link a:hover p{
+  text-decoration: none;
+}
 #calendar-content-bar{
     padding: 0;
     margin: 0;
@@ -6492,8 +6501,9 @@ a.magazine-article-button {
 .four-stories-block{
   padding-bottom: 10px;
 }
+
 /* Styles for Date Selector */
-.month {
+/*.month {
   height: 110px;
   width: 100%;
   background: #0f654a;
@@ -6545,6 +6555,6 @@ a.magazine-article-button {
   color: #fff;
   font-size: 12px;
   font-weight: bold;
-}
+}*/
 
 /*# sourceMappingURL=public-styles.css.map */

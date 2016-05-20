@@ -11961,7 +11961,7 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div id=\"calendar-content-bar\">\n  <div class=\"row\">\n    <div class=\"medium-3 show-for-medium columns\">\n        <event-view-side-bar v-on:change-eobject=\"handleEventFetch\"></event-view-side-bar>\n    </div>\n  <div class=\"medium-9 small-12 columns\">\n      <!-- <event-view-content :elist.sync=\"eventlist\"></event-view-content> -->\n      <event-view-content :elist.sync=\"eventlist\"></event-view-content>\n  </div>\n  </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"row\">\n    <div id=\"calendar-content-bar\">\n      <div class=\"medium-3 show-for-medium columns\">\n        <event-view-side-bar v-on:change-eobject=\"handleEventFetch\"></event-view-side-bar>\n    </div>\n    <div class=\"medium-9 small-12 columns\">\n      <!-- <event-view-content :elist.sync=\"eventlist\"></event-view-content> -->\n      <event-view-content :elist.sync=\"eventlist\"></event-view-content>\n    </div>\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -11974,7 +11974,7 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"./EventViewContent.vue":34,"./EventViewSideBar.vue":35,"vue":30,"vue-hot-reload-api":5}],34:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n.calendar-content-content{\n  background: #fff;\n}\n.calendar-content-title h4{\n  text-transform: uppercase;\n  color: #fff;\n    margin-top: 0.5rem;\n}\n.calendar-content-content h4 {\n  line-height: 1.4rem;\n  font-size: 1.3rem;\n  font-weight: 600;\n}\n\n.event-day {\n    margin: 0.8rem 0 0 0;\n}\n\n\n")
+var __vueify_style__ = require("vueify-insert-css").insert("\n.calendar-bar {\n    background: #bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n.calendar-content-content{\n  background: #fff;\n}\n.calendar-content-title h4{\n  text-transform: uppercase;\n  color: #fff;\n    margin-top: 0.5rem;\n}\n.calendar-content-content h4 {\n  line-height: 1.4rem;\n  font-size: 1.3rem;\n  font-weight: 600;\n}\n\n.event-day {\n    margin: 0.8rem 0 0 0;\n}\n\n\n")
 'use strict';
 
 module.exports = {
@@ -11984,7 +11984,8 @@ module.exports = {
       yearVar: '',
       dayVar: '',
       monthVarUnit: '',
-      eventRange: {}
+      eventRange: {},
+      hasevents: 0
     };
   },
   filters: {
@@ -12018,6 +12019,7 @@ module.exports = {
       this.yearVar = edata.yearVar;
       this.dayVar = edata.dayVar;
       this.elist = edata.groupedByDay;
+      this.hasevents = this.elist ? 1 : 0;
     },
     fetchEventsByDay: function fetchEventsByDay(value) {
       alert(value);
@@ -12037,7 +12039,7 @@ module.exports = {
   },
   watch: {},
   created: function created() {
-    this.fetchEvents();
+    //  this.fetchEvents();
   },
   components: {
     eventViewSingle: require('./EventViewSingle.vue')
@@ -12047,14 +12049,14 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-content-title row\">\n  <div class=\"small-3 columns\">\n    <h4>Events</h4>\n  </div>\n  <div class=\"small-9\" columns=\"\">\n    <h4>{{currentDate}}</h4>\n  </div>\n</div>\n<div class=\"calendar-content-content row\">\n      <div class=\"small-12 columns\">\n        <div v-for=\"eitem in elist\">\n          <div class=\"event-day\">\n            <h4>{{monthVar}} {{$key }}, {{yearVar}}</h4>\n            <event-view-single v-for=\"item in eitem\" :item=\"item\" :index=\"$index\">\n              </event-view-single>\n          </div>\n        </div>\n      </div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-bar row\">\n  <div class=\"small-3 columns\">\n    <h4>Events</h4>\n  </div>\n  <div class=\"small-9\" columns=\"\">\n\n    <h4 v-if=\"hasevents\">{{currentDate}}</h4>\n  </div>\n</div>\n<div class=\"calendar-content-content row\">\n      <div class=\"small-12 columns\">\n        <div v-for=\"eitem in elist\">\n          <div class=\"event-day\">\n            <h4>{{monthVar}} {{$key }}, {{yearVar}}</h4>\n            <event-view-single v-for=\"item in eitem\" :item=\"item\" :index=\"$index\">\n              </event-view-single>\n          </div>\n        </div>\n      </div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   var id = "/Users/dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewContent.vue"
   module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n.calendar-content-content{\n  background: #fff;\n}\n.calendar-content-title h4{\n  text-transform: uppercase;\n  color: #fff;\n    margin-top: 0.5rem;\n}\n.calendar-content-content h4 {\n  line-height: 1.4rem;\n  font-size: 1.3rem;\n  font-weight: 600;\n}\n\n.event-day {\n    margin: 0.8rem 0 0 0;\n}\n\n\n"] = false
+    require("vueify-insert-css").cache["\n.calendar-bar {\n    background: #bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n.calendar-content-content{\n  background: #fff;\n}\n.calendar-content-title h4{\n  text-transform: uppercase;\n  color: #fff;\n    margin-top: 0.5rem;\n}\n.calendar-content-content h4 {\n  line-height: 1.4rem;\n  font-size: 1.3rem;\n  font-weight: 600;\n}\n\n.event-day {\n    margin: 0.8rem 0 0 0;\n}\n\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -12064,7 +12066,7 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"./EventViewSingle.vue":36,"vue":30,"vue-hot-reload-api":5,"vueify-insert-css":31}],35:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n\n.calendar-sidebar-content{\n  background: #ffffff;\n}\n.calendar-sidebar-title h4{\n  text-transform: uppercase;\n  color: #fff;\n  margin-top: 0.5rem;\n}\n.calendar-text-content p {\n    text-align: left;\n}\n\n  .events li span.badge {\n    margin-left: 10px;\n  }\n\n  .calendar ul {\n    padding: 15px;\n    background: #f3f3f3;\n    margin: 0;\n  }\n  .calendar .weekdays,\n  .calendar .days {\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    padding-top: 4px;\n    padding-bottom: 4px;\n  }\n  .calendar ul.days\n   {\n     border: 1px solid  #000;\n    padding: 10px 15px 3px;\n    background: #f9f9f9;\n  }\n  .calendar ul li {\n    list-style-type: none;\n    display: inline-block;\n    width: 12.8%;\n    height: 25px;\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    margin-bottom: 4px;\n\n  }\n  .calendar ul li span {\n    font-size: 10px;\n    text-transform: uppercase;\n    font-weight: bold;\n  }\n  .calendar  a {\n    color: #888;\n    display: block;\n    padding: 4px 0;\n    border: 1px solid  #fff;\n  }\n  .calendar a:hover {\n    /*border-radius: 5px;*/\n    background: #f9f9f9;\n    color: #008cba;\n  }\n  .calendar  a.active {\n    /*border-radius: 5px;*/\n      background: #ff0000;\n    /*padding: 2px 0;*/\n  }\n.calendar  a.noevents {\n       pointer-events: none;\n  }\n\n  .calendar-box caption{\n    font-weight:400;\n    margin-bottom: .3rem;\n}\n.calendar-caption p{\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n}\n\n.calendar-caption a {\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n  border: 1px none  #000;\n}\n\n\n\n.calendar-box  {\n  margin-top: 0.8rem;\n}\n")
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n.submit-calendar {\n  padding-left: 0;\n}\n.calendar-bar {\n    background: ##bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n.calendar-box {\n  background: #f2f2f3;\n  padding-top: 0.8rem;\n}\n.calendar-other-categories {\n  padding-top: 0.8rem;\n}\n/*.calendar-sidebar-content{\n  background: #ffffff;\n}*/\n.calendar-sidebar-title h4{\n  text-transform: uppercase;\n  color: #fff;\n  margin-top: 0.5rem;\n}\n.calendar-text-content p {\n    text-align: left;\n}\n.calendar-title p {\n  text-size:0.6rem;\n  line-height: 0.8rem;\n}\n.events-by-category .event-category a {\n  font-size: .9rem;\n}\n  .events-by-category .event-category span.badge {\n    margin-right: 0.3rem;\n  }\n\n  /*.calendar ul {\n    padding: 15px;\n    background: #f3f3f3;\n    margin: 0;\n  }*/\n  .calendar .weekdays,\n  .calendar .days {\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    padding-top: 4px;\n    padding-bottom: 4px;\n  }\n  .calendar ul.days\n   {\n     border: 1px solid  #000;\n    padding: 10px 15px 3px;\n    background: #f9f9f9;\n  }\n  .calendar ul li {\n    list-style-type: none;\n    display: inline-block;\n    width: 12.8%;\n    height: 25px;\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    margin-bottom: 4px;\n\n  }\n  .calendar .event-category span {\n    font-size: 10px;\n    text-transform: uppercase;\n    font-weight: bold;\n  }\n\n  .calendar  a {\n    color: #0f654a;\n    display: block;\n    padding: 4px 0;\n    border: 1px solid  #f2f2f3;\n  }\n  .calendar a:hover {\n    border-radius: 5px;\n    /*background: #0f654a;*/\n    /*color: #fff;*/\n    text-decoration: none;\n    border: 1px solid  #0f654a;\n  }\n  .calendar  a.istoday {\n    border-radius: 5px;\n    border: 1px solid  #0f654a;\n    /*padding: 2px 0;*/\n  }\n  .calendar  a.active {\n    border-radius: 5px;\n    border: 1px solid  #0f654a;\n\n      background: #fff;\n    /*padding: 2px 0;*/\n  }\n.calendar  a.noevents {\n       pointer-events: none;\n         color: #888;\n  }\n\n  .calendar-box caption{\n    font-weight:400;\n    margin-bottom: .3rem;\n}\n.calendar-caption p{\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n}\n\n.calendar-caption a {\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n  border: 1px none  #000;\n}\n\n\n\n\n")
 'use strict';
 
 var _stringify = require('babel-runtime/core-js/json/stringify');
@@ -12084,6 +12086,7 @@ module.exports = {
       monthArray: [],
       currentDay: '',
       haseventClass: 'no',
+      selectedDay: '',
       calDaysArray: [],
       eventObject: {
         eoYear: '',
@@ -12112,6 +12115,7 @@ module.exports = {
       this.eventObject.eoYear = this.yearVar;
       this.eventObject.eoMonth = this.monthVarUnit;
       this.eventObject.eoDay = value;
+      this.selectedDay = value;
       this.$dispatch('change-eobject', this.eventObject);
     },
     fetchEventsByDay: function fetchEventsByDay(value) {
@@ -12126,7 +12130,7 @@ module.exports = {
       });
     },
     fetchEventsForCalendar: function fetchEventsForCalendar() {
-      this.$http.get('/api/calendar/month/2015/9').then(function (response) {
+      this.$http.get('/api/calendar/month').then(function (response) {
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
         this.monthVarUnit = response.data.monthVarUnit;
@@ -12192,14 +12196,14 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-sidebar-title row column\">\n  <h4>Calendar</h4>\n  </div>\n  <div class=\"calendar-sidebar-content row\">\n    <div class=\"calendar-box\">\n    <div class=\"calendar large-12 columns\" data-equalizer=\"\">\n      <div class=\"row\">\n        <div class=\"small-3 columns\">\n          <a class=\"text-left\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-before.png\" alt=\"arrow\"></a>\n        </div>\n        <div class=\"text-center small-6 columns\">\n          <p>{{monthVar}} {{yearVar}}</p>\n        </div>\n        <div class=\"small-3 columns\">\n          <a class=\"text-right\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-after.png\" alt=\"arrow\"></a>\n        </div>\n      </div>\n      <div class=\"weekdays row small-up-7 small-collapse\">\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sun</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Mon</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Tue</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Wed</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Thu</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Fri</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sat</span></div>\n      </div>\n      <div class=\"days row small-up-7 small-collapse\">\n        <div class=\"column\" v-for=\"item in calDaysArray\" data-equalizer-watch=\"\">\n          <a v-on:click.prevent=\"dispatchNewEvent( item.day )\" v-bind:class=\"[{'active': item.day == currentDay },{'noevents': item.hasevents == haseventClass }]\" href=\"#\"> {{item.day | removex }}</a>\n        </div>\n      </div>\n    </div>\n  </div>\n<div class=\"calendar-categories\">\n  <h5>Categories</h5>\n  <ul class=\"events\">\n    <template v-for=\"category in categories\">\n      <li v-if=\"category.events.length == 0 ?false:true\">\n        <a href=\"#\" aria-describedby=\"{{category.slug}}-badge\">{{category.category}}<span id=\"{{category.slug}}-badge\" class=\"secondary badge\">{{category.events.length}}<span></span></span></a>\n        </li>\n      </template>\n    </ul>\n  </div>\n\n\n    </div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"calendar-bar row\">\n    <div class=\"small-12 column\">\n        <h4>Calendar</h4>\n    </div>\n  </div>\n<div class=\"calendar-box row\">\n    <div class=\"small-12 columns\">\n      <div class=\"calendar small-12 columns\" data-equalizer=\"\">\n        <div class=\"row small-collapse\">\n            <div class=\"small-2 columns\">\n              <a id=\"month-prev\" class=\"text-left\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-before.png\" alt=\"arrow\"></a>\n          </div>\n          <div class=\"text-center calendar-title small-8 columns\">\n              <a>{{monthVar}} {{yearVar}}</a>\n          </div>\n          <div class=\"small-2 columns\">\n            <a id=\"month-next\" class=\"text-right\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-after.png\" alt=\"arrow\"></a>\n          </div>\n        </div>\n      <div class=\"weekdays row small-up-7 small-collapse\">\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sun</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Mon</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Tue</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Wed</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Thu</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Fri</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sat</span></div>\n      </div>\n      <div class=\"days row small-up-7 small-collapse\">\n        <div class=\"column\" v-for=\"item in calDaysArray\" data-equalizer-watch=\"\">\n          <a v-on:click.prevent=\"dispatchNewEvent( item.day )\" v-bind:class=\"[{'istoday': item.day == currentDay },{'noevents': item.hasevents == haseventClass },{'active': item.day == selectedDay}]\" href=\"#\"> {{item.day | removex }}</a>\n        </div>\n      </div>\n    </div>\n\n  <div class=\"row calendar-categories\">\n    <div class=\"small-12 column\">\n      <h4>Categories</h4>\n    </div>\n  </div>\n  <div class=\"row small-collapse calendar-categories\">\n    <template v-for=\"category in categories\">\n      <div class=\"event-category\" v-if=\"category.events.length == 0 ?false:true\">\n        <div class=\"small-12 medium-12 large-10  columns\">\n          <a href=\"#\" aria-describedby=\"{{category.slug}}-badge\">{{category.category}}</a>\n        </div>\n        <div class=\"show-for-large large-2 columns\">\n          <span id=\"{{category.slug}}-badge\" class=\"secondary badge\">{{category.events.length}}<span>\n          </span></span></div>\n        </div>\n      </template>\n    </div>\n    <div class=\"calendar-other-categories\">\n              <h4>Other Calendars</h4>\n              <ul>\n\n                <li><a href=\"\">Art Galleries</a></li>\n                <li><a href=\"\">Athletics</a></li>\n                <li><a href=\"\">Holiday &amp; Payroll</a></li>\n                <li><a href=\"\">Theatre</a></li>\n              </ul>\n            </div>\n            <div class=\"submit-calendar\">\n              <a class=\"button emu-button\">Submit an Event</a>\n            </div>\n            <div class=\"ypsi-graphic\">\n              <a href=\"http://visitypsinow.com/local-events/\"><img src=\"/assets/imgs/calendar/visit-ypsi.png\" alt=\"Visit Ypsi Calendar\"></a>\n            </div>\n  </div>\n</div>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   var id = "/Users/dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewSideBar.vue"
   module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n\n.calendar-sidebar-content{\n  background: #ffffff;\n}\n.calendar-sidebar-title h4{\n  text-transform: uppercase;\n  color: #fff;\n  margin-top: 0.5rem;\n}\n.calendar-text-content p {\n    text-align: left;\n}\n\n  .events li span.badge {\n    margin-left: 10px;\n  }\n\n  .calendar ul {\n    padding: 15px;\n    background: #f3f3f3;\n    margin: 0;\n  }\n  .calendar .weekdays,\n  .calendar .days {\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    padding-top: 4px;\n    padding-bottom: 4px;\n  }\n  .calendar ul.days\n   {\n     border: 1px solid  #000;\n    padding: 10px 15px 3px;\n    background: #f9f9f9;\n  }\n  .calendar ul li {\n    list-style-type: none;\n    display: inline-block;\n    width: 12.8%;\n    height: 25px;\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    margin-bottom: 4px;\n\n  }\n  .calendar ul li span {\n    font-size: 10px;\n    text-transform: uppercase;\n    font-weight: bold;\n  }\n  .calendar  a {\n    color: #888;\n    display: block;\n    padding: 4px 0;\n    border: 1px solid  #fff;\n  }\n  .calendar a:hover {\n    /*border-radius: 5px;*/\n    background: #f9f9f9;\n    color: #008cba;\n  }\n  .calendar  a.active {\n    /*border-radius: 5px;*/\n      background: #ff0000;\n    /*padding: 2px 0;*/\n  }\n.calendar  a.noevents {\n       pointer-events: none;\n  }\n\n  .calendar-box caption{\n    font-weight:400;\n    margin-bottom: .3rem;\n}\n.calendar-caption p{\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n}\n\n.calendar-caption a {\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n  border: 1px none  #000;\n}\n\n\n\n.calendar-box  {\n  margin-top: 0.8rem;\n}\n"] = false
+    require("vueify-insert-css").cache["\n\n.submit-calendar {\n  padding-left: 0;\n}\n.calendar-bar {\n    background: ##bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n.calendar-box {\n  background: #f2f2f3;\n  padding-top: 0.8rem;\n}\n.calendar-other-categories {\n  padding-top: 0.8rem;\n}\n/*.calendar-sidebar-content{\n  background: #ffffff;\n}*/\n.calendar-sidebar-title h4{\n  text-transform: uppercase;\n  color: #fff;\n  margin-top: 0.5rem;\n}\n.calendar-text-content p {\n    text-align: left;\n}\n.calendar-title p {\n  text-size:0.6rem;\n  line-height: 0.8rem;\n}\n.events-by-category .event-category a {\n  font-size: .9rem;\n}\n  .events-by-category .event-category span.badge {\n    margin-right: 0.3rem;\n  }\n\n  /*.calendar ul {\n    padding: 15px;\n    background: #f3f3f3;\n    margin: 0;\n  }*/\n  .calendar .weekdays,\n  .calendar .days {\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    padding-top: 4px;\n    padding-bottom: 4px;\n  }\n  .calendar ul.days\n   {\n     border: 1px solid  #000;\n    padding: 10px 15px 3px;\n    background: #f9f9f9;\n  }\n  .calendar ul li {\n    list-style-type: none;\n    display: inline-block;\n    width: 12.8%;\n    height: 25px;\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    margin-bottom: 4px;\n\n  }\n  .calendar .event-category span {\n    font-size: 10px;\n    text-transform: uppercase;\n    font-weight: bold;\n  }\n\n  .calendar  a {\n    color: #0f654a;\n    display: block;\n    padding: 4px 0;\n    border: 1px solid  #f2f2f3;\n  }\n  .calendar a:hover {\n    border-radius: 5px;\n    /*background: #0f654a;*/\n    /*color: #fff;*/\n    text-decoration: none;\n    border: 1px solid  #0f654a;\n  }\n  .calendar  a.istoday {\n    border-radius: 5px;\n    border: 1px solid  #0f654a;\n    /*padding: 2px 0;*/\n  }\n  .calendar  a.active {\n    border-radius: 5px;\n    border: 1px solid  #0f654a;\n\n      background: #fff;\n    /*padding: 2px 0;*/\n  }\n.calendar  a.noevents {\n       pointer-events: none;\n         color: #888;\n  }\n\n  .calendar-box caption{\n    font-weight:400;\n    margin-bottom: .3rem;\n}\n.calendar-caption p{\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n}\n\n.calendar-caption a {\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n  border: 1px none  #000;\n}\n\n\n\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {

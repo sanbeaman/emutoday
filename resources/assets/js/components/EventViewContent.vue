@@ -1,10 +1,11 @@
 <template>
-  <div class="calendar-content-title row">
+  <div class="calendar-bar row">
     <div class="small-3 columns">
       <h4>Events</h4>
     </div>
     <div class="small-9" columns>
-      <h4>{{currentDate}}</h4>
+
+      <h4 v-if="hasevents">{{currentDate}}</h4>
     </div>
   </div>
   <div class="calendar-content-content row">
@@ -24,6 +25,16 @@
   </div>
 </template>
 <style>
+.calendar-bar {
+    background: #bebdbd;
+}
+.calendar-bar h4 {
+  text-transform: uppercase;
+  color: #fff;
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
 .calendar-content-content{
   background: #fff;
 }
@@ -52,7 +63,8 @@ module.exports  = {
       yearVar: '',
       dayVar: '',
       monthVarUnit: '',
-      eventRange: {}
+      eventRange: {},
+      hasevents: 0,
     }
   },
   filters: {
@@ -85,7 +97,8 @@ module.exports  = {
       this.monthVar = edata.monthVar;
       this.yearVar = edata.yearVar;
       this.dayVar = edata.dayVar;
-    this.elist = edata.groupedByDay;
+      this.elist = edata.groupedByDay;
+      this.hasevents = this.elist ? 1: 0;
     },
     fetchEventsByDay: function(value) {
       alert(value);
@@ -107,7 +120,7 @@ watch: {
 
 },
 created: function() {
-  this.fetchEvents();
+//  this.fetchEvents();
 },
 components: {
   eventViewSingle: require('./EventViewSingle.vue'),
