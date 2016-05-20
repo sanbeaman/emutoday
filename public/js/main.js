@@ -11906,7 +11906,7 @@ if (module.hot) {(function () {  module.hot.accept()
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _EventViewSideBar = require('./EventViewSideBar.vue');
@@ -11920,19 +11920,48 @@ var _EventViewContent2 = _interopRequireDefault(_EventViewContent);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
-    components: { EventViewSideBar: _EventViewSideBar2.default, EventViewContent: _EventViewContent2.default },
-    ready: function ready() {
-        // alert('!!!!!!!!!!!!!!!!!! EventView');
-    },
+  components: { EventViewSideBar: _EventViewSideBar2.default, EventViewContent: _EventViewContent2.default },
+  ready: function ready() {
+    // alert('!!!!!!!!!!!!!!!!!! EventView');
+  },
 
-    data: function data() {
-        return {
-            eventlist: []
-        };
+  data: function data() {
+    return {
+      eventlist: [],
+      aobject: {
+        year: '',
+        monthUnit: '',
+        month: '',
+        day: ''
+      }
+    };
+  },
+  methods: {
+    handleEventFetch: function handleEventFetch(eobject) {
+
+      this.$http.get('/api/calendar/events/' + eobject.eoYear + '/' + eobject.eoMonth + '/' + eobject.eoDay).then(function (response) {
+        //   this.aobject.year = response.data.yearVar;
+        //   this.aobject.monthUnit = response.data.monthVarUnit;
+        //   this.aobject.month = response.data.monthVar;
+        //     this.aobject.day = response.data.dayVar;
+        //  this.elist = response.data.groupedByDay;
+        this.$broadcast('responseCalEvent', response.data);
+        console.log('handleEventFetch========' + response.data);
+      });
     }
+  },
+  // the `events` option simply calls `$on` for you
+  // when the instance is created
+  events: {
+    // 'child-msg': function (msg) {
+    //   // `this` in event callbacks are automatically bound
+    //   // to the instance that registered it
+    //   this.messages.push(msg)
+    // }
+  }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div id=\"calendar-content-bar\">\n  <div class=\"row\">\n    <div class=\"medium-3 show-for-medium columns\">\n        <event-view-side-bar :elist.sync=\"eventlist\"></event-view-side-bar>\n    </div>\n  <div class=\"medium-9 small-12 columns\">\n      <event-view-content :elist.sync=\"eventlist\"></event-view-content>\n  </div>\n  </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div id=\"calendar-content-bar\">\n  <div class=\"row\">\n    <div class=\"medium-3 show-for-medium columns\">\n        <event-view-side-bar v-on:change-eobject=\"handleEventFetch\"></event-view-side-bar>\n    </div>\n  <div class=\"medium-9 small-12 columns\">\n      <!-- <event-view-content :elist.sync=\"eventlist\"></event-view-content> -->\n      <event-view-content :elist.sync=\"eventlist\"></event-view-content>\n  </div>\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -11951,6 +11980,10 @@ var __vueify_style__ = require("vueify-insert-css").insert("\n.calendar-content-
 module.exports = {
   data: function data() {
     return {
+      monthVar: '',
+      yearVar: '',
+      dayVar: '',
+      monthVarUnit: '',
       eventRange: {}
     };
   },
@@ -11963,8 +11996,13 @@ module.exports = {
     elist: {},
     eventlist: [],
     dateRange: {}
+
   },
-  computed: {},
+  computed: {
+    currentDate: function currentDate() {
+      return this.monthVar + ' ' + this.dayVar + ', ' + this.yearVar;
+    }
+  },
   methods: {
     sortKeyInt: function sortKeyInt($key) {
       return parseInt($key);
@@ -11975,15 +12013,23 @@ module.exports = {
     //     this.currentDay = response.data.dayInMonth;
     //   });
     // },
+    updateCalEvent: function updateCalEvent(edata) {
+      this.monthVar = edata.monthVar;
+      this.yearVar = edata.yearVar;
+      this.dayVar = edata.dayVar;
+      this.elist = edata.groupedByDay;
+    },
     fetchEventsByDay: function fetchEventsByDay(value) {
       alert(value);
     },
     fetchEvents: function fetchEvents() {
       this.$http.get('/api/calendar/events/2015/09/10').then(function (response) {
+        // this.dateRange = response.data.monthVar+ ' ' + response.data.dayVar + ', ' + response.data.yearVar;
+
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
-        this.monthArray = response.data.monthArray;
-        this.currentDay = response.data.dayInMonth;
+        this.monthVarUnit = response.data.monthVarUnit;
+        this.dayVar = response.data.dayVar;
         this.elist = response.data.groupedByDay;
         console.log(response.data);
       });
@@ -11996,10 +12042,12 @@ module.exports = {
   components: {
     eventViewSingle: require('./EventViewSingle.vue')
   },
-  events: {}
+  events: {
+    'responseCalEvent': 'updateCalEvent'
+  }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-content-title row\">\n  <div class=\"small-3 columns\">\n    <h4>Events</h4>\n  </div>\n  <div class=\"small-9\" columns=\"\">\n    <h4>{{dateRange}}</h4>\n  </div>\n</div>\n<div class=\"calendar-content-content row\">\n\n      <div class=\"small-12 columns\">\n        <div v-for=\"eitem in elist\">\n          <div class=\"event-day\">\n            <h4>{{monthVar}} {{$key }}, {{yearVar}}</h4>\n            <event-view-single v-for=\"item in eitem\" :item=\"item\" :index=\"$index\">\n              </event-view-single>\n          </div>\n        </div>\n      </div>\n\n</div>\n\n\n\n        <!-- <div class=\"event\">\n          <h6><a href=\"#\" id=\"eitem.id\">{{eitem.title}}</a></h6>\n          <p>From {{eitem.start_time}} to {{eitem.end_date}}</p>\n          <p>\n            <a href=\"#\" class=\"external\">{{eitem.location}}</a>\n          </p>\n          <div class=\"details\">\n            {{eitem.description}}\n            <p>Contact:</p>\n            <ul>\n              <li>{{eitem.contact_person}}</li>\n              <li>Phone: {{eitem.contact_phone}}</li>\n              <li>Email: <a href=\"mailto:{{eitem.contact_email}}\">{{eitem.contact_email}}</a></li>\n            </ul>\n            <p>Additional Information:</p>\n            <ul>\n              <li v-if=\"eitem.related_link_1\"><a href=\"eitem.related_link_1\" class=\"external\">{{eitem.related_link_1}}</a></li></ul>\n              <li v-if=\"eitem.related_link_2\"><a href=\"eitem.related_link_2\" class=\"external\">{{eitem.related_link_2}}</a></li></ul>\n              <p>Cost: {{eitem.cost}}</p>\n              <p>{{eitem.participants}}</p>\n              <p>LBC Approved: {{eitem.lbc_approved | yesNo }}</p>\n            </div>\n          </div> -->\n\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-content-title row\">\n  <div class=\"small-3 columns\">\n    <h4>Events</h4>\n  </div>\n  <div class=\"small-9\" columns=\"\">\n    <h4>{{currentDate}}</h4>\n  </div>\n</div>\n<div class=\"calendar-content-content row\">\n      <div class=\"small-12 columns\">\n        <div v-for=\"eitem in elist\">\n          <div class=\"event-day\">\n            <h4>{{monthVar}} {{$key }}, {{yearVar}}</h4>\n            <event-view-single v-for=\"item in eitem\" :item=\"item\" :index=\"$index\">\n              </event-view-single>\n          </div>\n        </div>\n      </div>\n\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -12036,8 +12084,12 @@ module.exports = {
       monthArray: [],
       currentDay: '',
       haseventClass: 'no',
-      calDaysArray: []
-
+      calDaysArray: [],
+      eventObject: {
+        eoYear: '',
+        eoMonth: '',
+        eoDay: ''
+      }
     };
   },
   filters: {
@@ -12056,6 +12108,12 @@ module.exports = {
         this.currentDay = response.data.dayInMonth;
       });
     },
+    dispatchNewEvent: function dispatchNewEvent(value) {
+      this.eventObject.eoYear = this.yearVar;
+      this.eventObject.eoMonth = this.monthVarUnit;
+      this.eventObject.eoDay = value;
+      this.$dispatch('change-eobject', this.eventObject);
+    },
     fetchEventsByDay: function fetchEventsByDay(value) {
 
       this.$http.get('/api/calendar/events/' + this.yearVar + '/' + this.monthVarUnit + '/' + value).then(function (response) {
@@ -12068,7 +12126,7 @@ module.exports = {
       });
     },
     fetchEventsForCalendar: function fetchEventsForCalendar() {
-      this.$http.get('/api/calendar/month/2015/05').then(function (response) {
+      this.$http.get('/api/calendar/month/2015/9').then(function (response) {
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
         this.monthVarUnit = response.data.monthVarUnit;
@@ -12076,10 +12134,12 @@ module.exports = {
         this.currentDay = response.data.dayInMonth;
         this.calDaysArray = response.data.calDaysArray;
         console.log(response.data);
+        this.$emit('responseCategoriesEvent');
       });
     },
     fetchCategoryList: function fetchCategoryList() {
-      this.$http.get('/api/active-categories').then(function (response) {
+
+      this.$http.get('/api/active-categories/' + this.yearVar + '/' + this.monthVarUnit).then(function (response) {
         // console.log('response->categories=' + JSON.stringify(response.data));
         this.categories = response.data;
       }, function (response) {
@@ -12124,13 +12184,15 @@ module.exports = {
   watch: {},
   created: function created() {
     this.fetchEventsForCalendar();
-    this.fetchCategoryList();
+    // this.fetchCategoryList();
   },
   components: {},
-  events: {}
+  events: {
+    'responseCategoriesEvent': 'fetchCategoryList'
+  }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-sidebar-title row column\">\n  <h4>Calendar</h4>\n  </div>\n  <div class=\"calendar-sidebar-content row\">\n    <div class=\"calendar-box\">\n    <div class=\"calendar large-12 columns\" data-equalizer=\"\">\n      <div class=\"row\">\n        <div class=\"small-3 columns\">\n          <a class=\"text-left\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-before.png\" alt=\"arrow\"></a>\n        </div>\n        <div class=\"text-center small-6 columns\">\n          <p>{{monthVar}} {{yearVar}}</p>\n        </div>\n        <div class=\"small-3 columns\">\n          <a class=\"text-right\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-after.png\" alt=\"arrow\"></a>\n        </div>\n      </div>\n      <div class=\"weekdays row small-up-7 small-collapse\">\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sun</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Mon</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Tue</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Wed</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Thu</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Fri</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sat</span></div>\n      </div>\n      <div class=\"days row small-up-7 small-collapse\">\n        <div class=\"column\" v-for=\"item in calDaysArray\" data-equalizer-watch=\"\">\n          <a v-on:click.prevent=\"fetchEventsByDay( item.day )\" v-bind:class=\"[{'active': item.day == currentDay },{'noevents': item.hasevents == haseventClass }]\" href=\"#\"> {{item.day | removex }}</a>\n        </div>\n      </div>\n    </div>\n  </div>\n<div class=\"calendar-categories\">\n  <h5>Categories</h5>\n  <ul class=\"events\">\n    <template v-for=\"category in categories\">\n      <li v-if=\"category.events.length == 0 ?false:true\">\n        <a href=\"#\" aria-describedby=\"{{category.slug}}-badge\">{{category.category}}<span id=\"{{category.slug}}-badge\" class=\"secondary badge\">{{category.events.length}}<span></span></span></a>\n        </li>\n      </template>\n    </ul>\n  </div>\n\n\n    </div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-sidebar-title row column\">\n  <h4>Calendar</h4>\n  </div>\n  <div class=\"calendar-sidebar-content row\">\n    <div class=\"calendar-box\">\n    <div class=\"calendar large-12 columns\" data-equalizer=\"\">\n      <div class=\"row\">\n        <div class=\"small-3 columns\">\n          <a class=\"text-left\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-before.png\" alt=\"arrow\"></a>\n        </div>\n        <div class=\"text-center small-6 columns\">\n          <p>{{monthVar}} {{yearVar}}</p>\n        </div>\n        <div class=\"small-3 columns\">\n          <a class=\"text-right\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-after.png\" alt=\"arrow\"></a>\n        </div>\n      </div>\n      <div class=\"weekdays row small-up-7 small-collapse\">\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sun</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Mon</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Tue</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Wed</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Thu</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Fri</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sat</span></div>\n      </div>\n      <div class=\"days row small-up-7 small-collapse\">\n        <div class=\"column\" v-for=\"item in calDaysArray\" data-equalizer-watch=\"\">\n          <a v-on:click.prevent=\"dispatchNewEvent( item.day )\" v-bind:class=\"[{'active': item.day == currentDay },{'noevents': item.hasevents == haseventClass }]\" href=\"#\"> {{item.day | removex }}</a>\n        </div>\n      </div>\n    </div>\n  </div>\n<div class=\"calendar-categories\">\n  <h5>Categories</h5>\n  <ul class=\"events\">\n    <template v-for=\"category in categories\">\n      <li v-if=\"category.events.length == 0 ?false:true\">\n        <a href=\"#\" aria-describedby=\"{{category.slug}}-badge\">{{category.category}}<span id=\"{{category.slug}}-badge\" class=\"secondary badge\">{{category.events.length}}<span></span></span></a>\n        </li>\n      </template>\n    </ul>\n  </div>\n\n\n    </div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

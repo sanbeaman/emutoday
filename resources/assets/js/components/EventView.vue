@@ -2,18 +2,15 @@
   <div id="calendar-content-bar">
     <div class="row">
       <div class="medium-3 show-for-medium columns">
-          <event-view-side-bar :elist.sync="eventlist"></event-view-side-bar>
+          <event-view-side-bar v-on:change-eobject="handleEventFetch"></event-view-side-bar>
       </div>
     <div class="medium-9 small-12 columns">
+        <!-- <event-view-content :elist.sync="eventlist"></event-view-content> -->
         <event-view-content :elist.sync="eventlist"></event-view-content>
     </div>
     </div>
   </div>
 </template>
-
-
-
-
 <script>
     import EventViewSideBar from './EventViewSideBar.vue'
     import EventViewContent from './EventViewContent.vue'
@@ -24,8 +21,38 @@
         },
         data: function() {
           return {
-            eventlist: []
+            eventlist: [],
+            aobject : {
+              year: '',
+              monthUnit: '',
+              month: '',
+              day: '',
+            }
           }
         },
+        methods : {
+          handleEventFetch: function(eobject) {
+
+            this.$http.get('/api/calendar/events/' + eobject.eoYear + '/'+ eobject.eoMonth + '/' + eobject.eoDay).then(function(response) {
+            //   this.aobject.year = response.data.yearVar;
+            //   this.aobject.monthUnit = response.data.monthVarUnit;
+            //   this.aobject.month = response.data.monthVar;
+            //     this.aobject.day = response.data.dayVar;
+            //  this.elist = response.data.groupedByDay;
+             this.$broadcast('responseCalEvent', response.data)
+              console.log('handleEventFetch========' + response.data);
+
+            });
+          },
+        },
+        // the `events` option simply calls `$on` for you
+        // when the instance is created
+        events: {
+          // 'child-msg': function (msg) {
+          //   // `this` in event callbacks are automatically bound
+          //   // to the instance that registered it
+          //   this.messages.push(msg)
+          // }
+        }
     }
 </script>

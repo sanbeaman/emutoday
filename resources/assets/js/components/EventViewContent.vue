@@ -4,11 +4,10 @@
       <h4>Events</h4>
     </div>
     <div class="small-9" columns>
-      <h4>{{dateRange}}</h4>
+      <h4>{{currentDate}}</h4>
     </div>
   </div>
   <div class="calendar-content-content row">
-
         <div class="small-12 columns">
           <div v-for="eitem in elist">
             <div class="event-day">
@@ -23,35 +22,6 @@
         </div>
 
   </div>
-
-
-
-          <!-- <div class="event">
-            <h6><a href="#" id="eitem.id">{{eitem.title}}</a></h6>
-            <p>From {{eitem.start_time}} to {{eitem.end_date}}</p>
-            <p>
-              <a href="#" class="external">{{eitem.location}}</a>
-            </p>
-            <div class="details">
-              {{eitem.description}}
-              <p>Contact:</p>
-              <ul>
-                <li>{{eitem.contact_person}}</li>
-                <li>Phone: {{eitem.contact_phone}}</li>
-                <li>Email: <a href="mailto:{{eitem.contact_email}}">{{eitem.contact_email}}</a></li>
-              </ul>
-              <p>Additional Information:</p>
-              <ul>
-                <li v-if="eitem.related_link_1"><a href="eitem.related_link_1" class="external">{{eitem.related_link_1}}</a></li></ul>
-                <li v-if="eitem.related_link_2"><a href="eitem.related_link_2" class="external">{{eitem.related_link_2}}</a></li></ul>
-                <p>Cost: {{eitem.cost}}</p>
-                <p>{{eitem.participants}}</p>
-                <p>LBC Approved: {{eitem.lbc_approved | yesNo }}</p>
-              </div>
-            </div> -->
-
-
-
 </template>
 <style>
 .calendar-content-content{
@@ -78,6 +48,10 @@
 module.exports  = {
   data: function() {
     return {
+      monthVar: '',
+      yearVar: '',
+      dayVar: '',
+      monthVarUnit: '',
       eventRange: {}
     }
   },
@@ -90,9 +64,12 @@ module.exports  = {
     elist: {},
     eventlist: [],
     dateRange: {},
+
   },
   computed: {
-
+    currentDate: function () {
+      return this.monthVar+ ' ' + this.dayVar + ', ' + this.yearVar;
+    }
   },
   methods: {
     sortKeyInt: function ($key) {
@@ -104,15 +81,23 @@ module.exports  = {
     //     this.currentDay = response.data.dayInMonth;
     //   });
     // },
+    updateCalEvent: function(edata){
+      this.monthVar = edata.monthVar;
+      this.yearVar = edata.yearVar;
+      this.dayVar = edata.dayVar;
+    this.elist = edata.groupedByDay;
+    },
     fetchEventsByDay: function(value) {
       alert(value);
     },
     fetchEvents: function() {
       this.$http.get('/api/calendar/events/2015/09/10').then(function(response) {
+        // this.dateRange = response.data.monthVar+ ' ' + response.data.dayVar + ', ' + response.data.yearVar;
+
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
-        this.monthArray = response.data.monthArray;
-        this.currentDay = response.data.dayInMonth;
+        this.monthVarUnit = response.data.monthVarUnit;
+        this.dayVar = response.data.dayVar;
         this.elist = response.data.groupedByDay;
         console.log(response.data);
       });
@@ -128,7 +113,7 @@ components: {
   eventViewSingle: require('./EventViewSingle.vue'),
 },
 events: {
-
-	}
+           'responseCalEvent': 'updateCalEvent'
+       }
 };
 </script>

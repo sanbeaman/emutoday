@@ -27,7 +27,7 @@
       </div>
       <div class="days row small-up-7 small-collapse">
         <div class="column" v-for="item in calDaysArray" data-equalizer-watch>
-          <a v-on:click.prevent="fetchEventsByDay( item.day )" v-bind:class="[{'active': item.day == currentDay },{'noevents': item.hasevents == haseventClass }]"  href="#"> {{item.day | removex }}</a>
+          <a v-on:click.prevent="dispatchNewEvent( item.day )" v-bind:class="[{'active': item.day == currentDay },{'noevents': item.hasevents == haseventClass }]"  href="#"> {{item.day | removex }}</a>
         </div>
       </div>
     </div>
@@ -153,7 +153,11 @@ module.exports  = {
       currentDay: '',
       haseventClass: 'no',
       calDaysArray: [],
-
+      eventObject: {
+        eoYear: '',
+        eoMonth: '',
+        eoDay: ''
+      },
     }
   },
   filters: {
@@ -174,6 +178,13 @@ module.exports  = {
         this.currentDay = response.data.dayInMonth;
       });
     },
+    dispatchNewEvent: function(value){
+      this.eventObject.eoYear = this.yearVar;
+      this.eventObject.eoMonth = this.monthVarUnit;
+      this.eventObject.eoDay = value;
+      this.$dispatch('change-eobject', this.eventObject)
+
+    },
     fetchEventsByDay: function(value) {
 
       this.$http.get('/api/calendar/events/' + this.yearVar + '/'+ this.monthVarUnit + '/' + value).then(function(response) {
@@ -186,7 +197,7 @@ module.exports  = {
       });
     },
     fetchEventsForCalendar: function() {
-      this.$http.get('/api/calendar/month/2015/05').then(function(response) {
+      this.$http.get('/api/calendar/month/2015/9').then(function(response) {
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
         this.monthVarUnit = response.data.monthVarUnit;
@@ -194,10 +205,12 @@ module.exports  = {
         this.currentDay = response.data.dayInMonth;
         this.calDaysArray = response.data.calDaysArray;
         console.log(response.data);
+        this.$emit('responseCategoriesEvent');
       });
     },
     fetchCategoryList: function() {
-      this.$http.get('/api/active-categories').then(function(response){
+
+      this.$http.get('/api/active-categories/'+ this.yearVar + '/'+ this.monthVarUnit ).then(function(response){
         // console.log('response->categories=' + JSON.stringify(response.data));
         this.categories = response.data;
 
@@ -245,13 +258,13 @@ watch: {
 },
 created: function() {
     this.fetchEventsForCalendar();
-   this.fetchCategoryList();
+  // this.fetchCategoryList();
 },
 components: {
 
 },
 events: {
-
+ 'responseCategoriesEvent': 'fetchCategoryList'
 	}
 };
 </script>

@@ -89,27 +89,29 @@ class EventsController extends ApiController
         $yearVar = $cdate_start->year;
         $monthVar = $cdate_start->format('F');
         $monthVarUnit =  $cdate_start->month;
+        $dayVar = $cdate_start->day;
         return [ 'groupedByDay' => $groupedByDay,
                             'yearVar'=> $yearVar,
                             'monthVar'=> $monthVar,
-                            'monthVarUnit'=> $monthVarUnit
+                            'monthVarUnit'=> $monthVarUnit,
+                            'dayVar' => $dayVar,
                           ];
     }
 
 
     public function eventsByDate($year = null, $month = null, $day = null)
     {
-      $mondifier;
+      $modifier;
       if ($year == null) {
-        $mondifier = "all";
+        $modifier = "all";
       } else {
         if ($month == null) {
-          $mondifier = "Y";
+          $modifier = "Y";
         } else {
           if ($day == null) {
-              $mondifier = "YM";
+              $modifier = "YM";
           } else {
-            $mondifier = "YMD";
+            $modifier = "YMD";
           }
         }
 
@@ -204,26 +206,51 @@ class EventsController extends ApiController
         //
         //   return $this->respond($events);
     }
+
+
     public function eventsInMonth($year = null, $month = null)
     {
-      $cdate = Carbon::now()->subYear();
-      $cdate_first = $cdate->firstOfMonth();
+      $modifier;
+      if ($year == null) {
+        $modifier = "C";
+      } else {
+        if ($month == null) {
+          $modifier = "Y";
+        } else {
+          $modifier = "YM";
+
+        }
+
+      }
+      $cdate_start;
+      $cdate_end;
+      if ($modifier == "C") {
+          $cdate_start = Carbon::now()->startOfDay();
+          $cdate_end = Carbon::now()->endOfMonth();
+      } else if ($modifier == "Y"){
+          $currentMonth = Carbon::now()->month;
+        $cdate_start = Carbon::create($year, $currentMonth, 1)->startOfMonth();
+        $cdate_end =  Carbon::create($year, $currentMonth, 1)->endOfMonth();
+      } else {
+        $cdate_start = Carbon::create($year, $month, 1)->startOfMonth();
+        $cdate_end =  Carbon::create($year, $month, 1)->endOfMonth();
+      }
 
 
-      $yearVar =  $cdate->year;
-      $monthVar = $cdate->format('F');
-      $monthVarUnit = $cdate->month;
-      $dayInMonth = $cdate->day;
+      $yearVar =  $cdate_start->year;
+      $monthVar = $cdate_start->format('F');
+      $monthVarUnit = $cdate_start->month;
+      $dayInMonth = $cdate_start->day;
       $monthArray = collect();
-      $cd_dayMonthStarts = $cdate->firstOfMonth()->dayOfWeek;
-      $cd_daysInMonth = $cdate->daysInMonth;
-
-      $cdate_monthstart = Carbon::create($yearVar, $cdate->month, 1, 12);
-      $cdate_monthend = Carbon::create($yearVar, $cdate->month, $cd_daysInMonth, 12);
+      $cd_dayMonthStarts = $cdate_start->firstOfMonth()->dayOfWeek;
+      $cd_daysInMonth = $cdate_start->daysInMonth;
+      //
+      // $cdate_monthstart = Carbon::create($yearVar, $cdate->month, 1, 12);
+      // $cdate_monthend = Carbon::create($yearVar, $cdate->month, $cd_daysInMonth, 12);
 
       $eventsInMonth = Event::select('id', 'start_date', 'end_date')->where([
-        ['start_date', '>', $cdate_monthstart],
-        ['start_date', '<', $cdate_monthend]
+        ['start_date', '>', $cdate_start],
+        ['start_date', '<', $cdate_end]
         ])->get();
 
         $keyed = $eventsInMonth->keyBy(function ($item) {
@@ -259,6 +286,8 @@ class EventsController extends ApiController
                 'monthVarUnit' => $monthVarUnit,
             'dayInMonth' => $dayInMonth];
           }
+
+          
     public function byDate(Request $request)
     {
       return $request->all();
