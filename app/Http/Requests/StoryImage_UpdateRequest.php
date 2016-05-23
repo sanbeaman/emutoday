@@ -24,7 +24,7 @@ class StoryImage_UpdateRequest extends Request
     public function rules()
     {
         return [
-          'image' => 'required | mimes:jpeg,jpg,bmp,png | max:1000',
+          'image_name' => 'required',
           'image_type' => 'required'
   ];
     }

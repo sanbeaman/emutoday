@@ -21,7 +21,22 @@
         </div>
       </div>
       <div class="row small-up-2 medium-up-2 large-up-4" data-equalizer>
-        @each('public.layouts.components.smallimg', $barImgs, 'barImg')
+        @for ($i = 1; $i <= count($barImgs); $i++)
+          <div class="column four-stories-block">
+            <img class="topic-image" src="{{$barImgs[$i]->present()->mainImageURL}}" alt="story image">
+            <div class="stories-content">
+              <div class="stories-text-content" data-equalizer-watch>
+                <p>{{$barImgs[$i]->caption}}</p>
+              </div>
+              <p class="button-group">
+                <a href="/emu-today/{{$barImgs[$i]->story->story_folder}}/{{$barImgs[$i]->story->id}}" class="button">{{$barImgs[$i]->moretext}}<i class="fi-play"></i></a>
+              </p>
+            </div>
+          </div>
+        @endfor
+
+
+        {{-- @each('public.layouts.components.smallimg', $barImgs, 'barImg') --}}
       </div>
     </div>
     <div id="news-headline-bar">

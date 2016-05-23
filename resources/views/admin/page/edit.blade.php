@@ -2,8 +2,8 @@
 @section('title', 'Edit Story')
 @section('scripthead')
           @parent
-          	<link rel="stylesheet" href="{{ theme('css/my-redips.css') }}" type="text/css" media="screen" />
-          <script src="{{ theme('js/redips-drag-min.js') }}"></script>
+          	<link rel="stylesheet" href="{{'/css/my-redips.css' }}" type="text/css" media="screen" />
+          <script src="{{'/js/redips-drag-min.js' }}"></script>
 
     @endsection
 @section('content')
@@ -36,16 +36,22 @@
 				{!! Form::text('end_date', null, ['class' => 'form-control']) !!}
 		</div>
 		<div class="medium-1 columns">
-			<div class="input-group">
+			<div class="input-group row">
 			 {!! Form::label('is_active') !!}
-			  <div class="switch medium">
+       <div class="small-6 columns">
+         {!! Form::label('is_active', 'yes', ['class'=> 'tinylabel']) !!} {!! Form::radio('is_active', true ,null) !!}
+       </div>
+       <div class="small-6 columns">
+         {!! Form::label('is_active', 'no', ['class'=> 'tinylabel']) !!} {!! Form::radio('is_active', false ,null) !!}
+       </div>
+			  {{-- <div class="switch medium">
 				<input class="switch-input" id="yes-no" type="checkbox" name="is_active">
 				<label class="switch-paddle" for="yes-no">
 				  <span class="show-for-sr">Is Page Active?</span>
 				  <span class="switch-active" aria-hidden="true">Yes</span>
 				  <span class="switch-inactive" aria-hidden="true">No</span>
 				</label>
-			  </div>
+			  </div> --}}
 
 			</div>
 		</div>
@@ -74,7 +80,7 @@
 @endsection
 @section('scriptsfooter')
 	@parent
-	    <script src="{{ theme('js/my-redips.js') }}"></script>
+	    <script src="{{ '/js/my-redips.js' }}"></script>
 
 	<script>
 	$(function(){

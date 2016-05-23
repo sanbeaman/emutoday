@@ -3941,7 +3941,7 @@ table.hover tr:nth-of-type(even):hover {
   margin: 0;
   list-style-type: none;
   background: #ffffff;
-  border: 1px solid #ffffff; }
+  border: 1px solid #cacaca; }
   .tabs::before, .tabs::after {
     content: ' ';
     display: table; }
@@ -3978,14 +3978,14 @@ table.hover tr:nth-of-type(even):hover {
       background: #e6e6e6; }
 
 .tabs-content {
-  background: #e6e6e6;
+  background: #ffffff;
   -webkit-transition: all 0.5s ease;
   transition: all 0.5s ease;
-  border: 1px solid #ffffff;
+  border: 1px solid #cacaca;
   border-top: 0; }
 
 .tabs-content.vertical {
-  border: 1px solid #ffffff;
+  border: 1px solid #cacaca;
   border-left: 0; }
 
 .tabs-panel {

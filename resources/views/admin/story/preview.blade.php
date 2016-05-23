@@ -23,11 +23,11 @@
             <div class="addthis"></div>
             <h3>{{ $story->title }}</h3>
             <h5>{{ $story->subtitle }}</h5>
-            @if(isset($mainStoryImage))
+            @if(isset($mainStoryImg))
               <div id="big-feature-image">
-                <img src="{{$mainStoryImage->present()->mainImageURL }}" alt="feature-image"></a>
+                <img src="{{$mainStoryImg->present()->mainImageURL }}" alt="feature-image"></a>
 
-                <div class="feature-image-caption">{{ $mainStoryImage->caption }}</div>
+                <div class="feature-image-caption">{{ $mainStoryImg->caption }}</div>
               </div>
             @endif
             <div id="story-content-edit" contenteditable="true">
@@ -39,12 +39,12 @@
           <div class="large-3 medium-4 small-12 columns featurepadding">
             <div class="featured-content-block">
               <h6 class="headline-block lt-green">Featured stories</h6>
-              @if(isset($smallStoryImage))
-                <a href=""><img src="{{$smallStoryImage->present()->mainImageURL }}" alt="story image"></a>
+              @if(isset($smallStoryImg))
+                <a href=""><img src="{{$smallStoryImg->present()->mainImageURL }}" alt="story image"></a>
               @endif
               <ul class="feature-list">
-                @if(isset($smallStoryImage))
-                  <li><a href="">{{ $smallStoryImage->teaser }}</a></li>
+                @if(isset($smallStoryImg))
+                  <li><a href="">{{ $smallStoryImg->teaser }}</a></li>
                 @endif
 
                 <li><a href="">An Ounce of Prevention is Worth a Great Career</a></li>

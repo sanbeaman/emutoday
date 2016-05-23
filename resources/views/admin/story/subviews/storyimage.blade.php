@@ -56,7 +56,7 @@ $storyImage->image_extension . '?'. 'time='. time() }}">
    </div>
 </div>
 <div class="input-group">
-   {!! Form::submit('Upload Photo', array('class'=>'button')) !!}
+   {!! Form::submit('Update Image', array('class'=>'button')) !!}
 
 
    </div>
@@ -80,7 +80,7 @@ $storyImage->image_extension . '?'. 'time='. time() }}">
 
       {!! Form::close() !!}
    @endif
-   
+
 
 </div>
 

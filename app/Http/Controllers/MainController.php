@@ -39,14 +39,14 @@ class MainController extends Controller
         $currentStorysBasic = $this->storys->where('story_type', 'storybasic')->paginate(5);
         $currentAnnouncements = $this->announcements->paginate(5);
         $barImgs = collect();
-
         $storys = $page->storys()->get();
 
         foreach ($storys as $story) {
             if ($story->pivot->page_position === 0) {
                 $heroImg = $story->storyImages()->where('image_type', 'imagehero')->first();
             } else {
-                $barImgs->push( $story->storyImages()->where('image_type', 'imagesmall')->first() );
+                $barImgs[$story->pivot->page_position] = $story->storyImages()->where('image_type', 'imagesmall')->first(); 
+                // $barImgs->push( $story->storyImages()->where('image_type', 'imagesmall')->first() );
             }
 
         }
