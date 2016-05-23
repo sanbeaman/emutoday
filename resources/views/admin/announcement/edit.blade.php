@@ -3,7 +3,7 @@
 @section('title', $announcement->exists ? 'Editing '.$announcement->title : 'Create New Announcement')
 @section('scripthead')
     @parent
-  <script src="{{ theme('js/ckeditor/ckeditor.js') }}"></script>
+  <script src="{{ 'js/ckeditor/ckeditor.js'}}"></script>
 @endsection
 @section('content')
 <div class="row">
@@ -56,7 +56,7 @@
 @endsection
 @section('footer')
     @parent
-      <script src="{{ theme('js/ckeditor/ckeditor.js') }}"></script>
+      <script src="{{ 'js/ckeditor/ckeditor.js' }}"></script>
     <script>
 
                             CKEDITOR.replace('announcement',

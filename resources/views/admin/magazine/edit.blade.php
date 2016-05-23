@@ -4,8 +4,8 @@
 @section('title', 'Edit Magazine')
 @section('scripthead')
           @parent
-          	<link rel="stylesheet" href="{{ theme('css/my-redips.css') }}" type="text/css" media="screen" />
-          <script src="{{ theme('js/redips-drag-min.js') }}"></script>
+          	<link rel="stylesheet" href="{{'css/my-redips.css'}}" type="text/css" media="screen" />
+          <script src="{{'js/redips-drag-min.js' }}"></script>
 
     @endsection
 @section('content')
@@ -99,7 +99,7 @@
 @endsection
 @section('scriptsfooter')
 	@parent
-	    <script src="{{ theme('js/magazine-redips.js') }}"></script>
+	    <script src="{{'js/magazine-redips.js'}}"></script>
 
 	<script>
 	$(function(){

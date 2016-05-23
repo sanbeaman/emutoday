@@ -3,7 +3,7 @@
 @section('title', $story->exists ? 'Editing '.$story->title : 'Create New Story')
 @section('scripthead')
           @parent
-        <script src="{{ theme('js/ckeditor/ckeditor.js') }}"></script>
+        <script src="{{ 'js/ckeditor/ckeditor.js' }}"></script>
     @endsection
 @section('content')
     {!! Form::model($story, [

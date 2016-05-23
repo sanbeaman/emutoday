@@ -178,27 +178,27 @@
                         <ul class="social-icons">
                         <li>
                             <a href="https://www.facebook.com/Eastern.Michigan.University">
-                                <img alt="Facebook" src="{{theme('imgs/icons/facebook_icon23x23.png')}}">
+                                <img alt="Facebook" src="{{'assets/imgs/icons/facebook_icon23x23.png'}}">
                             </a>
                         </li>
                         <li>
                             <a href="http://www.emich.edu/twitter/">
-                                <img alt="Twitter" src="{{theme('imgs/icons/twitter_icon23x23.png')}}">
+                                <img alt="Twitter" src="{{'assets/imgs/icons/twitter_icon23x23.png'}}">
                             </a>
                         </li>
                         <li>
                             <a href="https://www.youtube.com/user/emichigan08">
-                                <img alt="YouTube" src="{{theme('imgs/icons/youtube_icon23x23.png')}}">
+                                <img alt="YouTube" src="{{'assets/imgs/icons/youtube_icon23x23.png'}}">
                             </a>
                         </li>
                         <li>
                             <a href="https://instagram.com/easternmichigan/">
-                                <img alt="Instagram" src="{{theme('imgs/icons/instagram_icon23x23.png')}}">
+                                <img alt="Instagram" src="{{'assets/imgs/icons/instagram_icon23x23.png'}}">
                             </a>
                         </li>
                         <li>
                             <a href="https://www.linkedin.com/edu/school?id=18604">
-                                <img alt="Linked-In" src="{{theme('imgs/icons//linked-in_icon23x23.png')}}">
+                                <img alt="Linked-In" src="{{'assets/imgs/icons/linked-in_icon23x23.png'}}">
                             </a>
                         </li>
                       </ul>
