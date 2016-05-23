@@ -16,7 +16,8 @@
         "laracasts/flash": "^2.0",
         "laracasts/utilities": "^2.1",
         "phpunit/phpunit": "^4.8",
-        "laracasts/presenter": "^0.2.1"
+        "laracasts/presenter": "^0.2.1",
+        "fennb/phirehose": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -27,7 +28,8 @@
     },
     "autoload": {
         "classmap": [
-            "database"
+            "database",
+            "vendor/fennb/phirehose/lib"
         ],
         "psr-4": {
             "emutoday\\": "app/"
