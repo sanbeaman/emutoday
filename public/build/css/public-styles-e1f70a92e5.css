@@ -6404,6 +6404,11 @@ img.magazine-logo {
 /*#tier1-nav .toppad{
   padding-top: .3rem;
 }*/
+
+
+#listing-bar ul.accordion {
+    border: 0 none;
+}
 .profile-text-content.magazine h3{
   font-size:1.3rem;
   margin: 0;

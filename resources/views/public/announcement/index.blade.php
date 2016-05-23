@@ -14,12 +14,13 @@
 
               <ul class="accordion" data-accordion data-allow-all-closed="true">
                 @foreach($announcements as $announcement)
-                  <li class="accordion-item" id="accitem-{{$announcement->id}}" data-accordion-item>
+                  <li class="{{$announcement->id == $id ? 'accordion-item is-active':'accordion-item' }}" id="accitem-{{$announcement->id}}" data-accordion-item>
                   {{-- <li class="accordion-item" data-accordion-item> --}}
                     <a href="#" class="accordion-title">{{$announcement->title}}</a>
                     <div class="accordion-content" data-tab-content>
                       {!! $announcement->announcement !!}
-                      {{$announcement->start_date}}
+                      <p>On: {{$announcement->present()->prettyDate}}</p>
+
                     </div>
                   </li>
                 @endforeach
