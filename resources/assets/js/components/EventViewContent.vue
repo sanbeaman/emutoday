@@ -1,27 +1,33 @@
 <template>
   <div class="calendar-bar row">
-    <div class="small-3 columns">
-      <h4>Events</h4>
+    <div class="small-6 columns">
+      <h4>Upcoming Events</h4>
     </div>
-    <div class="small-9" columns>
+    <div class="small-6 columns" columns>
 
-      <h4 v-if="hasevents">{{currentDate}}</h4>
+
     </div>
   </div>
-  <div class="calendar-content-content row">
-        <div class="small-12 columns">
-          <div v-for="eitem in elist">
-            <div class="event-day">
+  <div class="calendar-content">
+    <div class="calendar-content-title row">
+      <div class="small-12 column">
+          <h6>From {{firstDate}} thru {{lastDate}}</h6>
+      </div>
+    </div>
+    <div class="calendar-content-content row">
+      <div class="small-12 columns">
+        <div v-for="eitem in elist">
+          <div class="event-day">
               <h4>{{monthVar}} {{$key }}, {{yearVar}}</h4>
               <event-view-single
                 v-for="item in eitem"
                   :item="item"
                   :index="$index">
                 </event-view-single>
-            </div>
           </div>
         </div>
-
+      </div>
+    </div>
   </div>
 </template>
 <style>
@@ -35,13 +41,18 @@
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
-.calendar-content-content{
-  background: #fff;
+
+.calendar-content-title {
+  padding-top: 0.8rem;
 }
+
 .calendar-content-title h4{
   text-transform: uppercase;
   color: #fff;
     margin-top: 0.5rem;
+}
+.calendar-content-content{
+  background: #fff;
 }
 .calendar-content-content h4 {
   line-height: 1.4rem;
@@ -62,6 +73,8 @@ module.exports  = {
       monthVar: '',
       yearVar: '',
       dayVar: '',
+      firstDate: '',
+      lastDate: '',
       monthVarUnit: '',
       eventRange: {},
       hasevents: 0,
@@ -75,12 +88,14 @@ module.exports  = {
   props: {
     elist: {},
     eventlist: [],
-    dateRange: {},
 
   },
   computed: {
     currentDate: function () {
       return this.monthVar+ ' ' + this.dayVar + ', ' + this.yearVar;
+    },
+    dateRange: function () {
+        return 'From '+ this.firstDate + ' thru ' + this.lastDate;
     }
   },
   methods: {
@@ -98,23 +113,24 @@ module.exports  = {
       this.yearVar = edata.yearVar;
       this.dayVar = edata.dayVar;
       this.elist = edata.groupedByDay;
+      this.firstDate = edata.firstDate;
+      this.lastDate = edata.lastDate;
+      console.log('fd='+this.firstDate );
       this.hasevents = this.elist ? 1: 0;
     },
     fetchEventsByDay: function(value) {
       alert(value);
     },
-    fetchEvents: function() {
-      this.$http.get('/api/calendar/events/2015/09/10').then(function(response) {
-        // this.dateRange = response.data.monthVar+ ' ' + response.data.dayVar + ', ' + response.data.yearVar;
-
-        this.yearVar = response.data.yearVar;
-        this.monthVar = response.data.monthVar;
-        this.monthVarUnit = response.data.monthVarUnit;
-        this.dayVar = response.data.dayVar;
-        this.elist = response.data.groupedByDay;
-        console.log(response.data);
-      });
-    }
+    // fetchEvents: function() {
+    //   this.$http.get('/api/calendar/events/2015/09/10').then(function(response) {
+    //     this.yearVar = response.data.yearVar;
+    //     this.monthVar = response.data.monthVar;
+    //     this.monthVarUnit = response.data.monthVarUnit;
+    //     this.dayVar = response.data.dayVar;
+    //     this.elist = response.data.groupedByDay;
+    //     console.log(response.data);
+    //   });
+    // }
   },
 watch: {
 

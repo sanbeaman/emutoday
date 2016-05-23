@@ -90,8 +90,8 @@ class EventsController extends ApiController
         $monthVar = $cdate_start->format('F');
         $monthVarUnit =  $cdate_start->month;
         $dayVar = $cdate_start->day;
-        $firstDate = $cdate_start->format('l F j, Y');
-        $lastDate = $cdate_end->format('l F j, Y');
+        $firstDate = $cdate_start->format('l, F j');
+        $lastDate = $cdate_end->format('l, F j');
 
         return [ 'groupedByDay' => $groupedByDay,
                             'yearVar'=> $yearVar,
@@ -189,7 +189,7 @@ class EventsController extends ApiController
 
       return [ 'groupedByDay' => $groupedByDay,
                           'elist2' => $eventlist,
-                            'eachItems' => $eventlistcount,
+                          'eachItems' => $eventlistcount,
                           'uniqueByDay'=> $uniqueByDay,
                           'yearVar'=> $yearVar,
                           'monthVar'=> $monthVar,

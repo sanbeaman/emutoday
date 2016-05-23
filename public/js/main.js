@@ -1,15 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = { "default": require("core-js/library/fn/json/stringify"), __esModule: true };
-},{"core-js/library/fn/json/stringify":2}],2:[function(require,module,exports){
-var core  = require('../../modules/_core')
-  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
-module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
-  return $JSON.stringify.apply($JSON, arguments);
-};
-},{"../../modules/_core":3}],3:[function(require,module,exports){
-var core = module.exports = {version: '2.3.0'};
-if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-},{}],4:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -105,7 +94,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],5:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -405,7 +394,7 @@ function format (id) {
   return id.match(/[^\/]+\.vue$/)[0]
 }
 
-},{}],6:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 /**
  * Before Interceptor.
  */
@@ -425,7 +414,7 @@ module.exports = {
 
 };
 
-},{"../util":29}],7:[function(require,module,exports){
+},{"../util":26}],4:[function(require,module,exports){
 /**
  * Base client.
  */
@@ -492,7 +481,7 @@ function parseHeaders(str) {
     return headers;
 }
 
-},{"../../promise":22,"../../util":29,"./xhr":10}],8:[function(require,module,exports){
+},{"../../promise":19,"../../util":26,"./xhr":7}],5:[function(require,module,exports){
 /**
  * JSONP client.
  */
@@ -542,7 +531,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":22,"../../util":29}],9:[function(require,module,exports){
+},{"../../promise":19,"../../util":26}],6:[function(require,module,exports){
 /**
  * XDomain client (Internet Explorer).
  */
@@ -581,7 +570,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":22,"../../util":29}],10:[function(require,module,exports){
+},{"../../promise":19,"../../util":26}],7:[function(require,module,exports){
 /**
  * XMLHttp client.
  */
@@ -633,7 +622,7 @@ module.exports = function (request) {
     });
 };
 
-},{"../../promise":22,"../../util":29}],11:[function(require,module,exports){
+},{"../../promise":19,"../../util":26}],8:[function(require,module,exports){
 /**
  * CORS Interceptor.
  */
@@ -672,7 +661,7 @@ function crossOrigin(request) {
     return (requestUrl.protocol !== originUrl.protocol || requestUrl.host !== originUrl.host);
 }
 
-},{"../util":29,"./client/xdr":9}],12:[function(require,module,exports){
+},{"../util":26,"./client/xdr":6}],9:[function(require,module,exports){
 /**
  * Header Interceptor.
  */
@@ -700,7 +689,7 @@ module.exports = {
 
 };
 
-},{"../util":29}],13:[function(require,module,exports){
+},{"../util":26}],10:[function(require,module,exports){
 /**
  * Service for sending network requests.
  */
@@ -800,7 +789,7 @@ Http.headers = {
 
 module.exports = _.http = Http;
 
-},{"../promise":22,"../util":29,"./before":6,"./client":7,"./cors":11,"./header":12,"./interceptor":14,"./jsonp":15,"./method":16,"./mime":17,"./timeout":18}],14:[function(require,module,exports){
+},{"../promise":19,"../util":26,"./before":3,"./client":4,"./cors":8,"./header":9,"./interceptor":11,"./jsonp":12,"./method":13,"./mime":14,"./timeout":15}],11:[function(require,module,exports){
 /**
  * Interceptor factory.
  */
@@ -847,7 +836,7 @@ function when(value, fulfilled, rejected) {
     return promise.then(fulfilled, rejected);
 }
 
-},{"../promise":22,"../util":29}],15:[function(require,module,exports){
+},{"../promise":19,"../util":26}],12:[function(require,module,exports){
 /**
  * JSONP Interceptor.
  */
@@ -867,7 +856,7 @@ module.exports = {
 
 };
 
-},{"./client/jsonp":8}],16:[function(require,module,exports){
+},{"./client/jsonp":5}],13:[function(require,module,exports){
 /**
  * HTTP method override Interceptor.
  */
@@ -886,7 +875,7 @@ module.exports = {
 
 };
 
-},{}],17:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**
  * Mime Interceptor.
  */
@@ -924,7 +913,7 @@ module.exports = {
 
 };
 
-},{"../util":29}],18:[function(require,module,exports){
+},{"../util":26}],15:[function(require,module,exports){
 /**
  * Timeout Interceptor.
  */
@@ -956,7 +945,7 @@ module.exports = function () {
     };
 };
 
-},{}],19:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * Install plugin.
  */
@@ -1011,7 +1000,7 @@ if (window.Vue) {
 
 module.exports = install;
 
-},{"./http":13,"./promise":22,"./resource":23,"./url":24,"./util":29}],20:[function(require,module,exports){
+},{"./http":10,"./promise":19,"./resource":20,"./url":21,"./util":26}],17:[function(require,module,exports){
 /**
  * Promises/A+ polyfill v1.1.4 (https://github.com/bramstein/promis)
  */
@@ -1192,7 +1181,7 @@ p.catch = function (onRejected) {
 
 module.exports = Promise;
 
-},{"../util":29}],21:[function(require,module,exports){
+},{"../util":26}],18:[function(require,module,exports){
 /**
  * URL Template v2.0.6 (https://github.com/bramstein/url-template)
  */
@@ -1344,7 +1333,7 @@ exports.encodeReserved = function (str) {
     }).join('');
 };
 
-},{}],22:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /**
  * Promise adapter.
  */
@@ -1455,7 +1444,7 @@ p.always = function (callback) {
 
 module.exports = Promise;
 
-},{"./lib/promise":20,"./util":29}],23:[function(require,module,exports){
+},{"./lib/promise":17,"./util":26}],20:[function(require,module,exports){
 /**
  * Service for interacting with RESTful services.
  */
@@ -1567,7 +1556,7 @@ Resource.actions = {
 
 module.exports = _.resource = Resource;
 
-},{"./util":29}],24:[function(require,module,exports){
+},{"./util":26}],21:[function(require,module,exports){
 /**
  * Service for URL templating.
  */
@@ -1699,7 +1688,7 @@ function serialize(params, obj, scope) {
 
 module.exports = _.url = Url;
 
-},{"../util":29,"./legacy":25,"./query":26,"./root":27,"./template":28}],25:[function(require,module,exports){
+},{"../util":26,"./legacy":22,"./query":23,"./root":24,"./template":25}],22:[function(require,module,exports){
 /**
  * Legacy Transform.
  */
@@ -1747,7 +1736,7 @@ function encodeUriQuery(value, spaces) {
         replace(/%20/g, (spaces ? '%20' : '+'));
 }
 
-},{"../util":29}],26:[function(require,module,exports){
+},{"../util":26}],23:[function(require,module,exports){
 /**
  * Query Parameter Transform.
  */
@@ -1773,7 +1762,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":29}],27:[function(require,module,exports){
+},{"../util":26}],24:[function(require,module,exports){
 /**
  * Root Prefix Transform.
  */
@@ -1791,7 +1780,7 @@ module.exports = function (options, next) {
     return url;
 };
 
-},{"../util":29}],28:[function(require,module,exports){
+},{"../util":26}],25:[function(require,module,exports){
 /**
  * URL Template (RFC 6570) Transform.
  */
@@ -1809,7 +1798,7 @@ module.exports = function (options) {
     return url;
 };
 
-},{"../lib/url-template":21}],29:[function(require,module,exports){
+},{"../lib/url-template":18}],26:[function(require,module,exports){
 /**
  * Utility functions.
  */
@@ -1933,7 +1922,7 @@ function merge(target, source, deep) {
     }
 }
 
-},{}],30:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v1.0.21
@@ -11859,7 +11848,7 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":4}],31:[function(require,module,exports){
+},{"_process":1}],28:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 exports.insert = function (css) {
@@ -11879,7 +11868,7 @@ exports.insert = function (css) {
   return elem
 }
 
-},{}],32:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11902,7 +11891,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":30,"vue-hot-reload-api":5}],33:[function(require,module,exports){
+},{"vue":27,"vue-hot-reload-api":2}],30:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11939,7 +11928,7 @@ exports.default = {
   methods: {
     handleEventFetch: function handleEventFetch(eobject) {
 
-      this.$http.get('/api/calendar/events/' + eobject.eoYear + '/' + eobject.eoMonth + '/' + eobject.eoDay).then(function (response) {
+      this.$http.get('/api/calendar/events/' + eobject.yearVar + '/' + eobject.monthVar + '/' + eobject.dayVar).then(function (response) {
         //   this.aobject.year = response.data.yearVar;
         //   this.aobject.monthUnit = response.data.monthVarUnit;
         //   this.aobject.month = response.data.monthVar;
@@ -11973,8 +11962,8 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./EventViewContent.vue":34,"./EventViewSideBar.vue":35,"vue":30,"vue-hot-reload-api":5}],34:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n.calendar-bar {\n    background: #bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n.calendar-content-content{\n  background: #fff;\n}\n.calendar-content-title h4{\n  text-transform: uppercase;\n  color: #fff;\n    margin-top: 0.5rem;\n}\n.calendar-content-content h4 {\n  line-height: 1.4rem;\n  font-size: 1.3rem;\n  font-weight: 600;\n}\n\n.event-day {\n    margin: 0.8rem 0 0 0;\n}\n\n\n")
+},{"./EventViewContent.vue":31,"./EventViewSideBar.vue":32,"vue":27,"vue-hot-reload-api":2}],31:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n.calendar-bar {\n    background: #bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n\n.calendar-content-title {\n  padding-top: 0.8rem;\n}\n\n.calendar-content-title h4{\n  text-transform: uppercase;\n  color: #fff;\n    margin-top: 0.5rem;\n}\n.calendar-content-content{\n  background: #fff;\n}\n.calendar-content-content h4 {\n  line-height: 1.4rem;\n  font-size: 1.3rem;\n  font-weight: 600;\n}\n\n.event-day {\n    margin: 0.8rem 0 0 0;\n}\n\n\n")
 'use strict';
 
 module.exports = {
@@ -11983,6 +11972,8 @@ module.exports = {
       monthVar: '',
       yearVar: '',
       dayVar: '',
+      firstDate: '',
+      lastDate: '',
       monthVarUnit: '',
       eventRange: {},
       hasevents: 0
@@ -11995,13 +11986,15 @@ module.exports = {
   },
   props: {
     elist: {},
-    eventlist: [],
-    dateRange: {}
+    eventlist: []
 
   },
   computed: {
     currentDate: function currentDate() {
       return this.monthVar + ' ' + this.dayVar + ', ' + this.yearVar;
+    },
+    dateRange: function dateRange() {
+      return 'From ' + this.firstDate + ' thru ' + this.lastDate;
     }
   },
   methods: {
@@ -12019,24 +12012,25 @@ module.exports = {
       this.yearVar = edata.yearVar;
       this.dayVar = edata.dayVar;
       this.elist = edata.groupedByDay;
+      this.firstDate = edata.firstDate;
+      this.lastDate = edata.lastDate;
+      console.log('fd=' + this.firstDate);
       this.hasevents = this.elist ? 1 : 0;
     },
     fetchEventsByDay: function fetchEventsByDay(value) {
       alert(value);
-    },
-    fetchEvents: function fetchEvents() {
-      this.$http.get('/api/calendar/events/2015/09/10').then(function (response) {
-        // this.dateRange = response.data.monthVar+ ' ' + response.data.dayVar + ', ' + response.data.yearVar;
-
-        this.yearVar = response.data.yearVar;
-        this.monthVar = response.data.monthVar;
-        this.monthVarUnit = response.data.monthVarUnit;
-        this.dayVar = response.data.dayVar;
-        this.elist = response.data.groupedByDay;
-        console.log(response.data);
-      });
     }
   },
+  // fetchEvents: function() {
+  //   this.$http.get('/api/calendar/events/2015/09/10').then(function(response) {
+  //     this.yearVar = response.data.yearVar;
+  //     this.monthVar = response.data.monthVar;
+  //     this.monthVarUnit = response.data.monthVarUnit;
+  //     this.dayVar = response.data.dayVar;
+  //     this.elist = response.data.groupedByDay;
+  //     console.log(response.data);
+  //   });
+  // }
   watch: {},
   created: function created() {
     //  this.fetchEvents();
@@ -12049,14 +12043,14 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-bar row\">\n  <div class=\"small-3 columns\">\n    <h4>Events</h4>\n  </div>\n  <div class=\"small-9\" columns=\"\">\n\n    <h4 v-if=\"hasevents\">{{currentDate}}</h4>\n  </div>\n</div>\n<div class=\"calendar-content-content row\">\n      <div class=\"small-12 columns\">\n        <div v-for=\"eitem in elist\">\n          <div class=\"event-day\">\n            <h4>{{monthVar}} {{$key }}, {{yearVar}}</h4>\n            <event-view-single v-for=\"item in eitem\" :item=\"item\" :index=\"$index\">\n              </event-view-single>\n          </div>\n        </div>\n      </div>\n\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-bar row\">\n  <div class=\"small-6 columns\">\n    <h4>Upcoming Events</h4>\n  </div>\n  <div class=\"small-6 columns\" columns=\"\">\n\n\n  </div>\n</div>\n<div class=\"calendar-content\">\n  <div class=\"calendar-content-title row\">\n    <div class=\"small-12 column\">\n        <h6>From {{firstDate}} thru {{lastDate}}</h6>\n    </div>\n  </div>\n  <div class=\"calendar-content-content row\">\n    <div class=\"small-12 columns\">\n      <div v-for=\"eitem in elist\">\n        <div class=\"event-day\">\n            <h4>{{monthVar}} {{$key }}, {{yearVar}}</h4>\n            <event-view-single v-for=\"item in eitem\" :item=\"item\" :index=\"$index\">\n              </event-view-single>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   var id = "/Users/dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewContent.vue"
   module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n.calendar-bar {\n    background: #bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n.calendar-content-content{\n  background: #fff;\n}\n.calendar-content-title h4{\n  text-transform: uppercase;\n  color: #fff;\n    margin-top: 0.5rem;\n}\n.calendar-content-content h4 {\n  line-height: 1.4rem;\n  font-size: 1.3rem;\n  font-weight: 600;\n}\n\n.event-day {\n    margin: 0.8rem 0 0 0;\n}\n\n\n"] = false
+    require("vueify-insert-css").cache["\n.calendar-bar {\n    background: #bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n\n.calendar-content-title {\n  padding-top: 0.8rem;\n}\n\n.calendar-content-title h4{\n  text-transform: uppercase;\n  color: #fff;\n    margin-top: 0.5rem;\n}\n.calendar-content-content{\n  background: #fff;\n}\n.calendar-content-content h4 {\n  line-height: 1.4rem;\n  font-size: 1.3rem;\n  font-weight: 600;\n}\n\n.event-day {\n    margin: 0.8rem 0 0 0;\n}\n\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -12065,15 +12059,9 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./EventViewSingle.vue":36,"vue":30,"vue-hot-reload-api":5,"vueify-insert-css":31}],35:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n\n.submit-calendar {\n  padding-left: 0;\n  padding-bottom: 1rem;\n}\n.calendar-bar {\n    background: ##bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n.calendar-box {\n  background: #f2f2f3;\n  padding-top: 0.8rem;\n}\n.calendar-other-categories {\n  padding-top: 0.8rem;\n}\n/*.calendar-sidebar-content{\n  background: #ffffff;\n}*/\n.calendar-sidebar-title h4{\n  text-transform: uppercase;\n  color: #fff;\n  margin-top: 0.5rem;\n}\n.calendar-text-content p {\n    text-align: left;\n}\n.calendar-title p {\n  text-size:0.6rem;\n  line-height: 0.8rem;\n}\n.events-by-category .event-category a {\n  font-size: .9rem;\n}\n  .events-by-category .event-category span.badge {\n    margin-right: 0.3rem;\n  }\n\n  /*.calendar ul {\n    padding: 15px;\n    background: #f3f3f3;\n    margin: 0;\n  }*/\n  .calendar .weekdays,\n  .calendar .days {\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    padding-top: 4px;\n    padding-bottom: 4px;\n  }\n  .calendar ul.days\n   {\n     border: 1px solid  #000;\n    padding: 10px 15px 3px;\n    background: #f9f9f9;\n  }\n  .calendar ul li {\n    list-style-type: none;\n    display: inline-block;\n    width: 12.8%;\n    height: 25px;\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    margin-bottom: 4px;\n\n  }\n  .calendar .event-category span {\n    font-size: 10px;\n    text-transform: uppercase;\n    font-weight: bold;\n  }\n\n  .calendar  a {\n    color: #0f654a;\n    display: block;\n    padding: 4px 0;\n    border: 1px solid  #f2f2f3;\n  }\n  .calendar a:hover {\n    border-radius: 5px;\n    /*background: #0f654a;*/\n    /*color: #fff;*/\n    text-decoration: none;\n    border: 1px solid  #0f654a;\n  }\n  .calendar  a.istoday {\n    border-radius: 5px;\n    border: 1px solid  #0f654a;\n    /*padding: 2px 0;*/\n  }\n  .calendar  a.active {\n    border-radius: 5px;\n    border: 1px solid  #0f654a;\n\n      background: #fff;\n    /*padding: 2px 0;*/\n  }\n.calendar  a.noevents {\n       pointer-events: none;\n         color: #888;\n  }\n\n  .calendar-box caption{\n    font-weight:400;\n    margin-bottom: .3rem;\n}\n.calendar-caption p{\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n}\n\n.calendar-caption a {\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n  border: 1px none  #000;\n}\n\n\n\n\n")
+},{"./EventViewSingle.vue":33,"vue":27,"vue-hot-reload-api":2,"vueify-insert-css":28}],32:[function(require,module,exports){
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n    .submit-calendar {\n      padding-left: 0;\n      padding-bottom: 1rem;\n    }\n    .calendar-bar {\n        background: ##bebdbd;\n    }\n    .calendar-bar h4 {\n      text-transform: uppercase;\n      color: #fff;\n      font-size: 1.2rem;\n      margin-top: 0.5rem;\n      margin-bottom: 0.5rem;\n    }\n    .calendar-box {\n      background: #f2f2f3;\n      padding-top: 0.8rem;\n    }\n    .calendar-other-categories {\n      padding-top: 0.8rem;\n    }\n    /*.calendar-sidebar-content{\n      background: #ffffff;\n    }*/\n    .calendar-sidebar-title h4{\n      text-transform: uppercase;\n      color: #fff;\n      margin-top: 0.5rem;\n    }\n    .calendar-text-content p {\n        text-align: left;\n    }\n\n    .events-by-category .event-category a {\n      font-size: .9rem;\n    }\n      .events-by-category .event-category span.badge {\n        margin-right: 0.3rem;\n      }\n\n      /*.calendar ul {\n        padding: 15px;\n        background: #f3f3f3;\n        margin: 0;\n      }*/\n      .calendar .weekdays,\n      .calendar .days {\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        padding-top: 4px;\n        padding-bottom: 4px;\n      }\n      /*.calendar ul.days\n       {\n         border: 1px solid  #000;\n        padding: 10px 15px 3px;\n        background: #f9f9f9;\n      }\n      .calendar ul li {\n        list-style-type: none;\n        display: inline-block;\n        width: 12.8%;\n        height: 25px;\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        margin-bottom: 4px;\n\n      }*/\n      .calendar .event-category span {\n        font-size: 10px;\n        text-transform: uppercase;\n        font-weight: bold;\n      }\n\n      .calendar  a {\n        color: #0f654a;\n        display: block;\n        padding: 4px 0;\n        border: 1px solid  #f2f2f3;\n      }\n      .calendar a:hover {\n        border-radius: 5px;\n        /*background: #0f654a;*/\n        /*color: #fff;*/\n        text-decoration: none;\n        border: 1px solid  #0f654a;\n      }\n      .calendar  a.istoday {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n        /*padding: 2px 0;*/\n      }\n      .calendar  a.active {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n\n          background: #fff;\n        /*padding: 2px 0;*/\n      }\n    .calendar  a.noevents {\n           pointer-events: none;\n             color: #888;\n      }\n\n      .calendar-box caption{\n        font-weight:400;\n        margin-bottom: .3rem;\n    }\n    .calendar-caption p{\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n    }\n\n    .calendar-caption a {\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n      border: 1px none  #000;\n    }\n.calendar-nav a {\n    border: none;\n}\n.calendar-nav a:hover {\n    border: none;\n}\n\n.calendar-title p {\n  font-weight: 400;\npadding: 4px 0;\n}\n    /*a#month-prev, a#month-next {\n      border: none;\n    }\n    a#month-prev :hover, a#month-next :hover{\n      border: none;\n    }*/\n")
 'use strict';
-
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
   data: function data() {
@@ -12083,8 +12071,19 @@ module.exports = {
       yearVar: '',
       monthVar: '',
       monthVarUnit: '',
+      dayVar: '',
       monthArray: [],
       currentDay: '',
+      currentDate: {
+        yearVar: '',
+        monthVar: '',
+        dayVar: ''
+      },
+      selectedDate: {
+        yearVar: '',
+        monthVar: '',
+        dayVar: ''
+      },
       haseventClass: 'no',
       selectedDay: '',
       calDaysArray: [],
@@ -12103,7 +12102,23 @@ module.exports = {
   props: {
     elist: {}
   },
-  computed: {},
+  computed: {
+    currentDayInMonth: function currentDayInMonth() {
+      if (this.yearVar == this.currentDate.yearVar) {
+        if (this.monthVarUnit == this.currentDate.monthVar) return this.currentDate.dayVar;
+      } else {
+        return '';
+      }
+    },
+    selectedDayInMonth: function selectedDayInMonth() {
+      if (this.yearVar == this.selectedDate.yearVar) {
+        if (this.monthVarUnit == this.selectedDate.monthVar) return this.selectedDate.dayVar;
+      } else {
+        return '';
+      }
+    }
+  },
+
   methods: {
     fetchEvents: function fetchEvents() {
       this.$http.get('/api/events', function (data) {
@@ -12112,11 +12127,14 @@ module.exports = {
       });
     },
     dispatchNewEvent: function dispatchNewEvent(value) {
-      this.eventObject.eoYear = this.yearVar;
-      this.eventObject.eoMonth = this.monthVarUnit;
-      this.eventObject.eoDay = value;
+      this.selectedDate.yearVar = this.yearVar;
+      // this.eventObject.eoYear = this.yearVar;
+      this.selectedDate.monthVar = this.monthVarUnit;
+      // this.eventObject.eoMonth = this.monthVarUnit;
+      this.selectedDate.dayVar = value;
+      //this.eventObject.eoDay = value;
       this.selectedDay = value;
-      this.$dispatch('change-eobject', this.eventObject);
+      this.$dispatch('change-eobject', this.selectedDate);
     },
     fetchEventsByDay: function fetchEventsByDay(value) {
 
@@ -12129,14 +12147,56 @@ module.exports = {
         console.log(response.data);
       });
     },
-    fetchEventsForCalendar: function fetchEventsForCalendar() {
+    newMonth: function newMonth(monthkey) {
+      var newMonthVarUnit;
+      var newYear;
+      if (monthkey == 'prev') {
+        if (this.monthVarUnit == 1) {
+          newMonthVarUnit = 12;
+          newYearVar = this.yearVar - 1;
+        } else {
+          newMonthVarUnit = this.monthVarUnit - 1;
+          newYearVar = this.yearVar;
+        }
+      } else {
+        if (this.monthVarUnit == 12) {
+          newMonthVarUnit = 1;
+          newYearVar = this.yearVar + 1;
+        } else {
+          newMonthVarUnit = this.monthVarUnit + 1;
+          newYearVar = this.yearVar;
+        }
+      }
+      this.fetchEventsForCalendarMonth(newYearVar, newMonthVarUnit);
+    },
+    fetchEventsForCalendarMonth: function fetchEventsForCalendarMonth(pyear, pmonth) {
+      apiurl = '/api/calendar/month/' + pyear + '/' + pmonth;
+      this.$http.get(apiurl).then(function (response) {
+        this.yearVar = response.data.yearVar;
+        this.monthVar = response.data.monthVar;
+        this.monthVarUnit = response.data.monthVarUnit;
+        this.monthArray = response.data.monthArray;
+        this.dayVar = response.data.dayInMonth;
+        this.calDaysArray = response.data.calDaysArray;
+        console.log(response.data);
+        //  this.pushFirstDateRange();
+        this.$emit('responseCategoriesEvent');
+      });
+    },
+    fetchCurrentEventsForCalendar: function fetchCurrentEventsForCalendar() {
       this.$http.get('/api/calendar/month').then(function (response) {
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
         this.monthVarUnit = response.data.monthVarUnit;
         this.monthArray = response.data.monthArray;
-        this.currentDay = response.data.dayInMonth;
+
+        this.dayVar = response.data.dayInMonth;
         this.calDaysArray = response.data.calDaysArray;
+
+        this.currentDate.yearVar = this.yearVar;
+        this.currentDate.monthVar = this.monthVarUnit;
+        this.currentDate.dayVar = this.dayVar;
+
         console.log(response.data);
 
         this.pushFirstDateRange();
@@ -12144,10 +12204,10 @@ module.exports = {
       });
     },
     pushFirstDateRange: function pushFirstDateRange() {
-      this.eventObject.eoYear = this.yearVar;
-      this.eventObject.eoMonth = this.monthVarUnit;
-      this.eventObject.eoDay = this.currentDay;
-      this.$dispatch('change-eobject', this.eventObject);
+      // this.eventObject.eoYear = this.yearVar;
+      // this.eventObject.eoMonth = this.monthVarUnit;
+      // this.eventObject.eoDay = this.currentDay;
+      this.$dispatch('change-eobject', this.currentDate);
       console.log('change-eobject');
     },
     fetchCategoryList: function fetchCategoryList() {
@@ -12159,44 +12219,11 @@ module.exports = {
         //  this.$set(this.formErrors, response.data);
         console.log(response);
       });
-    },
-
-    submitForm: function submitForm() {
-      //  console.log('this.eventform=' + this.eventform.$valid);
-      this.newevent.start_date = this.sdate;
-      this.newevent.end_date = this.edate;
-      this.newevent.reg_deadline = this.rdate;
-      this.$http.post('/api/events', this.newevent).then(function (response) {
-        //get status
-
-        response.status;
-        console.log('response.status=' + response.status);
-        console.log('response.ok=' + response.ok);
-        console.log('response.statusText=' + response.statusText);
-        console.log('response.request=' + (0, _stringify2.default)(response.request));
-
-        //get all headers
-        response.headers();
-        //get 'expirese' header
-        response.headers('expires');
-
-        //set data on vm
-        if (response.data.errors) {
-          this.formErrors = response.data.errors;
-        } else {
-          this.formErrors = {};
-        }
-
-        console.log('json-' + (0, _stringify2.default)(response.data));
-      }, function (response) {
-        //  this.$set(this.formErrors, response.data);
-        console.log(response);
-      });
     }
   },
   watch: {},
   created: function created() {
-    this.fetchEventsForCalendar();
+    this.fetchCurrentEventsForCalendar();
     // this.fetchCategoryList();
   },
   components: {},
@@ -12205,14 +12232,14 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"calendar-bar row\">\n    <div class=\"small-12 column\">\n        <h4>Calendar</h4>\n    </div>\n  </div>\n<div class=\"calendar-box row\">\n    <div class=\"small-12 columns\">\n      <div class=\"calendar small-12 columns\" data-equalizer=\"\">\n        <div class=\"row small-collapse\">\n            <div class=\"small-2 columns\">\n              <a id=\"month-prev\" class=\"text-left\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-before.png\" alt=\"arrow\"></a>\n          </div>\n          <div class=\"text-center calendar-title small-8 columns\">\n              <a>{{monthVar}} {{yearVar}}</a>\n          </div>\n          <div class=\"small-2 columns\">\n            <a id=\"month-next\" class=\"text-right\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-after.png\" alt=\"arrow\"></a>\n          </div>\n        </div>\n      <div class=\"weekdays row small-up-7 small-collapse\">\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sun</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Mon</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Tue</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Wed</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Thu</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Fri</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sat</span></div>\n      </div>\n      <div class=\"days row small-up-7 small-collapse\">\n        <div class=\"column\" v-for=\"item in calDaysArray\" data-equalizer-watch=\"\">\n          <a v-on:click.prevent=\"dispatchNewEvent( item.day )\" v-bind:class=\"[{'istoday': item.day == currentDay },{'noevents': item.hasevents == haseventClass },{'active': item.day == selectedDay}]\" href=\"#\"> {{item.day | removex }}</a>\n        </div>\n      </div>\n    </div>\n\n  <div class=\"row calendar-categories\">\n    <div class=\"small-12 column\">\n      <h4>Categories</h4>\n    </div>\n  </div>\n  <div class=\"row small-collapse calendar-categories\">\n    <template v-for=\"category in categories\">\n      <div class=\"event-category\" v-if=\"category.events.length == 0 ?false:true\">\n        <div class=\"small-12 medium-12 large-10  columns\">\n          <a href=\"#\" aria-describedby=\"{{category.slug}}-badge\">{{category.category}}</a>\n        </div>\n        <div class=\"show-for-large large-2 columns\">\n          <span id=\"{{category.slug}}-badge\" class=\"secondary badge\">{{category.events.length}}<span>\n          </span></span></div>\n        </div>\n      </template>\n    </div>\n    <div class=\"calendar-other-categories\">\n              <h4>Other Calendars</h4>\n              <ul>\n\n                <li><a href=\"\">Art Galleries</a></li>\n                <li><a href=\"\">Athletics</a></li>\n                <li><a href=\"\">Holiday &amp; Payroll</a></li>\n                <li><a href=\"\">Theatre</a></li>\n              </ul>\n            </div>\n            <div class=\"ypsi-graphic\">\n              <a href=\"http://visitypsinow.com/local-events/\"><img src=\"/assets/imgs/calendar/visit-ypsi.png\" alt=\"Visit Ypsi Calendar\"></a>\n            </div>\n            <div class=\"submit-calendar\">\n              <a class=\"button emu-button\">Submit an Event</a>\n            </div>\n\n  </div>\n</div>\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"calendar-bar row\">\n    <div class=\"small-12 column\">\n        <h4>Calendar</h4>\n    </div>\n  </div>\n<div class=\"calendar-box row\">\n    <div class=\"small-12 columns\">\n      <div class=\"calendar small-12 columns\" data-equalizer=\"\">\n        <div class=\"calendar-nav row small-collapse\">\n            <div class=\"small-2 columns\">\n              <a id=\"month-prev\" v-on:click.prevent=\"newMonth('prev')\" class=\"text-left\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-before.png\" alt=\"arrow\"></a>\n          </div>\n          <div class=\"text-center calendar-title small-8 columns\">\n              <p>{{monthVar}} {{yearVar}}</p>\n          </div>\n          <div class=\"small-2 columns\">\n            <a id=\"month-next\" v-on:click.prevent=\"newMonth('next')\" class=\"text-right\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-after.png\" alt=\"arrow\"></a>\n          </div>\n        </div>\n      <div class=\"weekdays row small-up-7 small-collapse\">\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sun</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Mon</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Tue</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Wed</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Thu</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Fri</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sat</span></div>\n      </div>\n      <div class=\"days row small-up-7 small-collapse\">\n        <div class=\"column\" v-for=\"item in calDaysArray\" data-equalizer-watch=\"\">\n          <a v-on:click.prevent=\"dispatchNewEvent( item.day )\" v-bind:class=\"[{'istoday': item.day == currentDayInMonth },{'noevents': item.hasevents == haseventClass },{'active': item.day == selectedDayInMonth}]\" href=\"#\"> {{item.day | removex }}</a>\n        </div>\n      </div>\n    </div>\n\n  <div class=\"row calendar-categories\">\n    <div class=\"small-12 column\">\n      <h4>Categories</h4>\n    </div>\n  </div>\n  <div class=\"row small-collapse calendar-categories\">\n    <template v-for=\"category in categories\">\n      <div class=\"event-category\" v-if=\"category.events.length == 0 ?false:true\">\n        <div class=\"small-12 medium-12 large-10  columns\">\n          <a href=\"#\" aria-describedby=\"{{category.slug}}-badge\">{{category.category}}</a>\n        </div>\n        <div class=\"show-for-large large-2 columns\">\n          <span id=\"{{category.slug}}-badge\" class=\"secondary badge\">{{category.events.length}}<span>\n          </span></span></div>\n        </div>\n      </template>\n    </div>\n    <div class=\"calendar-other-categories\">\n              <h4>Other Calendars</h4>\n              <ul>\n\n                <li><a href=\"\">Art Galleries</a></li>\n                <li><a href=\"\">Athletics</a></li>\n                <li><a href=\"\">Holiday &amp; Payroll</a></li>\n                <li><a href=\"\">Theatre</a></li>\n              </ul>\n            </div>\n            <div class=\"ypsi-graphic\">\n              <a href=\"http://visitypsinow.com/local-events/\"><img src=\"/assets/imgs/calendar/visit-ypsi.png\" alt=\"Visit Ypsi Calendar\"></a>\n            </div>\n            <div class=\"submit-calendar\">\n              <a class=\"button emu-button\">Submit an Event</a>\n            </div>\n\n  </div>\n</div>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   var id = "/Users/dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewSideBar.vue"
   module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n\n.submit-calendar {\n  padding-left: 0;\n  padding-bottom: 1rem;\n}\n.calendar-bar {\n    background: ##bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n.calendar-box {\n  background: #f2f2f3;\n  padding-top: 0.8rem;\n}\n.calendar-other-categories {\n  padding-top: 0.8rem;\n}\n/*.calendar-sidebar-content{\n  background: #ffffff;\n}*/\n.calendar-sidebar-title h4{\n  text-transform: uppercase;\n  color: #fff;\n  margin-top: 0.5rem;\n}\n.calendar-text-content p {\n    text-align: left;\n}\n.calendar-title p {\n  text-size:0.6rem;\n  line-height: 0.8rem;\n}\n.events-by-category .event-category a {\n  font-size: .9rem;\n}\n  .events-by-category .event-category span.badge {\n    margin-right: 0.3rem;\n  }\n\n  /*.calendar ul {\n    padding: 15px;\n    background: #f3f3f3;\n    margin: 0;\n  }*/\n  .calendar .weekdays,\n  .calendar .days {\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    padding-top: 4px;\n    padding-bottom: 4px;\n  }\n  .calendar ul.days\n   {\n     border: 1px solid  #000;\n    padding: 10px 15px 3px;\n    background: #f9f9f9;\n  }\n  .calendar ul li {\n    list-style-type: none;\n    display: inline-block;\n    width: 12.8%;\n    height: 25px;\n    font-size: 12px;\n    color: #888;\n    text-align: center;\n    margin-bottom: 4px;\n\n  }\n  .calendar .event-category span {\n    font-size: 10px;\n    text-transform: uppercase;\n    font-weight: bold;\n  }\n\n  .calendar  a {\n    color: #0f654a;\n    display: block;\n    padding: 4px 0;\n    border: 1px solid  #f2f2f3;\n  }\n  .calendar a:hover {\n    border-radius: 5px;\n    /*background: #0f654a;*/\n    /*color: #fff;*/\n    text-decoration: none;\n    border: 1px solid  #0f654a;\n  }\n  .calendar  a.istoday {\n    border-radius: 5px;\n    border: 1px solid  #0f654a;\n    /*padding: 2px 0;*/\n  }\n  .calendar  a.active {\n    border-radius: 5px;\n    border: 1px solid  #0f654a;\n\n      background: #fff;\n    /*padding: 2px 0;*/\n  }\n.calendar  a.noevents {\n       pointer-events: none;\n         color: #888;\n  }\n\n  .calendar-box caption{\n    font-weight:400;\n    margin-bottom: .3rem;\n}\n.calendar-caption p{\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n}\n\n.calendar-caption a {\n  font-weight: 400;\n  margin-bottom: 0.3rem;\n  border: 1px none  #000;\n}\n\n\n\n\n"] = false
+    require("vueify-insert-css").cache["\n\n    .submit-calendar {\n      padding-left: 0;\n      padding-bottom: 1rem;\n    }\n    .calendar-bar {\n        background: ##bebdbd;\n    }\n    .calendar-bar h4 {\n      text-transform: uppercase;\n      color: #fff;\n      font-size: 1.2rem;\n      margin-top: 0.5rem;\n      margin-bottom: 0.5rem;\n    }\n    .calendar-box {\n      background: #f2f2f3;\n      padding-top: 0.8rem;\n    }\n    .calendar-other-categories {\n      padding-top: 0.8rem;\n    }\n    /*.calendar-sidebar-content{\n      background: #ffffff;\n    }*/\n    .calendar-sidebar-title h4{\n      text-transform: uppercase;\n      color: #fff;\n      margin-top: 0.5rem;\n    }\n    .calendar-text-content p {\n        text-align: left;\n    }\n\n    .events-by-category .event-category a {\n      font-size: .9rem;\n    }\n      .events-by-category .event-category span.badge {\n        margin-right: 0.3rem;\n      }\n\n      /*.calendar ul {\n        padding: 15px;\n        background: #f3f3f3;\n        margin: 0;\n      }*/\n      .calendar .weekdays,\n      .calendar .days {\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        padding-top: 4px;\n        padding-bottom: 4px;\n      }\n      /*.calendar ul.days\n       {\n         border: 1px solid  #000;\n        padding: 10px 15px 3px;\n        background: #f9f9f9;\n      }\n      .calendar ul li {\n        list-style-type: none;\n        display: inline-block;\n        width: 12.8%;\n        height: 25px;\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        margin-bottom: 4px;\n\n      }*/\n      .calendar .event-category span {\n        font-size: 10px;\n        text-transform: uppercase;\n        font-weight: bold;\n      }\n\n      .calendar  a {\n        color: #0f654a;\n        display: block;\n        padding: 4px 0;\n        border: 1px solid  #f2f2f3;\n      }\n      .calendar a:hover {\n        border-radius: 5px;\n        /*background: #0f654a;*/\n        /*color: #fff;*/\n        text-decoration: none;\n        border: 1px solid  #0f654a;\n      }\n      .calendar  a.istoday {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n        /*padding: 2px 0;*/\n      }\n      .calendar  a.active {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n\n          background: #fff;\n        /*padding: 2px 0;*/\n      }\n    .calendar  a.noevents {\n           pointer-events: none;\n             color: #888;\n      }\n\n      .calendar-box caption{\n        font-weight:400;\n        margin-bottom: .3rem;\n    }\n    .calendar-caption p{\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n    }\n\n    .calendar-caption a {\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n      border: 1px none  #000;\n    }\n.calendar-nav a {\n    border: none;\n}\n.calendar-nav a:hover {\n    border: none;\n}\n\n.calendar-title p {\n  font-weight: 400;\npadding: 4px 0;\n}\n    /*a#month-prev, a#month-next {\n      border: none;\n    }\n    a#month-prev :hover, a#month-next :hover{\n      border: none;\n    }*/\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -12221,7 +12248,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"babel-runtime/core-js/json/stringify":1,"vue":30,"vue-hot-reload-api":5,"vueify-insert-css":31}],36:[function(require,module,exports){
+},{"vue":27,"vue-hot-reload-api":2,"vueify-insert-css":28}],33:[function(require,module,exports){
 var __vueify_style__ = require("vueify-insert-css").insert("\n.eventview {\n  padding-top: 0.8rem;\n  padding-bottom: 0.3rem;\n  border-bottom: 1px dotted  #bebdbd;\n}\nh6 {\n  color: #0f654a;\n}\np {\n  padding: 0;\n  margin:0;\n  line-height: 1.4rem;\n  font-size: 1rem;\n}\np.description {\n  padding-left: 1rem;\n}\n")
 'use strict';
 
@@ -12266,7 +12293,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update(id, module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":30,"vue-hot-reload-api":5,"vueify-insert-css":31}],37:[function(require,module,exports){
+},{"vue":27,"vue-hot-reload-api":2,"vueify-insert-css":28}],34:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
@@ -12299,6 +12326,6 @@ new Vue({
   }
 });
 
-},{"./components/EventFoam.vue":32,"./components/EventView.vue":33,"vue":30,"vue-resource":19}]},{},[37]);
+},{"./components/EventFoam.vue":29,"./components/EventView.vue":30,"vue":27,"vue-resource":16}]},{},[34]);
 
 //# sourceMappingURL=main.js.map

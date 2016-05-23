@@ -33,14 +33,14 @@
         methods : {
           handleEventFetch: function(eobject) {
 
-            this.$http.get('/api/calendar/events/' + eobject.eoYear + '/'+ eobject.eoMonth + '/' + eobject.eoDay).then(function(response) {
+            this.$http.get('/api/calendar/events/' + eobject.yearVar + '/'+ eobject.monthVar + '/' + eobject.dayVar).then(function(response) {
             //   this.aobject.year = response.data.yearVar;
             //   this.aobject.monthUnit = response.data.monthVarUnit;
             //   this.aobject.month = response.data.monthVar;
             //     this.aobject.day = response.data.dayVar;
             //  this.elist = response.data.groupedByDay;
              this.$broadcast('responseCalEvent', response.data)
-              console.log('handleEventFetch========' + response.data);
+            console.log('handleEventFetch========' + response.data);
 
             });
           },

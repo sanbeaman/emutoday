@@ -7,15 +7,15 @@
 <div class="calendar-box row">
     <div class="small-12 columns">
       <div class="calendar small-12 columns" data-equalizer>
-        <div class="row small-collapse">
+        <div class="calendar-nav row small-collapse">
             <div class="small-2 columns">
-              <a id="month-prev" class="text-left" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-before.png" alt="arrow"></a>
+              <a id="month-prev" v-on:click.prevent="newMonth('prev')" class="text-left" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-before.png" alt="arrow"></a>
           </div>
           <div class="text-center calendar-title small-8 columns">
-              <a>{{monthVar}} {{yearVar}}</a>
+              <p>{{monthVar}} {{yearVar}}</p>
           </div>
           <div class="small-2 columns">
-            <a id="month-next" class="text-right" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-after.png" alt="arrow"></a>
+            <a id="month-next" v-on:click.prevent="newMonth('next')" class="text-right" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-after.png" alt="arrow"></a>
           </div>
         </div>
       <div class="weekdays row small-up-7 small-collapse">
@@ -29,7 +29,7 @@
       </div>
       <div class="days row small-up-7 small-collapse">
         <div class="column" v-for="item in calDaysArray" data-equalizer-watch>
-          <a v-on:click.prevent="dispatchNewEvent( item.day )" v-bind:class="[{'istoday': item.day == currentDay },{'noevents': item.hasevents == haseventClass },{'active': item.day == selectedDay}]"  href="#"> {{item.day | removex }}</a>
+          <a v-on:click.prevent="dispatchNewEvent( item.day )" v-bind:class="[{'istoday': item.day == currentDayInMonth },{'noevents': item.hasevents == haseventClass },{'active': item.day == selectedDayInMonth}]"  href="#"> {{item.day | removex }}</a>
         </div>
       </div>
     </div>
@@ -75,134 +75,145 @@
 </template>
 <style>
 
-.submit-calendar {
-  padding-left: 0;
-  padding-bottom: 1rem;
+    .submit-calendar {
+      padding-left: 0;
+      padding-bottom: 1rem;
+    }
+    .calendar-bar {
+        background: ##bebdbd;
+    }
+    .calendar-bar h4 {
+      text-transform: uppercase;
+      color: #fff;
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .calendar-box {
+      background: #f2f2f3;
+      padding-top: 0.8rem;
+    }
+    .calendar-other-categories {
+      padding-top: 0.8rem;
+    }
+    /*.calendar-sidebar-content{
+      background: #ffffff;
+    }*/
+    .calendar-sidebar-title h4{
+      text-transform: uppercase;
+      color: #fff;
+      margin-top: 0.5rem;
+    }
+    .calendar-text-content p {
+        text-align: left;
+    }
+
+    .events-by-category .event-category a {
+      font-size: .9rem;
+    }
+      .events-by-category .event-category span.badge {
+        margin-right: 0.3rem;
+      }
+
+      /*.calendar ul {
+        padding: 15px;
+        background: #f3f3f3;
+        margin: 0;
+      }*/
+      .calendar .weekdays,
+      .calendar .days {
+        font-size: 12px;
+        color: #888;
+        text-align: center;
+        padding-top: 4px;
+        padding-bottom: 4px;
+      }
+      /*.calendar ul.days
+       {
+         border: 1px solid  #000;
+        padding: 10px 15px 3px;
+        background: #f9f9f9;
+      }
+      .calendar ul li {
+        list-style-type: none;
+        display: inline-block;
+        width: 12.8%;
+        height: 25px;
+        font-size: 12px;
+        color: #888;
+        text-align: center;
+        margin-bottom: 4px;
+
+      }*/
+      .calendar .event-category span {
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      .calendar  a {
+        color: #0f654a;
+        display: block;
+        padding: 4px 0;
+        border: 1px solid  #f2f2f3;
+      }
+      .calendar a:hover {
+        border-radius: 5px;
+        /*background: #0f654a;*/
+        /*color: #fff;*/
+        text-decoration: none;
+        border: 1px solid  #0f654a;
+      }
+      .calendar  a.istoday {
+        border-radius: 5px;
+        border: 1px solid  #0f654a;
+        /*padding: 2px 0;*/
+      }
+      .calendar  a.active {
+        border-radius: 5px;
+        border: 1px solid  #0f654a;
+
+          background: #fff;
+        /*padding: 2px 0;*/
+      }
+    .calendar  a.noevents {
+           pointer-events: none;
+             color: #888;
+      }
+
+      .calendar-box caption{
+        font-weight:400;
+        margin-bottom: .3rem;
+    }
+    .calendar-caption p{
+      font-weight: 400;
+      margin-bottom: 0.3rem;
+    }
+
+    .calendar-caption a {
+      font-weight: 400;
+      margin-bottom: 0.3rem;
+      border: 1px none  #000;
+    }
+.calendar-nav a {
+    border: none;
 }
-.calendar-bar {
-    background: ##bebdbd;
+.calendar-nav a:hover {
+    border: none;
 }
-.calendar-bar h4 {
-  text-transform: uppercase;
-  color: #fff;
-  font-size: 1.2rem;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-.calendar-box {
-  background: #f2f2f3;
-  padding-top: 0.8rem;
-}
-.calendar-other-categories {
-  padding-top: 0.8rem;
-}
-/*.calendar-sidebar-content{
-  background: #ffffff;
-}*/
-.calendar-sidebar-title h4{
-  text-transform: uppercase;
-  color: #fff;
-  margin-top: 0.5rem;
-}
-.calendar-text-content p {
-    text-align: left;
-}
+
 .calendar-title p {
-  text-size:0.6rem;
-  line-height: 0.8rem;
-}
-.events-by-category .event-category a {
-  font-size: .9rem;
-}
-  .events-by-category .event-category span.badge {
-    margin-right: 0.3rem;
-  }
-
-  /*.calendar ul {
-    padding: 15px;
-    background: #f3f3f3;
-    margin: 0;
-  }*/
-  .calendar .weekdays,
-  .calendar .days {
-    font-size: 12px;
-    color: #888;
-    text-align: center;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-  .calendar ul.days
-   {
-     border: 1px solid  #000;
-    padding: 10px 15px 3px;
-    background: #f9f9f9;
-  }
-  .calendar ul li {
-    list-style-type: none;
-    display: inline-block;
-    width: 12.8%;
-    height: 25px;
-    font-size: 12px;
-    color: #888;
-    text-align: center;
-    margin-bottom: 4px;
-
-  }
-  .calendar .event-category span {
-    font-size: 10px;
-    text-transform: uppercase;
-    font-weight: bold;
-  }
-
-  .calendar  a {
-    color: #0f654a;
-    display: block;
-    padding: 4px 0;
-    border: 1px solid  #f2f2f3;
-  }
-  .calendar a:hover {
-    border-radius: 5px;
-    /*background: #0f654a;*/
-    /*color: #fff;*/
-    text-decoration: none;
-    border: 1px solid  #0f654a;
-  }
-  .calendar  a.istoday {
-    border-radius: 5px;
-    border: 1px solid  #0f654a;
-    /*padding: 2px 0;*/
-  }
-  .calendar  a.active {
-    border-radius: 5px;
-    border: 1px solid  #0f654a;
-
-      background: #fff;
-    /*padding: 2px 0;*/
-  }
-.calendar  a.noevents {
-       pointer-events: none;
-         color: #888;
-  }
-
-  .calendar-box caption{
-    font-weight:400;
-    margin-bottom: .3rem;
-}
-.calendar-caption p{
   font-weight: 400;
-  margin-bottom: 0.3rem;
+padding: 4px 0;
 }
-
-.calendar-caption a {
-  font-weight: 400;
-  margin-bottom: 0.3rem;
-  border: 1px none  #000;
-}
-
-
-
-
+    /*a#month-prev, a#month-next {
+      border: none;
+    }
+    a#month-prev :hover, a#month-next :hover{
+      border: none;
+    }*/
 </style>
+
 <script>
 module.exports  = {
   data: function() {
@@ -212,8 +223,19 @@ module.exports  = {
       yearVar: '',
       monthVar: '',
       monthVarUnit: '',
+      dayVar: '',
       monthArray: [],
       currentDay: '',
+      currentDate: {
+        yearVar: '',
+        monthVar: '',
+        dayVar: ''
+      },
+      selectedDate: {
+        yearVar: '',
+        monthVar: '',
+        dayVar: ''
+      },
       haseventClass: 'no',
       selectedDay : '',
       calDaysArray: [],
@@ -233,8 +255,26 @@ module.exports  = {
      elist:{}
   },
   computed: {
+    currentDayInMonth: function () {
+      if (this.yearVar == this.currentDate.yearVar) {
+        if (this.monthVarUnit == this.currentDate.monthVar)
+          return this.currentDate.dayVar;
+      } else {
+        return '';
+      }
 
+    },
+    selectedDayInMonth: function () {
+      if (this.yearVar == this.selectedDate.yearVar) {
+        if (this.monthVarUnit == this.selectedDate.monthVar)
+          return this.selectedDate.dayVar;
+      } else {
+        return '';
+      }
+
+    },
   },
+
   methods: {
     fetchEvents: function() {
       this.$http.get('/api/events', function(data) {
@@ -243,11 +283,14 @@ module.exports  = {
       });
     },
     dispatchNewEvent: function(value){
-      this.eventObject.eoYear = this.yearVar;
-      this.eventObject.eoMonth = this.monthVarUnit;
-      this.eventObject.eoDay = value;
+      this.selectedDate.yearVar = this.yearVar;
+      // this.eventObject.eoYear = this.yearVar;
+      this.selectedDate.monthVar = this.monthVarUnit;
+      // this.eventObject.eoMonth = this.monthVarUnit;
+      this.selectedDate.dayVar = value;
+      //this.eventObject.eoDay = value;
       this.selectedDay = value;
-      this.$dispatch('change-eobject', this.eventObject);
+      this.$dispatch('change-eobject',  this.selectedDate);
 
     },
     fetchEventsByDay: function(value) {
@@ -261,14 +304,57 @@ module.exports  = {
         console.log(response.data);
       });
     },
-    fetchEventsForCalendar: function() {
+    newMonth: function (monthkey) {
+      var newMonthVarUnit;
+      var newYear;
+      if (monthkey == 'prev') {
+        if (this.monthVarUnit == 1) {
+          newMonthVarUnit = 12;
+          newYearVar = this.yearVar - 1;
+        } else {
+          newMonthVarUnit = this.monthVarUnit -1;
+          newYearVar = this.yearVar;
+        }
+      } else {
+        if (this.monthVarUnit == 12) {
+          newMonthVarUnit = 1;
+          newYearVar = this.yearVar + 1;
+        } else {
+          newMonthVarUnit = this.monthVarUnit +1;
+          newYearVar = this.yearVar;
+        }
+      }
+      this.fetchEventsForCalendarMonth(newYearVar,newMonthVarUnit);
+
+   },
+    fetchEventsForCalendarMonth: function(pyear, pmonth) {
+      apiurl = '/api/calendar/month/' +pyear +'/'+pmonth;
+      this.$http.get(apiurl).then(function(response) {
+        this.yearVar = response.data.yearVar;
+        this.monthVar = response.data.monthVar;
+        this.monthVarUnit = response.data.monthVarUnit;
+        this.monthArray = response.data.monthArray;
+        this.dayVar = response.data.dayInMonth;
+        this.calDaysArray = response.data.calDaysArray;
+        console.log(response.data);
+      //  this.pushFirstDateRange();
+        this.$emit('responseCategoriesEvent');
+      });
+    },
+    fetchCurrentEventsForCalendar: function() {
       this.$http.get('/api/calendar/month').then(function(response) {
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
         this.monthVarUnit = response.data.monthVarUnit;
         this.monthArray = response.data.monthArray;
-        this.currentDay = response.data.dayInMonth;
+
+        this.dayVar = response.data.dayInMonth;
         this.calDaysArray = response.data.calDaysArray;
+
+        this.currentDate.yearVar = this.yearVar;
+        this.currentDate.monthVar = this.monthVarUnit;
+        this.currentDate.dayVar = this.dayVar;
+
         console.log(response.data);
 
         this.pushFirstDateRange();
@@ -276,10 +362,10 @@ module.exports  = {
       });
     },
     pushFirstDateRange: function(){
-      this.eventObject.eoYear = this.yearVar;
-      this.eventObject.eoMonth = this.monthVarUnit;
-      this.eventObject.eoDay = this.currentDay;
-      this.$dispatch('change-eobject', this.eventObject);
+      // this.eventObject.eoYear = this.yearVar;
+      // this.eventObject.eoMonth = this.monthVarUnit;
+      // this.eventObject.eoDay = this.currentDay;
+      this.$dispatch('change-eobject', this.currentDate);
       console.log('change-eobject');
     },
     fetchCategoryList: function() {
@@ -292,46 +378,13 @@ module.exports  = {
       //  this.$set(this.formErrors, response.data);
           console.log(response);
       });
-    },
-
-    submitForm: function() {
-    //  console.log('this.eventform=' + this.eventform.$valid);
-      this.newevent.start_date = this.sdate;
-      this.newevent.end_date = this.edate;
-      this.newevent.reg_deadline = this.rdate;
-      this.$http.post('/api/events', this.newevent).then(function(response){
-          //get status
-
-          response.status;
-          console.log('response.status=' + response.status);
-          console.log('response.ok=' + response.ok);
-            console.log('response.statusText=' + response.statusText);
-            console.log('response.request=' + JSON.stringify(response.request));
-
-          //get all headers
-          response.headers();
-          //get 'expirese' header
-          response.headers('expires');
-
-          //set data on vm
-          if (response.data.errors){
-              this.formErrors = response.data.errors;
-          } else {
-            this.formErrors = {};
-          }
-
-          console.log('json-'+JSON.stringify(response.data));
-      }, function(response) {
-      //  this.$set(this.formErrors, response.data);
-          console.log(response);
-      });
     }
   },
 watch: {
 
 },
 created: function() {
-    this.fetchEventsForCalendar();
+    this.fetchCurrentEventsForCalendar();
   // this.fetchCategoryList();
 },
 components: {
