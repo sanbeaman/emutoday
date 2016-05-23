@@ -1,7 +1,7 @@
 @extends('public.layouts.global')
 @section('head')
   @parent
-    <script src="{{ 'public/js/ckeditor/ckeditor.js'}}"></script>
+    <script src="{{ '/js/ckeditor/ckeditor.js'}}"></script>
 @endsection
 @section('content')
   {!! Form::model($story, [

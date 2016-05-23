@@ -4,8 +4,8 @@
 @section('title', 'Edit Magazine')
 @section('scripthead')
           @parent
-          	<link rel="stylesheet" href="{{'css/my-redips.css'}}" type="text/css" media="screen" />
-          <script src="{{'js/redips-drag-min.js' }}"></script>
+          	<link rel="stylesheet" href="{{'/css/my-redips.css'}}" type="text/css" media="screen" />
+          <script src="{{'/js/redips-drag-min.js' }}"></script>
 
     @endsection
 @section('content')
@@ -47,7 +47,18 @@
         {!! Form::text('start_date', null, ['class' => 'form-control']) !!}
     </div>
     <div class="medium-2 columns">
-      <div class="input-group">
+      <div class="input-group row">
+       {!! Form::label('is_published', 'Published?') !!}
+       <div class="small-6 columns">
+         {!! Form::label('is_published', 'yes', ['class'=> 'tinylabel']) !!} {!! Form::radio('is_published', true ,null) !!}
+       </div>
+       <div class="small-6 columns">
+         {!! Form::label('is_published', 'no', ['class'=> 'tinylabel']) !!} {!! Form::radio('is_published', false ,null) !!}
+       </div>
+        </div>
+
+
+      {{-- <div class="input-group">
         {!! Form::label('Published?') !!}
         <div class="switch medium">
         <input class="switch-input" id="pub-yes-no" type="checkbox" name="is_published">
@@ -58,10 +69,20 @@
         </label>
         </div>
 
-      </div>
+      </div> --}}
     </div>
     <div class="medium-2 columns">
-      <div class="input-group">
+      <div class="input-group row">
+       {!! Form::label('is_archived', 'Archived?') !!}
+       <div class="small-6 columns">
+         {!! Form::label('is_archived', 'yes', ['class'=> 'tinylabel']) !!} {!! Form::radio('is_archived', true ,null) !!}
+       </div>
+       <div class="small-6 columns">
+         {!! Form::label('is_archived', 'no', ['class'=> 'tinylabel']) !!} {!! Form::radio('is_archived', false ,null) !!}
+       </div>
+        </div>
+
+      {{-- <div class="input-group">
         {!! Form::label('Archived?') !!}
         <div class="switch medium">
         <input class="switch-input" id="arc-yes-no" type="checkbox" name="is_archived">
@@ -71,7 +92,7 @@
           <span class="switch-inactive" aria-hidden="true">No</span>
         </label>
         </div>
-      </div>
+      </div> --}}
     </div>
     <div class="medium-2 columns">
       <div class="input-group">
@@ -99,7 +120,7 @@
 @endsection
 @section('scriptsfooter')
 	@parent
-	    <script src="{{'js/magazine-redips.js'}}"></script>
+	    <script src="{{'/js/magazine-redips.js'}}"></script>
 
 	<script>
 	$(function(){

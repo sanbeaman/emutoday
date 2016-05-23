@@ -1,7 +1,7 @@
 @extends('layouts.masters')
 @section('head')
   @parent
-    <script src="{{ 'js/ckeditor/ckeditor.js' }}"></script>
+    <script src="{{ '/js/ckeditor/ckeditor.js' }}"></script>
 @endsection
 @section('content')
   {!! Form::model($story, [

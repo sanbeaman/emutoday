@@ -4,7 +4,7 @@
 @section('title', $story->exists ? 'Editing '.$story->title : 'Create New Story')
   @section('scripthead')
       @parent
-        <script src="{{ 'js/ckeditor/ckeditor.js' }}"></script>
+        <script src="{{ '/js/ckeditor/ckeditor.js' }}"></script>
     @endsection
 @section('content')
     {!! Form::model($story, [
@@ -36,10 +36,10 @@
     </div>
     <div class="input-group row">
         <div class="col-md-12">
-            {!! Form::label('published_at') !!}
+            {!! Form::label('start_date') !!}
         </div>
         <div class="col-md-4">
-            {!! Form::text('published_at', null, ['class' => 'form-control']) !!}
+            {!! Form::text('start_date', null, ['class' => 'form-control']) !!}
         </div>
     </div>
     <div class="input-group">

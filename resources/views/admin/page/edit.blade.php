@@ -44,6 +44,7 @@
        <div class="small-6 columns">
          {!! Form::label('is_active', 'no', ['class'=> 'tinylabel']) !!} {!! Form::radio('is_active', false ,null) !!}
        </div>
+       	</div>
 			  {{-- <div class="switch medium">
 				<input class="switch-input" id="yes-no" type="checkbox" name="is_active">
 				<label class="switch-paddle" for="yes-no">
@@ -53,7 +54,7 @@
 				</label>
 			  </div> --}}
 
-			</div>
+
 		</div>
 		<div class="medium-2 columns">
 			<div class="input-group">
