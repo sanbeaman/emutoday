@@ -76,7 +76,7 @@
                                     { name: 'colors', groups: [ 'colors' ] },
                                     { name: 'about', groups: [ 'about' ] }
                                 ],
-                                removeButtons: 'Underline,Subscript,Superscript,Cut,Undo,Redo,Copy,Paste,PasteText,PasteFromWord,Scayt,Link,Unlink,Anchor,Image,Table,SpecialChar,Maximize,Source,NumberedList,BulletedList,Indent,Outdent,Blockquote,About',
+                                removeButtons: 'Subscript,Superscript,Scayt,Anchor,Image,Table,SpecialChar,Maximize,Source,Indent,Outdent,Blockquote,About',
                                 height : 110,
                                 toolbar : 'simple'
                             })
