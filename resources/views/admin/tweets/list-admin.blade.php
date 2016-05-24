@@ -1,13 +1,13 @@
-// list-admin.blade.php
+{{-- list-admin.blade.php --}}
 <form action="/approve-tweets" method="post">
 {{ csrf_field() }}
 
 @foreach($tweets as $tweet)
     <div class="tweet row">
-        <div class="col-xs-8">
+        <div class="small-8 columns">
             @include('admin.tweets.tweet')
         </div>
-        <div class="col-xs-4 approval">
+        <div class="small-4 columns approval">
             <label class="radio-inline">
                 <input
                     type="radio"
@@ -35,8 +35,8 @@
 @endforeach
 
 <div class="row">
-    <div class="col-sm-12">
-        <input type="submit" class="btn btn-primary" value="Approve Tweets">
+    <div class="small-12 column">
+        <input type="submit" class="button primary float-right" value="Approve Tweets">
     </div>
 </div>
 
