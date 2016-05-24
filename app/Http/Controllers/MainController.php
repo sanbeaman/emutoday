@@ -10,7 +10,7 @@ use emutoday\Story;
 use emutoday\Page;
 use emutoday\Announcement;
 use emutoday\Event;
-
+use emutoday\Tweet;
 use Carbon\Carbon;
 use JavaScript;
 
@@ -45,15 +45,18 @@ class MainController extends Controller
             if ($story->pivot->page_position === 0) {
                 $heroImg = $story->storyImages()->where('image_type', 'imagehero')->first();
             } else {
-                $barImgs[$story->pivot->page_position] = $story->storyImages()->where('image_type', 'imagesmall')->first(); 
+                $barImgs[$story->pivot->page_position] = $story->storyImages()->where('image_type', 'imagesmall')->first();
                 // $barImgs->push( $story->storyImages()->where('image_type', 'imagesmall')->first() );
             }
 
         }
        //$events = $this->events->where(['start_date', '>=', $currentDateTime])->orderBy('start_date','desc')->get();
-        $events = $this->events->orderBy('start_date','asc')->paginate(4);
+       $fakeDate = Carbon::now()->subYear();
+        $events = $this->events->where('start_date', '>=', $fakeDate->startOfDay())->orderBy('start_date', 'asc')->paginate(4);
+
 
         $storyImages = $page->storyImages();
+        $tweets = Tweet::orderBy('created_at','desc')->paginate(4);
 
         JavaScript::put([
             'jsis' => 'hi',
@@ -63,7 +66,7 @@ class MainController extends Controller
             'currentPage' => $page
         ]);
 
-        return view('public.index', compact('page', 'storyImages', 'heroImg', 'barImgs', 'currentStorysBasic', 'currentAnnouncements', 'events'));
+        return view('public.hub', compact('page', 'storyImages', 'heroImg', 'barImgs', 'currentStorysBasic', 'currentAnnouncements', 'events','tweets'));
 
     }
 

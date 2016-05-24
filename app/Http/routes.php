@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Input;
 Route::group(['prefix' => 'api'], function() {
 
   Route::get('active-categories/{year?}/{month?}/{day?}','Api\CategoriesController@activeCategories');
-  Route::get('calendar/month/{year?}/{month?}','Api\EventsController@eventsInMonth');
+  Route::get('calendar/month/{year?}/{month?}/{day?}','Api\EventsController@eventsInMonth');
   Route::get('calendar/events/{year?}/{month?}/{day?}','Api\EventsController@eventsByDay');
   //events api
   Route::get('eventview', function() {
@@ -53,7 +53,7 @@ Route::group(['middleware' => ['web']], function() {
       Route::get('story/{id?}', 'EmuToday\StoryController@index');
       Route::get('news/{id?}', 'EmuToday\StoryController@index');
       Route::get('student/{id?}', 'EmuToday\StudentController@index');
-      Route::get('calendar', 'EmuToday\CalendarController@index');
+      Route::get('calendar/{year?}/{month?}/{day?}', 'EmuToday\CalendarController@index');
       // Route::get('magazine/index', 'EmuToday\MagazineController@index');
       Route::get('magazine/article/{id?}', 'EmuToday\MagazineController@article');
       Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');

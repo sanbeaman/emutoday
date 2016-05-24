@@ -6,6 +6,16 @@ use Laracasts\Presenter\Presenter;
 
 class EventPresenter extends Presenter
 {
+  public function eventStartDateYear(){
+
+        //return $this->start_date;
+        return  date_format($this->start_date, "Y");
+    }
+  public function eventStartDateMonthUnit(){
+
+        //return $this->start_date;
+        return  date_format($this->start_date, "n");
+    }
   public function eventStartDateMonth(){
 
         //return $this->start_date;

@@ -24,6 +24,7 @@ class EventsController extends ApiController
 
 
 
+
     /**
      * Display a listing of the resource.
      *
@@ -46,6 +47,16 @@ class EventsController extends ApiController
         //return Event::latest()->get();
     }
 
+
+    /**
+     * [Creates event list when a date is selected]
+     * route calendar/events/{year?}/{month?}/{day?}
+     *   Route::get('calendar/events/{year?}/{month?}/{day?}','Api\EventsController@eventsByDay');
+     * @param  [type] $year  [description]
+     * @param  [type] $month [description]
+     * @param  [type] $day   [description]
+     * @return [type]        [description]
+     */
     public function eventsByDay($year = null, $month = null, $day = null)
     {
       $mondifier;
@@ -80,15 +91,15 @@ class EventsController extends ApiController
       $eventlist = Event::where([
         ['start_date', '>=' , $cdate_start],
         ['start_date', '<=', $cdate_end]
-        ])->get();
+        ])->orderBy('start_date')->get();
 
       $groupedByDay =  $eventlist->groupBy(function ($date){
-                return Carbon::parse($date->start_date)->format('j');
+    return Carbon::parse($date->start_date)->format('Y-n-j');                // return Carbon::parse($date->start_date)->timestamp;
               });
-
+              // dd($groupedByDay);
         $yearVar = $cdate_start->year;
-        $monthVar = $cdate_start->format('F');
-        $monthVarUnit =  $cdate_start->month;
+        $monthVarWord = $cdate_start->format('F');
+        $monthVar =  $cdate_start->month;
         $dayVar = $cdate_start->day;
         $firstDate = $cdate_start->format('l, F j');
         $lastDate = $cdate_end->format('l, F j');
@@ -96,7 +107,7 @@ class EventsController extends ApiController
         return [ 'groupedByDay' => $groupedByDay,
                             'yearVar'=> $yearVar,
                             'monthVar'=> $monthVar,
-                            'monthVarUnit'=> $monthVarUnit,
+                            'monthVarWord'=> $monthVarWord,
                             'dayVar' => $dayVar,
                             'firstDate' => $firstDate,
                             'lastDate' => $lastDate
@@ -131,15 +142,16 @@ class EventsController extends ApiController
 
 
       $yearVar =  $cdate->year;
-      $monthVar = $cdate->format('F');
+      $monthVar= $cdate->month;
+      $monthVarWord = $cdate->format('F');
       $dayInMonth = $cdate->day;
       $monthArray = collect();
       $cd_dayMonthStarts = $cdate->firstOfMonth()->dayOfWeek;
       $cd_daysInMonth = $cdate->daysInMonth;
 
-      $cdate_monthstart = Carbon::create($yearVar, $cdate->month, 1, 12);
+      $cdate_monthstart = Carbon::create($yearVar, $monthVar, 1, 12);
 
-      $cdate_monthend = Carbon::create($yearVar, $cdate->month, $cd_daysInMonth, 12);
+      $cdate_monthend = Carbon::create($yearVar, $monthVar, $cd_daysInMonth, 12);
 
       $eventlist = Event::select('id','title', 'start_date', 'end_date')->where([
         ['start_date', '>', $cdate_monthstart],
@@ -193,6 +205,7 @@ class EventsController extends ApiController
                           'uniqueByDay'=> $uniqueByDay,
                           'yearVar'=> $yearVar,
                           'monthVar'=> $monthVar,
+                          'monthVarWord'=> $monthVarWord,
                           'monthArray'=> $calDaysArray,
                           'dayInMonth' => $dayInMonth];
     //  $carbondate = new Carbon();
@@ -213,43 +226,84 @@ class EventsController extends ApiController
         //   return $this->respond($events);
     }
 
-
-    public function eventsInMonth($year = null, $month = null)
+    /**
+     * creates the Calendar Widget on public.event.index
+     * Route::get('calendar/month/{year?}/{month?}/{day?}','Api\EventsController@eventsInMonth');
+     * route calendar/month/{year?}/{month?}
+     * @param  [type] $year  [year to view]
+     * @param  [type] $month [month to view]
+     * @return [type]        [json encode variables for consumption by vuejs]
+     */
+    public function eventsInMonth($year = null, $month = null, $day = null)
     {
-      $modifier;
+      $currentDate;
+      $selectedDate;
+      $cdate_start;
+      $cdate_end;
       if ($year == null) {
-        $modifier = "C";
+        $cdate_start = Carbon::now()->startOfMonth();
+        $cdate_end = Carbon::now()->endOfMonth();
+        $selectedDate = Carbon::now();
       } else {
         if ($month == null) {
-          $modifier = "Y";
+            $modifier = "Y";
+            $currentMonth = Carbon::now()->month;
+            $currentDay = Carbon::now()->day;
+            $selectedDate = Carbon::create($year, $currentMonth, $currentDay);
+            $cdate_start = Carbon::create($year, $currentMonth, $currentDay)->startOfMonth();
+            $cdate_end =  Carbon::create($year, $currentMonth, 1)->endOfMonth();
         } else {
-          $modifier = "YM";
+            if ($day == null ){
+              $currentDay = Carbon::now()->day;
+              $selectedDate = Carbon::create($year, $month, $currentDay );
+              $cdate_start = Carbon::create($year, $month, $currentDay)->startOfMonth();
+              $cdate_end =  Carbon::create($year, $month, 1)->endOfMonth();
+            } else {
+              $selectedDate = Carbon::create($year, $month, $day );
+              $cdate_start = Carbon::create($year, $month, $day)->startOfMonth();
+              $cdate_end =  Carbon::create($year, $month, 1)->endOfMonth();
+            }
 
         }
 
       }
-      $cdate_start;
-      $cdate_end;
-      if ($modifier == "C") {
-          $cdate_start = Carbon::now()->startOfDay();
-          $cdate_end = Carbon::now()->endOfMonth();
-      } else if ($modifier == "Y"){
-          $currentMonth = Carbon::now()->month;
-        $cdate_start = Carbon::create($year, $currentMonth, 1)->startOfMonth();
-        $cdate_end =  Carbon::create($year, $currentMonth, 1)->endOfMonth();
-      } else {
-        $cdate_start = Carbon::create($year, $month, 1)->startOfMonth();
-        $cdate_end =  Carbon::create($year, $month, 1)->endOfMonth();
-      }
+      // $cdate_start;
+      // $cdate_end;
+      // if ($modifier == "C") {
+      //     $cdate_start = Carbon::now()->startOfDay();
+      //     $cdate_end = Carbon::now()->endOfMonth();
+      // } else if ($modifier == "Y"){
+      //     $currentMonth = Carbon::now()->month;
+      //   $cdate_start = Carbon::create($year, $currentMonth, 1)->startOfMonth();
+      //   $cdate_end =  Carbon::create($year, $currentMonth, 1)->endOfMonth();
+      // } else {
+      //   $cdate_start = Carbon::create($year, $month, 1)->startOfMonth();
+      //   $cdate_end =  Carbon::create($year, $month, 1)->endOfMonth();
+      // }
 
 
-      $yearVar =  $cdate_start->year;
-      $monthVar = $cdate_start->format('F');
-      $monthVarUnit = $cdate_start->month;
-      $dayInMonth = $cdate_start->day;
+      $selectedYear = $selectedDate->year;
+      $selectedMonth = $selectedDate->month;
+      $selectedMonthWord = $selectedDate->format('F');
+      $selectedDay = $selectedDate->day;
+
+      $currentDate = Carbon::now();
+      $currentYear = $currentDate->year;
+      $currentMonth = $currentDate->month;
+      $currentMonthWord = $currentDate->format('F');
+      $currentDay = $currentDate->day;
+
+      $yearVar =  $currentDate->year;
+      $monthVar = $currentDate->format('F');
+      $monthVarUnit = $currentDate->month;
+      $dayInMonth = $currentDate->day;
       $monthArray = collect();
-      $cd_dayMonthStarts = $cdate_start->firstOfMonth()->dayOfWeek;
-      $cd_daysInMonth = $cdate_start->daysInMonth;
+
+      $selectedMonth_StartOnDay =  $cdate_start->firstOfMonth()->dayOfWeek;
+      $selectedMonth_daysInMonth = $cdate_start->daysInMonth;
+
+    //  $cd_dayMonthStarts = $cdate_start->firstOfMonth()->dayOfWeek;
+  //    $cd_daysInMonth = $cdate_start->daysInMonth;
       //
       // $cdate_monthstart = Carbon::create($yearVar, $cdate->month, 1, 12);
       // $cdate_monthend = Carbon::create($yearVar, $cdate->month, $cd_daysInMonth, 12);
@@ -268,29 +322,42 @@ class EventsController extends ApiController
         $eventlistcount = $eventsInMonth->count();
         $calDaysArray = collect();
       $dayCounter = 0;
-      while ($dayCounter < $cd_dayMonthStarts) {
-        $dayObject = collect(['day' => 'x'.$dayCounter , 'hasevents'=> 'no']);
+      while ($dayCounter < $selectedMonth_StartOnDay) {
+        $dayObject = collect(['day' => 'x'.$dayCounter , 'hasevents'=> 'no-events']);
         $calDaysArray->push($dayObject);
         $dayCounter++;
       }
+      // dd($uniqueByDay);
 
-      for ($x = 1; $x <= $cd_daysInMonth; $x++){
-        $hasevent = $uniqueByDay->contains($x)?'yes':'no';
+      for ($x = 1; $x <= $selectedMonth_daysInMonth; $x++){
+        $hasevent = $uniqueByDay->contains($x)?'yes-events':'no-events';
         $dayObject = collect(['day' => $x, 'hasevents'=> $hasevent]);
         $calDaysArray->push($dayObject);
 
         // $monthArray = array_add($monthArray,$dayCounter, $dayObject);
         $dayCounter++;
       }
-
+// dd($calDaysArray);
       $totalDaysInArray = count($calDaysArray);
 
 
-      return ['calDaysArray' => $calDaysArray,
-              'yearVar' => $yearVar,
-              'monthVar' => $monthVar,
-                'monthVarUnit' => $monthVarUnit,
-            'dayInMonth' => $dayInMonth];
+      return ['uniqueByDay'        => $uniqueByDay,
+        'calDaysArray'        => $calDaysArray,
+              'selectedYear'        => $selectedYear,
+              'selectedMonth'       => $selectedMonth,
+              'selectedMonthWord'   => $selectedMonthWord,
+              'selectedDay'         => $selectedDay,
+              'currentYear'        => $currentYear,
+              'currentMonth'       => $currentMonth,
+              'currentMonthWord'   => $currentMonthWord,
+              'currentDay'         => $currentDay,
+            ];
+
+          //     'yearVar' => $yearVar,
+          //     'monthVar' => $monthVar,
+          //       'monthVarUnit' => $monthVarUnit,
+          //   'dayInMonth' => $dayInMonth,
+          // 'currentDate'=> $currentDate];
           }
 
 

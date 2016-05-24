@@ -16,11 +16,18 @@
     import EventViewContent from './EventViewContent.vue'
     export default {
         components: { EventViewSideBar, EventViewContent},
+        props: [ 'varYearUnit', 'varMonthUnit','varDayUnit', ],
+
         ready() {
-            // alert('!!!!!!!!!!!!!!!!!! EventView');
+        //  alert('varYearUnit');
+        this.freshPageLand();
+
         },
         data: function() {
           return {
+            startEventObject: {
+
+            },
             eventlist: [],
             aobject : {
               year: '',
@@ -40,10 +47,18 @@
             //     this.aobject.day = response.data.dayVar;
             //  this.elist = response.data.groupedByDay;
              this.$broadcast('responseCalEvent', response.data)
-            console.log('handleEventFetch========' + response.data);
+            console.log('handleEventFetch========' + response.data );
 
             });
           },
+          freshPageLand: function() {
+
+              this.startEventObject.yearVar = this.varYearUnit;
+              this.startEventObject.monthVar = this.varMonthUnit;
+              this.startEventObject.dayVar = this.varDayUnit;
+
+             this.$broadcast('startFromThisDate', this.startEventObject);
+          }
         },
         // the `events` option simply calls `$on` for you
         // when the instance is created

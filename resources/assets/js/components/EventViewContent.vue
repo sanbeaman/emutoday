@@ -18,7 +18,7 @@
       <div class="small-12 columns">
         <div v-for="eitem in elist">
           <div class="event-day">
-              <h4>{{monthVar}} {{$key }}, {{yearVar}}</h4>
+              <h4>{{$key | reformatDate}}</h4>
               <event-view-single
                 v-for="item in eitem"
                   :item="item"
@@ -81,6 +81,10 @@ module.exports  = {
     }
   },
   filters: {
+    reformatDate: function (value) {
+      var arr = value.split('-');
+      return arr[1] + '/' + arr[2] + '/' + arr[0];
+    },
     yesNo: function(value) {
       return (value == 1) ? 'Yes' : 'No';
     }

@@ -16,10 +16,31 @@ class CalendarController extends Controller
     $this->events = $events;
   }
 
-  public function index()
-  {
+  // Route::get('calendar', 'EmuToday\CalendarController@index');
 
-    $cd = Carbon::now()->subYear();
+  public function index($year = null, $month = null, $day = null)
+  {
+    $cd;
+    if ($year == null) {
+      // $mondifier = "all";
+      $cd = Carbon::now();
+    } else {
+      if ($month == null) {
+        $cd = Carbon::create($year,1,1)->startOfYear();
+      } else {
+        if ($day == null) {
+            $cd = Carbon::create($year,$month,1)->startOfMonth();;
+        } else {
+          $cd = Carbon::create($year,$month,$day);
+        }
+      }
+
+    }
+
+    // $cd = Carbon::now();
+    $varYearUnit =   $cd->year;
+    $varMonthUnit =   $cd->month;
+    $varDayUnit =   $cd->day;
     $dayInMonth = $cd->day;
     $monthArray = [];
     $cd_dayMonthStarts = $cd->firstOfMonth()->dayOfWeek;
@@ -56,6 +77,7 @@ class CalendarController extends Controller
     });
     JavaScript::put([
         'jsis' => 'hi',
+        'varYearUnit' => $varYearUnit,
         'currentDate' => Carbon::now(),
         'currentMonth' => $cd->month,
         'currentMonthWord' => $cd->format('M'),
@@ -64,11 +86,8 @@ class CalendarController extends Controller
         'dayArray' => $monthArray,
         'dayInMonth' => $dayInMonth,
         'groupedevents' => $groupedevents,
-
-
-
-    ]);
-    return view('public.event.index', compact('events', 'cd','totalDaysInArray', 'monthArray', 'dayInMonth'));
+      ]);
+    return view('public.event.index', compact('events', 'cd','totalDaysInArray', 'monthArray', 'dayInMonth', 'varYearUnit', 'varMonthUnit', 'varDayUnit'));
   }
 
   public function show()

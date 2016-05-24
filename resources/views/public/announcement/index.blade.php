@@ -19,7 +19,7 @@
                     <a href="#" class="accordion-title">{{$announcement->title}}</a>
                     <div class="accordion-content" data-tab-content>
                       {!! $announcement->announcement !!}
-                      <p>On: {{$announcement->present()->prettyDate}}</p>
+                      <p>Published Date: {{$announcement->present()->prettyDate}}</p>
 
                     </div>
                   </li>

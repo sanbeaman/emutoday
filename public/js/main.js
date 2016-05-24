@@ -11910,12 +11910,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
   components: { EventViewSideBar: _EventViewSideBar2.default, EventViewContent: _EventViewContent2.default },
+  props: ['varYearUnit', 'varMonthUnit', 'varDayUnit'],
+
   ready: function ready() {
-    // alert('!!!!!!!!!!!!!!!!!! EventView');
+    //  alert('varYearUnit');
+    this.freshPageLand();
   },
 
   data: function data() {
     return {
+      startEventObject: {},
       eventlist: [],
       aobject: {
         year: '',
@@ -11937,6 +11941,14 @@ exports.default = {
         this.$broadcast('responseCalEvent', response.data);
         console.log('handleEventFetch========' + response.data);
       });
+    },
+    freshPageLand: function freshPageLand() {
+
+      this.startEventObject.yearVar = this.varYearUnit;
+      this.startEventObject.monthVar = this.varMonthUnit;
+      this.startEventObject.dayVar = this.varDayUnit;
+
+      this.$broadcast('startFromThisDate', this.startEventObject);
     }
   },
   // the `events` option simply calls `$on` for you
@@ -11980,6 +11992,10 @@ module.exports = {
     };
   },
   filters: {
+    reformatDate: function reformatDate(value) {
+      var arr = value.split('-');
+      return arr[1] + '/' + arr[2] + '/' + arr[0];
+    },
     yesNo: function yesNo(value) {
       return value == 1 ? 'Yes' : 'No';
     }
@@ -12043,7 +12059,7 @@ module.exports = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-bar row\">\n  <div class=\"small-6 columns\">\n    <h4>Upcoming Events</h4>\n  </div>\n  <div class=\"small-6 columns\" columns=\"\">\n\n\n  </div>\n</div>\n<div class=\"calendar-content\">\n  <div class=\"calendar-content-title row\">\n    <div class=\"small-12 column\">\n        <h6>From {{firstDate}} thru {{lastDate}}</h6>\n    </div>\n  </div>\n  <div class=\"calendar-content-content row\">\n    <div class=\"small-12 columns\">\n      <div v-for=\"eitem in elist\">\n        <div class=\"event-day\">\n            <h4>{{monthVar}} {{$key }}, {{yearVar}}</h4>\n            <event-view-single v-for=\"item in eitem\" :item=\"item\" :index=\"$index\">\n              </event-view-single>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"calendar-bar row\">\n  <div class=\"small-6 columns\">\n    <h4>Upcoming Events</h4>\n  </div>\n  <div class=\"small-6 columns\" columns=\"\">\n\n\n  </div>\n</div>\n<div class=\"calendar-content\">\n  <div class=\"calendar-content-title row\">\n    <div class=\"small-12 column\">\n        <h6>From {{firstDate}} thru {{lastDate}}</h6>\n    </div>\n  </div>\n  <div class=\"calendar-content-content row\">\n    <div class=\"small-12 columns\">\n      <div v-for=\"eitem in elist\">\n        <div class=\"event-day\">\n            <h4>{{$key | reformatDate}}</h4>\n            <event-view-single v-for=\"item in eitem\" :item=\"item\" :index=\"$index\">\n              </event-view-single>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -12060,7 +12076,7 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"./EventViewSingle.vue":33,"vue":27,"vue-hot-reload-api":2,"vueify-insert-css":28}],32:[function(require,module,exports){
-var __vueify_style__ = require("vueify-insert-css").insert("\n\n    .submit-calendar {\n      padding-left: 0;\n      padding-bottom: 1rem;\n    }\n    .calendar-bar {\n        background: ##bebdbd;\n    }\n    .calendar-bar h4 {\n      text-transform: uppercase;\n      color: #fff;\n      font-size: 1.2rem;\n      margin-top: 0.5rem;\n      margin-bottom: 0.5rem;\n    }\n    .calendar-box {\n      background: #f2f2f3;\n      padding-top: 0.8rem;\n    }\n    .calendar-other-categories {\n      padding-top: 0.8rem;\n    }\n    /*.calendar-sidebar-content{\n      background: #ffffff;\n    }*/\n    .calendar-sidebar-title h4{\n      text-transform: uppercase;\n      color: #fff;\n      margin-top: 0.5rem;\n    }\n    .calendar-text-content p {\n        text-align: left;\n    }\n\n    .events-by-category .event-category a {\n      font-size: .9rem;\n    }\n      .events-by-category .event-category span.badge {\n        margin-right: 0.3rem;\n      }\n\n      /*.calendar ul {\n        padding: 15px;\n        background: #f3f3f3;\n        margin: 0;\n      }*/\n      .calendar .weekdays,\n      .calendar .days {\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        padding-top: 4px;\n        padding-bottom: 4px;\n      }\n      /*.calendar ul.days\n       {\n         border: 1px solid  #000;\n        padding: 10px 15px 3px;\n        background: #f9f9f9;\n      }\n      .calendar ul li {\n        list-style-type: none;\n        display: inline-block;\n        width: 12.8%;\n        height: 25px;\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        margin-bottom: 4px;\n\n      }*/\n      .calendar .event-category span {\n        font-size: 10px;\n        text-transform: uppercase;\n        font-weight: bold;\n      }\n\n      .calendar  a {\n        color: #0f654a;\n        display: block;\n        padding: 4px 0;\n        border: 1px solid  #f2f2f3;\n      }\n      .calendar a:hover {\n        border-radius: 5px;\n        /*background: #0f654a;*/\n        /*color: #fff;*/\n        text-decoration: none;\n        border: 1px solid  #0f654a;\n      }\n      .calendar  a.istoday {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n        /*padding: 2px 0;*/\n      }\n      .calendar  a.active {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n\n          background: #fff;\n        /*padding: 2px 0;*/\n      }\n    .calendar  a.noevents {\n           pointer-events: none;\n             color: #888;\n      }\n\n      .calendar-box caption{\n        font-weight:400;\n        margin-bottom: .3rem;\n    }\n    .calendar-caption p{\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n    }\n\n    .calendar-caption a {\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n      border: 1px none  #000;\n    }\n.calendar-nav a {\n    border: none;\n}\n.calendar-nav a:hover {\n    border: none;\n}\n\n.calendar-title p {\n  font-weight: 400;\npadding: 4px 0;\n}\n    /*a#month-prev, a#month-next {\n      border: none;\n    }\n    a#month-prev :hover, a#month-next :hover{\n      border: none;\n    }*/\n")
+var __vueify_style__ = require("vueify-insert-css").insert("\n\n    .submit-calendar {\n      padding-left: 0;\n      padding-bottom: 1rem;\n    }\n    .calendar-bar {\n        background: ##bebdbd;\n    }\n    .calendar-bar h4 {\n      text-transform: uppercase;\n      color: #fff;\n      font-size: 1.2rem;\n      margin-top: 0.5rem;\n      margin-bottom: 0.5rem;\n    }\n    .calendar-box {\n      background: #f2f2f3;\n      padding-top: 0.8rem;\n    }\n    .calendar-other-categories {\n      padding-top: 0.8rem;\n    }\n    /*.calendar-sidebar-content{\n      background: #ffffff;\n    }*/\n    .calendar-sidebar-title h4{\n      text-transform: uppercase;\n      color: #fff;\n      margin-top: 0.5rem;\n    }\n    .calendar-text-content p {\n        text-align: left;\n    }\n\n    .events-by-category .event-category a {\n      font-size: .9rem;\n    }\n      .events-by-category .event-category span.badge {\n        margin-right: 0.3rem;\n      }\n\n      /*.calendar ul {\n        padding: 15px;\n        background: #f3f3f3;\n        margin: 0;\n      }*/\n      .calendar .weekdays,\n      .calendar .days {\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        padding-top: 4px;\n        padding-bottom: 4px;\n      }\n      /*.calendar ul.days\n       {\n         border: 1px solid  #000;\n        padding: 10px 15px 3px;\n        background: #f9f9f9;\n      }\n      .calendar ul li {\n        list-style-type: none;\n        display: inline-block;\n        width: 12.8%;\n        height: 25px;\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        margin-bottom: 4px;\n\n      }*/\n      .calendar .event-category span {\n        font-size: 10px;\n        text-transform: uppercase;\n        font-weight: bold;\n      }\n\n      .calendar  a {\n        color: #0f654a;\n        display: block;\n        padding: 4px 0;\n        border: 1px solid  #f2f2f3;\n      }\n      .calendar a:hover {\n        border-radius: 5px;\n        /*background: #0f654a;*/\n        /*color: #fff;*/\n        text-decoration: none;\n        border: 1px solid  #0f654a;\n      }\n      .calendar  a.istoday {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n        /*padding: 2px 0;*/\n      }\n      .calendar  a.active {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n\n          background: #fff;\n        /*padding: 2px 0;*/\n      }\n    .calendar  a.noevents {\n           pointer-events: none;\n             color: #888;\n      }\n      .calendar  a.yes-events {\n             /*pointer-events: none;*/\n               color: #ff0000;\n        }\n      .calendar  a.no-events {\n             pointer-events: none;\n               color: #00ddee;\n        }\n\n      .calendar-box caption{\n        font-weight:400;\n        margin-bottom: .3rem;\n    }\n    .calendar-caption p{\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n    }\n\n    .calendar-caption a {\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n      border: 1px none  #000;\n    }\n.calendar-nav a {\n    border: none;\n}\n.calendar-nav a:hover {\n    border: none;\n}\n\n.calendar-title p {\n  font-weight: 400;\npadding: 4px 0;\n}\n    /*a#month-prev, a#month-next {\n      border: none;\n    }\n    a#month-prev :hover, a#month-next :hover{\n      border: none;\n    }*/\n")
 'use strict';
 
 module.exports = {
@@ -12070,20 +12086,30 @@ module.exports = {
       calevents: {},
       yearVar: '',
       monthVar: '',
-      monthVarUnit: '',
+      monthVarWord: '',
       dayVar: '',
       monthArray: [],
       currentDay: '',
       currentDate: {
         yearVar: '',
         monthVar: '',
+        monthVarWord: '',
         dayVar: ''
       },
       selectedDate: {
         yearVar: '',
         monthVar: '',
+        monthVarWord: '',
         dayVar: ''
       },
+      newDate: {
+        yearVar: '',
+        monthVar: '',
+        monthVarWord: '',
+        dayVar: ''
+      },
+      yesEventClass: 'yes-events',
+      noEventClass: 'no-events',
       haseventClass: 'no',
       selectedDay: '',
       calDaysArray: [],
@@ -12105,14 +12131,14 @@ module.exports = {
   computed: {
     currentDayInMonth: function currentDayInMonth() {
       if (this.yearVar == this.currentDate.yearVar) {
-        if (this.monthVarUnit == this.currentDate.monthVar) return this.currentDate.dayVar;
+        if (this.monthVar == this.currentDate.monthVar) return this.currentDate.dayVar;
       } else {
         return '';
       }
     },
     selectedDayInMonth: function selectedDayInMonth() {
       if (this.yearVar == this.selectedDate.yearVar) {
-        if (this.monthVarUnit == this.selectedDate.monthVar) return this.selectedDate.dayVar;
+        if (this.monthVar == this.selectedDate.monthVar) return this.selectedDate.dayVar;
       } else {
         return '';
       }
@@ -12129,52 +12155,52 @@ module.exports = {
     dispatchNewEvent: function dispatchNewEvent(value) {
       this.selectedDate.yearVar = this.yearVar;
       // this.eventObject.eoYear = this.yearVar;
-      this.selectedDate.monthVar = this.monthVarUnit;
+      this.selectedDate.monthVar = this.monthVar;
       // this.eventObject.eoMonth = this.monthVarUnit;
       this.selectedDate.dayVar = value;
       //this.eventObject.eoDay = value;
       this.selectedDay = value;
       this.$dispatch('change-eobject', this.selectedDate);
     },
-    fetchEventsByDay: function fetchEventsByDay(value) {
-
-      this.$http.get('/api/calendar/events/' + this.yearVar + '/' + this.monthVarUnit + '/' + value).then(function (response) {
-        this.yearVar = response.data.yearVar;
-        this.monthVar = response.data.monthVar;
-        this.monthVarUnit = response.data.monthVarUnit;
-        this.elist = response.data.groupedByDay;
-
-        console.log(response.data);
-      });
-    },
+    // fetchEventsByDay: function(value) {
+    //
+    //   this.$http.get('/api/calendar/events/' + this.selectedDate.yearVar + '/'+ this.selectedDate.monthVar + '/' + value).then(function(response) {
+    //     this.selectedDate.yearVar = response.data.yearVar;
+    //     this.selectedDate.monthVar = response.data.monthVar;
+    //     this.selectedDate.monthVarWord = response.data.monthVa;
+    //   this.elist = response.data.groupedByDay;
+    //
+    //     console.log(response.data);
+    //   });
+    // },
     newMonth: function newMonth(monthkey) {
       var newMonthVarUnit;
       var newYear;
       if (monthkey == 'prev') {
-        if (this.monthVarUnit == 1) {
+        if (this.monthVar == 1) {
           newMonthVarUnit = 12;
           newYearVar = this.yearVar - 1;
         } else {
-          newMonthVarUnit = this.monthVarUnit - 1;
+          newMonthVarUnit = this.monthVar - 1;
           newYearVar = this.yearVar;
         }
       } else {
-        if (this.monthVarUnit == 12) {
+        if (this.monthVar == 12) {
           newMonthVarUnit = 1;
           newYearVar = this.yearVar + 1;
         } else {
-          newMonthVarUnit = this.monthVarUnit + 1;
+          newMonthVarUnit = this.monthVar + 1;
           newYearVar = this.yearVar;
         }
       }
-      this.fetchEventsForCalendarMonth(newYearVar, newMonthVarUnit);
+      this.fetchEventsForCalendarMonth(newYearVar, newMonthVar);
     },
     fetchEventsForCalendarMonth: function fetchEventsForCalendarMonth(pyear, pmonth) {
       apiurl = '/api/calendar/month/' + pyear + '/' + pmonth;
       this.$http.get(apiurl).then(function (response) {
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
-        this.monthVarUnit = response.data.monthVarUnit;
+        this.monthVarWord = response.data.monthVarWord;
         this.monthArray = response.data.monthArray;
         this.dayVar = response.data.dayInMonth;
         this.calDaysArray = response.data.calDaysArray;
@@ -12183,19 +12209,37 @@ module.exports = {
         this.$emit('responseCategoriesEvent');
       });
     },
-    fetchCurrentEventsForCalendar: function fetchCurrentEventsForCalendar() {
-      this.$http.get('/api/calendar/month').then(function (response) {
-        this.yearVar = response.data.yearVar;
-        this.monthVar = response.data.monthVar;
-        this.monthVarUnit = response.data.monthVarUnit;
-        this.monthArray = response.data.monthArray;
+    fetchCurrentEventsForCalendar: function fetchCurrentEventsForCalendar(startObject) {
+      this.yearVar = startObject.yearVar;
+      this.monthVar = startObject.monthVar;
+      this.dayVar = startObject.dayVar;
+      startapiurl = '/api/calendar/month/' + this.yearVar + '/' + this.monthVar + '/' + this.dayVar;
+      // this.$http.get('/api/calendar/month').then(function(response) {
+      this.$http.get(startapiurl).then(function (response) {
 
-        this.dayVar = response.data.dayInMonth;
+        this.selectedDate.yearVar = response.data.selectedYear;
+        this.selectedDate.monthVar = response.data.selectedMonth;
+        this.selectedDate.monthVarWord = response.data.selectedMonthWord;
+        this.selectedDate.dayVar = response.data.selectedDay;
+
+        this.currentDate.yearVar = response.data.currentYear;
+        this.currentDate.monthVar = response.data.currentMonth;
+        this.currentDate.monthVarWord = response.data.currentMonthWord;
+        this.currentDate.dayVar = response.data.currentDay;
+
         this.calDaysArray = response.data.calDaysArray;
 
-        this.currentDate.yearVar = this.yearVar;
-        this.currentDate.monthVar = this.monthVarUnit;
-        this.currentDate.dayVar = this.dayVar;
+        // this.yearVar = response.data.yearVar;
+        // this.monthVar = response.data.monthVar;
+        // this.monthVarUnit = response.data.monthVarUnit;
+        // this.monthArray = response.data.monthArray;
+        //
+        // this.dayVar = response.data.dayInMonth;
+        // this.calDaysArray = response.data.calDaysArray;
+        //
+        // this.currentDate.yearVar = this.yearVar;
+        // this.currentDate.monthVar = this.monthVarUnit;
+        // this.currentDate.dayVar = this.dayVar;
 
         console.log(response.data);
 
@@ -12207,12 +12251,12 @@ module.exports = {
       // this.eventObject.eoYear = this.yearVar;
       // this.eventObject.eoMonth = this.monthVarUnit;
       // this.eventObject.eoDay = this.currentDay;
-      this.$dispatch('change-eobject', this.currentDate);
+      this.$dispatch('change-eobject', this.selectedDate);
       console.log('change-eobject');
     },
     fetchCategoryList: function fetchCategoryList() {
 
-      this.$http.get('/api/active-categories/' + this.yearVar + '/' + this.monthVarUnit).then(function (response) {
+      this.$http.get('/api/active-categories/' + this.selectedDate.yearVar + '/' + this.selectedDate.monthVar).then(function (response) {
         // console.log('response->categories=' + JSON.stringify(response.data));
         this.categories = response.data;
       }, function (response) {
@@ -12223,23 +12267,24 @@ module.exports = {
   },
   watch: {},
   created: function created() {
-    this.fetchCurrentEventsForCalendar();
+    //  this.fetchCurrentEventsForCalendar();
     // this.fetchCategoryList();
   },
   components: {},
   events: {
-    'responseCategoriesEvent': 'fetchCategoryList'
+    'responseCategoriesEvent': 'fetchCategoryList',
+    'startFromThisDate': 'fetchCurrentEventsForCalendar'
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"calendar-bar row\">\n    <div class=\"small-12 column\">\n        <h4>Calendar</h4>\n    </div>\n  </div>\n<div class=\"calendar-box row\">\n    <div class=\"small-12 columns\">\n      <div class=\"calendar small-12 columns\" data-equalizer=\"\">\n        <div class=\"calendar-nav row small-collapse\">\n            <div class=\"small-2 columns\">\n              <a id=\"month-prev\" v-on:click.prevent=\"newMonth('prev')\" class=\"text-left\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-before.png\" alt=\"arrow\"></a>\n          </div>\n          <div class=\"text-center calendar-title small-8 columns\">\n              <p>{{monthVar}} {{yearVar}}</p>\n          </div>\n          <div class=\"small-2 columns\">\n            <a id=\"month-next\" v-on:click.prevent=\"newMonth('next')\" class=\"text-right\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-after.png\" alt=\"arrow\"></a>\n          </div>\n        </div>\n      <div class=\"weekdays row small-up-7 small-collapse\">\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sun</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Mon</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Tue</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Wed</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Thu</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Fri</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sat</span></div>\n      </div>\n      <div class=\"days row small-up-7 small-collapse\">\n        <div class=\"column\" v-for=\"item in calDaysArray\" data-equalizer-watch=\"\">\n          <a v-on:click.prevent=\"dispatchNewEvent( item.day )\" v-bind:class=\"[{'istoday': item.day == currentDayInMonth },{'noevents': item.hasevents == haseventClass },{'active': item.day == selectedDayInMonth}]\" href=\"#\"> {{item.day | removex }}</a>\n        </div>\n      </div>\n    </div>\n\n  <div class=\"row calendar-categories\">\n    <div class=\"small-12 column\">\n      <h4>Categories</h4>\n    </div>\n  </div>\n  <div class=\"row small-collapse calendar-categories\">\n    <template v-for=\"category in categories\">\n      <div class=\"event-category\" v-if=\"category.events.length == 0 ?false:true\">\n        <div class=\"small-12 medium-12 large-10  columns\">\n          <a href=\"#\" aria-describedby=\"{{category.slug}}-badge\">{{category.category}}</a>\n        </div>\n        <div class=\"show-for-large large-2 columns\">\n          <span id=\"{{category.slug}}-badge\" class=\"secondary badge\">{{category.events.length}}<span>\n          </span></span></div>\n        </div>\n      </template>\n    </div>\n    <div class=\"calendar-other-categories\">\n              <h4>Other Calendars</h4>\n              <ul>\n\n                <li><a href=\"\">Art Galleries</a></li>\n                <li><a href=\"\">Athletics</a></li>\n                <li><a href=\"\">Holiday &amp; Payroll</a></li>\n                <li><a href=\"\">Theatre</a></li>\n              </ul>\n            </div>\n            <div class=\"ypsi-graphic\">\n              <a href=\"http://visitypsinow.com/local-events/\"><img src=\"/assets/imgs/calendar/visit-ypsi.png\" alt=\"Visit Ypsi Calendar\"></a>\n            </div>\n            <div class=\"submit-calendar\">\n              <a class=\"button emu-button\">Submit an Event</a>\n            </div>\n\n  </div>\n</div>\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"calendar-bar row\">\n    <div class=\"small-12 column\">\n        <h4>Calendar</h4>\n    </div>\n  </div>\n<div class=\"calendar-box row\">\n    <div class=\"small-12 columns\">\n      <div class=\"calendar small-12 columns\" data-equalizer=\"\">\n        <div class=\"calendar-nav row small-collapse\">\n            <div class=\"small-2 columns\">\n              <a id=\"month-prev\" v-on:click.prevent=\"newMonth('prev')\" class=\"text-left\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-before.png\" alt=\"arrow\"></a>\n          </div>\n          <div class=\"text-center calendar-title small-8 columns\">\n              <p>{{monthVarWord}} {{yearVar}}</p>\n          </div>\n          <div class=\"small-2 columns\">\n            <a id=\"month-next\" v-on:click.prevent=\"newMonth('next')\" class=\"text-right\" href=\"\"><img src=\"/assets/imgs/calendar/green-calendar-arrow-after.png\" alt=\"arrow\"></a>\n          </div>\n        </div>\n      <div class=\"weekdays row small-up-7 small-collapse\">\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sun</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Mon</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Tue</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Wed</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Thu</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Fri</span></div>\n        <div class=\"column\" data-equalizer-watch=\"\"><span href=\"#\">Sat</span></div>\n      </div>\n      <div class=\"days row small-up-7 small-collapse\">\n        <div class=\"column\" v-for=\"item in calDaysArray\" data-equalizer-watch=\"\">\n\n          <a v-on:click.prevent=\"dispatchNewEvent( item.day )\" v-bind:class=\"[{'istoday': item.day == currentDayInMonth },{'no-events': item.hasevents == noEventClass },{'yes-events': item.hasevents == yesEventClass },{'active': item.day == selectedDayInMonth}]\" href=\"#\"> {{item.day | removex }}</a>\n        </div>\n      </div>\n    </div>\n\n  <div class=\"row calendar-categories\">\n    <div class=\"small-12 column\">\n      <h4>Categories</h4>\n    </div>\n  </div>\n  <div class=\"row small-collapse calendar-categories\">\n    <template v-for=\"category in categories\">\n      <div class=\"event-category\" v-if=\"category.events.length == 0 ?false:true\">\n        <div class=\"small-12 medium-12 large-10  columns\">\n          <a href=\"#\" aria-describedby=\"{{category.slug}}-badge\">{{category.category}}</a>\n        </div>\n        <div class=\"show-for-large large-2 columns\">\n          <span id=\"{{category.slug}}-badge\" class=\"secondary badge\">{{category.events.length}}<span>\n          </span></span></div>\n        </div>\n      </template>\n    </div>\n    <div class=\"calendar-other-categories\">\n              <h4>Other Calendars</h4>\n              <ul>\n\n                <li><a href=\"\">Art Galleries</a></li>\n                <li><a href=\"\">Athletics</a></li>\n                <li><a href=\"\">Holiday &amp; Payroll</a></li>\n                <li><a href=\"\">Theatre</a></li>\n              </ul>\n            </div>\n            <div class=\"ypsi-graphic\">\n              <a href=\"http://visitypsinow.com/local-events/\"><img src=\"/assets/imgs/calendar/visit-ypsi.png\" alt=\"Visit Ypsi Calendar\"></a>\n            </div>\n            <div class=\"submit-calendar\">\n              <a class=\"button emu-button\">Submit an Event</a>\n            </div>\n\n  </div>\n</div>\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   var id = "/Users/dbeaman/SITES/Code/emu/emutoday/resources/assets/js/components/EventViewSideBar.vue"
   module.hot.dispose(function () {
-    require("vueify-insert-css").cache["\n\n    .submit-calendar {\n      padding-left: 0;\n      padding-bottom: 1rem;\n    }\n    .calendar-bar {\n        background: ##bebdbd;\n    }\n    .calendar-bar h4 {\n      text-transform: uppercase;\n      color: #fff;\n      font-size: 1.2rem;\n      margin-top: 0.5rem;\n      margin-bottom: 0.5rem;\n    }\n    .calendar-box {\n      background: #f2f2f3;\n      padding-top: 0.8rem;\n    }\n    .calendar-other-categories {\n      padding-top: 0.8rem;\n    }\n    /*.calendar-sidebar-content{\n      background: #ffffff;\n    }*/\n    .calendar-sidebar-title h4{\n      text-transform: uppercase;\n      color: #fff;\n      margin-top: 0.5rem;\n    }\n    .calendar-text-content p {\n        text-align: left;\n    }\n\n    .events-by-category .event-category a {\n      font-size: .9rem;\n    }\n      .events-by-category .event-category span.badge {\n        margin-right: 0.3rem;\n      }\n\n      /*.calendar ul {\n        padding: 15px;\n        background: #f3f3f3;\n        margin: 0;\n      }*/\n      .calendar .weekdays,\n      .calendar .days {\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        padding-top: 4px;\n        padding-bottom: 4px;\n      }\n      /*.calendar ul.days\n       {\n         border: 1px solid  #000;\n        padding: 10px 15px 3px;\n        background: #f9f9f9;\n      }\n      .calendar ul li {\n        list-style-type: none;\n        display: inline-block;\n        width: 12.8%;\n        height: 25px;\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        margin-bottom: 4px;\n\n      }*/\n      .calendar .event-category span {\n        font-size: 10px;\n        text-transform: uppercase;\n        font-weight: bold;\n      }\n\n      .calendar  a {\n        color: #0f654a;\n        display: block;\n        padding: 4px 0;\n        border: 1px solid  #f2f2f3;\n      }\n      .calendar a:hover {\n        border-radius: 5px;\n        /*background: #0f654a;*/\n        /*color: #fff;*/\n        text-decoration: none;\n        border: 1px solid  #0f654a;\n      }\n      .calendar  a.istoday {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n        /*padding: 2px 0;*/\n      }\n      .calendar  a.active {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n\n          background: #fff;\n        /*padding: 2px 0;*/\n      }\n    .calendar  a.noevents {\n           pointer-events: none;\n             color: #888;\n      }\n\n      .calendar-box caption{\n        font-weight:400;\n        margin-bottom: .3rem;\n    }\n    .calendar-caption p{\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n    }\n\n    .calendar-caption a {\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n      border: 1px none  #000;\n    }\n.calendar-nav a {\n    border: none;\n}\n.calendar-nav a:hover {\n    border: none;\n}\n\n.calendar-title p {\n  font-weight: 400;\npadding: 4px 0;\n}\n    /*a#month-prev, a#month-next {\n      border: none;\n    }\n    a#month-prev :hover, a#month-next :hover{\n      border: none;\n    }*/\n"] = false
+    require("vueify-insert-css").cache["\n\n    .submit-calendar {\n      padding-left: 0;\n      padding-bottom: 1rem;\n    }\n    .calendar-bar {\n        background: ##bebdbd;\n    }\n    .calendar-bar h4 {\n      text-transform: uppercase;\n      color: #fff;\n      font-size: 1.2rem;\n      margin-top: 0.5rem;\n      margin-bottom: 0.5rem;\n    }\n    .calendar-box {\n      background: #f2f2f3;\n      padding-top: 0.8rem;\n    }\n    .calendar-other-categories {\n      padding-top: 0.8rem;\n    }\n    /*.calendar-sidebar-content{\n      background: #ffffff;\n    }*/\n    .calendar-sidebar-title h4{\n      text-transform: uppercase;\n      color: #fff;\n      margin-top: 0.5rem;\n    }\n    .calendar-text-content p {\n        text-align: left;\n    }\n\n    .events-by-category .event-category a {\n      font-size: .9rem;\n    }\n      .events-by-category .event-category span.badge {\n        margin-right: 0.3rem;\n      }\n\n      /*.calendar ul {\n        padding: 15px;\n        background: #f3f3f3;\n        margin: 0;\n      }*/\n      .calendar .weekdays,\n      .calendar .days {\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        padding-top: 4px;\n        padding-bottom: 4px;\n      }\n      /*.calendar ul.days\n       {\n         border: 1px solid  #000;\n        padding: 10px 15px 3px;\n        background: #f9f9f9;\n      }\n      .calendar ul li {\n        list-style-type: none;\n        display: inline-block;\n        width: 12.8%;\n        height: 25px;\n        font-size: 12px;\n        color: #888;\n        text-align: center;\n        margin-bottom: 4px;\n\n      }*/\n      .calendar .event-category span {\n        font-size: 10px;\n        text-transform: uppercase;\n        font-weight: bold;\n      }\n\n      .calendar  a {\n        color: #0f654a;\n        display: block;\n        padding: 4px 0;\n        border: 1px solid  #f2f2f3;\n      }\n      .calendar a:hover {\n        border-radius: 5px;\n        /*background: #0f654a;*/\n        /*color: #fff;*/\n        text-decoration: none;\n        border: 1px solid  #0f654a;\n      }\n      .calendar  a.istoday {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n        /*padding: 2px 0;*/\n      }\n      .calendar  a.active {\n        border-radius: 5px;\n        border: 1px solid  #0f654a;\n\n          background: #fff;\n        /*padding: 2px 0;*/\n      }\n    .calendar  a.noevents {\n           pointer-events: none;\n             color: #888;\n      }\n      .calendar  a.yes-events {\n             /*pointer-events: none;*/\n               color: #ff0000;\n        }\n      .calendar  a.no-events {\n             pointer-events: none;\n               color: #00ddee;\n        }\n\n      .calendar-box caption{\n        font-weight:400;\n        margin-bottom: .3rem;\n    }\n    .calendar-caption p{\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n    }\n\n    .calendar-caption a {\n      font-weight: 400;\n      margin-bottom: 0.3rem;\n      border: 1px none  #000;\n    }\n.calendar-nav a {\n    border: none;\n}\n.calendar-nav a:hover {\n    border: none;\n}\n\n.calendar-title p {\n  font-weight: 400;\npadding: 4px 0;\n}\n    /*a#month-prev, a#month-next {\n      border: none;\n    }\n    a#month-prev :hover, a#month-next :hover{\n      border: none;\n    }*/\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -12259,6 +12304,10 @@ module.exports = {
     };
   },
   filters: {
+    reformatDate: function reformatDate(value) {
+      var arr = value.split('-');
+      return arr[1] + '/' + arr[2] + '/' + arr[0];
+    },
     yesNo: function yesNo(value) {
       return value == true ? 'Yes' : 'No';
     }
@@ -12277,7 +12326,7 @@ module.exports = {
   events: {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"eventview\">\n  <h6>{{item.title}}</h6>\n  <p>{{item.start_date}}</p>\n  <template v-if=\"item.all_day\">\n    <p>All Day</p>\n  </template>\n  <template v-else=\"\">\n    <p v-if=\"item.no_end_time\">{{item.start_time}}</p>\n    <p v-else=\"\">\n      From: {{item.start_time}} to {{item.end_time}}\n    </p>\n  </template>\n  <p>{{item.location}}</p>\n  <p>Building:{{item.building}}</p>\n  <p class=\"description\">{{item.description}}</p>\n  <p>Contact</p>\n  <ul>\n    <li>{{item.contact_person}}</li>\n    <li>Phone: {{item.contact_phone}}</li>\n    <li>Email: {{item.contact_email}}</li>\n  </ul>\n  <template v-if=\"item.related_link_1\">\n    <p>Additional Information</p>\n    <ul>\n      <li>{{item.related_link_1}}</li>\n      <li v-if=\"item.related_link_2\">{{item.related_link_2}}</li>\n    <li v-if=\"item.related_link_3\">{{item.related_link_3}}</li>\n    </ul>\n  </template>\n  <p v-if=\"item.free\">Cost: Free</p>\n  <p v-else=\"\">Cost: {{item.cost | currency }}</p>\n  <p>{{item.participants}}</p>\n  <p>LBC Approved:{{item.lbc_approved | yesNo }}</p>\n  <template v-if=\"item.tickets\">\n    <p v-if=\"item.ticket_details_online\">For Tickets Visit: {{item.ticket_details_online}}</p>\n    <p v-if=\"item.ticket_details_phone\">For Tickets Call: {{item.ticket_details_phone}}</p>\n    <p v-if=\"item.ticket_details_office\">For Tickets Office: {{item.ticket_details_office}}</p>\n    <p v-if=\"item.ticket_details_other\">Or: {{item.ticket_details_other}}</p>\n  </template>\n  <p></p>{{item.id}}<p></p>\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"eventview\">\n  <h6>{{item.title}}</h6>\n  <template v-if=\"item.all_day\">\n    <p>All Day</p>\n  </template>\n  <template v-else=\"\">\n    <p v-if=\"item.no_end_time\">{{item.start_time}}</p>\n    <p v-else=\"\">\n      From: {{item.start_time}} to {{item.end_time}}\n    </p>\n  </template>\n  <p>{{item.location}}</p>\n  <p>Building:{{item.building}}</p>\n  <p class=\"description\">{{item.description}}</p>\n  <p>Contact</p>\n  <ul>\n    <li>{{item.contact_person}}</li>\n    <li>Phone: {{item.contact_phone}}</li>\n    <li>Email: {{item.contact_email}}</li>\n  </ul>\n  <template v-if=\"item.related_link_1\">\n    <p>Additional Information</p>\n    <ul>\n      <li>{{item.related_link_1}}</li>\n      <li v-if=\"item.related_link_2\">{{item.related_link_2}}</li>\n    <li v-if=\"item.related_link_3\">{{item.related_link_3}}</li>\n    </ul>\n  </template>\n  <p v-if=\"item.free\">Cost: Free</p>\n  <p v-else=\"\">Cost: {{item.cost | currency }}</p>\n  <p>{{item.participants}}</p>\n  <p>LBC Approved:{{item.lbc_approved | yesNo }}</p>\n  <template v-if=\"item.tickets\">\n    <p v-if=\"item.ticket_details_online\">For Tickets Visit: {{item.ticket_details_online}}</p>\n    <p v-if=\"item.ticket_details_phone\">For Tickets Call: {{item.ticket_details_phone}}</p>\n    <p v-if=\"item.ticket_details_office\">For Tickets Office: {{item.ticket_details_office}}</p>\n    <p v-if=\"item.ticket_details_other\">Or: {{item.ticket_details_other}}</p>\n  </template>\n  <p></p>{{item.id}}<p></p>\n</div>\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

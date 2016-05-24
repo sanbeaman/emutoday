@@ -732,6 +732,7 @@ ul.accordion li{
 .accordion-content p {
   font-size: 0.9rem;
   line-height: 1.3rem;
+  margin-bottom: 0.5rem;
 }
 
 .accordion .accordion-item.is-active > a, .accordion dd.is-active > a {

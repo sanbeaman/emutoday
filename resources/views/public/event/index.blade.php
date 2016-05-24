@@ -83,9 +83,14 @@
                   </div>
                 </div><!--row 2 in calendar bar-->
               </div><!--end calendar row column-->
+
         </div><!--end calendar bar row 1-->
+
         <div id="vueapp">
-        <component is="event-view">
+        <component  :var-year-unit="{!! $varYearUnit !!}" }}
+                    :var-month-unit="{!! $varMonthUnit !!}"
+                    :var-day-unit="{!! $varDayUnit !!}"
+                    is="event-view">
         </component>
       </div><!-- end calendar-bar -->
 </div> <!-- end content-area -->

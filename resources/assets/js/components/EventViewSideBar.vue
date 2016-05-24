@@ -12,7 +12,7 @@ ls<template>
               <a id="month-prev" v-on:click.prevent="newMonth('prev')" class="text-left" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-before.png" alt="arrow"></a>
           </div>
           <div class="text-center calendar-title small-8 columns">
-              <p>{{monthVar}} {{yearVar}}</p>
+              <p>{{monthVarWord}} {{yearVar}}</p>
           </div>
           <div class="small-2 columns">
             <a id="month-next" v-on:click.prevent="newMonth('next')" class="text-right" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-after.png" alt="arrow"></a>
@@ -29,7 +29,8 @@ ls<template>
       </div>
       <div class="days row small-up-7 small-collapse">
         <div class="column" v-for="item in calDaysArray" data-equalizer-watch>
-          <a v-on:click.prevent="dispatchNewEvent( item.day )" v-bind:class="[{'istoday': item.day == currentDayInMonth },{'noevents': item.hasevents == haseventClass },{'active': item.day == selectedDayInMonth}]"  href="#"> {{item.day | removex }}</a>
+
+          <a v-on:click.prevent="dispatchNewEvent( item.day )" v-bind:class="[{'istoday': item.day == currentDayInMonth },{'no-events': item.hasevents == noEventClass },{'yes-events': item.hasevents == yesEventClass },{'active': item.day == selectedDayInMonth}]"  href="#"> {{item.day | removex }}</a>
         </div>
       </div>
     </div>
@@ -180,6 +181,14 @@ ls<template>
            pointer-events: none;
              color: #888;
       }
+      .calendar  a.yes-events {
+             /*pointer-events: none;*/
+               color: #ff0000;
+        }
+      .calendar  a.no-events {
+             pointer-events: none;
+               color: #00ddee;
+        }
 
       .calendar-box caption{
         font-weight:400;
@@ -222,20 +231,30 @@ module.exports  = {
       calevents: {},
       yearVar: '',
       monthVar: '',
-      monthVarUnit: '',
+      monthVarWord: '',
       dayVar: '',
       monthArray: [],
       currentDay: '',
       currentDate: {
         yearVar: '',
         monthVar: '',
+        monthVarWord: '',
         dayVar: ''
       },
       selectedDate: {
         yearVar: '',
         monthVar: '',
+        monthVarWord: '',
         dayVar: ''
       },
+      newDate: {
+        yearVar: '',
+        monthVar: '',
+        monthVarWord: '',
+        dayVar: ''
+      },
+      yesEventClass: 'yes-events',
+      noEventClass: 'no-events',
       haseventClass: 'no',
       selectedDay : '',
       calDaysArray: [],
@@ -257,7 +276,7 @@ module.exports  = {
   computed: {
     currentDayInMonth: function () {
       if (this.yearVar == this.currentDate.yearVar) {
-        if (this.monthVarUnit == this.currentDate.monthVar)
+        if (this.monthVar == this.currentDate.monthVar)
           return this.currentDate.dayVar;
       } else {
         return '';
@@ -266,7 +285,7 @@ module.exports  = {
     },
     selectedDayInMonth: function () {
       if (this.yearVar == this.selectedDate.yearVar) {
-        if (this.monthVarUnit == this.selectedDate.monthVar)
+        if (this.monthVar == this.selectedDate.monthVar)
           return this.selectedDate.dayVar;
       } else {
         return '';
@@ -285,7 +304,7 @@ module.exports  = {
     dispatchNewEvent: function(value){
       this.selectedDate.yearVar = this.yearVar;
       // this.eventObject.eoYear = this.yearVar;
-      this.selectedDate.monthVar = this.monthVarUnit;
+      this.selectedDate.monthVar = this.monthVar;
       // this.eventObject.eoMonth = this.monthVarUnit;
       this.selectedDate.dayVar = value;
       //this.eventObject.eoDay = value;
@@ -293,38 +312,38 @@ module.exports  = {
       this.$dispatch('change-eobject',  this.selectedDate);
 
     },
-    fetchEventsByDay: function(value) {
-
-      this.$http.get('/api/calendar/events/' + this.yearVar + '/'+ this.monthVarUnit + '/' + value).then(function(response) {
-        this.yearVar = response.data.yearVar;
-        this.monthVar = response.data.monthVar;
-        this.monthVarUnit = response.data.monthVarUnit;
-      this.elist = response.data.groupedByDay;
-
-        console.log(response.data);
-      });
-    },
+    // fetchEventsByDay: function(value) {
+    //
+    //   this.$http.get('/api/calendar/events/' + this.selectedDate.yearVar + '/'+ this.selectedDate.monthVar + '/' + value).then(function(response) {
+    //     this.selectedDate.yearVar = response.data.yearVar;
+    //     this.selectedDate.monthVar = response.data.monthVar;
+    //     this.selectedDate.monthVarWord = response.data.monthVa;
+    //   this.elist = response.data.groupedByDay;
+    //
+    //     console.log(response.data);
+    //   });
+    // },
     newMonth: function (monthkey) {
       var newMonthVarUnit;
       var newYear;
       if (monthkey == 'prev') {
-        if (this.monthVarUnit == 1) {
+        if (this.monthVar == 1) {
           newMonthVarUnit = 12;
           newYearVar = this.yearVar - 1;
         } else {
-          newMonthVarUnit = this.monthVarUnit -1;
+          newMonthVarUnit = this.monthVar -1;
           newYearVar = this.yearVar;
         }
       } else {
-        if (this.monthVarUnit == 12) {
+        if (this.monthVar == 12) {
           newMonthVarUnit = 1;
           newYearVar = this.yearVar + 1;
         } else {
-          newMonthVarUnit = this.monthVarUnit +1;
+          newMonthVarUnit = this.monthVar +1;
           newYearVar = this.yearVar;
         }
       }
-      this.fetchEventsForCalendarMonth(newYearVar,newMonthVarUnit);
+      this.fetchEventsForCalendarMonth(newYearVar,newMonthVar);
 
    },
     fetchEventsForCalendarMonth: function(pyear, pmonth) {
@@ -332,7 +351,7 @@ module.exports  = {
       this.$http.get(apiurl).then(function(response) {
         this.yearVar = response.data.yearVar;
         this.monthVar = response.data.monthVar;
-        this.monthVarUnit = response.data.monthVarUnit;
+        this.monthVarWord = response.data.monthVarWord;
         this.monthArray = response.data.monthArray;
         this.dayVar = response.data.dayInMonth;
         this.calDaysArray = response.data.calDaysArray;
@@ -341,19 +360,44 @@ module.exports  = {
         this.$emit('responseCategoriesEvent');
       });
     },
-    fetchCurrentEventsForCalendar: function() {
-      this.$http.get('/api/calendar/month').then(function(response) {
-        this.yearVar = response.data.yearVar;
-        this.monthVar = response.data.monthVar;
-        this.monthVarUnit = response.data.monthVarUnit;
-        this.monthArray = response.data.monthArray;
+    fetchCurrentEventsForCalendar: function(startObject) {
+      this.yearVar = startObject.yearVar;
+      this.monthVar = startObject.monthVar;
+      this.dayVar = startObject.dayVar;
+      startapiurl = '/api/calendar/month/' +this.yearVar +'/'+this.monthVar +'/'+this.dayVar;
+        // this.$http.get('/api/calendar/month').then(function(response) {
+       this.$http.get(startapiurl).then(function(response) {
 
-        this.dayVar = response.data.dayInMonth;
-        this.calDaysArray = response.data.calDaysArray;
 
-        this.currentDate.yearVar = this.yearVar;
-        this.currentDate.monthVar = this.monthVarUnit;
-        this.currentDate.dayVar = this.dayVar;
+         this.selectedDate.yearVar = response.data.selectedYear;
+         this.selectedDate.monthVar = response.data.selectedMonth;
+          this.selectedDate.monthVarWord = response.data.selectedMonthWord;
+         this.selectedDate.dayVar = response.data.selectedDay;
+
+
+         this.currentDate.yearVar = response.data.currentYear;
+         this.currentDate.monthVar = response.data.currentMonth;
+         this.currentDate.monthVarWord = response.data.currentMonthWord;
+         this.currentDate.dayVar = response.data.currentDay;
+
+
+          this.calDaysArray = response.data.calDaysArray;
+
+
+
+
+        // this.yearVar = response.data.yearVar;
+        // this.monthVar = response.data.monthVar;
+        // this.monthVarUnit = response.data.monthVarUnit;
+        // this.monthArray = response.data.monthArray;
+        //
+        // this.dayVar = response.data.dayInMonth;
+        // this.calDaysArray = response.data.calDaysArray;
+        //
+        // this.currentDate.yearVar = this.yearVar;
+        // this.currentDate.monthVar = this.monthVarUnit;
+        // this.currentDate.dayVar = this.dayVar;
+
 
         console.log(response.data);
 
@@ -365,12 +409,12 @@ module.exports  = {
       // this.eventObject.eoYear = this.yearVar;
       // this.eventObject.eoMonth = this.monthVarUnit;
       // this.eventObject.eoDay = this.currentDay;
-      this.$dispatch('change-eobject', this.currentDate);
+      this.$dispatch('change-eobject', this.selectedDate);
       console.log('change-eobject');
     },
     fetchCategoryList: function() {
 
-      this.$http.get('/api/active-categories/'+ this.yearVar + '/'+ this.monthVarUnit ).then(function(response){
+      this.$http.get('/api/active-categories/'+ this.selectedDate.yearVar + '/'+ this.selectedDate.monthVar ).then(function(response){
         // console.log('response->categories=' + JSON.stringify(response.data));
         this.categories = response.data;
 
@@ -384,14 +428,15 @@ watch: {
 
 },
 created: function() {
-    this.fetchCurrentEventsForCalendar();
+  //  this.fetchCurrentEventsForCalendar();
   // this.fetchCategoryList();
 },
 components: {
 
 },
 events: {
- 'responseCategoriesEvent': 'fetchCategoryList'
+ 'responseCategoriesEvent': 'fetchCategoryList',
+ 'startFromThisDate': 'fetchCurrentEventsForCalendar'
 	}
 };
 </script>

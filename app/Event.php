@@ -85,7 +85,24 @@ class Event extends Model
      return $dt->year;
   }
 
+  // public function getStartDateAttribute($value)
+  // {
+  //   $newval = Carbon::parse($value)->toDateString();
+  //   return Carbon::parse($newval);
+  // }
+  // public function getEndDateAttribute($value)
+  // {
+  //   return Carbon::parse($value)->toDateString();
+  // }
 
+  public function getStartTimeAttribute($value)
+  {
+    return Carbon::parse($value)->format('g:i A');
+  }
+  public function getEndTimeAttribute($value)
+  {
+    return Carbon::parse($value)->format('g:i A');
+  }
   public function scopeAfterThisDate($query, $date)
   {
 

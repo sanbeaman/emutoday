@@ -1,7 +1,6 @@
 <template>
   <div class="eventview">
     <h6>{{item.title}}</h6>
-    <p>{{item.start_date}}</p>
     <template v-if="item.all_day">
       <p>All Day</p>
     </template>
@@ -69,6 +68,10 @@ module.exports  = {
     }
   },
   filters: {
+    reformatDate: function (value) {
+      var arr = value.split('-');
+      return arr[1] + '/' + arr[2] + '/' + arr[0];
+    },
     yesNo: function(value) {
       return (value == true) ? 'Yes' : 'No';
     }
