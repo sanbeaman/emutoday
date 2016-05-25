@@ -118,7 +118,7 @@
                         @endforeach
                     </ul>
                     <div class="twitterlink">
-                        <p><a href="http://emich.edu/twitter">See all EMU twitter Feeds</a></p>
+                        <p><a href="http://emich.edu/twitter">See all EMU Twitter Feeds</a></p>
 
                     </div>
                </div>

@@ -12,7 +12,7 @@ ls<template>
               <a id="month-prev" v-on:click.prevent="newMonth('prev')" class="text-left" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-before.png" alt="arrow"></a>
           </div>
           <div class="text-center calendar-title small-8 columns">
-              <p>{{monthVarWord}} {{yearVar}}</p>
+              <p>{{selectedDate.monthVarWord}} {{selectedDate.yearVar}}</p>
           </div>
           <div class="small-2 columns">
             <a id="month-next" v-on:click.prevent="newMonth('next')" class="text-right" href=""><img src="/assets/imgs/calendar/green-calendar-arrow-after.png" alt="arrow"></a>
@@ -183,11 +183,11 @@ ls<template>
       }
       .calendar  a.yes-events {
              /*pointer-events: none;*/
-               color: #ff0000;
+               color: #0f654a;
         }
       .calendar  a.no-events {
              pointer-events: none;
-               color: #00ddee;
+               color: #888;
         }
 
       .calendar-box caption{
