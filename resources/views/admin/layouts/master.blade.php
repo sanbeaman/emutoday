@@ -27,6 +27,7 @@
           <li><a href="/admin/magazine">Magazine</a></li>
           <li><a href="/admin/announcement">Announcements</a></li>
           <li><a href="/admin/event">Events</a></li>
+          <li><a href="/admin/twitter">Twitter</a></li>
         </ul>
       </div>
       <div class="top-bar-right">

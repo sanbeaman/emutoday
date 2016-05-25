@@ -104,6 +104,9 @@ Route::group(['middleware' => ['web']], function() {
       Route::get('event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
       Route::resource('event', 'Admin\EventController');
 
+      Route::get('twitter', 'Admin\TwitterController@index');
+      Route::post('approve-tweets', 'Admin\TwitterController@store');
+
     });
 
 

@@ -51,12 +51,13 @@ class MainController extends Controller
 
         }
        //$events = $this->events->where(['start_date', '>=', $currentDateTime])->orderBy('start_date','desc')->get();
-       $fakeDate = Carbon::now()->subYear();
-        $events = $this->events->where('start_date', '>=', $fakeDate->startOfDay())->orderBy('start_date', 'asc')->paginate(4);
+    //   $fakeDate = Carbon::now()->subYear();
+        $events = $this->events->where('start_date', '>=', Carbon::now()->startOfDay())->orderBy('start_date', 'asc')->paginate(4);
 
 
         $storyImages = $page->storyImages();
-        $tweets = Tweet::orderBy('created_at','desc')->paginate(4);
+      //  $tweets = Tweet::orderBy('created_at','desc')->paginate(4);
+        $tweets = Tweet::where('approved',1)->orderBy('created_at','desc')->take(4)->get();
 
         JavaScript::put([
             'jsis' => 'hi',
