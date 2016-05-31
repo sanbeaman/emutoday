@@ -1,7 +1,9 @@
 @extends('layouts.masters')
+@section('title', 'Story SHOWWWWW')
+
 @section('head')
   @parent
-    <script src="{{ '/js/ckeditor/ckeditor.js' }}"></script>
+  <script src="{{ '/js/ckeditor/ckeditor.js' }}"></script>
 @endsection
 @section('content')
   {!! Form::model($story, [
@@ -63,7 +65,21 @@
 
 @section('footer')
   @parent
+
   <script>
+  // The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
+  // Otherwise CKEditor will start in read-only mode.
+  var introduction = document.getElementById( 'introduction' );
+  introduction.setAttribute( 'contenteditable', true );
+
+  CKEDITOR.inline( 'introduction', {
+    // Allow some non-standard markup that we used in the introduction.
+    extraAllowedContent: 'a(documentation);abbr[title];code',
+    removePlugins: 'stylescombo',
+    extraPlugins: 'sourcedialog',
+    // Show toolbar on startup (optional).
+    startupFocus: true
+  } );
   	// Sample: Massive Inline Editing
 
   	// This code is generally not necessary, but it is here to demonstrate
@@ -86,8 +102,8 @@
   			editor.on( 'configLoaded', function () {
 
   				// Remove redundant plugins to make the editor simpler.
-  				editor.config.removePlugins = 'colorbutton,find,flash,font,' +
-  						'forms,iframe,image,newpage,removeformat,' +
+  				editor.config.removePlugins = 'colorbutton,find,flash,' +
+  						'forms,newpage,removeformat,' +
   						'smiley,specialchar,stylescombo,templates';
 
   				// Rearrange the toolbar layout.

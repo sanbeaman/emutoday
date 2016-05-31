@@ -61,12 +61,14 @@ elixir(function(mix) {
           | Public StyleSheet mix
           |---------------------------
            */
-
             mix.styles([
                 'zfoundation.css',
                 'resources/assets/css/foundation-datepicker.css',
-                'app.css',
-                'tweeks.css'
+                'main-styles.css',
+								'story-styles.css',
+								'magazine-styles.css',
+                'tweeks.css',
+								'media-queries.css'
               ], 'public/css/public-styles.css');
           /*
           |---------------------------

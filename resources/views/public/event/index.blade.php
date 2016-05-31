@@ -14,7 +14,7 @@
 
                     <div id="five-events-bar">
                       <div id="news-title-bar" class="row">
-                        <div class="large-12 medium-12 hide-for-small columns">
+                        <div class="large-12 medium-12 show-for-medium columns">
                           <h5 class="subhead-title">Featured Events</h5>
                         </div>
                       </div>

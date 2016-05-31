@@ -15,10 +15,19 @@
   </head>
 
   <body>
-  <div class="top-bar" id="dash-menu">
-      <div class="top-bar-left">
-        <ul class="dropdown menu" data-dropdown-menu>
-          <li class="menu-text">EMU TODAY</li>
+<header id="header" class="header">
+</header>
+<div data-sticky-container>
+  <div data-sticky data-margin-top='0' data-top-anchor="header:bottom" data-btm-anchor="content:bottom">
+    <div class="top-bar">
+      <div class="top-bar-title">
+        <ul class="menu">
+          <li><span class="navbar-text">Hello, {{ $admin->name }}</span></li>
+          <li><a href="{{ route('auth.logout') }}">Logout</a></li>
+        </ul>
+      </div> <!--  top-bar-title -->
+      <div class="top-bar-right">
+        <ul class="menu">
           <li><a href="/admin/dashboard">Dashboard</a></li>
           <li><a href="/admin/users">Users</a></li>
           <li><a href="/admin/story">Story List</a></li>
@@ -29,24 +38,27 @@
           <li><a href="/admin/event">Events</a></li>
           <li><a href="/admin/twitter">Twitter</a></li>
         </ul>
-      </div>
-      <div class="top-bar-right">
-        <ul class="menu">
-          <li><span class="navbar-text">Hello, {{ $admin->name }}</span></li>
-          <li><a href="{{ route('auth.logout') }}">Logout</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="container">
-      <div class="row column">
-          <h3>@yield('title')</h3>
-          @include('flash::message')
-          @include('admin/partials.errors')
-          @yield('content')
-          </div>
-      </div>
-      @section('footer')
-        @include('admin.layouts.scriptsfooter')
-      @show
-  </body>
+      </div> <!-- top-bar-right -->
+
+    </div> <!--  top-bar -->
+  </div> <!--  data-sticky -->
+
+</div><!--  data-sticky-container-->
+<div class="container row column" id="content">
+      @include('flash::message')
+      @include('admin/partials.errors')
+      @yield('content')
+  </div>
+  @section('footer')
+    @include('admin.layouts.scriptsfooter')
+    <script>
+    $('.top-bar').on('sticky.zf.stuckto:top', function(){
+  $(this).addClass('shrink');
+}).on('sticky.zf.unstuckfrom:top', function(){
+  $(this).removeClass('shrink');
+})
+
+</script>
+  @show
+</body>
 </html>

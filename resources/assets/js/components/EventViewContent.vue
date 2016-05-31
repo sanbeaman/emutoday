@@ -1,11 +1,7 @@
 <template>
   <div class="calendar-bar row">
-    <div class="small-6 columns">
+    <div class="small-12 columns">
       <h4>Upcoming Events</h4>
-    </div>
-    <div class="small-6 columns" columns>
-
-
     </div>
   </div>
   <div class="calendar-content">

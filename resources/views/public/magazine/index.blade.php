@@ -1,16 +1,16 @@
 {{-- Magazine Index Page --}}
 @extends('public.layouts.global')
 @section('offcanvaslist')
-  <ul class="off-canvas-list"><!-- include($_SERVER['DOCUMENT_ROOT'].'/emu-today/admin/php/top_nav.php'); -->
-      <li><a href="#">Current Issue</a></li>
-      <li><a href="#">Past Issues</a></li>
-      <li><a href="#">Alumni</a></li>
-      <li><a href="#">EMU Today</a></li>
-  </ul>
-  <ul class="off-canvas-list alt"><!-- include($_SERVER['DOCUMENT_ROOT'].'/emu-today/admin/php/secondary_nav.php'); -->
-    <li><a href="#">Subscribe to Eastern Magazine</a></li>
+	<ul class="tier2-menu vertical dropdown menu" data-dropdown-menu>
+		<li><a class="{{ set_active('emu-today/magazine/2015', 'right-arrow')}}" href="/emu-today/magazine/2015">Current Issue</a></li>
+		<li><a class="{{ set_active('emu-today/index', 'right-arrow')}}" href="#">Past Issues</a></li>
+		<li><a href="#">Alumni</a></li>
+		<li><a href="/emu-today/hub">EMU Today</a></li>
+	</ul>
+	<ul class="tier3-menu vertical dropdown menu" data-dropdown-menu>
+		<li><a href="#">Subscribe to Eastern Magazine</a></li>
     <li><a href="#">Submit a Story idea</a></li>
-  </ul>
+	</ul>
 @endsection
   @section('connectionbar')
     @include('public.magazine.partials.connectionbar')
@@ -45,9 +45,9 @@
         </div>
       </div>
       <div id="magazine-feature">
-        <div class="row collapse">
+        <div class="row">
           <div class="large-7 large-push-5 medium-12 small-12 columns">
-            <div class="row collapse photo-feature-section">
+            <div class="row photo-feature-section">
               <div class="large-6 medium-6 small-12 columns"><img class="topic-image contributor" src="/assets/imgs/magazine/back-page-image.jpg"  alt="back page image"/>
               </div>
               <div class="large-6 medium-6 small-12 columns photo-feature-text ">
@@ -63,8 +63,9 @@
 
 
           <div class="large-5 large-pull-7 medium-12 small-12 columns">
-            <div class="row collapse">
-              <div class="large-6 medium-4 small-12 columns cover-box"><img class="topic-image magazine-cover" src="/assets/imgs/magazine/magazine-cover-winter2016.jpg"  alt="magazine image"/>
+            <div class="row">
+              <div class="large-6 medium-4 show-for-medium columns cover-box">
+								<img class="topic-image magazine-cover" src="/assets/imgs/magazine/magazine-cover-winter2016.jpg"  alt="magazine image"/>
               </div>
               <div class="large-6 medium-8 small-12 columns magazine-details">
                 <h4>Winter 2016 Issue</h4>

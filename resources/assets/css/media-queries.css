@@ -1,0 +1,89 @@
+/* Small only */
+@media screen and (max-width: 39.9375em) {
+
+#tier1-nav	.icon-menu {
+		margin-top: 0;
+	}
+}
+
+/* Medium and up */
+@media screen and (min-width: 40em) {
+
+
+	#magazine-text-over-image-box{
+			position: absolute;
+			width: 100%;
+			right: 0;
+			  top: 41%;
+			padding: 1.2rem 1.5rem 1rem;
+			z-index: 800;
+			text-align: center;
+	}
+	#magazine-text-over-image-box a{
+			text-decoration: none;
+				color: #fff;
+	}
+
+
+	#magazine-text-over-image-box h2,
+	#magazine-text-over-image-box p
+	{
+			color: #fff;
+			font-weight: 600;
+			margin-bottom: .5rem;
+			text-shadow: 3px 3px 7px rgba(0, 0, 0, 0.4);
+	}
+
+	.centered-main-title{
+			padding: 0 10%;
+	}
+}
+
+/* Medium only */
+@media screen and (min-width: 40em) and (max-width: 63.9375em) {
+
+
+	#magazine-text-over-image-box h2{
+	    font-size: 4.0rem;
+
+	    line-height: 4.3rem;
+	}
+
+	#magazine-text-over-image-box p{
+			font-size: 1.3rem;
+			line-height: 1.6rem;
+			margin: 0 0rem;
+
+	}
+
+
+
+}
+
+/* Large and up */
+@media screen and (min-width: 64em) {
+
+	#magazine-text-over-image-box {
+			top: 50%;
+	}
+
+
+	#magazine-text-over-image-box h2{
+			font-size: 4.6rem;
+
+			line-height: 5.0rem;
+	}
+
+	#magazine-text-over-image-box p{
+		font-size: 1.5rem;
+		line-height: 1.8rem;
+		margin: 0 3rem;
+
+	}
+
+
+
+}
+
+/* Large only */
+@media screen and (min-width: 64em) and (max-width: 74.9375em) {}

@@ -68,7 +68,48 @@
 @endsection
 @section('footer')
   @parent
-  <div class="row">
-    <h5>Footer</h5>
-  </div>
+  <script>
+    // Sample: Massive Inline Editing
+
+    // This code is generally not necessary, but it is here to demonstrate
+    // how to customize specific editor instances on the fly. This fits this
+    // demo well because some editable elements (like headers) may
+    // require a smaller number of features.
+
+    // The "instanceCreated" event is fired for every editor instance created.
+    CKEDITOR.on( 'instanceCreated', function ( event ) {
+      var editor = event.editor,
+          element = editor.element;
+
+      // Customize editors for headers and tag list.
+      // These editors do not need features like smileys, templates, iframes etc.
+      if ( element.is( 'h1', 'h2', 'h3' ) || element.getAttribute( 'id' ) == 'taglist' ) {
+        // Customize the editor configuration on "configLoaded" event,
+        // which is fired after the configuration file loading and
+        // execution. This makes it possible to change the
+        // configuration before the editor initialization takes place.
+        editor.on( 'configLoaded', function () {
+
+          // Remove redundant plugins to make the editor simpler.
+          editor.config.removePlugins = 'colorbutton,font,' +
+              'forms,newpage,removeformat,' +
+              'smiley,templates';
+
+          // Rearrange the toolbar layout.
+          editor.config.toolbarGroups = [
+            { name: 'editing', groups: [ 'basicstyles', 'links' ] },
+            { name: 'undo' },
+            { name: 'clipboard', groups: [ 'selection', 'clipboard' ] },
+            { name: 'about' }
+          ];
+        } );
+
+
+      }
+      editor.on('change', function (evt) {
+        //getData() returns CKEditor's html content
+        console.log('Total Bytes ' + evt.editor.getData().length );
+      });
+    } );
+    </script>
 @endsection
