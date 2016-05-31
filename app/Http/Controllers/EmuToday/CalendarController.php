@@ -87,7 +87,7 @@ class CalendarController extends Controller
         'dayInMonth' => $dayInMonth,
         'groupedevents' => $groupedevents,
       ]);
-    return view('public.event.index', compact('events', 'cd','totalDaysInArray', 'monthArray', 'dayInMonth', 'varYearUnit', 'varMonthUnit', 'varDayUnit'));
+    return view('public.calendar.index', compact('events', 'cd','totalDaysInArray', 'monthArray', 'dayInMonth', 'varYearUnit', 'varMonthUnit', 'varDayUnit'));
   }
 
   public function show()

@@ -15,10 +15,6 @@
   </head>
 
   <body>
-<header id="header" class="header">
-</header>
-<div data-sticky-container>
-  <div data-sticky data-margin-top='0' data-top-anchor="header:bottom" data-btm-anchor="content:bottom">
     <div class="top-bar">
       <div class="top-bar-title">
         <ul class="menu">
@@ -41,9 +37,6 @@
       </div> <!-- top-bar-right -->
 
     </div> <!--  top-bar -->
-  </div> <!--  data-sticky -->
-
-</div><!--  data-sticky-container-->
 <div class="container row column" id="content">
       @include('flash::message')
       @include('admin/partials.errors')

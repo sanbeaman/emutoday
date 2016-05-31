@@ -1,16 +1,16 @@
 <!-- Event Views with Vues -->
-@extends('public.layouts.master', ['vueView' => 'event-form'])
+@extends('public.layouts.global', ['vueView' => 'event-form'])
 @section('content')
   <div id="content-area">
     <div id="calendar-bar">
       <div class="row">
         <div class="large-12 medium-12 small-12 columns">
-          <div class="row managehorizontalpadding">
+          <div class="row">
             <div class="large-12 medium-12 small-12 columns  noleftpadding">
               <h3 class="cal-caps toptitle">Events Calendar</h3>
             </div>
           </div>
-          <div id="five-events-container" class="row managehorizontalpadding">
+          <div id="five-events-container" class="row">
             <div class="large-12 medium-12 small-12 columns">
               <div id="five-events-bar"></div> <!--end of five images bar-->
             </div>
@@ -26,6 +26,7 @@
 </div>
 @endsection
 
-@section('footer')
+@section('scriptsfooter')
   @parent
+  <script type="text/javascript" src="/js/main.js"></script>
 @endsection

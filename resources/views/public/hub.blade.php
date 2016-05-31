@@ -127,7 +127,7 @@
 
 
            <!--Working at EMU-->
-           <div id="working-info" class="large-3 medium-12small-12 columns" data-equalizer-watch>
+           <div id="working-info" class="large-3 medium-12 small-12 columns" data-equalizer-watch>
              <div class="featured-content-block">
                <h6 class="headline-block">Working @ EMU</h6>
                <ul class="feature-list">
