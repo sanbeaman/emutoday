@@ -21,7 +21,8 @@ class UsersController extends Controller
 
     public function create(User $user)
     {
-        return view('admin.users.form', compact('user'));
+				$userRoles = \emutoday\Role::lists('name', 'id');
+        return view('admin.users.form', compact('user','userRoles' ));
     }
 
     public function store(Requests\StoreUserRequest $request)

@@ -30,11 +30,15 @@
 
 	 <div class="input-group">
 
-			 {!! Form::label('role_list', 'Roles:') !!}
+
 		@can('super', $user)
+			{!! Form::label('role_list', 'Roles:') !!}
 			 {!! Form::select('role_list[]',$userRoles, $user->roles->lists('id')->toArray() , ['class' => 'form-control', 'multiple']) !!}
 		 @else
-			 {!! Form::select('role_list[]',$userRoles, $user->roles->lists('id')->toArray() , ['class' => 'form-control', 'multiple','readonly' => 'readonly']) !!}
+			 @if($user->exists)
+			 {!! Form::label('role_list', 'Roles:') !!}
+			 {!! Form::text('role_list', $user->roles->lists('name') , ['class' => 'form-control','readonly' => 'readonly']) !!}
+		 @endif
 		 @endcan
 
 	 </div>
