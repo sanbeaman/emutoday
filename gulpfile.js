@@ -78,8 +78,7 @@ elixir(function(mix) {
             mix.styles([
                 'zfoundation.css',
                   'resources/assets/css/foundation-datepicker.css',
-                  'admin.css',
-                  'tweeks.css'
+                  'admin.css'
                 ], 'public/css/admin-styles.css');
 
 

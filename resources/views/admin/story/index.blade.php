@@ -7,7 +7,7 @@
     <a href="{{ route('admin_story_setup', ['stype' => 'story']) }}" class="button">Create Promoted Story</a>
     <a href="{{ route('admin_story_setup', ['stype' => 'storyexternal']) }}" class="button">Create External Story</a>
 
-    <table class="hover">
+    <table>
         <thead>
             <tr>
                 <th>id</th>
@@ -15,7 +15,7 @@
                 <th>Title</th>
                 <th>Slug</th>
                 <th>Author</th>
-                <th>Published</th>
+                <th>Start Date</th>
                 <th>Featured</th>
                 <th>Edit</th>
                 <th>Delete</th>
@@ -23,7 +23,7 @@
         </thead>
         <tbody>
             @foreach($storys as $story)
-                <tr class="{{ $story->published_highlight }}">
+                <tr class="{{ $story->present()->publishedHighlight }}">
                     <td>{{ $story->id }}</td>
                     <td>{{ $story->story_type }}</td>
                     <td>
@@ -31,7 +31,7 @@
                     </td>
                     <td>{{ $story->slug }}</td>
                     <td>{{ $story->author->name }}</td>
-                    <td>{{ $story->published_date }}</td>
+                    <td>{{ $story->start_date }}</td>
                     <td>{{ $story->is_featured }}</td>
                     <td>
                         <a href="{{ route('admin.story.edit', $story->id) }}">

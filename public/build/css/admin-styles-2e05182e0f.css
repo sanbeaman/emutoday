@@ -5172,10 +5172,23 @@ textarea .teaser,
   height: 100px;
   min-height: 100px;
 }
-.header {
+
+table tbody tr.isfuture {
+	background-color: #2199e8;
+}
+table tbody tr.iscurrent {
+	background-color: #e6e6e6;
+}
+table tbody tr.ispast {
+	background-color: #ffae00;
+}
+table tbody tr.isproblem {
+	background-color: #ec5840;
+}
+
+
+/*.header {
   padding: 10rem 0;
-  /*background: url("http://placehold.it/2000x500&text=this is a header") center center no-repeat;
-  background-size: cover; */
 }
 
 [data-sticky] {
@@ -5187,82 +5200,6 @@ textarea .teaser,
 
 .is-stuck .top-bar {
   padding: 1rem;
-  transition: padding .25s ease; }
-
-/*#tier1-nav .toppad{
-  padding-top: .3rem;
-}*/
-
-
-#listing-bar ul.accordion {
-    border: 0 none;
-}
-.profile-text-content.magazine h3{
-  font-size:1.3rem;
-  margin: 0;
-  color: #222222;
-}
-.article-link a:hover p{
-  text-decoration: none;
-}
-#calendar-content-bar{
-    padding: 0;
-    margin: 0;
-  background-color: #bebdbd;
-}
-
-
-.tabs {
-  margin: 0;
-  list-style-type: none;
-  background: #ffffff;
-  border: 0;
-  border-bottom: 1px solid #e6e6e6;
-
-}
-.tabs::before, .tabs::after {
-  content: ' ';
-  display: table; }
-.tabs::after {
-  clear: both; }
-  .newshub-tab-front ul{
-      list-style: none;
-      margin:0;
-      color: #333;
-  }
-  .newshub-tab-front ul li{
-      border-bottom: 1px dotted #ccc;
-  }
-  .newshub-tab-front ul li:last-of-type{
-      border-bottom: none;
-  }
-  .newshub-tab-front ul li a{
-      display: block;
-      padding: .4rem 0;
-      color: #333;
-      line-height: 1.4rem;
-  }
-  .newshub-tab-front ul li a:hover{
-      background-color: #fefefe;
-
-  }
-i.fi-play {
-  padding-left: 0.5rem;
-}
-
-
-i.fi-arrow-right.calstyle1,
-i.fi-arrow-left.calstyle1 {
-  font-size: 1rem;
-  color: #ffffff;
-}
-
-a.magazine-article-button {
-  color: #222;
-}
-
-.four-stories-block{
-  padding-bottom: 10px;
-}
+  transition: padding .25s ease; }*/
 
 /*# sourceMappingURL=admin-styles.css.map */

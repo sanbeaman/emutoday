@@ -27,14 +27,18 @@ class StoryPresenter extends Presenter
 
         return 'Not Published';
     }
-    // public function publishedHighlight()
-    // {
-    //     if ($this->published_at && $this->published_at->isFuture()) {
-    //         return 'info';
-    //     } elseif (! $this->published_at) {
-    //         return 'warning';
-    //     }
-    // }
+    public function publishedHighlight()
+    {
+        if ($this->start_date && $this->start_date->isFuture()) {
+            return 'isfuture';
+        } elseif ($this->start_date && $this->start_date->isPast() && $this->end_date && $this->end_date->isFuture()) {
+            return 'iscurrent';
+        } elseif ($this->end_date && $this->end_date->isPast()) {
+					return 'ispast';
+				} else {
+					return 'isproblem';
+				}
+    }
 
 
 }
