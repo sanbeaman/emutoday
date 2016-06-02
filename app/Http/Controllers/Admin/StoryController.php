@@ -32,6 +32,11 @@ class StoryController extends Controller
         return view('admin.story.index', compact('storys'));
     }
 
+		/**
+		 * Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
+		 * @param  [type] $stype [description]
+		 * @return [type]        [description]
+		 */
     public function setup($stype)
     {
 
@@ -178,8 +183,7 @@ class StoryController extends Controller
 
         $story = $this->storys->findOrFail($id);
 
-        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','external_link', 'story_type'));
-				$story->content = $request->story_content;
+        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','external_link', 'story_type'));
 				$story->start_date = \Carbon\Carbon::parse($request->start_date);
         $story->end_date = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
         $story->save();

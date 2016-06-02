@@ -37,7 +37,7 @@
   @else
     <div class="input-group">
         {!! Form::label('content') !!}
-        {!! Form::textarea('content', null, ['class' => 'form-control']) !!}
+				{!! Form::textarea('content', null, ['class' => 'form-control']) !!}
     </div>
   @endif
 

@@ -37,21 +37,14 @@
       </div> <!-- top-bar-right -->
 
     </div> <!--  top-bar -->
-<div class="container row column" id="content">
+<div class="container row column">
       @include('flash::message')
       @include('admin/partials.errors')
       @yield('content')
   </div>
   @section('footer')
     @include('admin.layouts.scriptsfooter')
-    <script>
-    $('.top-bar').on('sticky.zf.stuckto:top', function(){
-  $(this).addClass('shrink');
-}).on('sticky.zf.unstuckfrom:top', function(){
-  $(this).removeClass('shrink');
-})
 
-</script>
   @show
 </body>
 </html>
