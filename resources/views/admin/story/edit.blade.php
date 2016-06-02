@@ -7,7 +7,7 @@
       <script src="{{'/js/ckeditor/ckeditor.js' }}"></script>
   @endsection
 @section('content')
-    <div class="row">
+	<div class="row">
       <div class="medium-6 columns">
         <div class="row column">
           {!! Form::model($story, [
@@ -40,7 +40,7 @@
         @else
           <div class="input-group">
               {!! Form::label('content') !!}
-              {!! Form::textarea('content', null, ['class' => 'form-control']) !!}
+              {!! Form::textarea('story_content', $story->content, ['class' => 'form-control']) !!}
           </div>
         @endif
         <div class="input-group">
@@ -115,7 +115,7 @@
                                 toolbar : 'simple'
                             })
                             if (JSvars.storytype != 'storyexternal'){
-                                CKEDITOR.replace('content');
+                                CKEDITOR.replace('story_content');
                             }
 
 

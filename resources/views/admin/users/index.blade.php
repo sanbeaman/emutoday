@@ -10,6 +10,7 @@
             <tr>
                 <th>Name</th>
                 <th>E-mail</th>
+								<th>Roles</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
@@ -21,6 +22,7 @@
                         <a href="{{ route('admin.users.edit', $user->id) }}">{{ $user->name }}</a>
                     </td>
                     <td>{{ $user->email }}</td>
+										<td>{{ $user->roles->pluck('name') }}</td>
                     <td>
                         <a href="{{ route('admin.users.edit', $user->id) }}">
                             <i class="fi-pencil"></i>

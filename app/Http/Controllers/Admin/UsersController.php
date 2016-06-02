@@ -35,13 +35,17 @@ class UsersController extends Controller
     public function edit($id)
     {
         $user = $this->users->findOrFail($id);
-        return view('admin.users.form', compact('user'));
+				$userRoles = \emutoday\Role::lists('name', 'id');
+
+        return view('admin.users.form', compact('user', 'userRoles'));
     }
 
     public function update(Requests\UpdateUserRequest $request, $id)
     {
         $user = $this->users->findOrFail($id);
         $user->fill($request->only('name', 'email', 'password'))->save();
+				$rolesList = $request->input('role_list') == null ? [] : $request->input('role_list');
+        $user->roles()->sync($rolesList);
         flash()->success('User has been updated.');
         return redirect(route('admin.users.edit', $user->id));//->with('status', 'User has been updated.');
     }

@@ -166,7 +166,8 @@ class StoryController extends Controller
         JavaScript::put([
               'storytype' => $story->story_type
           ]);
-        return view('admin.story.edit', compact('story', 'tags'));
+
+				return view('admin.story.edit', compact('story', 'tags'));
 
 
     }
@@ -177,8 +178,9 @@ class StoryController extends Controller
 
         $story = $this->storys->findOrFail($id);
 
-        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','external_link', 'story_type'));
-        $story->start_date = \Carbon\Carbon::parse($request->start_date);
+        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','external_link', 'story_type'));
+				$story->content = $request->story_content;
+				$story->start_date = \Carbon\Carbon::parse($request->start_date);
         $story->end_date = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
         $story->save();
         $taglistRequest = $request->input('tag_list') == null ? [] : $request->input('tag_list');

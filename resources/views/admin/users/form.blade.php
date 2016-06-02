@@ -27,6 +27,17 @@
        {!! Form::label('password_confirmation') !!}
        {!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
    </div>
+
+	 <div class="input-group">
+
+			 {!! Form::label('role_list', 'Roles:') !!}
+		@can('super', $user)
+			 {!! Form::select('role_list[]',$userRoles, $user->roles->lists('id')->toArray() , ['class' => 'form-control', 'multiple']) !!}
+		 @else
+			 {!! Form::select('role_list[]',$userRoles, $user->roles->lists('id')->toArray() , ['class' => 'form-control', 'multiple','readonly' => 'readonly']) !!}
+		 @endcan
+
+	 </div>
    {!! Form::submit($user->exists ? 'Save User' : 'Create New User', ['class' => 'button']) !!}
 
    {!! Form::close() !!}
