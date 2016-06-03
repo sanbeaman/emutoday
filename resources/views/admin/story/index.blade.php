@@ -25,7 +25,7 @@
             @foreach($storys as $story)
                 <tr class="{{ $story->present()->publishedHighlight }}">
                     <td>{{ $story->id }}</td>
-                    <td>{{ $story->story_type }}</td>
+                    <td>{{ $story->story_folder }}</td>
                     <td>
                         <a href="{{ route('admin.story.show', $story->id) }}">{{ $story->title }}</a>
                     </td>

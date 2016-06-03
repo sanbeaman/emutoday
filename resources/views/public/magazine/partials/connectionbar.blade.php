@@ -6,7 +6,7 @@
 					<div class="large-9 large-push-3 medium-12 small-12 columns">
 						<div class="row">
 							<div class="large-5 medium-9 small-12 columns">
-								<h3 class="magazine-main-title hide-for-large"><a href="">Eastern <span class="magazine-descriptor show-for-medium-only">The Magazine of Eastern Michigan University</span><span class="magazine-descriptor-small show-for-small-only">Magazine</span></a></h3>
+								<h3 class="magazine-main-title hide-for-large"><a href="emu-today/magazine">Eastern <span class="magazine-descriptor-small hide-for-large">Magazine</span></a></h3>
 							</div>
 							<div class="large-7 medium-3 small-12 columns">
 								<div class="icon-menu">

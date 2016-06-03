@@ -217,11 +217,12 @@ class StoryController extends Controller
     public function show($id)
     {
         $story = $this->storys->findOrFail($id);
-
         $stype = $story->story_type;
 
         if ($stype == 'storyexternal') {
-            return view('admin.story.previewexternal', compact('story'));
+					$smallStoryImg = $story->storyImages()->where('image_type', 'imagesmall')->first();
+
+            return view('admin.story.previewexternal', compact('story','smallStoryImg'));
         } else if ($stype == 'storybasic') {
 
             return view('admin.story.preview', compact('story'));
