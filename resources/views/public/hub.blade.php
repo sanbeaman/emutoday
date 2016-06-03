@@ -77,9 +77,9 @@
  </div>
      </div>
      <div id="active-bar">
-       <div id="containingbox" class="row"  data-equalizer>
+       <div id="containingbox" class="row">
            <!--Calendar-->
-            <div id="calendar-info" class="large-4 medium-6 small-12 columns" data-equalizer-watch>
+            <div id="calendar-info" class="large-4 medium-6 small-12 columns">
                 <div class="row">
                     <div class="large-12 medium-12 small-12 columns">
                     <h5 class="subhead-title">Events Calendar</h5>
@@ -105,7 +105,7 @@
 
 
            <!--Twitter-->
-           <div id="twitter-info" class="large-5 medium-6 small-12 columns" data-equalizer-watch>
+           <div id="twitter-info" class="large-5 medium-6 small-12 columns">
                <div class="row">
                     <div class="large-12 medium-12 small-12 columns">
                     <h5 class="subhead-title">Twitter</h5>
@@ -127,7 +127,7 @@
 
 
            <!--Working at EMU-->
-           <div id="working-info" class="large-3 medium-12 small-12 columns" data-equalizer-watch>
+           <div id="working-info" class="large-3 medium-12 small-12 columns">
              <div class="featured-content-block">
                <h6 class="headline-block">Working @ EMU</h6>
                <ul class="feature-list">

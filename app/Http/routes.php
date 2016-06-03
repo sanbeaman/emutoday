@@ -47,7 +47,7 @@ Route::group(['middleware' => ['web']], function() {
       'getLogin' => 'auth.login',
       'getLogout' => 'auth.logout'
     ]);
-		
+
     Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
 
     Route::group(['prefix' => 'emu-today'], function() {
@@ -59,6 +59,7 @@ Route::group(['middleware' => ['web']], function() {
 
 		  // Route::get('magazine/index', 'EmuToday\MagazineController@index');
       Route::get('magazine/article/{id?}', 'EmuToday\MagazineController@article');
+			Route::get('magazine/issue/{year?}/{season?}', 'EmuToday\MagazineController@issue');
       Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
 
       Route::get('announcement/{id?}', 'EmuToday\AnnouncementController@index');

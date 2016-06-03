@@ -19,21 +19,19 @@
                   <div class="addthis magazine-top"><a href="#"><img src="/assets/imgs/icons/fake-addthis.png" alt="addthis "></a></div>
                 </div>
               </div> <!-- issue-grouping -->
-              <div id="story-listing" class="row column">
+              <div id="story-listing" class="row">
 								  @foreach ($barImgs as $barImg)
+										<div class="article-listing row column">
 										<a class="magazine-article-button" href="/emu-today/magazine/article/{{$barImg->story->id}}">
-										<div class="media-object row">
-											<div class="media-object-section small-12 medium-5 large-3 columns">
-												<div class="thumbnail">
-													<img src= "{{$barImg->present()->mainImageURL}}">
-												</div>
-											</div>
-											<div class="media-object-section main-section small-12 medium-7 large-9 columns">
-											<h3>{{$barImg->caption}}</h3>
-										  <p>{{$barImg->teaser}}</p>
+										<div class="article-img small-12 medium-5 large-3 columns">
+												<img src="{{$barImg->present()->mainImageURL}}">
 										</div>
+										<div class="article-text-teaser small-12 medium-7 large-9 columns">
+											<h3>{{$barImg->caption}}</h3>
+											<p>{{$barImg->teaser}}</p>
 										</div>
 									</a>
+									</div>
 									@endforeach
               </div> <!-- story-listing -->
             </div>

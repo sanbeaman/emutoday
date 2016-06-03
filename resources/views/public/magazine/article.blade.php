@@ -7,7 +7,6 @@
     @include('public.magazine.partials.connectionbar')
   @endsection
 @section('content')
-  <div id="content-area">
       <div id="news-story-bar" class="magazine-story">
           <div id="story-content" class="row">
             <div class="large-9 medium-8 small-12 columns">
@@ -54,7 +53,4 @@
 
           </div>
         </div>
-
-
-  </div>   <!--end content area-->
 @endsection

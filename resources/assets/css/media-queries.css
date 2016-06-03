@@ -32,6 +32,16 @@
 		padding-top:0.3rem;
 	}
 
+	.article-text-teaser{
+		margin-top: 1rem;
+		/*padding-left: 0;*/
+	}
+	#profile-text-over-image-box{
+		width: 50%;
+		top: 45%;
+		padding: 0.4rem 0.8rem 0;
+	}
+
 }
 
 /* Medium and up */
@@ -68,6 +78,14 @@
 		color: #fff;
 	}
 
+
+
+	/*
+	#profile-text-over-image-box p{
+		margin-bottom: .5rem;
+		font-size: .9rem;
+		line-height: 1.1rem;
+	}*/
 }
 
 /* Medium only */
@@ -83,9 +101,9 @@
 		padding-left: .5rem;
 		padding-right: .5rem;
 	}
-	#four-stories-bar .manageleftpadding{
+	/*#four-stories-bar .manageleftpadding{
 		padding-left: 0;
-	}
+	}*/
 	#tier2-nav ul{
 		font-size: .73rem;
 	}
@@ -116,7 +134,7 @@
 }
 */
 #tier2-nav ul li a{
-	padding: 0 .1rem 0 .5rem;
+	/*padding: 0 .1rem 0 .5rem;*/
 }
 #featured-text{
 	padding-top: 1rem;
@@ -159,7 +177,7 @@ padding-left: .6rem;
 	padding-left: .6rem;
 	padding-right: .6rem;
 }
-#profile-text-over-image-box{
+/*#profile-text-over-image-box{
 	width: 50%;
 	top: 38%;
 	padding: 1.3rem 1.2rem 1rem;
@@ -168,7 +186,7 @@ padding-left: .6rem;
 	margin-bottom: .5rem;
 	font-size: .9rem;
 	line-height: 1.1rem;
-}
+}*/
 #student-feature h4{
 	line-height: 1.2rem;
 	margin-top: 1rem;
@@ -242,9 +260,9 @@ display: none;
 	font-size: .9rem;
 	line-height: 1.2rem;
 }
-.current-issue-padding{
+/*.current-issue-padding{
 	padding: .8rem 1rem 1rem;
-}
+}*/
 
 
 }

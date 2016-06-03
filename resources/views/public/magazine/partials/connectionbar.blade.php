@@ -6,7 +6,7 @@
 					<div class="large-9 large-push-3 medium-12 small-12 columns">
 						<div class="row">
 							<div class="large-5 medium-9 small-12 columns">
-								<h3 class="magazine-main-title hide-for-large"><a href="emu-today/magazine">Eastern <span class="magazine-descriptor-small hide-for-large">Magazine</span></a></h3>
+								<h3 class="magazine-main-title hide-for-large"><a href="/emu-today/magazine">Eastern <span class="magazine-descriptor-small hide-for-large">Magazine</span></a></h3>
 							</div>
 							<div class="large-7 medium-3 small-12 columns">
 								<div class="icon-menu">
@@ -27,14 +27,16 @@
       </div><!--tier1-nav -->
     </div><!-- white-bar -->
     <div id="transparent-bar">
-      <div id="tier2-nav" class="row">
+      <div id="tier2-nav" class="magazine-menu row">
         <div class="large-10 large-push-2 medium-12 small-12 columns">
           <div class="row">
             <div class="medium-12 show-for-medium columns">
               <!-- '/admin/php/top_nav.php'); -->
-              <ul>
-                <li><a class="{{ set_active('emu-today/magazine/2015', 'right-arrow')}}" href="/emu-today/magazine/2015">Current Issue</a></li>
-                <li><a class="{{ set_active('emu-today/index', 'right-arrow')}}" href="#">Past Issues</a></li>
+              <ul id="tier2-nav-magazine">
+								<li><a class="{{ set_active('emu-today/magazine/issue')}}" href="/emu-today/magazine/issue"><i class="fi-play"></i>Current Issue</a></li>
+								<li><a class="{{ set_active('emu-today/index')}}" href="#"><i class="fi-play"></i>Past Issues</a></li>
+                {{-- <li><a class="{{ set_active('emu-today/magazine/issue', 'right-arrow')}}" href="/emu-today/magazine/issue">Current Issue</a></li>
+                <li><a class="{{ set_active('emu-today/index', 'right-arrow')}}" href="#">Past Issues</a></li> --}}
                 <li><a href="#">Alumni</a></li>
                 <li><a href="/emu-today/hub">EMU Today</a></li>
               </ul>
