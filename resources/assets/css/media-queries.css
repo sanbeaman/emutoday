@@ -4,8 +4,6 @@
 		margin-top: 0;
 	}
 
-
-
 	#logo-box{
 		padding: .1rem .6rem 0rem;
 	}
@@ -27,6 +25,20 @@
 
 /* Medium and up */
 @media screen and (min-width: 40em) {
+
+	.centered-main-title{
+		padding: 0 10%;
+	}
+	#magazine-text-over-image-box {
+		position: absolute;
+		width: 100%;
+		right: 0;
+		top: 41%;
+		padding: 1.2rem 1.5rem 1rem;
+		z-index: 800;
+		text-align: center;
+	}
+
 	#magazine-text-over-image-box h2,
 	#magazine-text-over-image-box p
 	{
@@ -35,15 +47,19 @@
 		margin-bottom: .5rem;
 		text-shadow: 3px 3px 7px rgba(0, 0, 0, 0.4);
 	}
+
+	#magazine-text-over-image-box a{
+		text-decoration: none;
+		color: #fff;
+	}
+
 }
 
 /* Medium only */
 @media screen and (min-width: 40em) and (max-width: 63.9375em) {
 
 
-	.centered-main-title{
-		padding: 0 10%;
-	}
+
 	.icon-menu {
 		float:right;
 	}
@@ -150,19 +166,7 @@ padding-left: .6rem;
 }
 /*Magazine*/
 
-#magazine-text-over-image-box {
-	position: absolute;
-	width: 100%;
-	right: 0;
-	top: 41%;
-	padding: 1.2rem 1.5rem 1rem;
-	z-index: 800;
-	text-align: center;
-}
-#magazine-text-over-image-box a{
-	text-decoration: none;
-	color: #fff;
-}
+
 
 
 #magazine-text-over-image-box{
@@ -234,12 +238,15 @@ display: none;
 
 /* Large and up */
 @media screen and (min-width: 64em) {
+
+
 	#magazine-text-over-image-box {
 		top: 50%;
 	}
 
 
 	#magazine-text-over-image-box h2{
+		color: #fff;
 		font-size: 4.6rem;
 		line-height: 5.0rem;
 	}
