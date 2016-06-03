@@ -66,6 +66,10 @@ i.fi-arrow-left.calstyle1 {
   color: #ffffff;
 }
 
+
+.media-object img {
+	max-width: 100%;
+}
 a.magazine-article-button {
   color: #222;
 }

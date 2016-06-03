@@ -59,7 +59,7 @@
           </div>
           <!-- div row removed - addedback -->
         </div>
-        <div class="large-2 large-pull-10 show-for-medium columns">&nbsp;</div>
+        <div class="large-2 large-pull-10 show-for-large columns">&nbsp;</div>
       </div>
     </div><!-- secondary-bar -->
   </div> <!-- all-connections -->

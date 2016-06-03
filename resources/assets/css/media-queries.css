@@ -2,6 +2,9 @@
 @media screen and (max-width: 39.9375em) {
 	#tier1-nav	.icon-menu {
 		margin-top: 0;
+			padding-left: 0;
+			float:left;
+			margin-bottom: 0.3rem;
 	}
 
 	#logo-box{
@@ -18,13 +21,25 @@
 		float:left;
 	}
 
-	.icon-menu {
-		float:left;
+	#news-story-bar.magazine-story {
+		padding: 0;
 	}
+	#issue-grouping .addthis {
+		float:left;
+		padding-top: 0;
+	}
+	#story-listing {
+		padding-top:0.3rem;
+	}
+
 }
 
 /* Medium and up */
 @media screen and (min-width: 40em) {
+
+	.icon-menu {
+		float:right;
+	}
 
 	.centered-main-title{
 		padding: 0 10%;
@@ -60,9 +75,7 @@
 
 
 
-	.icon-menu {
-		float:right;
-	}
+
 	.featurepadding{
 		padding-left: 0;
 	}
@@ -252,8 +265,8 @@ display: none;
 	}
 
 	#magazine-text-over-image-box p{
-		font-size: 1.5rem;
-		line-height: 1.8rem;
+		font-size: 1.8rem;
+		line-height: 2.1rem;
 		margin: 0 3rem;
 
 	}

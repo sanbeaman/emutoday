@@ -3996,8 +3996,8 @@ table.hover tr:nth-of-type(even):hover {
     display: block; }
 
 .thumbnail {
-  border: solid 4px #ffffff;
-  box-shadow: 0 0 0 1px rgba(10, 10, 10, 0.2);
+  border: none;
+  box-shadow: 0;
   display: inline-block;
   line-height: 0;
   max-width: 100%;
@@ -4006,7 +4006,7 @@ table.hover tr:nth-of-type(even):hover {
   border-radius: 0;
   margin-bottom: 1rem; }
   .thumbnail:hover, .thumbnail:focus {
-    box-shadow: 0 0 6px 1px rgba(15, 101, 74, 0.5); }
+    box-shadow: 0; }
 
 .title-bar {
   background: #0a0a0a;

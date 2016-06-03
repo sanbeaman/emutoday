@@ -1,16 +1,7 @@
 {{-- Magazine Article Page --}}
 @extends('public.layouts.global')
 @section('offcanvaslist')
-  <ul class="off-canvas-list"><!-- include($_SERVER['DOCUMENT_ROOT'].'/emu-today/admin/php/top_nav.php'); -->
-      <li><a href="#">Current Issue</a></li>
-      <li><a href="#">Past Issues</a></li>
-      <li><a href="#">Alumni</a></li>
-      <li><a href="#">EMU Today</a></li>
-  </ul>
-  <ul class="off-canvas-list alt"><!-- include($_SERVER['DOCUMENT_ROOT'].'/emu-today/admin/php/secondary_nav.php'); -->
-    <li><a href="#">Subscribe to Eastern Magazine</a></li>
-    <li><a href="#">Submit a Story idea</a></li>
-  </ul>
+	@include('public.magazine.partials.offcanvaslist')
 @endsection
   @section('connectionbar')
     @include('public.magazine.partials.connectionbar')

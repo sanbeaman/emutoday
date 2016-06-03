@@ -3996,8 +3996,8 @@ table.hover tr:nth-of-type(even):hover {
     display: block; }
 
 .thumbnail {
-  border: solid 4px #ffffff;
-  box-shadow: 0 0 0 1px rgba(10, 10, 10, 0.2);
+  border: none;
+  box-shadow: 0;
   display: inline-block;
   line-height: 0;
   max-width: 100%;
@@ -4006,7 +4006,7 @@ table.hover tr:nth-of-type(even):hover {
   border-radius: 0;
   margin-bottom: 1rem; }
   .thumbnail:hover, .thumbnail:focus {
-    box-shadow: 0 0 6px 1px rgba(15, 101, 74, 0.5); }
+    box-shadow: 0; }
 
 .title-bar {
   background: #0a0a0a;
@@ -6449,10 +6449,11 @@ h2.issue-date {
     /*padding-left: 1rem;*/
     color: #666;
     font-size: 2rem;
+		line-height:2rem;
 }
-.addthis.magazine-top{
+/*.addthis.magazine-top{
     padding-top: .8rem
-}
+}*/
 #news-story-bar.magazine-story .magazine-titlebar{
     width: 100%;
     clear: both;
@@ -6538,9 +6539,9 @@ div.featured-content-block.magazine-block + div.featured-content-block.magazine-
 #story-listing ul li img{
     width: 100%;
     }
-#story-content #story-listing h3{
+/*#story-content #story-listing h3{
     margin-top: -.4rem;
-    }
+    }*/
 .current-issue-padding{
     padding: .7rem 2.6rem 1rem;
 }
@@ -6549,6 +6550,11 @@ div.featured-content-block.magazine-block + div.featured-content-block.magazine-
 }
 img.magazine-logo {
     width: 100%;
+}
+
+#issue-grouping {
+	margin-bottom:0.3rem;
+
 }
 
 /*#tier1-nav .toppad{
@@ -6619,6 +6625,10 @@ i.fi-arrow-left.calstyle1 {
   color: #ffffff;
 }
 
+
+.media-object img {
+	max-width: 100%;
+}
 a.magazine-article-button {
   color: #222;
 }
@@ -6631,6 +6641,9 @@ a.magazine-article-button {
 @media screen and (max-width: 39.9375em) {
 	#tier1-nav	.icon-menu {
 		margin-top: 0;
+			padding-left: 0;
+			float:left;
+			margin-bottom: 0.3rem;
 	}
 
 	#logo-box{
@@ -6647,13 +6660,25 @@ a.magazine-article-button {
 		float:left;
 	}
 
-	.icon-menu {
-		float:left;
+	#news-story-bar.magazine-story {
+		padding: 0;
 	}
+	#issue-grouping .addthis {
+		float:left;
+		padding-top: 0;
+	}
+	#story-listing {
+		padding-top:0.3rem;
+	}
+
 }
 
 /* Medium and up */
 @media screen and (min-width: 40em) {
+
+	.icon-menu {
+		float:right;
+	}
 
 	.centered-main-title{
 		padding: 0 10%;
@@ -6689,9 +6714,7 @@ a.magazine-article-button {
 
 
 
-	.icon-menu {
-		float:right;
-	}
+
 	.featurepadding{
 		padding-left: 0;
 	}
@@ -6881,8 +6904,8 @@ display: none;
 	}
 
 	#magazine-text-over-image-box p{
-		font-size: 1.5rem;
-		line-height: 1.8rem;
+		font-size: 1.8rem;
+		line-height: 2.1rem;
 		margin: 0 3rem;
 
 	}

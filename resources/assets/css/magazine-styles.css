@@ -183,10 +183,11 @@ h2.issue-date {
     /*padding-left: 1rem;*/
     color: #666;
     font-size: 2rem;
+		line-height:2rem;
 }
-.addthis.magazine-top{
+/*.addthis.magazine-top{
     padding-top: .8rem
-}
+}*/
 #news-story-bar.magazine-story .magazine-titlebar{
     width: 100%;
     clear: both;
@@ -272,9 +273,9 @@ div.featured-content-block.magazine-block + div.featured-content-block.magazine-
 #story-listing ul li img{
     width: 100%;
     }
-#story-content #story-listing h3{
+/*#story-content #story-listing h3{
     margin-top: -.4rem;
-    }
+    }*/
 .current-issue-padding{
     padding: .7rem 2.6rem 1rem;
 }
@@ -283,4 +284,9 @@ div.featured-content-block.magazine-block + div.featured-content-block.magazine-
 }
 img.magazine-logo {
     width: 100%;
+}
+
+#issue-grouping {
+	margin-bottom:0.3rem;
+
 }
