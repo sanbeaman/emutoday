@@ -77,12 +77,12 @@
 										<div class="row">
 											<div class="large-12 medium-12 show-for-medium columns">
 												<!-- '/admin/php/top_nav.php'); -->
-												<ul>
-													<li><a class="{{ set_active('emu-today/hub', 'right-arrow')}}" href="/emu-today/hub">Today</a></li>
-													<li ><a class="{{ set_active('emu-today/calendar', 'right-arrow')}}" href="/emu-today/calendar">Calendar</a></li>
-													<li ><a class="{{ set_active('emu-today/announcement', 'right-arrow')}}" href="/emu-today/announcement">Announcements</a></li>
-													<li ><a class="{{ set_active('emu-today/news', 'right-arrow')}}" href="/emu-today/news">News</a></li>
-													<li ><a class="{{ set_active('emu-today/student', 'right-arrow', 1)}}" href="/emu-today/student">Student Profiles</a></li>
+												<ul id="tier2-nav-main">
+													<li><a class="{{ set_active('emu-today/hub')}}" href="/emu-today/hub"><i class="fi-play"></i>Today</a></li>
+													<li ><a class="{{ set_active('emu-today/calendar')}}" href="/emu-today/calendar"><i class="fi-play"></i>Calendar</a></li>
+													<li ><a class="{{ set_active('emu-today/announcement')}}" href="/emu-today/announcement"><i class="fi-play"></i>Announcements</a></li>
+													<li ><a class="{{ set_active('emu-today/news')}}" href="/emu-today/news"><i class="fi-play"></i>News</a></li>
+													<li ><a class="{{ set_active('emu-today/student')}}" href="/emu-today/student"><i class="fi-play"></i>Student Profiles</a></li>
 													<li><a href="#">Athletics</a></li>
 												</ul>
 											</div>
