@@ -65,7 +65,7 @@
 
                 </div>
          </div>
-         <div class="large-3 medium-3 small-12 columns">
+         <div class="large-3 medium-4 small-12 columns">
               <div class="featured-content-block">
                   <h6 class="headline-block">Featured video</h6>
                   <a href="https://www.youtube.com/watch?v=v-3BGoQtOsY" target="blank"><img src="{{'/assets/imgs/home/video_featured.png'}}" alt="featured video"></a>
