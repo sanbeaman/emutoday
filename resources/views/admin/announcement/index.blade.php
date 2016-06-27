@@ -79,7 +79,7 @@
 	<script>
 $(function () {
 			var table = $('#main-announcement-table').DataTable({
-				"ajax": "http://emutoday.app/api/announcement",
+				"ajax": "/api/announcement",
 				"columns": [
 					{"data": "id"},
 					{"data": "title"},
