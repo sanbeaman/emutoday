@@ -19,4 +19,9 @@ class Magazine extends Model
   {
       return $this->hasManyThrough('emutoday\StoryImage', 'emutoday\Story');
   }
+
+	public function mediafiles()
+	{
+			return $this->belongsToMany('emutoday\Mediafile');
+	}
 }

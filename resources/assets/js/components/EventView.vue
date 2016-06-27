@@ -14,12 +14,12 @@
 <script>
     import EventViewSideBar from './EventViewSideBar.vue'
     import EventViewContent from './EventViewContent.vue'
-    export default {
+      export default  {
         components: { EventViewSideBar, EventViewContent},
         props: [ 'varYearUnit', 'varMonthUnit','varDayUnit', ],
 
         ready() {
-        //  alert('varYearUnit');
+          console.log('varYearUnit');
         this.freshPageLand();
 
         },

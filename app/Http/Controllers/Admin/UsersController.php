@@ -27,7 +27,7 @@ class UsersController extends Controller
 
     public function store(Requests\StoreUserRequest $request)
     {
-        $this->users->create($request->only('name', 'email', 'password'));
+        $this->users->create($request->only('last_name', 'first_name', 'phone', 'email', 'password'));
         flash()->success('User has been created.');
         return redirect(route('admin.users.index'));//->with('status', 'User has been created.');
     }
@@ -44,7 +44,7 @@ class UsersController extends Controller
     public function update(Requests\UpdateUserRequest $request, $id)
     {
         $user = $this->users->findOrFail($id);
-        $user->fill($request->only('name', 'email', 'password'))->save();
+        $user->fill($request->only('last_name', 'first_name', 'phone', 'email', 'password'))->save();
 				$rolesList = $request->input('role_list') == null ? [] : $request->input('role_list');
         $user->roles()->sync($rolesList);
         flash()->success('User has been updated.');
@@ -62,5 +62,18 @@ class UsersController extends Controller
         $user->delete();
         flash()->warning('User has been deleted.');
         return redirect(route('admin.users.index'));//->with('status', 'User has been deleted.');
+    }
+
+		/**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+			$user = $this->users->findOrFail($id);
+			$userRoles = $user->roles;
+			return view('admin.users.show', compact('user', 'userRoles'));
     }
 }

@@ -13,11 +13,11 @@ use JavaScript;
 
 class StoryController extends Controller
 {
-    protected $storys;
+    private $story;
 
-    public function __construct(Story $storys)
+    public function __construct(Story $story)
     {
-        $this->storys = $storys;
+        $this->story = $story;
     }
 
     /**
@@ -25,11 +25,45 @@ class StoryController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function index()
+    public function index(Request $request)
     {
-        $storys = $this->storys->with('author')->orderBy('created_at', 'desc')->paginate(10);
+				$storys =   $this->story->newQuery();
 
-        return view('admin.story.index', compact('storys'));
+				$stype = $request->get('stype');
+				$order = $request->get('order');
+				$dir = $request->get('dir');
+				$page_appends = null;
+
+				if (!$stype || $stype == 'all') {
+					$stype = 'all';
+				} else {
+					$storys = $storys->where('story_type', $stype);
+				}
+
+				if (!$order && !$dir) {
+            $order = 'created_at';
+						$dir = 'desc';
+        }
+				$storys = $storys->orderBy($order, $dir);
+				// Tell the Paginator to append the following to the page URL as well
+				$page_appends = [
+						'order' => $order,
+						'dir' => $dir,
+				];
+        $storys = $storys->paginate(5);
+				// $stypes = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+				$stypes = \emutoday\StoryType::all()->pluck('name','shortname');
+				$stypes = $stypes->prepend('all', 'all');
+
+				$data['storys'] = $storys;
+			 	$data['dir'] = $dir == 'asc' ? 'desc' : 'asc';
+			 	$data['page_appends'] = $page_appends;
+				$data['stype'] = $stype;
+				$data['stypes'] = $stypes;
+
+
+
+        return view('admin.story.index', $data);
     }
 
 		/**
@@ -101,11 +135,13 @@ class StoryController extends Controller
 
         //dd($request->input('storyTypes'));
         //
-        //
-        $pubStartDate = $request->start_date == null ?\Carbon\Carbon::now() : \Carbon\Carbon::parse($request->start_date) ;
-        $pubEndDate = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
+      //  dd($request->end_date);
+			 $pubStartDate = $request->start_date;
+			 $pubEndDate = $request->end_date;
+        // $pubStartDate = $request->start_date == null ?\Carbon\Carbon::now() : \Carbon\Carbon::parse($request->start_date) ;
+        // $pubEndDate = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
 
-        $story = $this->storys->create(
+        $story = $this->story->create(
         // ['author_id' => auth()->user()->id] + ['story_type' => $request->input('story_type') ] +  $request->only('title', 'slug', 'subtitle', 'published_at', 'teaser','content')
 
          ['author_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'teaser','content', 'external_link', 'story_type') + ['start_date' => $pubStartDate] + ['end_date' => $pubEndDate ]
@@ -146,7 +182,7 @@ class StoryController extends Controller
 
     public function addImage($id)
     {
-        $story = $this->storys->findOrFail($id);
+        $story = $this->story->findOrFail($id);
         //return 'working on it' . $story->id;
         //
         $storyImage = $story->addImage('hero');
@@ -164,7 +200,7 @@ class StoryController extends Controller
     }
     public function edit($id)
     {
-        $story = $this->storys->findOrFail($id);
+        $story = $this->story->findOrFail($id);
 
         $tags = \emutoday\Tag::lists('name', 'id');
 
@@ -181,7 +217,7 @@ class StoryController extends Controller
 
       // dd($request->input('tags'));
 
-        $story = $this->storys->findOrFail($id);
+        $story = $this->story->findOrFail($id);
 
         $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','external_link', 'story_type'));
 				$story->start_date = \Carbon\Carbon::parse($request->start_date);
@@ -202,7 +238,7 @@ class StoryController extends Controller
 
     public function confirm($id)
     {
-        $story = $this->storys->findOrFail($id);
+        $story = $this->story->findOrFail($id);
 
 
         return view('admin.story.confirm', compact('story'));
@@ -216,7 +252,7 @@ class StoryController extends Controller
     */
     public function show($id)
     {
-        $story = $this->storys->findOrFail($id);
+        $story = $this->story->findOrFail($id);
         $stype = $story->story_type;
 
         if ($stype == 'storyexternal') {
@@ -240,7 +276,7 @@ class StoryController extends Controller
 
     public function destroy($id)
     {
-        $story = $this->storys->findOrFail($id);
+        $story = $this->story->findOrFail($id);
         $story->delete();
         flash()->warning('Story has been deleted.');
         return redirect(route('admin.story.index'));//->with('status', 'Story has been deleted.');

@@ -22,7 +22,33 @@ class StoryPresenter extends Presenter
             } else {
                 $carbondate = Carbon::parse($this->start_date);
             }
-            return $carbondate->toFormattedDateString();
+            return $carbondate->toDateString();
+        }
+
+        return 'Not Published';
+    }
+		public function publishedEndDate()
+		{
+				if ($this->end_date) {
+						if ($this->end_date == '0000-00-00 00:00:00'){
+							$carbondate = Carbon::create(2016,5,5,5,5,5);
+						} else {
+								$carbondate = Carbon::parse($this->end_date);
+						}
+						return $carbondate->format('m-d-Y');
+				}
+
+				return 'No End Date';
+		}
+		public function publishedStartDate()
+    {
+        if ($this->start_date) {
+            if ($this->start_date == '0000-00-00 00:00:00'){
+              $carbondate = Carbon::create(2016,5,5,5,5,5);
+            } else {
+                $carbondate = Carbon::parse($this->start_date);
+            }
+            return $carbondate->format('m-d-Y');
         }
 
         return 'Not Published';

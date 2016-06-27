@@ -1,7 +1,9 @@
-Fix calendar title bar:
-From FirstDate to LastDate (with pagination?
-)
-fix monthPrev and monthNext arrows on calendar
+Before committing need to fix forge database tables.
+Users Table
+change columns:
+name = last_name
+add columns:
+first_name
+phone
 
-add fake announcements and Headlines
-fin admin
+Lock down Ckeditor for All Storys

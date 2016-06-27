@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Input;
 Route::group(['prefix' => 'api'], function() {
 
   Route::get('active-categories/{year?}/{month?}/{day?}','Api\CategoriesController@activeCategories');
-  Route::get('calendar/month/{year?}/{month?}/{day?}','Api\EventsController@eventsInMonth');
-  Route::get('calendar/events/{year?}/{month?}/{day?}','Api\EventsController@eventsByDay');
+  Route::get('calendar/month/{year?}/{month?}/{day?}','Api\CalendarController@eventsInMonth');
+  Route::get('calendar/events/{year?}/{month?}/{day?}','Api\CalendarController@eventsByDay');
   //events api
   Route::get('eventview', function() {
     return view('public.event.home');
@@ -21,8 +21,12 @@ Route::group(['prefix' => 'api'], function() {
     return view('public.event.form');
   });
   // Route::get('calendar/events', 'Api\EventsController@byDate');
-  Route::get('events/{id}/categories', 'Api\CategoriesController@index');
-   Route::resource('events', 'Api\EventsController');
+
+
+	Route::get('event', ['as' => 'api.event', 'uses' => 'Api\EventController@index']);
+	Route::resource('events', 'Api\EventController');
+
+		Route::get('events/{id}/categories', 'Api\CategoriesController@index');
    Route::resource('categories', 'Api\CategoriesController', ['only'=>['index', 'show']] );
     Route::resource('minicalendars', 'Api\MiniCalendarsController', ['only'=>['index', 'show']] );
    Route::get('buildings', function() {
@@ -33,6 +37,11 @@ Route::group(['prefix' => 'api'], function() {
    Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
    Route::resource('story', 'Api\StoryController');
 
+	 Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
+	 Route::resource('announcement', 'Api\AnnouncementController');
+
+	 Route::get('magazine', ['as' => 'api.magazine', 'uses' => 'Api\MagazineController@index']);
+	Route::resource('magazine', 'Api\MagazineController');
 });
 
 
@@ -77,11 +86,13 @@ Route::group(['middleware' => ['web']], function() {
     Route::group(['prefix' => 'admin'], function()
     {
       Route::get('magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
+			Route::post('magazine/{magazine}/addCoverImage', ['as' => 'store_magazine_cover', 'uses' => 'Admin\MagazineController@addCoverImage']);
+			Route::put('magazine/{mediafile}/updateCoverImage/', ['as' => 'update_magazine_cover', 'uses' => 'Admin\MagazineController@updateCoverImage']);
 
       Route::resource('magazine', 'Admin\MagazineController');
 
       Route::get('users/{users}/confirm', ['as' => 'admin.users.confirm', 'uses' => 'Admin\UsersController@confirm']);
-      Route::resource('users', 'Admin\UsersController', ['except' => ['show'] ]);
+      Route::resource('users', 'Admin\UsersController');
 
 
       Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
@@ -95,7 +106,8 @@ Route::group(['middleware' => ['web']], function() {
       Route::resource('story', 'Admin\StoryController');
 
       Route::get('announcement/{announcement}/confirm', ['as' => 'admin.announcement.confirm', 'uses' => 'Admin\AnnouncementController@confirm']);
-      Route::resource('announcement', 'Admin\AnnouncementController');
+
+			Route::resource('announcement', 'Admin\AnnouncementController');
 
       Route::get('storyimages/{storyimages}/confirm', ['as' => 'admin.storyimages.confirm', 'uses' => 'Admin\StoryImageController@confirm']);
       Route::resource('storyimages', 'Admin\StoryImageController');
@@ -107,6 +119,8 @@ Route::group(['middleware' => ['web']], function() {
 
       Route::get('event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
       Route::resource('event', 'Admin\EventController');
+
+
 
       Route::get('twitter', 'Admin\TwitterController@index');
       Route::post('approve-tweets', 'Admin\TwitterController@store');

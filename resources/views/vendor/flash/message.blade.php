@@ -7,12 +7,9 @@
         ])
 
     @else
-        <div class="callout {{ session('flash_notification.level') }}" data-closable>
-            <button class="close-button" aria-label="Close alert" type="button" data-close>
-                <span aria-hidden="true">&times;</span>
-            </button>
-
-            {!! session('flash_notification.message') !!}
+        <div class="callout callout-{{ session('flash_notification.level') }} callout-dismissible" data-closable>
+					<button type="button" class="close" data-dismiss="callout" aria-hidden="true">×</button>
+					{!! session('flash_notification.message') !!}
         </div>
     @endif
 @endif

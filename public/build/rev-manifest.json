@@ -1,6 +1,7 @@
 {
-  "css/admin-styles.css": "css/admin-styles-f4f707330d.css",
-  "css/public-styles.css": "css/public-styles-c836683360.css",
-  "js/admin-scripts.js": "js/admin-scripts-e5950a59e0.js",
-  "js/public-scripts.js": "js/public-scripts-d5543da7c7.js"
+  "css/admin-styles.css": "css/admin-styles-cacb18e325.css",
+  "css/public-styles.css": "css/public-styles-8e667de417.css",
+  "js/admin-scripts.js": "js/admin-scripts-d8fd5d865e.js",
+  "js/public-scripts.js": "js/public-scripts-928473b7a0.js",
+  "js/vendor-scripts.js": "js/vendor-scripts-65f6ea5cb3.js"
 }

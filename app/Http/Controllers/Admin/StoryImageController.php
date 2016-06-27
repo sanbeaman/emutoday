@@ -34,7 +34,7 @@ class StoryImageController extends Controller
         return view('admin.storyimages.form', compact('storyImage'));
     }
 
-    public function store(Requests\StoreUserRequest $request)
+    public function store(Requests\StoryImage_StoreRequest $request)
     {
         $this->storyImages->create($request->only('image_type'));
         //return redirect(route('backend.users.index'))->with('status', 'User has been created.');
@@ -145,7 +145,7 @@ class StoryImageController extends Controller
         return view('admin.storyimages.edit', compact('storyImage'));
     }
 
-    
+
     public function show($id)
     {
         $storyImage = $this->storyImages->findOrFail($id);

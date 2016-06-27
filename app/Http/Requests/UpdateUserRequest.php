@@ -24,8 +24,8 @@ class UpdateUserRequest extends Request
     public function rules()
     {
         return [
-            'name' => ['required'],
-            'email' => ['required', 'email', 'unique:users,email,'.$this->route('users')],
+            'last_name' => ['required'],
+						'email' => ['required', 'email', 'unique:users,email,'.$this->route('users')],
             'password' => ['required_with:password_confirmation', 'confirmed']
         ];
     }

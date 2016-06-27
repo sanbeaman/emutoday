@@ -18,7 +18,7 @@
     <div class="top-bar">
       <div class="top-bar-title">
         <ul class="menu">
-          <li><span class="navbar-text">Hello, {{ $admin->name }}</span></li>
+          <li><span class="navbar-text">Hello, {{ $admin->last_name }}</span></li>
           <li><a href="{{ route('auth.logout') }}">Logout</a></li>
         </ul>
       </div> <!--  top-bar-title -->

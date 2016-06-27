@@ -1,261 +1,195 @@
 var elixir = require('laravel-elixir');
 require('laravel-elixir-vueify');
 
-/*
- |--------------------------------------------------------------------------
- | Elixir Asset Management
- |--------------------------------------------------------------------------
- |
- | Elixir provides a clean, fluent API for defining some basic Gulp tasks
- | for your Laravel application. By default, we are compiling the Sass
- | file for our application, as well as publishing vendor resources.
- |
+	/*
+	 |--------------------------------------------------------------------------
+	 | Public Asset Management
+	 |--------------------------------------------------------------------------
+	 |
+	  */
+	elixir(function(mix) {
+		// COPY Vendor Font Files to Resource Folder
+		//
+		mix.copy('resources/assets/fonts/foundation-icons.*', 'public/fonts');
+		mix.copy('resources/assets/fonts/foundation-icons.*', 'public/build/fonts');
 
- elixir.config.assetsPath = 'public/themes/default/assets';
+		// COPY Vendor Style Files to Resource Folder
+		//
+		mix.copy('node_modules/foundation-datepicker/css/foundation-datepicker.css','resources/assets/css/foundation-datepicker.css')
 
- elixir.config.publicPath = elixir.config.assetsPath;
+		// COPY Vendor Script Files to Resource Folder
+		//
+		mix.copy('node_modules/foundation-sites/js/*.js', 'resources/assets/js/foundation');
 
+		// mix.copy('node_modules/motion-ui/dist/motion-ui.js', 'resources/assets/js/foundation');
+		mix.copy('node_modules/foundation-datepicker/js/foundation-datepicker.js','resources/assets/js/plugins');
 
-elixir.config.publicPath = 'public/themes/default/assets';
-  */
-elixir.config.js.browserify.watchify.options.poll = true;
+		// FOUNDATION SASS
+		//
+		mix.sass('public-app.scss',
+						'resources/assets/css/zfoundation.css',
+						{
+							includePaths: [
+								'node_modules/motion-ui/src',
+								'node_modules/foundation-sites/scss/'
+							],
+							outputStyles: 'expanded'
+						}
+					);
 
-/*
-elixir.config.css.sass.pluginOptions.includePaths = [
-  'node_modules/foundation-sites/scss',
-  'node_modules/font-awesome/scss'
-];
-*/
-
-// elixir.config.css.sass.pluginOptions.includePaths = [
-//   'node_modules/foundation-sites/scss',
-// ];
-
-elixir(function(mix) {
-  var rootPath = "../../../";
-  var nodePath = rootPath + "node_modules/";
-
-  var options = {
-    includePaths: [
-      'node_modules/foundation-sites/scss/',
-      'node_modules/motion-ui/src'
-    ],
-    outputStyles: 'expanded'
-  };
-
-  mix.sass('app.scss',
-          'resources/assets/css/zfoundation.css',
-          {
-            includePaths: [
-              'node_modules/motion-ui/src',
-              'node_modules/foundation-sites/scss/'
-            ],
-            outputStyles: 'expanded'
-          }
-        );
-
-  mix.copy('node_modules/foundation-datepicker/css/foundation-datepicker.css','resources/assets/css/foundation-datepicker.css')
-
-          /*
-          |---------------------------
-          | Public StyleSheet mix
-          |---------------------------
-           */
-            mix.styles([
-                'zfoundation.css',
-                'resources/assets/css/foundation-datepicker.css',
-                'main-styles.css',
-								'story-styles.css',
-								'magazine-styles.css',
-                'tweeks.css',
-								'media-queries.css'
-              ], 'public/css/public-styles.css');
-          /*
-          |---------------------------
-          | Admin StyleSheet mix
-          |---------------------------
-           */
-            mix.styles([
-                'zfoundation.css',
-                  'resources/assets/css/foundation-datepicker.css',
-                  'admin.css'
-                ], 'public/css/admin-styles.css');
+		/*
+		|---------------------------
+		| Public StyleSheet mix
+		|---------------------------
+		 */
+			mix.styles([
+					'zfoundation.css',
+					'resources/assets/css/foundation-datepicker.css',
+					'main-styles.css',
+					'story-styles.css',
+					'magazine-styles.css',
+					'tweeks.css',
+					'media-queries.css'
+				], 'public/css/public-styles.css');
 
 
+				mix.scripts(
+			    [
+			      'vendor/jquery.min.js',
+			      'vendor/what-input.min.js',
+			      'foundation/motion-ui.js',
+			      'foundation/foundation.core.js',
+			      'foundation/foundation.abide.js',
+			      'foundation/foundation.accordion.js',
+			      'foundation/foundation.accordionMenu.js',
+			      'foundation/foundation.drilldown.js',
+			      'foundation/foundation.dropdown.js',
+			      'foundation/foundation.dropdownMenu.js',
+			      'foundation/foundation.equalizer.js',
+			      'foundation/foundation.interchange.js',
+			      'foundation/foundation.magellan.js',
+			      'foundation/foundation.offcanvas.js',
+			      'foundation/foundation.orbit.js',
+			      'foundation/foundation.responsiveMenu.js',
+			      'foundation/foundation.responsiveToggle.js',
+			      'foundation/foundation.reveal.js',
+			      'foundation/foundation.slider.js',
+			      'foundation/foundation.sticky.js',
+			      'foundation/foundation.tabs.js',
+			      'foundation/foundation.toggler.js',
+			      'foundation/foundation.tooltip.js',
+			      'foundation/foundation.util.box.js',
+			      'foundation/foundation.util.keyboard.js',
+			      'foundation/foundation.util.mediaQuery.js',
+			      'foundation/foundation.util.motion.js',
+			      'foundation/foundation.util.nest.js',
+			      'foundation/foundation.util.timerAndImageLoader.js',
+			      'foundation/foundation.util.touch.js',
+			      'foundation/foundation.util.triggers.js',
+			      'resources/assets/js/plugins/foundation-datepicker.js',
+			      'app.js'
+			    ],
+			    'resources/assets/js/foundation-all.js'
+			  );
 
-  mix.copy('node_modules/motion-ui/dist/motion-ui.js', 'resources/assets/js/foundation');
-  mix.copy('node_modules/foundation-sites/js/*.js', 'resources/assets/js/foundation');
-  mix.copy('node_modules/foundation-datepicker/js/foundation-datepicker.js','resources/assets/js/plugins')
+				/*
+				|---------------------------
+				| Public Script Concat Mix
+				|---------------------------
+				 */
+					mix.scripts([
+						'resources/assets/js/foundation-all.js'
+					], 'public/js/public-scripts.js' );
 
-  mix.scripts(
-    [
-      'vendor/jquery.min.js',
-      'vendor/what-input.min.js',
-      'foundation/motion-ui.js',
-      'foundation/foundation.core.js',
-      'foundation/foundation.abide.js',
-      'foundation/foundation.accordion.js',
-      'foundation/foundation.accordionMenu.js',
-      'foundation/foundation.drilldown.js',
-      'foundation/foundation.dropdown.js',
-      'foundation/foundation.dropdownMenu.js',
-      'foundation/foundation.equalizer.js',
-      'foundation/foundation.interchange.js',
-      'foundation/foundation.magellan.js',
-      'foundation/foundation.offcanvas.js',
-      'foundation/foundation.orbit.js',
-      'foundation/foundation.responsiveMenu.js',
-      'foundation/foundation.responsiveToggle.js',
-      'foundation/foundation.reveal.js',
-      'foundation/foundation.slider.js',
-      'foundation/foundation.sticky.js',
-      'foundation/foundation.tabs.js',
-      'foundation/foundation.toggler.js',
-      'foundation/foundation.tooltip.js',
-      'foundation/foundation.util.box.js',
-      'foundation/foundation.util.keyboard.js',
-      'foundation/foundation.util.mediaQuery.js',
-      'foundation/foundation.util.motion.js',
-      'foundation/foundation.util.nest.js',
-      'foundation/foundation.util.timerAndImageLoader.js',
-      'foundation/foundation.util.touch.js',
-      'foundation/foundation.util.triggers.js',
-      'resources/assets/js/plugins/foundation-datepicker.js',
-      'app.js'
-    ],
-    'resources/assets/js/foundation-all.js'
-  );
+					mix.browserify('calview.js', 'public/js/calview.js');
+					// mix.version(['css/public-styles.css','js/public-scripts.js']);
 
-  /*
-  |---------------------------
-  | Admin Script Concat Mix
-  |---------------------------
-   */
+	});
 
-  mix.scripts([
-      'resources/assets/js/foundation-all.js'
-  ], 'public/js/admin-scripts.js' );
-
-  /*
-  |---------------------------
-  | Public Script Concat Mix
-  |---------------------------
-   */
-    mix.scripts([
-      'resources/assets/js/foundation-all.js'
-    ], 'public/js/public-scripts.js' );
-
-  mix.copy('resources/assets/fonts/foundation-icons.*', 'public/fonts');
-  mix.version(['css/public-styles.css','js/public-scripts.js','css/admin-styles.css','js/admin-scripts.js'])
-  mix.copy('resources/assets/fonts/foundation-icons.*', 'public/build/fonts');
+	/*
+	 |--------------------------------------------------------------------------
+	 | Admin Asset Management
+	 |--------------------------------------------------------------------------
+	 |
+	  */
+	elixir(function(mix) {
+		mix.copy('node_modules/admin-lte', 'public/themes/admin-lte');
 
 
-  mix.browserify('main.js', 'public/js/main.js');
-
-  });
-  /*
-  |---------------------------
-  | Public Script Concat Mix
-  |---------------------------
-   */
-    // mix.scripts([
-    //     'vendor/jquery.min.js',
-    //     'vendor/what-input.min.js',
-    //     nodePath + 'foundation-sites/dist/foundation.js',
-    //     'app.js'
-    // ], 'public/themes/default/assets/js/public-scripts.js' );
-
-    /*
-    |---------------------------
-    | Admin Script Concat Mix
-    |---------------------------
-     */
-
-    // mix.scripts([
-    //   'vendor/jquery.min.js',
-    //   'vendor/what-input.min.js',
-    //   nodePath + 'foundation-sites/dist/foundation.js',
-    //   nodePath + 'foundation-datepicker/js/foundation-datepicker.js',
-    //   'app.js'
-    // ], 'js/admin-scripts.js' );
-
-    //mix.copy('node_modules/bootstrap-sass/assets/fonts', elixir.config.publicPath+'/fonts');
-  //  mix.copy(elixir.config.assetsPath + '/foundation-icons', elixir.config.publicPath+'/fonts/foundation-icons');
-    // mix.copy(nodePath + 'font-awesome/fonts', elixir.config.publicPath+'/fonts');
-  //  mix.copy(elixir.config.assetsPath + '/foundation-icons', elixir.config.publicPath+'/fonts/foundation-icons');
-  //  mix.copy('node_modules/bootstrap-sass/assets/javascripts/bootstrap.min.js', elixir.config.assetsPath+'/js/bootstrap.js');
-    //mix.copy('node_modules/jquery/dist/jquery.min.js', elixir.config.assetsPath+'/js/jquery.js');
-    //mix.copy('node_modules/foundation-sites/scss/settings/_settings.scss', elixir.config.assetsPath+'/sass/settings.scss');
-    //mix.copy('node_modules/foundation-sites/dist/foundation.js', elixir.config.assetsPath+'/js/foundation.js');
-    //mix.copy('node_modules/moment/min/moment.min.js', elixir.config.assetsPath+'/js/moment.js');
-/*
-    mix.copy('node_modules/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js', elixir.config.assetsPath+'/js/datepicker.js');
-    mix.copy('node_modules/eonasdan-bootstrap-datetimepicker/src/sass/_bootstrap-datetimepicker.scss', elixir.config.assetsPath+'/sass/datepicker.scss');
-    mix.copy('node_modules/simplemde/dist/simplemde.min.css', elixir.config.publicPath+'/css/simplemde.css');
-    mix.copy('node_modules/simplemde/dist/simplemde.min.js', elixir.config.assetsPath+'/js/simplemde.js');
-*/
-    //mix.copy('node_modules/ckeditor', elixir.config.publicPath+'/js/ckeditor');
-    //mix.sass('foundation_backend.scss');
+		// COPY Vendor Font Files to Resource Folder
+		//
 
 
+		// COPY Vendor Style Files to Resource Folder
+		//
+		mix.copy('node_modules/admin-lte/build/bootstrap-less', 'resources/assets/less/admin-lte/bootstrap-less');
+		mix.copy('node_modules/admin-lte/build/less', 'resources/assets/less/admin-lte/less');
 
-    // Combine Styles for the public facing site pages
-    /*
-    |--***--***--***--***--***--
-    |
-    | Direct Copy Some Files to Public Folders
-    | mix.copy('node_modules/ckeditor', elixir.config.publicPath+'/js/ckeditor');
-    | redips (for dragDrop testing)
-    |
-    |--***--***--***--***--***--
-     */
+			// COPY Vendor Script Files to Resource Folder
+			//
+		// mix.copy('node_modules/moment/moment.js', 'resources/assets/js/moment.js');
+		// mix.copy('node_modules/vue-datetime-picker/src/vue-datetime-picker.js', 'resources/assets/js/vue-vendor/vue-datetime-picker.js');
 
-  /*
-  |---------------------------
-  | Public StyleSheet mix
-  |---------------------------
-   */
+		mix.copy('bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js', 'resources/assets/js/lib/bootstrap-datetimepicker.min.js');
+		mix.copy('bower_components/eonasdan-bootstrap-datetimepicker/build/*', 'public/themes/plugins/eonasdan-bootstrap-datetimepicker');
 
-    // mix.styles([
-    //
-    //     nodePath + 'foundation-sites/dist/foundation.css',
-    //     'app.css',
-    //     'tweeks.css'
-    //   ], 'public/themes/default/assets/css/public-styles.css');
-  /*
-  |---------------------------
-  | Admin StyleSheet mix
-  |---------------------------
-   */
-    // mix.styles([
-    //       nodePath + 'foundation-sites/dist/foundation.css',
-    //       nodePath + 'foundation-datepicker/css/foundation-datepicker.css',
-    //       'admin.css',
-    //       'site-mediaqueries.css'
-    //     ], 'public/themes/default/assets/css/admin-styles.css');
-  /*
-  |---------------------------
-  | Public Script Concat Mix
-  |---------------------------
-   */
-    // mix.scripts([
-    //     'vendor/jquery.min.js',
-    //     'vendor/what-input.min.js',
-    //     nodePath + 'foundation-sites/dist/foundation.js',
-    //     'app.js'
-    // ], 'public/themes/default/assets/js/public-scripts.js' );
+		// ADMIN LESS
+		//
+		mix.less('admin.less',
+						'resources/assets/css/admin-less.css',
+						{
+							includePaths: [
+								'node_modules/adminlte/build/less',
+								'node_modules/adminlte/build/bootstrap-less'
+							],
+							outputStyles: 'expanded'
+						}
+					);
+		// ADMIN SASS
+		// mix.sass('admin.scss',
+		// 					'resources/assets/css/admin-sass.css',
+		// 					{
+		// 						includePaths: [
+		// 							paths.bootstrapsass + 'stylesheets/'
+		// 						]
+		// 					}
+		// 				);
 
-    /*
-    |---------------------------
-    | Admin Script Concat Mix
-    |---------------------------
-     */
+	/*
+	|---------------------------
+	| Admin StyleSheet mix
+	|---------------------------
+	 */
+		mix.styles([
+					 'admin-less.css',
+					'jquery.datetimepicker.css',
+					'admin.css'
+				], 'public/css/admin-styles.css');
 
-    // mix.scripts([
-    //   'vendor/jquery.min.js',
-    //   'vendor/what-input.min.js',
-    //   nodePath + 'foundation-sites/dist/foundation.js',
-    //   nodePath + 'foundation-datepicker/js/foundation-datepicker.js',
-    //   'app.js'
-    // ], 'public/themes/default/assets/js/admin-scripts.js' );
-  //  mix.sass('app.scss');
+		/*
+		|---------------------------
+		| Vendor Script Concat Mix
+		|---------------------------
+		 */
+
+		mix.scripts([
+			'resources/assets/js/vendor-admin/jquery.min.js',
+			'resources/assets/js/vendor-admin/bootstrap.js',
+			'resources/assets/js/moment.js',
+		], 'public/js/vendor-scripts.js');
+
+
+		// mix.browserify('vue-admin.js', 'public/js/vue-admin.js');
+		// mix.browserify('admintools.js', 'public/js/admintools.js');
+		// mix.browserify('main-form.js', 'public/js/main-form.js');
+
+	});
+	/*
+	 |--------------------------------------------------------------------------
+	 | Version Asset Management
+	 |--------------------------------------------------------------------------
+	 |
+	  */
+	elixir(function(mix) {
+		mix.version(['css/public-styles.css','js/public-scripts.js','css/admin-styles.css', 'js/vendor-scripts.js','js/admin-scripts.js']);
+	});

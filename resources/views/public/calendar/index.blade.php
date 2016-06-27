@@ -87,7 +87,7 @@
         </div><!--end calendar bar row 1-->
 
         <div id="vueapp">
-        <component  :var-year-unit="{!! $varYearUnit !!}" }}
+        <component  :var-year-unit="{!! $varYearUnit !!}"
                     :var-month-unit="{!! $varMonthUnit !!}"
                     :var-day-unit="{!! $varDayUnit !!}"
                     is="event-view">
@@ -98,5 +98,5 @@
 
 @section('scriptsfooter')
   @parent
-  <script type="text/javascript" src="/js/main.js"></script>
+  <script type="text/javascript" src="/js/calview.js"></script>
 @endsection

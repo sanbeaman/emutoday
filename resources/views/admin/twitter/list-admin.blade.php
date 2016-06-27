@@ -4,11 +4,11 @@
 
 @foreach($tweets as $tweet)
     <div class="tweet row">
-        <div class="small-8 columns">
+        <div class="col-sm-8">
             @include('admin.twitter.tweet')
         </div>
-        <div class="small-4 columns approval">
-            <label class="radio-inline">
+        <div class="col-sm-4 approval">
+            <label class="form-group">
                 <input
                     type="radio"
                     name="approval-status-{{ $tweet->id }}"
@@ -19,7 +19,7 @@
                     >
                 Approved
             </label>
-            <label class="radio-inline">
+            <label class="form-group">
                 <input
                     type="radio"
                     name="approval-status-{{ $tweet->id }}"
@@ -35,8 +35,8 @@
 @endforeach
 
 <div class="row">
-    <div class="small-12 column">
-        <input type="submit" class="button primary float-right" value="Approve Tweets">
+    <div class="col-sm-12">
+        <input type="submit" class="btn btn-primary pull-right" value="Approve Tweets">
     </div>
 </div>
 

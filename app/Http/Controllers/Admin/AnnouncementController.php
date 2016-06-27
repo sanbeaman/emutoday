@@ -11,11 +11,11 @@ use emutoday\Http\Requests;
 class AnnouncementController extends Controller
 {
 
-  protected $announcements;
+  protected $announcement;
 
-  public function __construct(Announcement $announcements)
+  public function __construct(Announcement $announcement)
   {
-      $this->announcements = $announcements;
+      $this->announcement = $announcement;
   }
 
     /**
@@ -25,7 +25,7 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
-      $announcements = $this->announcements->orderBy('updated_at', 'desc')->get();
+      $announcements = $this->announcement->get();
 
       return view('admin.announcement.index', compact('announcements'));
     }
@@ -57,7 +57,7 @@ class AnnouncementController extends Controller
         'is_approved' => $request->is_approved,
         'is_promoted' => $request->is_promoted
     ];
-      $announcement = $this->announcements->create($data);
+      $announcement = $this->announcement->create($data);
       flash()->success('Announcement has been created.');
       return redirect(route('admin.announcement.edit', $announcement->id));//->with('status', 'Story has been created.');
     }
@@ -65,7 +65,7 @@ class AnnouncementController extends Controller
 
     public function confirm($id)
     {
-        $announcement = $this->announcements->findOrFail($id);
+        $announcement = $this->announcement->findOrFail($id);
 
 
         return view('admin.announcement.confirm', compact('announcement'));
@@ -90,7 +90,7 @@ class AnnouncementController extends Controller
      */
     public function edit($id)
     {
-      $announcement = $this->announcements->findOrFail($id);
+      $announcement = $this->announcement->findOrFail($id);
       return view('admin.announcement.edit', compact('announcement'));
     }
 
@@ -103,7 +103,7 @@ class AnnouncementController extends Controller
      */
     public function update(Request $request, $id)
     {
-      $announcement = $this->announcements->findOrFail($id);
+      $announcement = $this->announcement->findOrFail($id);
       $announcement->title = $request->title;
       $announcement->announcement = $request->announcement;
       $announcement->start_date = \Carbon\Carbon::parse($request->start_date);
@@ -126,7 +126,7 @@ class AnnouncementController extends Controller
      */
     public function destroy($id)
     {
-      $announcement = $this->announcements->findOrFail($id);
+      $announcement = $this->announcement->findOrFail($id);
       $announcement->delete();
       flash()->warning('Announcement has been deleted.');
       return redirect(route('admin.announcement.index'));//->with('status', 'Story has been deleted.');

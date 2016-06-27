@@ -1,51 +1,69 @@
 @inject('pageTemplates', 'emutoday\Http\Utilities\PageTemplates')
-@extends('admin.layouts.master')
-@section('title', 'Create New Page')
-@section('content')
+<!-- inject('storytypes', 'emutoday\Http\Utilities\StoryTypes') -->
+	@extends('admin.layouts.adminlte')
+	@section('title', 'Create New Story')
+		@section('style-plugin')
+			@parent
+			<!-- daterange picker -->
+	<link rel="stylesheet" href="/themes/adminlte/plugins/daterangepicker/daterangepicker-bs3.css">
+	<!-- bootstrap datepicker -->
+	<link rel="stylesheet" href="/themes/adminlte/plugins/datepicker/datepicker3.css">
+	<!-- iCheck for checkboxes and radio inputs -->
+	<link rel="stylesheet" href="/themes/adminlte/plugins/iCheck/all.css">
+	<!-- Bootstrap Color Picker -->
+	<link rel="stylesheet" href="/themes/adminlte/plugins/colorpicker/bootstrap-colorpicker.min.css">
+	<!-- Bootstrap time Picker -->
+	<link rel="stylesheet" href="/themes/adminlte/plugins/timepicker/bootstrap-timepicker.min.css">
+	<!-- Select2 -->
+	<link rel="stylesheet" href="/themes/adminlte/plugins/select2/select2.min.css">
 
-	<div class="row">
+	<link rel="stylesheet" href="/themes/plugins/eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+
+	<!-- bootstrap wysihtml5 - text editor -->
+	<link rel="stylesheet" href="/themes/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+	    @endsection
+
+	@section('content')
+		<section class="content">
+			<div class="row">
+				<div class="box box-primary">
 		{!! Form::model($page, [
 			'method' =>  'post',
 			'route' => ['admin.page.store']
 		]) !!}
 		{{ csrf_field() }}
-		<div class="medium-2 columns">
-		    <div class="input-group">
+		<div class="box-header with-border">
+				<h3 class="box-title">PAGE </h3>
+		</div> 	<!-- /.box-header -->
+		<div class="box-body">
+			<div class="form-group">
 		        {!! Form::label('template') !!}
 				{!! Form::select('template', $pageTemplates::all(), 0) !!}
 		    </div>
-		</div>
-		<div class="medium-2 columns">
-			<div class="input-group">
+				<div class="form-group">
 				{!! Form::label('uri') !!}
 				{!! Form::text('uri', null, ['class' => 'form-control']) !!}
 			</div>
-		</div>
-		<div class="medium-2 columns">
+		<div class="form-group">
 				{!! Form::label('start_date') !!}
 				{!! Form::text('start_date', null, ['class' => 'form-control']) !!}
 		</div>
-		<div class="medium-2 columns">
+		<div class="form-group">
 				{!! Form::label('end_date') !!}
 				{!! Form::text('end_date', null, ['class' => 'form-control']) !!}
 		</div>
-		<div class="medium-2 columns">
-			<div class="input-group">
+				<div class="form-group">
 				{!! Form::label('Active?') !!}
-			  <div class="switch medium">
-				<input class="switch-input" id="yes-no" type="checkbox" name="is_active">
-				<label class="switch-paddle" for="yes-no">
-				  <span class="show-for-sr">Is Page Active?</span>
-				  <span class="switch-active" aria-hidden="true">Yes</span>
-				  <span class="switch-inactive" aria-hidden="true">No</span>
-				</label>
+				{!! Form::label('is_active', 'yes') !!}{!! Form::radio('is_active', 1, null) !!}
+				{!! Form::label('is_active', 'no') !!}{!! Form::radio('is_active', 0, null) !!}
 			  </div>
 
-			</div>
-		</div>
-		{!! Form::submit('Create New Story', ['class' => 'button']) !!}
+			</div><!-- /box-body -->
+
+		{!! Form::submit('Create New Story', ['class' => 'btn btn-primary']) !!}
 
 		{!! Form::close() !!}
+			</div> 
 	</div> <!-- END Row top page input -->
 @endsection
 @section('scriptsfooter')

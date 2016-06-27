@@ -1,41 +1,133 @@
-@extends('admin.layouts.master')
+@extends('admin.layouts.adminlte')
 
 @section('title', 'Event')
+	@section('style-vendor')
+		@parent
+	@endsection
+
+	@section('style-plugin')
+		@parent
+		<!-- DataTables -->
+<link rel="stylesheet" href="/themes/adminlte/plugins/datatables/dataTables.bootstrap.css">
+	@endsection
+
+	@section('style-app')
+		@parent
+	@endsection
 
 @section('content')
-  <a href="{{ route('admin.event.create') }}" class="button">Create New Event</a>
-  <table class="hover">
-        <thead>
-            <tr>
-                <th>id</th>
-                <th>Title</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($events as $event)
-                <tr class="">
-                    <td>{{ $event->id }}</td>
-                    <td>{{ $event->title }}</td>
-                    <td>{{ $event->start_date}}</td>
-                    <td>{{ $event->end_date }}</td>
-                    <td>
-                        <a href="{{ route('admin.event.edit', $event->id) }}">
-                            <i class="fi-pencil"></i>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="{{ route('admin.event.confirm', $event->id) }}">
-                            <i class="fi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+	<!-- Main content -->
+	<section class="content">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">Event List</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+						<table id="main-event-table" class="table table-bordered table-hover">
+							<thead>
+								<tr>
+		                <th class="text-center">ID</th>
+		                <th class="text-left">Title</th>
+										<th class="text-center">Featured</th>
+										<th class="text-left">Approved</th>
+										<th class="text-center">Canceled</th>
+										<th class="text-left">Promoted</th>
+										<th class="text-left">Start Date</th>
+										<th class="text-left">End Date</th>
+										<th class="text-left">Edit</th>
+										<th class="text-left">Delete</th>
+		            </tr>
+							</thead>
 
-    {!! $events->render() !!}
+						</table>
+						{{-- {!! $storys->render() !!} --}}
+						{{-- {{ $storys->links() }} --}}
+					</div>
+					<!-- /.box-body -->
+				</div>
+				<!-- /.box -->
+
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+
+
+
+	</section>
+	<!-- /.content -->
 @endsection
+@section('footer-plugin')
+	@parent
+	<script src="/themes/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
+
+<script src="/themes/adminlte/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/themes/adminlte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/themes/adminlte/plugins/fastclick/fastclick.js"></script>
+@endsection
+
+
+
+@section('footer-script')
+	@parent
+	<script>
+
+
+		$(function () {
+
+			var table = $('#main-event-table').DataTable({
+				"ajax": "http://emutoday.app/api/event",
+				"columns": [
+					{"data": "id"},
+					{"data": "title"},
+					{"data": "featured"},
+					{"data": "approved"},
+					{"data": "canceled"},
+					{"data": "promoted"},
+					{"data": "start_date"},
+					{"data": "end_date"},
+					{"date": null,
+						"defaultContent": "<i class='fa fa-pencil'></i>"
+					},
+					{"date": null,
+						"defaultContent": "<i class='fa fa-trash'></i>"
+					}
+				]
+			});
+			//
+			// function openroute(rte,id){
+			// 	window.location.href =
+			// }
+			//
+
+			$('#main-event-table tbody').on('click', '.fa-pencil', function () {
+
+				var data = table.row( $(this).parents('tr') ).data();
+			//	var storyid = data["id"];
+				window.location.href = '/admin/event/'+ data["id"] + '/edit';
+
+				//openroute('edit',data["id"]);
+				// var data = table.row( $(this).parents('tr') ).data();
+				// 	alert( data["id"]);
+			});
+
+			$('#main-event-table tbody').on('click', '.fa-trash', function () {
+
+				var data = table.row( $(this).parents('tr') ).data();
+			//	var storyid = data["id"];
+				window.location.href = '/admin/event/'+ data["id"] + '/confirm';
+
+				//openroute('edit',data["id"]);
+				// var data = table.row( $(this).parents('tr') ).data();
+				// 	alert( data["id"]);
+			})
+
+		});
+</script>
+
+	@endsection

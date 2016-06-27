@@ -9,6 +9,11 @@ use emutoday\Emutoday\Transformers\StoryTransformer;
 use Illuminate\Http\Request;
 use emutoday\Http\Requests\Api\Story_StoreRequest;
 
+use emutoday\Emutoday\Transformers\FractalStoryTransformer;
+use League\Fractal\Manager;
+use League\Fractal;
+
+
 class StoryController extends ApiController
 {
     /**
@@ -35,13 +40,27 @@ class StoryController extends ApiController
         // 2. Now way to attach metadata
         // 3. Linking db structurte to the API Output.. need to hide some data
         // 4. No error Checking
+				$fractal = new Manager();
 
         $storys = Story::all();
 
-        return $this->respond([
-            'data' => $this->storyTransformer->transformCollection($storys->all())
-        ]);
+				$resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformer);
+					// Turn all of that into a JSON string
+					return $fractal->createData($resource)->toJson();
+        // return $this->respond([
+        //     'data' => $this->storyTransformer->transformCollection($storys->all())
+        // ]);
     }
+		// public function index()
+		// {
+		//
+		//
+		// 		$storys = Story::all();
+		//
+		// 		return $this->respond([
+		// 				'data' => $this->storyTransformer->transformCollection($storys->all())
+		// 		]);
+		// }
 
     /**
      * Show the form for creating a new resource.

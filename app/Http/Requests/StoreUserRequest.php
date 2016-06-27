@@ -24,8 +24,8 @@ class StoreUserRequest extends Request
     public function rules()
     {
         return [
-            'name' => ['required'],
-            'email' => ['required', 'email', 'unique:users'],
+            'last_name' => ['required'],
+						'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'confirmed']
         ];
     }

@@ -1,7 +1,10 @@
 <div id="redips-drag">
     <!-- tables inside this DIV could have drag-able content -->
     <!-- left container -->
-    <div id="left">
+		<div class="row">
+
+
+    <div id="left" class="col-md-6">
         <table id="table1">
             <colgroup>
                 <col width="50"/>
@@ -34,7 +37,7 @@
     </div>
 
     <!-- right container -->
-    <div id="right">
+    <div id="right" class="col-md-6">
         <table id="table2">
         <colgroup>
             <col width="500" />
@@ -75,5 +78,5 @@
     	<input type="button" value="Relocate" class="button" onclick="javascript:reloc()"/>
     </div>
 
-
+		</div>
 </div> <!-- END redips-drag -->
