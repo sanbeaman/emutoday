@@ -8,7 +8,7 @@
 	@section('style-plugin')
 		@parent
 		<!-- DataTables -->
-	<link rel="stylesheet" href="/themes/adminlte/plugins/datatables/dataTables.bootstrap.css">
+	<link rel="stylesheet" href="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.css">
 		<!-- iCheck for checkboxes and radio inputs -->
 		<link rel="stylesheet" href="/themes/admin-lte/plugins/iCheck/all.css">
 
@@ -83,13 +83,13 @@
 @endsection
 @section('footer-plugin')
 	@parent
-	<script src="/themes/adminlte/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script src="/themes/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
 
-<script src="/themes/adminlte/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script src="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <!-- SlimScroll -->
-<script src="/themes/adminlte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<script src="/themes/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
-<script src="/themes/adminlte/plugins/fastclick/fastclick.js"></script>
+<script src="/themes/admin-lte/plugins/fastclick/fastclick.js"></script>
 @endsection
 @section('footer-script')
 	@parent

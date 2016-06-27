@@ -4,22 +4,22 @@
 	@section('style-plugin')
 		@parent
 		<!-- daterange picker -->
-<link rel="stylesheet" href="/themes/adminlte/plugins/daterangepicker/daterangepicker-bs3.css">
+<link rel="stylesheet" href="/themes/admin-lte/plugins/daterangepicker/daterangepicker-bs3.css">
 <!-- bootstrap datepicker -->
-<link rel="stylesheet" href="/themes/adminlte/plugins/datepicker/datepicker3.css">
+<link rel="stylesheet" href="/themes/admin-lte/plugins/datepicker/datepicker3.css">
 <!-- iCheck for checkboxes and radio inputs -->
-<link rel="stylesheet" href="/themes/adminlte/plugins/iCheck/all.css">
+<link rel="stylesheet" href="/themes/admin-lte/plugins/iCheck/all.css">
 <!-- Bootstrap Color Picker -->
-<link rel="stylesheet" href="/themes/adminlte/plugins/colorpicker/bootstrap-colorpicker.min.css">
+<link rel="stylesheet" href="/themes/admin-lte/plugins/colorpicker/bootstrap-colorpicker.min.css">
 <!-- Bootstrap time Picker -->
-<link rel="stylesheet" href="/themes/adminlte/plugins/timepicker/bootstrap-timepicker.min.css">
+<link rel="stylesheet" href="/themes/admin-lte/plugins/timepicker/bootstrap-timepicker.min.css">
 <!-- Select2 -->
-<link rel="stylesheet" href="/themes/adminlte/plugins/select2/select2.min.css">
+<link rel="stylesheet" href="/themes/admin-lte/plugins/select2/select2.min.css">
 
 <link rel="stylesheet" href="/themes/plugins/eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
 
 <!-- bootstrap wysihtml5 - text editor -->
-<link rel="stylesheet" href="/themes/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+<link rel="stylesheet" href="/themes/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     @endsection
 
 @section('content')
@@ -102,28 +102,28 @@
     @parent
 
 <!-- Select2 -->
-<script src="/themes/adminlte/plugins/select2/select2.full.min.js"></script>
+<script src="/themes/admin-lte/plugins/select2/select2.full.min.js"></script>
 <!-- InputMask -->
-<script src="/themes/adminlte/plugins/input-mask/jquery.inputmask.js"></script>
-<script src="/themes/adminlte/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
-<script src="/themes/adminlte/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+<script src="/themes/admin-lte/plugins/input-mask/jquery.inputmask.js"></script>
+<script src="/themes/admin-lte/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
+<script src="/themes/admin-lte/plugins/input-mask/jquery.inputmask.extensions.js"></script>
 <!-- date-range-picker -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-<script src="/themes/adminlte/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="/themes/admin-lte/plugins/daterangepicker/daterangepicker.js"></script>
 <!-- bootstrap datepicker -->
-<script src="/themes/adminlte/plugins/datepicker/bootstrap-datepicker.js"></script>
+<script src="/themes/admin-lte/plugins/datepicker/bootstrap-datepicker.js"></script>
 <!-- bootstrap datetimepicker -->
 <script src="/themes/plugins/eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 
 
-<script src="/themes/adminlte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<script src="/themes/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
 <!-- iCheck 1.0.1 -->
-<script src="/themes/adminlte/plugins/iCheck/icheck.min.js"></script>
+<script src="/themes/admin-lte/plugins/iCheck/icheck.min.js"></script>
 <!-- FastClick -->
-<script src="/themes/adminlte/plugins/fastclick/fastclick.js"></script>
+<script src="/themes/admin-lte/plugins/fastclick/fastclick.js"></script>
 
 <!-- Bootstrap WYSIHTML5 -->
-<script src="/themes/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<script src="/themes/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
 
 	@endsection
 	@section('footer-script')
