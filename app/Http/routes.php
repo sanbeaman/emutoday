@@ -35,6 +35,8 @@ Route::group(['prefix' => 'api'], function() {
      //return Building::ofMapType('illustrated')->get();
    });
    Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
+	 Route::post('story/delete', ['as' => 'api.story.delete', 'uses' => 'Api\StoryController@delete']);
+
    Route::resource('story', 'Api\StoryController');
 
 	 Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
@@ -42,6 +44,12 @@ Route::group(['prefix' => 'api'], function() {
 
 	 Route::get('magazine', ['as' => 'api.magazine', 'uses' => 'Api\MagazineController@index']);
 	Route::resource('magazine', 'Api\MagazineController');
+
+	Route::get('page', ['as' => 'api.page', 'uses' => 'Api\PageController@index']);
+	Route::post('page/delete', ['as' => 'api.page.delete', 'uses' => 'Api\PageController@delete']);
+
+ Route::resource('page', 'Api\PageController');
+
 });
 
 
@@ -85,9 +93,13 @@ Route::group(['middleware' => ['web']], function() {
 
     Route::group(['prefix' => 'admin'], function()
     {
+			Route::get('delete', function() {
+				return back();
+			});
       Route::get('magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
 			Route::post('magazine/{magazine}/addCoverImage', ['as' => 'store_magazine_cover', 'uses' => 'Admin\MagazineController@addCoverImage']);
 			Route::put('magazine/{mediafile}/updateCoverImage/', ['as' => 'update_magazine_cover', 'uses' => 'Admin\MagazineController@updateCoverImage']);
+			Route::post('magazine/delete', ['as' => 'admin_magazine_delete', 'uses' => 'Admin\MagazineController@delete'] );
 
       Route::resource('magazine', 'Admin\MagazineController');
 
@@ -96,6 +108,7 @@ Route::group(['middleware' => ['web']], function() {
 
 
       Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
+			Route::get('story/list/{stype}', ['as' => 'admin.story.list', 'uses' => 'Admin\StoryController@list']);
 
       // Route::get('admin/story/create/{stype}/', ['as' => 'admin_story_create', 'uses' => 'Admin\StoryController@create']);
       Route::get('story/{story}/confirm', ['as' => 'admin.story.confirm', 'uses' => 'Admin\StoryController@confirm']);
@@ -106,14 +119,16 @@ Route::group(['middleware' => ['web']], function() {
       Route::resource('story', 'Admin\StoryController');
 
       Route::get('announcement/{announcement}/confirm', ['as' => 'admin.announcement.confirm', 'uses' => 'Admin\AnnouncementController@confirm']);
-
+			Route::post('announcement/delete', ['as' => 'admin_announcement_delete', 'uses' => 'Admin\AnnouncementController@delete'] );
 			Route::resource('announcement', 'Admin\AnnouncementController');
 
       Route::get('storyimages/{storyimages}/confirm', ['as' => 'admin.storyimages.confirm', 'uses' => 'Admin\StoryImageController@confirm']);
       Route::resource('storyimages', 'Admin\StoryImageController');
 
       Route::get('page/{page}/confirm', ['as' => 'admin.page.confirm', 'uses' => 'Admin\PageController@confirm']);
-      Route::resource('page', 'Admin\PageController');
+			Route::post('page/delete', ['as' => 'admin_page_delete', 'uses' => 'Admin\PageController@delete'] );
+
+			Route::resource('page', 'Admin\PageController');
 
       Route::get('dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);
 

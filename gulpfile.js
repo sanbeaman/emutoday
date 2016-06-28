@@ -114,7 +114,8 @@ require('laravel-elixir-vueify');
 	  */
 	elixir(function(mix) {
 		mix.copy('node_modules/admin-lte', 'public/themes/admin-lte');
-
+		mix.copy('node_modules/bootstrap/fonts', 'public/build/fonts');
+		mix.copy('node_modules/font-awesome/fonts', 'public/build/fonts');
 
 		// COPY Vendor Font Files to Resource Folder
 		//
@@ -122,8 +123,11 @@ require('laravel-elixir-vueify');
 
 		// COPY Vendor Style Files to Resource Folder
 		//
-		mix.copy('node_modules/admin-lte/build/bootstrap-less', 'resources/assets/less/admin-lte/bootstrap-less');
-		mix.copy('node_modules/admin-lte/build/less', 'resources/assets/less/admin-lte/less');
+		// mix.copy('node_modules/admin-lte/build/bootstrap-less', 'resources/assets/less/admin-lte/bootstrap-less');
+		// mix.copy('node_modules/admin-lte/build/less', 'resources/assets/less/admin-lte/less');
+		// mix.copy('node_modules/bootstrap/fonts', 'resources/assets/less/fonts');
+		// mix.copy('node_modules/font-awesome/less', 'resources/assets/less/font-awesome/less');
+		// mix.copy('node_modules/bootstrap/less', 'resources/assets/less/bootstrap/less');
 
 			// COPY Vendor Script Files to Resource Folder
 			//
@@ -135,12 +139,14 @@ require('laravel-elixir-vueify');
 
 		// ADMIN LESS
 		//
+		// mix.less('admin.less',
+		// 				'resources/assets/css/admin-less.css'
+		// 			);
 		mix.less('admin.less',
 						'resources/assets/css/admin-less.css',
 						{
 							includePaths: [
-								'node_modules/adminlte/build/less',
-								'node_modules/adminlte/build/bootstrap-less'
+								'node_modules/bootstrap/less'
 							],
 							outputStyles: 'expanded'
 						}

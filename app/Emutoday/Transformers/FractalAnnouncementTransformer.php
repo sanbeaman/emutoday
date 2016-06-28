@@ -14,7 +14,7 @@ class FractalAnnouncementTransformer extends Fractal\TransformerAbstract
 	        'id'      => (int) $announcement->id,
 	        'title'    =>  $announcement->title,
 					'approved' => $announcement->is_approved,
-					'promoted' => (boolean) $announcement->is_promoted,
+					'promoted' =>  $announcement->is_promoted,
           'start_date'   => $announcement->start_date->toDateString(),
 					'end_date'   => $announcement->end_date ? $announcement->end_date->toDateString() : 'No End Date'
 	    ];

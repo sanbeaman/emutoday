@@ -10,8 +10,8 @@ namespace emutoday\Emutoday\Transformers;
             'story_id' => $story['id'],
 						'story_type' => $story['story_type'],
             'title' => $story['title'],
-            'featured' => (boolean) $story['is_featured'],
-						'live' => (boolean) $story['is_live'],
+            'featured' => $story['is_featured'],
+						'live' =>  $story['is_live'],
 						'start_date' => $story['start_date'],
 						'end_date' => $story['end_date']
         ];

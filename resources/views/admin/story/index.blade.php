@@ -1,5 +1,4 @@
 @extends('admin.layouts.adminlte')
-
 @section('title', 'Story')
 	@section('style-vendor')
 		@parent
@@ -10,19 +9,15 @@
 		<!-- DataTables -->
 <link rel="stylesheet" href="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.css">
 	@endsection
-
 	@section('style-app')
 		@parent
 	@endsection
 @section('content')
-	<!-- Main content -->
-	<section class="content">
-		<div class="row">
-			<div class="col-xs-12">
+	@include('admin.layouts.modal')
 				<div class="box">
 					<div class="box-header">
 						<h3 class="box-title">Story List</h3>
-							<button class="btn btn-primary text-right" type="button" data-toggle="collapse" data-target="#collapseNew" aria-expanded="false" aria-controls="collapseExample">
+							<button class="btn btn-primary pull-right" type="button" data-toggle="collapse" data-target="#collapseNew" aria-expanded="false" aria-controls="collapseExample">
 								<span class="glyphicon glyphicon-plus-sign"></span>
 								<span class="glyphicon glyphicon-chevron-down"></span>
 							</button>
@@ -43,11 +38,12 @@
 										<th class="text-left">Type</th>
 		                <th class="text-left">Title</th>
 										<th class="text-center">Featured</th>
-										<th class="text-left">Live</th>
+										<th class="text-center">Approved</th>
+										<th class="text-center">Live</th>
 										<th class="text-left">Start Date</th>
 										<th class="text-left">End Date</th>
-										<th class="text-left">Edit</th>
-										<th class="text-left">Delete</th>
+										<th class="text-center">Edit</th>
+										<th class="text-center">Delete</th>
 		            </tr>
 							</thead>
 
@@ -59,18 +55,11 @@
 				</div>
 				<!-- /.box -->
 
-			</div>
-			<!-- /.col -->
-		</div>
-		<!-- /.row -->
 
 			<label id="stype-filter" for="stype">Filter By Type:
 		{!! Form::select('stype', $stypes, $stype, ['id'=> 'stype1', 'class' => 'form-control input-sm']) !!}
 
 		</label>
-
-	</section>
-	<!-- /.content -->
 @endsection
 @section('footer-plugin')
 	@parent
@@ -114,15 +103,31 @@
 					{"data": "id"},
 					{"data": "type"},
 					{"data": "title"},
-					{"data": "featured"},
-					{"data": "live"},
+					{"data": "featured",
+							"render": function ( data, type, row ) {
+								var checkicon = (data == 1)?'check-square-o' :'square-o';
+								return "<i class='fa fa-"+checkicon+"'></i>";
+										}
+					},
+					{"data": "approved",
+							"render": function ( data, type, row ) {
+								var checkicon = (data == 1)?'check-square-o' :'square-o';
+								return "<i class='fa fa-"+checkicon+"'></i>";
+										}
+					},
+					{"data": "live",
+							"render": function ( data, type, row ) {
+								var checkicon = (data == 1)?'check-square-o' :'square-o';
+								return "<i class='fa fa-"+checkicon+"'></i>";
+										}
+					},
 					{"data": "start_date"},
 					{"data": "end_date"},
 					{"date": null,
-						"defaultContent": "<i class='fa fa-pencil'></i>"
+						"defaultContent": "<a href='#'><i class='fa fa-pencil'></i></a>"
 					},
 					{"date": null,
-						"defaultContent": "<i class='fa fa-trash'></i>"
+						"defaultContent": "<a href='#'><i class='fa fa-trash'></i></a>"
 					}
 				]
 			});
@@ -146,12 +151,25 @@
 			$('#main-story-table tbody').on('click', '.fa-trash', function () {
 
 				var data = table.row( $(this).parents('tr') ).data();
-			//	var storyid = data["id"];
-				window.location.href = '/admin/story/'+ data["id"] + '/confirm';
+				var dataid = data["id"];
+				var recordid = 'Record ID: '+ dataid;
+				var datatitle = data["title"];
+				var modal = $('#modal-confirm-delete').modal('show');
+				modal.find('#modal-confirm-title').html('Delete Story');
+				modal.find('#record-info').html(datatitle);
+				modal.find('#record-id').html(recordid);
+				modal.find('#hidden-id').val(dataid);
 
-				//openroute('edit',data["id"]);
-				// var data = table.row( $(this).parents('tr') ).data();
-				// 	alert( data["id"]);
+				document.getElementById("btn-confirm-delete").addEventListener("click", function(){
+					form = document.getElementById('admin_destroy');
+					form.id = 'story_id';
+					form.action = '/api/story/delete';
+					form._method = 'POST';
+					form.submit();
+				});
+				//alert('/admin/announcement/'+ data["id"] + '/confirm')
+				// window.location.href = '/admin/story/'+ data["id"] + '/confirm';
+
 			})
 			$("#stype1").change(function (e) {
 				console.log('	table.draw()');

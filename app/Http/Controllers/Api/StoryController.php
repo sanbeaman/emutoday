@@ -19,11 +19,11 @@ class StoryController extends ApiController
     /**
      * @var emutoday\Emutoday\Transformers\StoryTransformer
      */
-    protected $storyTransformer;
+    protected $story;
 
-    function __construct(StoryTransformer $storyTransformer)
+    function __construct(Story $story)
     {
-        $this->storyTransformer = $storyTransformer;
+        $this->story = $story;
 
         //$this->beforeFilter('auth.basic', ['on' => 'post']);
     }
@@ -131,6 +131,13 @@ class StoryController extends ApiController
         //
     }
 
+			public function delete(Request $request)
+			{
+				$story = $this->story->findOrFail($request->get('id'));
+				$story->delete();
+				flash()->warning('Story has been deleted.');
+				return redirect(route('admin.story.index'));//->with('status', 'Story has been deleted.');
+			}
     /**
      * Remove the specified resource from storage.
      *

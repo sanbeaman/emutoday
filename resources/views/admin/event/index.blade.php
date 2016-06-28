@@ -85,10 +85,30 @@
 				"columns": [
 					{"data": "id"},
 					{"data": "title"},
-					{"data": "featured"},
-					{"data": "approved"},
-					{"data": "canceled"},
-					{"data": "promoted"},
+					{"data": "featured",
+							"render": function ( data, type, row ) {
+								var checkicon = (data == 1)?'check-square-o' :'square-o';
+								return "<i class='fa fa-"+checkicon+"'></i>";
+										}
+					},
+					{"data": "approved",
+							"render": function ( data, type, row ) {
+								var checkicon = (data == 1)?'check-square-o' :'square-o';
+								return "<i class='fa fa-"+checkicon+"'></i>";
+										}
+					},
+					{"data": "canceled",
+							"render": function ( data, type, row ) {
+								var checkicon = (data == 1)?'check-square-o' :'square-o';
+								return "<i class='fa fa-"+checkicon+"'></i>";
+										}
+					},
+					{"data": "promoted",
+							"render": function ( data, type, row ) {
+								var checkicon = (data == 1)?'check-square-o' :'square-o';
+								return "<i class='fa fa-"+checkicon+"'></i>";
+										}
+					},
 					{"data": "start_date"},
 					{"data": "end_date"},
 					{"date": null,

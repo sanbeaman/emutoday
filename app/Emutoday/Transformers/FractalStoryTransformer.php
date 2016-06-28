@@ -15,7 +15,7 @@ class FractalStoryTransformer extends Fractal\TransformerAbstract
 	        'type'   => $story->story_type,
 	        'title'    =>  $story->title,
 					'featured' =>  $story->is_featured,
-					'approved' => $story->is_featured,
+					'approved' => $story->is_approved,
 					'live' =>  $story->is_live,
           'start_date'   => $story->start_date->toDateString(),
 					'end_date'   => $story->end_date ? $story->end_date->toDateString() : 'No End Date'

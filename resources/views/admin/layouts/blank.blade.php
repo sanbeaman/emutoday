@@ -14,8 +14,12 @@
 @section('scripthead')
 	@parent
 @endsection
+@section('content')
+	<section class="content">
+		<div class="row">
 
-
+		</div><!-- /.row -->
+	</section>
 @section('footer-vendor')
 	@parent
 @endsection

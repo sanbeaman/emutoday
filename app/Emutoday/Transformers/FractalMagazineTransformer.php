@@ -15,8 +15,8 @@ class FractalMagazineTransformer extends Fractal\TransformerAbstract
 	        'year'   => $magazine->year,
 	        'season'    =>  $magazine->season,
 					'title' => $magazine->title,
-					'published' => (boolean) $magazine->is_published,
-					'archived' => (boolean) $magazine->is_archived,
+					'published' =>  $magazine->is_published,
+					'archived' => $magazine->is_archived,
           'start_date'   => $magazine->start_date? $magazine->start_date->toDateString() : 'No Start Date'
 				];
 	}

@@ -1,102 +1,168 @@
-@extends('admin.layouts.master')
-@section('title', 'Edit Story')
+@extends('admin.layouts.adminlte')
+@section('title', 'Edit Page')
+	@section('style-vendor')
+		@parent
+	@endsection
+
+	@section('style-plugin')
+		@parent
+	@endsection
+
+
+	@section('style-plugin')
+		@parent
+		<!-- daterange picker -->
+	<link rel="stylesheet" href="/themes/admin-lte/plugins/daterangepicker/daterangepicker-bs3.css">
+	<!-- bootstrap datepicker -->
+	<link rel="stylesheet" href="/themes/admin-lte/plugins/datepicker/datepicker3.css">
+	<!-- iCheck for checkboxes and radio inputs -->
+	<link rel="stylesheet" href="/themes/admin-lte/plugins/iCheck/all.css">
+	<!-- Bootstrap Color Picker -->
+	<link rel="stylesheet" href="/themes/admin-lte/plugins/colorpicker/bootstrap-colorpicker.min.css">
+	<!-- Bootstrap time Picker -->
+	<link rel="stylesheet" href="/themes/admin-lte/plugins/timepicker/bootstrap-timepicker.min.css">
+	<!-- Select2 -->
+	<link rel="stylesheet" href="/themes/admin-lte/plugins/select2/select2.min.css">
+
+	<link rel="stylesheet" href="/themes/plugins/eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+
+	<!-- bootstrap wysihtml5 - text editor -->
+	<link rel="stylesheet" href="/themes/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+		@endsection
+		@section('style-app')
+			@parent
+			<link rel="stylesheet" href="{{'/css/my-redips.css' }}" type="text/css" media="screen" />
+
+		@endsection
+
+
 @section('scripthead')
           @parent
-          	<link rel="stylesheet" href="{{'/css/my-redips.css' }}" type="text/css" media="screen" />
+
           <script src="{{'/js/redips-drag-min.js' }}"></script>
 
     @endsection
 @section('content')
-<div class="column row">
-	{!! Form::model($page, [
-		'method' =>  'put',
-		'route' => ['admin.page.update', $page->id]
-	]) !!}
-  {{ csrf_field() }}
-	<div class="row">
+			<div class="box box-info">
+				<div class="box-header">
+					<h3 class="box-title">Page Info</h3>
+				</div>
+				<div class="box-body">
+<div class="row">
 
-		<div class="medium-2 columns">
-		    <div class="input-group">
+
+			{!! Form::model($page, [
+				'method' =>  'put',
+				'route' => ['admin.page.update', $page->id]
+			]) !!}
+		  {{ csrf_field() }}
+			<div class="col-md-2">
+		    <div class="form-group">
 		        {!! Form::label('template') !!}
 				{!! Form::text('template', $page->template, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
 		    </div>
 		</div>
-		<div class="medium-2 columns">
-			<div class="input-group">
+		<div class="col-md-2">
+			<div class="form-group">
 				{!! Form::label('uri') !!}
 				{!! Form::text('uri', null, ['class' => 'form-control']) !!}
 			</div>
 		</div>
-		<div class="medium-2 columns">
+		<div class="col-md-2">
+			<div class="form-group">
 				{!! Form::label('start_date') !!}
-				{!! Form::text('start_date', null, ['class' => 'form-control']) !!}
+				{!! Form::text('start_date', null, ['class' => 'form-control datetimepicker']) !!}
 		</div>
-		<div class="medium-2 columns">
+	</div>
+	<div class="col-md-2">
+		<div class="form-group">
 				{!! Form::label('end_date') !!}
-				{!! Form::text('end_date', null, ['class' => 'form-control']) !!}
+				{!! Form::text('end_date', null, ['class' => 'form-control datetimepicker']) !!}
 		</div>
-		<div class="medium-1 columns">
-			<div class="input-group row">
-			 {!! Form::label('is_active') !!}
-       <div class="small-6 columns">
-         {!! Form::label('is_active', 'yes', ['class'=> 'tinylabel']) !!} {!! Form::radio('is_active', true ,null) !!}
-       </div>
-       <div class="small-6 columns">
-         {!! Form::label('is_active', 'no', ['class'=> 'tinylabel']) !!} {!! Form::radio('is_active', false ,null) !!}
-       </div>
-       	</div>
-			  {{-- <div class="switch medium">
-				<input class="switch-input" id="yes-no" type="checkbox" name="is_active">
-				<label class="switch-paddle" for="yes-no">
-				  <span class="show-for-sr">Is Page Active?</span>
-				  <span class="switch-active" aria-hidden="true">Yes</span>
-				  <span class="switch-inactive" aria-hidden="true">No</span>
-				</label>
-			  </div> --}}
-
-
 		</div>
-		<div class="medium-2 columns">
-			<div class="input-group">
+		<div class="col-md-1">
+			<div class="form-group">
+					{!! Form::label('is_active', 'active') !!}
+					<div class="radio">
+
+						<label>
+							{!! Form::radio('is_active', true ,null) !!}
+							yes
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+					{!! Form::radio('is_active', false ,null) !!}
+					no
+						</label>
+					</div>
+			</div>
+
+			</div>
+
+				<div class="col-md-2">
+					<div class="form-group">
  				{!! Form::label('story_ids') !!}
 				{!! Form::text('story_ids', null, ['id'=> 'story_ids',  'class' => 'form-control', 'readonly' => 'readonly']) !!}
 			</div>
 		</div>
-		<div class="medium-1 columns">
-		{!! Form::submit('Update Page', ['class' => 'button']) !!}
+		<div class="col-md-1">
+			<div class="form-group">
+		{!! Form::submit('Update', ['class' => 'btn btn-primary']) !!}
 
 		{!! Form::close() !!}
 		</div>
+	</div>
+	</div><!-- ./row -->
+</div><!-- /.box-body -->
+</div><!-- /.box -->
 
-	</div> <!-- END Row top page input -->
-
-	<div class="row">
+	<div class="box box-info">
+			<div class="box-header">
+				<h3 class="box-title">Page Info</h3>
+			</div>
+			<div class="box-body">
 		@include('admin.page.templates.homeemutoday')
+	</div><!-- /.box-body -->
+	</div><!-- /.box -->
 
-
-
-	</div> <!-- END Row bottom page layout form -->
-
-</div>
 @endsection
-@section('scriptsfooter')
+@section('footer-vendor')
+	@parent
+@endsection
+
+@section('footer-plugin')
+	@parent
+	<script src="/themes/plugins/eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+
+@endsection
+
+@section('footer-app')
+	@parent
+@endsection
+
+@section('footer-script')
 	@parent
 	    <script src="{{ '/js/my-redips.js' }}"></script>
 
 	<script>
+
 	$(function(){
-		$('#start_date').fdatepicker({
-			format: 'yyyy-mm-dd hh:ii',
-			disableDblClickSelection: true,
-			language: 'en',
-			pickTime: true
+		$('.datetimepicker').datetimepicker({
+			format: 'YYYY-MM-DD HH:mm:ss'
 		});
-		$('#end_date').fdatepicker({
-			format: 'yyyy-mm-dd hh:ii',
-			disableDblClickSelection: true,
-			language: 'en',
-			pickTime: true
-		});
+		// $('#start_date').fdatepicker({
+		// 	format: 'yyyy-mm-dd hh:ii',
+		// 	disableDblClickSelection: true,
+		// 	language: 'en',
+		// 	pickTime: true
+		// });
+		// $('#end_date').fdatepicker({
+		// 	format: 'yyyy-mm-dd hh:ii',
+		// 	disableDblClickSelection: true,
+		// 	language: 'en',
+		// 	pickTime: true
+		// });
 
 
 	});

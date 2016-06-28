@@ -4,83 +4,136 @@
 	@section('style-plugin')
 		@parent
 			<!-- daterange picker -->
-	<link rel="stylesheet" href="/themes/admin-lte/plugins/daterangepicker/daterangepicker-bs3.css">
 	<!-- bootstrap datepicker -->
-	<link rel="stylesheet" href="/themes/admin-lte/plugins/datepicker/datepicker3.css">
 	<!-- iCheck for checkboxes and radio inputs -->
-	<link rel="stylesheet" href="/themes/admin-lte/plugins/iCheck/all.css">
 	<!-- Bootstrap Color Picker -->
-	<link rel="stylesheet" href="/themes/admin-lte/plugins/colorpicker/bootstrap-colorpicker.min.css">
 	<!-- Bootstrap time Picker -->
-	<link rel="stylesheet" href="/themes/admin-lte/plugins/timepicker/bootstrap-timepicker.min.css">
 	<!-- Select2 -->
-	<link rel="stylesheet" href="/themes/admin-lte/plugins/select2/select2.min.css">
-
-	<link rel="stylesheet" href="/themes/plugins/eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
-
 	<!-- bootstrap wysihtml5 - text editor -->
-	<link rel="stylesheet" href="/themes/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+	<link rel="stylesheet" href="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.css">
+
 			@endsection
 			@section('scripthead')
 						{{-- @include('admin.layouts.scriptshead') --}}
 			@show
 			@include('include.js')
 	@section('content')
-
+	@include('admin.layouts.modal')
 		<!-- Main content -->
-		<section class="content">
-			<a href="{{ route('admin.page.create') }}" class="button">Create New Page</a>
+
 
 			<div class="box">
 				<div class="box-header with-border">
-					<h3 class="box-title">Bordered Table</h3>
+					<h3 class="box-title">Page List Table</h3>
 				</div>
 				<!-- /.box-header -->
 				<div class="box-body">
-					<table class="table table-bordered">
-						<tr>
-							<th style="width: 10px">ID</th>
-                <th>template</th>
-                <th>uri</th>
-                <th>start date</th>
-                <th>end date</th>
-                <th>updated at</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-            @foreach($pages as $page)
-                <tr>
-                    <td><a href="{{ route('admin.page.show', $page->id) }}">{{ $page->id }}</a></td>
-                    <td>{{ $page->template }}</td>
-                    <td>{{ $page->uri }}</td>
-                    <td>{{ $page->start_date }}</td>
-                    <td>{{ $page->end_date }}</td>
-                    <td>{{ $page->updated_at}}</td>
-                    <td>
-                        <a href="{{ route('admin.page.edit', $page->id) }}">
-                          <i class='fa fa-pencil'></i>
-                        </a>
-                    </td>
-                    <td>
-                        <a href="{{ route('admin.page.confirm', $page->id) }}">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-            @endforeach
-	</table>
-				</div>
-				<!-- /.box-body -->
+					<table id="main-page-table" class="table table-bordered table-hover">
+						<thead>
+							<tr>
+									<th class="text-center">id</th>
+									<th class="text-left">Template</th>
+									<th class="text-left">uri</th>
+									<th class="text-left">Active</th>
+									<th class="text-left">Start Date</th>
+									<th class="text-left">End Date</th>
+									<th class="text-left">Edit</th>
+									<th class="text-left">Delete</th>
+							</tr>
+						</thead>
+					</table>
+				</div><!-- /.box-body -->
+					<a href="{{ route('admin.page.create') }}" class="button">Create New Page</a>
 			</div>
 			<!-- /.box -->
-</section>
 @endsection
+
 
 @section('footer-plugin')
 	@parent
-@endsection
+	<script src="/themes/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
 
+<script src="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<!-- SlimScroll -->
+<script src="/themes/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/themes/admin-lte/plugins/fastclick/fastclick.js"></script>
+@endsection
 
 @section('footer-script')
 	@parent
+	<script>
+	$(function () {
+
+		var table = $('#main-page-table').DataTable({
+			"ajax": "/api/page",
+			"columns": [
+				{"data": "id"},
+				{"data": "template"},
+				{"data": "uri"},
+				{"data": "active"},
+				{"data": "start_date"},
+				{"data": "end_date"},
+				{"date": null,
+					"defaultContent": "<a href='#'><i class='fa fa-pencil'></i></a>"
+				},
+				{"date": null,
+					"defaultContent": "<a href='#'><i class='fa fa-trash'></i></a>"
+				}
+			]
+		});
+		//
+		// function openroute(rte,id){
+		// 	window.location.href =
+		// }
+		//
+
+		$('#main-page-table tbody').on('click', '.fa-pencil', function () {
+
+			var data = table.row( $(this).parents('tr') ).data();
+		//	var storyid = data["id"];
+			window.location.href = '/admin/page/'+ data["id"] + '/edit';
+
+			//openroute('edit',data["id"]);
+			// var data = table.row( $(this).parents('tr') ).data();
+			// 	alert( data["id"]);
+		});
+		$('#main-page-table tbody').on('click', '.fa-trash', function () {
+
+			var data = table.row( $(this).parents('tr') ).data();
+			var dataid = data["id"];
+			var recordid = 'Record ID: '+ dataid;
+			var datatitle = data["title"];
+			var modal = $('#modal-confirm-delete').modal('show');
+			modal.find('#modal-confirm-title').html('Delete Page');
+			modal.find('#record-info').html(datatitle);
+			modal.find('#record-id').html(recordid);
+			modal.find('#hidden-id').val(dataid);
+
+			document.getElementById("btn-confirm-delete").addEventListener("click", function(){
+				form = document.getElementById('admin_destroy');
+				form.id = 'page_id';
+				form.action = '/admin/page/delete';
+				form._method = 'POST';
+				form.submit();
+			});
+			//alert('/admin/announcement/'+ data["id"] + '/confirm')
+			// window.location.href = '/admin/story/'+ data["id"] + '/confirm';
+
+		})
+		// $('#main-magazine-table tbody').on('click', '.fa-trash', function () {
+		//
+		// 	var data = table.row( $(this).parents('tr') ).data();
+		// //	var storyid = data["id"];
+		// 	window.location.href = '/admin/magazine/'+ data["id"] + '/confirm';
+		//
+		// 	//openroute('edit',data["id"]);
+		// 	// var data = table.row( $(this).parents('tr') ).data();
+		// 	// 	alert( data["id"]);
+		// })
+
+
+	});
+</script>
+
 @endsection

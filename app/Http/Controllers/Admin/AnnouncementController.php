@@ -117,7 +117,19 @@ class AnnouncementController extends Controller
       return redirect(route('admin.announcement.edit', $announcement->id));
       //return redirect(route('admin.story.edit', $story->id))->with('status', 'Story has been updated.');
     }
-
+		/**
+		 * Remove the specified resource from storage.
+		 *
+		 * @param  int  $id
+		 * @return \Illuminate\Http\Response
+		 */
+		public function delete(Request $request)
+		{
+			$announcement = $this->announcement->findOrFail($request->get('id'));
+			$announcement->delete();
+			flash()->warning('Announcement has been deleted.');
+			return redirect(route('admin.announcement.index'));//->with('status', 'Story has been deleted.');
+		}
     /**
      * Remove the specified resource from storage.
      *

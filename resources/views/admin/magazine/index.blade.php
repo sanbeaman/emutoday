@@ -15,10 +15,7 @@
 		@parent
 	@endsection
 @section('content')
-	<!-- Main content -->
-	<section class="content">
-		<div class="row">
-			<div class="col-xs-12">
+		@include('admin.layouts.modal')
 				<div class="box">
 					<div class="box-header">
 						<h3 class="box-title">Magazine List</h3>
@@ -46,15 +43,6 @@
 					<!-- /.box-body -->
 				</div>
 				<!-- /.box -->
-
-			</div>
-			<!-- /.col -->
-		</div>
-		<!-- /.row -->
-
-
-	</section>
-	<!-- /.content -->
     <a href="{{ route('admin.magazine.create') }}" class="button">Create New Magazine</a>
 
 
@@ -91,10 +79,10 @@
 					{"data": "archived"},
 					{"data": "start_date"},
 					{"date": null,
-						"defaultContent": "<i class='fa fa-pencil'></i>"
+						"defaultContent": "<a href='#'><i class='fa fa-pencil'></i></a>"
 					},
 					{"date": null,
-						"defaultContent": "<i class='fa fa-trash'></i>"
+						"defaultContent": "<a href='#'><i class='fa fa-trash'></i></a>"
 					}
 				]
 			});
@@ -114,17 +102,39 @@
 				// var data = table.row( $(this).parents('tr') ).data();
 				// 	alert( data["id"]);
 			});
-
 			$('#main-magazine-table tbody').on('click', '.fa-trash', function () {
 
 				var data = table.row( $(this).parents('tr') ).data();
-			//	var storyid = data["id"];
-				window.location.href = '/admin/magazine/'+ data["id"] + '/confirm';
+				var dataid = data["id"];
+				var recordid = 'Record ID: '+ dataid;
+				var datatitle = data["title"];
+				var modal = $('#modal-confirm-delete').modal('show');
+				modal.find('#modal-confirm-title').html('Delete Magazine');
+				modal.find('#record-info').html(datatitle);
+				modal.find('#record-id').html(recordid);
+				modal.find('#hidden-id').val(dataid);
 
-				//openroute('edit',data["id"]);
-				// var data = table.row( $(this).parents('tr') ).data();
-				// 	alert( data["id"]);
+				document.getElementById("btn-confirm-delete").addEventListener("click", function(){
+					form = document.getElementById('admin_destroy');
+					form.id = 'magazine_id';
+					form.action = '/admin/magazine/delete';
+					form._method = 'POST';
+					form.submit();
+				});
+				//alert('/admin/announcement/'+ data["id"] + '/confirm')
+				// window.location.href = '/admin/story/'+ data["id"] + '/confirm';
+
 			})
+			// $('#main-magazine-table tbody').on('click', '.fa-trash', function () {
+			//
+			// 	var data = table.row( $(this).parents('tr') ).data();
+			// //	var storyid = data["id"];
+			// 	window.location.href = '/admin/magazine/'+ data["id"] + '/confirm';
+			//
+			// 	//openroute('edit',data["id"]);
+			// 	// var data = table.row( $(this).parents('tr') ).data();
+			// 	// 	alert( data["id"]);
+			// })
 
 
 		});

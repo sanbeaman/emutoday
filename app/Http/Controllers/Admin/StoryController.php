@@ -66,6 +66,12 @@ class StoryController extends Controller
         return view('admin.story.index', $data);
     }
 
+		public function list($stype)
+		{
+		$storys = $this->story->where('story_type', $stype)->get();
+		return view('admin.story.list', compact('storys','stype'));
+		}
+
 		/**
 		 * Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
 		 * @param  [type] $stype [description]

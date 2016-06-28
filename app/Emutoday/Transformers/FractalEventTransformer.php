@@ -13,10 +13,10 @@ class FractalEventTransformer extends Fractal\TransformerAbstract
 	    return [
 	        'id'      => (int) $event->id,
 	        'title'    =>  $event->short_title ?  $event->short_title : $event->title,
-					'featured' => (boolean) $event->featured,
-					'approved' => (boolean) $event->approved,
-					'canceled' => (boolean) $event->canceled,
-					'promoted' => (boolean) $event->homepage,
+					'featured' => $event->featured,
+					'approved' => $event->approved,
+					'canceled' =>  $event->canceled,
+					'promoted' => $event->homepage,
           'start_date'   => $event->start_date->toDateString(),
 					'end_date'   => $event->end_date ? $event->end_date->toDateString() : 'No End Date'
 	    ];
