@@ -354,6 +354,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 							<li class="{{ set_active('admin/page*') }}"><a href="/admin/page/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
 						</ul>
 					</li>
+					<li class="treeview {{ set_active('admin/page*') }}">
+						<a href="#"><i class="fa fa-envelope-o"></i> <span>Email Blasts</span> <i class="fa fa-angle-left pull-right"></i></a>
+						<ul class="treeview-menu">
+							<li class="{{ set_active('admin/emailblast*') }}"><a href="#"><i class="fa fa-list"></i> <span>List</span></a></li>
+							<li class="{{ set_active('admin/emailblast*') }}"><a href="#"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
+						</ul>
+					</li>
 					<li class="treeview {{ set_active('admin/magazine*') }}">
 						<a href="#"><i class="fa fa-book"></i> <span>Magazine</span> <i class="fa fa-angle-left pull-right"></i></a>
 						<ul class="treeview-menu">
