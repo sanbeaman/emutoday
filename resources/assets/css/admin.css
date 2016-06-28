@@ -11,7 +11,11 @@
   left: 10px;
   border-radius: 2px;
 }
-
+/*.login-box,
+.register-box {
+   width: 100%;
+  margin: 7% auto;
+}*/
 
 
 /*div .input-group {
