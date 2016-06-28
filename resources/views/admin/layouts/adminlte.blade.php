@@ -57,7 +57,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 		<header class="main-header">
 
 			<!-- Logo -->
-			<a href="../hub" class="logo">
+			<a href="/emu-today/hub" class="logo">
 				<!-- mini logo for sidebar mini 50x50 pixels -->
 				<span class="logo-mini"><b>EMU</b></span>
 				<!-- logo for regular state and mobile devices -->
