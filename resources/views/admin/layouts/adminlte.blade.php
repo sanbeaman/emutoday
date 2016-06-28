@@ -77,11 +77,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
 						<li class="dropdown messages-menu">
 							<!-- Menu toggle button -->
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<i class="fa fa-envelope-o"></i>
-								<span class="label label-success">4</span>
+								<i class="fa fa-calendar-o"></i>
+								<span class="label label-warning">4</span>
 							</a>
 							<ul class="dropdown-menu">
-								<li class="header">You have 4 messages</li>
+								<li class="header">You have 4 events to approve</li>
 								<li>
 									<!-- inner menu: contains the messages -->
 									<ul class="menu">
@@ -89,22 +89,71 @@ scratch. This page gets rid of all links and provides the needed markup only.
 											<a href="#">
 												<div class="pull-left">
 													<!-- User Image -->
-													<img src="/assets/imgs/user/user2-160x160.jpg" class="img-circle" alt="User Image">
+													<i class="fa fa-calendar bg-orange"></i>
+													{{-- <img src="/assets/imgs/user/user2-160x160.jpg" class="img-circle" alt="User Image"> --}}
 												</div>
 												<!-- Message title and timestamp -->
 												<h4>
-													Support Team
+													Event 1
 													<small><i class="fa fa-clock-o"></i> 5 mins</small>
 												</h4>
 												<!-- The message -->
-												<p>Why not buy a new awesome theme?</p>
+												<p>EMU Picnic</p>
+											</a>
+										</li>
+										<li><!-- start message -->
+											<a href="#">
+												<div class="pull-left">
+													<!-- User Image -->
+													<i class="fa fa-calendar bg-orange"></i>
+													{{-- <img src="/assets/imgs/user/user2-160x160.jpg" class="img-circle" alt="User Image"> --}}
+												</div>
+												<!-- Message title and timestamp -->
+												<h4>
+													Event 2
+													<small><i class="fa fa-clock-o"></i> 5 mins</small>
+												</h4>
+												<!-- The message -->
+												<p>EMU Registration</p>
+											</a>
+										</li>
+										<li><!-- start message -->
+											<a href="#">
+												<div class="pull-left">
+													<!-- User Image -->
+													<i class="fa fa-calendar bg-orange"></i>
+													{{-- <img src="/assets/imgs/user/user2-160x160.jpg" class="img-circle" alt="User Image"> --}}
+												</div>
+												<!-- Message title and timestamp -->
+												<h4>
+													Event 3
+													<small><i class="fa fa-clock-o"></i> 5 mins</small>
+												</h4>
+												<!-- The message -->
+												<p>EMU Concert</p>
+											</a>
+										</li>
+										<li><!-- start message -->
+											<a href="#">
+												<div class="pull-left">
+													<!-- User Image -->
+													<i class="fa fa-calendar bg-orange"></i>
+													{{-- <img src="/assets/imgs/user/user2-160x160.jpg" class="img-circle" alt="User Image"> --}}
+												</div>
+												<!-- Message title and timestamp -->
+												<h4>
+													Event 4
+													<small><i class="fa fa-clock-o"></i> 5 mins</small>
+												</h4>
+												<!-- The message -->
+												<p>EMU Sporting Event</p>
 											</a>
 										</li>
 										<!-- end message -->
 									</ul>
 									<!-- /.menu -->
 								</li>
-								<li class="footer"><a href="#">See All Messages</a></li>
+								<li class="footer"><a href="/admin/event">See All Events</a></li>
 							</ul>
 						</li>
 						<!-- /.messages-menu -->
@@ -113,38 +162,58 @@ scratch. This page gets rid of all links and provides the needed markup only.
 						<li class="dropdown notifications-menu">
 							<!-- Menu toggle button -->
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<i class="fa fa-bell-o"></i>
-								<span class="label label-warning">10</span>
+								<i class="fa fa-bullhorn"></i>
+								<span class="label label-danger">3</span>
 							</a>
 							<ul class="dropdown-menu">
-								<li class="header">You have 10 notifications</li>
+								<li class="header">You have 3 Announcements to approve</li>
 								<li>
 									<!-- Inner Menu: contains the notifications -->
 									<ul class="menu">
 										<li><!-- start notification -->
 											<a href="#">
-												<i class="fa fa-users text-aqua"></i> 5 new members joined today
+												<i class="fa fa-bullhorn text-red"></i> Announcement 1
+											</a>
+										</li>
+										<li><!-- start notification -->
+											<a href="#">
+												<i class="fa fa-bullhorn text-red"></i> Announcement 2
+											</a>
+										</li>
+										<li><!-- start notification -->
+											<a href="#">
+												<i class="fa fa-bullhorn text-red"></i> Announcement 3
 											</a>
 										</li>
 										<!-- end notification -->
 									</ul>
 								</li>
-								<li class="footer"><a href="#">View all</a></li>
+								<li class="footer"><a href="/admin/announcement">View all</a></li>
 							</ul>
 						</li>
 						<!-- Tasks Menu -->
 						<li class="dropdown tasks-menu">
 							<!-- Menu Toggle Button -->
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<i class="fa fa-flag-o"></i>
-								<span class="label label-danger">9</span>
+								<i class="fa fa-files-o"></i>
+								<span class="label label-success">2</span>
 							</a>
 							<ul class="dropdown-menu">
-								<li class="header">You have 9 tasks</li>
+								<li class="header">You have 2 Stories to approve</li>
 								<li>
 									<!-- Inner menu: contains the tasks -->
 									<ul class="menu">
-										<li><!-- Task item -->
+										<li><!-- start notification -->
+											<a href="#">
+												<i class="fa fa-file-text text-green"></i> Story 1
+											</a>
+										</li>
+										<li><!-- start notification -->
+											<a href="#">
+												<i class="fa fa-file-text text-green"></i> Story 2
+											</a>
+										</li>
+										{{-- <li><!-- Task item -->
 											<a href="#">
 												<!-- Task title and progress text -->
 												<h3>
@@ -159,12 +228,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 													</div>
 												</div>
 											</a>
-										</li>
+										</li> --}}
 										<!-- end task item -->
 									</ul>
 								</li>
 								<li class="footer">
-									<a href="#">View all tasks</a>
+									<a href="/admin/story">View all stories</a>
 								</li>
 							</ul>
 						</li>
@@ -189,7 +258,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 									</p>
 								</li>
 								<!-- Menu Body -->
-								<li class="user-body">
+								{{-- <li class="user-body">
 									<div class="row">
 										<div class="col-xs-4 text-center">
 											<a href="#">Followers</a>
@@ -202,7 +271,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 										</div>
 									</div>
 									<!-- /.row -->
-								</li>
+								</li> --}}
 								<!-- Menu Footer-->
 								<li class="user-footer">
 									<div class="pull-left">
@@ -253,22 +322,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	      </form> --}}
 	      <!-- /.search form -->
 
-	      <!-- Sidebar Menu -->
+	      <!-- ********************************
+				Sidebar Menu
+				******************************** -->
 	      <ul class="sidebar-menu">
-					<li class="treeview {{ set_active('admin/story*') }}">
-						<a href="#"><i class="fa fa-file-text-o"></i> <span>Stories</span> <i class="fa fa-angle-left pull-right"></i></a>
-						<ul class="treeview-menu">
-							<li class="{{ set_active('admin/story*') }}"><a href="/admin/story"><i class="fa fa-list"></i> <span>List All</span></a></li>
-							{{-- <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li> --}}
-						</ul>
-					</li>
-					<li class="treeview {{ set_active('admin/magazine*') }}">
-						<a href="#"><i class="fa fa-newspaper-o"></i> <span>Magazine</span> <i class="fa fa-angle-left pull-right"></i></a>
-						<ul class="treeview-menu">
-							<li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine"><i class="fa fa-list"></i> <span>List</span></a></li>
-							<li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
-						</ul>
-					</li>
 					<li class="treeview {{ set_active('admin/announcement*') }}">
 						<a href="#"><i class="fa fa-bullhorn"></i> <span>Announcements</span> <i class="fa fa-angle-left pull-right"></i></a>
 						<ul class="treeview-menu">
@@ -283,6 +340,29 @@ scratch. This page gets rid of all links and provides the needed markup only.
 							<li class="{{ set_active('admin/event*') }}"><a href="/admin/event/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
 						</ul>
 					</li>
+					<li class="treeview {{ set_active('admin/story*') }}">
+						<a href="#"><i class="fa fa-file-text-o"></i> <span>Stories</span> <i class="fa fa-angle-left pull-right"></i></a>
+						<ul class="treeview-menu">
+							<li class="{{ set_active('admin/story*') }}"><a href="/admin/story"><i class="fa fa-list"></i> <span>List All</span></a></li>
+							{{-- <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li> --}}
+						</ul>
+					</li>
+					<li class="treeview {{ set_active('admin/page*') }}">
+						<a href="#"><i class="fa fa-newspaper-o"></i> <span>Pages</span> <i class="fa fa-angle-left pull-right"></i></a>
+						<ul class="treeview-menu">
+							<li class="{{ set_active('admin/page*') }}"><a href="/admin/page"><i class="fa fa-list"></i> <span>List</span></a></li>
+							<li class="{{ set_active('admin/page*') }}"><a href="/admin/page/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
+						</ul>
+					</li>
+					<li class="treeview {{ set_active('admin/magazine*') }}">
+						<a href="#"><i class="fa fa-book"></i> <span>Magazine</span> <i class="fa fa-angle-left pull-right"></i></a>
+						<ul class="treeview-menu">
+							<li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine"><i class="fa fa-list"></i> <span>List</span></a></li>
+							<li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
+						</ul>
+					</li>
+
+
 					<li class="treeview {{ set_active('admin/storyimages*') }}">
 						<a href="#"><i class="fa fa-picture-o"></i> <span>Images</span> <i class="fa fa-angle-left pull-right"></i></a>
 						<ul class="treeview-menu">
@@ -293,7 +373,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 					<li class="header">
 						Other
 					</li>
-					<li class="{{ set_active('admin/page*') }}"><a href="/admin/page"><i class="fa fa-university"></i> <span>Page List</span></a></li>
 
 					<li class="{{ set_active('admin/users*') }}"><a href="/admin/users"><i class="fa fa-users"></i> <span>Users</span></a></li>
 
@@ -308,14 +387,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	  <div class="content-wrapper">
 	    <!-- Content Header (Page header) -->
 	    <section class="content-header">
-	      <h1>
+	      {{-- <h1>
 					{{Route::current()->getName()}}
 	        <small>	{{Route::current()->getActionName()}}</small>
-	      </h1>
+	      </h1> --}}
 	      <ol class="breadcrumb">
-	        <li><a href="/admin/dashboard"><i class="fa fa-dashboard"></i> Level</a></li>
+	        <li><a href="/admin/dashboard"><i class="fa fa-dashboard"></i></a></li>
 	        <li class="active">Here</li>
 	      </ol>
+
 	    </section>
 
 	    <!-- Main content -->
@@ -350,14 +430,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	      <div class="tab-pane active" id="control-sidebar-home-tab">
 	        <h3 class="control-sidebar-heading">Recent Activity</h3>
 	        <ul class="control-sidebar-menu">
-	          <li>
+						<li>
 	            <a href="javascript::;">
-	              <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+	              <i class="menu-icon fa fa-newspaper-o bg-green"></i>
 
 	              <div class="menu-info">
-	                <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+	                <h4 class="control-sidebar-subheading">EMU-Today Weekly</h4>
 
-	                <p>Will be 23 on April 24th</p>
+	                <p>Wednesday July 6th, 2016</p>
+	              </div>
+	            </a>
+	          </li>
+	          <li>
+	            <a href="javascript::;">
+	              <i class="menu-icon fa fa-book bg-blue"></i>
+
+	              <div class="menu-info">
+	                <h4 class="control-sidebar-subheading">EMU Magazine Launch</h4>
+
+	                <p>Monday August 1st, 2016</p>
 	              </div>
 	            </a>
 	          </li>
@@ -369,7 +460,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	          <li>
 	            <a href="javascript::;">
 	              <h4 class="control-sidebar-subheading">
-	                Custom Template Design
+	                Compile Magazine Content
 	                <span class="label label-danger pull-right">70%</span>
 	              </h4>
 
@@ -393,7 +484,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 	          <div class="form-group">
 	            <label class="control-sidebar-subheading">
-	              Report panel usage
+	              Google Analytics
 	              <input type="checkbox" class="pull-right" checked>
 	            </label>
 

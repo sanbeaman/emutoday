@@ -14951,6 +14951,22 @@ fieldset[disabled] .btn-yahoo.focus {
   /* IE6-9 */
 }
 
+
+.content-header > .breadcrumb {
+  float: left;
+  background: transparent;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 12px;
+  padding: 7px 5px;
+  position: absolute;
+  top: 0;
+  left: 10px;
+  border-radius: 2px;
+}
+
+
+
 /*div .input-group {
     margin-bottom: 2px;
 }
