@@ -42,6 +42,7 @@
 										<th class="text-center">Live</th>
 										<th class="text-left">Start Date</th>
 										<th class="text-left">End Date</th>
+										<th class="text-center">View</th>
 										<th class="text-center">Edit</th>
 										<th class="text-center">Delete</th>
 		            </tr>
@@ -124,6 +125,9 @@
 					{"data": "start_date"},
 					{"data": "end_date"},
 					{"date": null,
+						"defaultContent": "<a href='#'><i class='fa fa-eye'></i></a>"
+					},
+					{"date": null,
 						"defaultContent": "<a href='#'><i class='fa fa-pencil'></i></a>"
 					},
 					{"date": null,
@@ -136,7 +140,16 @@
 			// 	window.location.href =
 			// }
 			//
+			$('#main-story-table tbody').on('click', '.fa-eye', function () {
 
+				var data = table.row( $(this).parents('tr') ).data();
+			//	var storyid = data["id"];
+				window.location.href = '/admin/story/'+ data["id"];
+
+				//openroute('edit',data["id"]);
+				// var data = table.row( $(this).parents('tr') ).data();
+				// 	alert( data["id"]);
+			});
 			$('#main-story-table tbody').on('click', '.fa-pencil', function () {
 
 				var data = table.row( $(this).parents('tr') ).data();
