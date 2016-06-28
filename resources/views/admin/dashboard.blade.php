@@ -183,7 +183,7 @@
 			  $(function () {
 
 					var table_story = $('#main-story-table').DataTable({
-						"ajax": "http://emutoday.app/api/story",
+						"ajax": "/api/story",
 						"columns": [
 							{"data": "id"},
 							{"data": "type"},
@@ -209,7 +209,7 @@
 					});
 
 					var table_announce = $('#main-announcement-table').DataTable({
-						"ajax": "http://emutoday.app/api/announcement",
+						"ajax": "/api/announcement",
 						"columns": [
 							{"data": "id"},
 							{"data": "title"},
@@ -233,7 +233,7 @@
 					});
 
 					var table_event = $('#main-event-table').DataTable({
-						"ajax": "http://emutoday.app/api/event",
+						"ajax": "/api/event",
 						"columns": [
 							{"data": "id"},
 							{"data": "title"},
