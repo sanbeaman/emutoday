@@ -36,8 +36,8 @@ class MainController extends Controller
         //     ['end_date', '>=', $currentDateTime],
         // ])->first();
         $page = $this->pages->where('is_active', 1)->first();
-        $currentStorysBasic = $this->storys->where('story_type', 'storybasic')->paginate(5);
-        $currentAnnouncements = $this->announcements->paginate(5);
+        $currentStorysBasic = $this->storys->where('story_type', 'storybasic')->paginate(3);
+        $currentAnnouncements = $this->announcements->paginate(3);
         $barImgs = collect();
         $storys = $page->storys()->get();
 

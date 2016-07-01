@@ -398,11 +398,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
 					{{Route::current()->getName()}}
 	        <small>	{{Route::current()->getActionName()}}</small>
 	      </h1> --}}
-	      <ol class="breadcrumb">
-	        <li><a href="/admin/dashboard"><i class="fa fa-dashboard"></i></a></li>
-	        <li class="active">Here</li>
-	      </ol>
+				<div class="row">
 
+				<div class="col-xs-6">
+						<ol class="breadcrumb">
+			        <li><a class="btn btn-success btn-sm" href="/admin/dashboard"><i class="fa fa-dashboard fa-lg"></i></a></li>
+							<li class="active">Here</li>
+			      </ol>
+					</div><!-- /.col-xs-6 -->
+				<div class="col-xs-6">
+				{{-- {!! link_to(URL::previous(), 'Cancel', ['class' => 'btn btn-default pull-right']) !!} --}}
+				<div class="btn-group btn-group-sm pull-right" role="group" aria-label="...">
+					<a class="btn btn-success" href="{{URL::previous()}}"><i class="fa fa-arrow-circle-left fa-lg"></i></a>
+				</div>
+				{{-- <a href="{{URL::previous()}}"><i class="fa fa-arrow-circle-left pull-right bg-yellow"></i></a> --}}
+		</div><!-- /.col-xs-6 -->
+
+	</div><!-- /.row -->
 	    </section>
 
 	    <!-- Main content -->
@@ -517,7 +529,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 	@show
 	@section('footer-app')
-		<script>
+		{{-- <script>
 	var AdminLTEOptions = {
 		//Enable sidebar expand on hover effect for sidebar mini
 		//This option is forced to true if both the fixed layout and sidebar mini
@@ -528,7 +540,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 		//Bootstrap.js tooltip
 		enableBSToppltip: true
 	};
-</script>
+</script> --}}
 	<script src="/themes/admin-lte/dist/js/app.js" type="text/javascript"></script>
 	@show
 	@section('footer-script')

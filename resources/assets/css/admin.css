@@ -3,13 +3,18 @@
   float: left;
   background: transparent;
   margin-top: 0;
-  margin-bottom: 15px;
+  margin-bottom: 0;
   font-size: 12px;
   padding: 7px 5px;
   position: absolute;
   top: 0;
   left: 10px;
   border-radius: 2px;
+}
+ol.breadcrumb {
+	margin: 0;
+	padding:0;
+	background-color: transparent;
 }
 /*.login-box,
 .register-box {

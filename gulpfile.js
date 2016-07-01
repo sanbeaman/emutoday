@@ -137,6 +137,10 @@ require('laravel-elixir-vueify');
 		mix.copy('bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js', 'resources/assets/js/lib/bootstrap-datetimepicker.min.js');
 		mix.copy('bower_components/eonasdan-bootstrap-datetimepicker/build/*', 'public/themes/plugins/eonasdan-bootstrap-datetimepicker');
 
+		mix.copy('node_modules/admin-lte/plugins', 'resources/assets/js/themes/admin-lte/plugins');
+		mix.copy('bower_components/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.js', 'resources/assets/js/lib/bootstrap3-wysihtml5.all.js');
+		mix.copy('bower_components/bootstrap3-wysihtml5-bower/dist/amd/wysihtml5.js', 'resources/assets/js/lib/wysihtml5.js');
+
 		// ADMIN LESS
 		//
 		// mix.less('admin.less',
@@ -186,7 +190,7 @@ require('laravel-elixir-vueify');
 
 
 		// mix.browserify('vue-admin.js', 'public/js/vue-admin.js');
-		// mix.browserify('admintools.js', 'public/js/admintools.js');
+		 mix.browserify('admintools.js', 'public/js/admintools.js');
 		// mix.browserify('main-form.js', 'public/js/main-form.js');
 
 	});

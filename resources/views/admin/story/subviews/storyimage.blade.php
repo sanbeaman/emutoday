@@ -11,32 +11,22 @@
             <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
               <i class="fa fa-minus"></i></button>
           </div>
-        </div>
+        </div><!-- /.box-header -->
         <div class="box-body">
 					@if($storyImage->is_active != 0)
-						<div class="media">
-  						<div class="media-left">
-	      				<img class="media-object" src="/imgs/story/thumbnails/{{ 'thumb-' . $storyImage->image_name . '.' .
-								$storyImage->image_extension . '?'. 'time='. time() }}" alt="{{$storyImage->image_name}}">
-							</div>
+						<div class="form-group">
+							<img src="/imagecache/betterthumb/{{$storyImage->filename}}" alt="{{$storyImage->image_name}}">
+						</div>
 						@endif
-  					<div class="media-body">
 							<div class="form-group">
 
+										 {{-- {!! Form::label('image_type', 'Image Type:') !!} --}}
+										 {!! Form::hidden('image_type', $storyImage->image_type, ['class' => 'form-control input-sm', 'readonly' => 'readonly']) !!}
 
-							<div class="form-inline">
-										<div class="form-group">
-										 {!! Form::label('image_type', 'Image Type:') !!}
-										 {!! Form::text('image_type', $storyImage->image_type, ['class' => 'form-control input-sm', 'readonly' => 'readonly']) !!}
-										</div>
-								<div class="form-group">
-									{!! Form::label('image_name', 'Name:') !!}
-									{!! Form::text('image_name', null, ['class' => 'form-control input-sm', 'readonly' => 'readonly']) !!}
-								</div>
+											{{-- {!! Form::label('image_name', 'Name:') !!} --}}
+											{!! Form::hidden('image_name', null, ['class' => 'form-control input-sm', 'readonly' => 'readonly']) !!}
 
 							</div>
-							</div>
-
 							<div class="form-group">
 								{!! Form::file('image', null, array('required', 'class'=>'form-control input-sm')) !!}
 							</div>
@@ -44,25 +34,21 @@
 								{!! Form::label('moretext') !!}
 								{!! Form::text('moretext', null, ['class' => 'form-control input-sm']) !!}
 							</div>
-						</div> <!-- /.media-body -->
 							<div class="form-group">
 								{!! Form::label('caption') !!}
 								{!! Form::text('caption', null, ['class' => 'form-control']) !!}
 							</div>
 							<div class="form-group">
 								{!! Form::label('teaser') !!}
-								{!! Form::textarea('teaser', null, ['class' => 'form-control teaser']) !!}
+								{!! Form::textarea('teaser', null, ['class' => 'form-control teaser', 'rows'=>'5']) !!}
 							</div>
-
-
-
-					</div><!-- /.box-body -->
-        	<div class="box-footer">
-						<div class="form-inline">
-							<div class="form-group">
-							{!! Form::submit('Update Image', array('class'=>'btn btn-primary')) !!}
-							{!! Form::close() !!}
-						</div>
+						</div><!-- /.box-body -->
+        		<div class="box-footer">
+							<div class="form-inline">
+								<div class="form-group">
+								{!! Form::submit('Update Image', array('class'=>'btn btn-primary')) !!}
+								{!! Form::close() !!}
+							</div>
 
 						@if($storyImage->image_type == 'imagehero')
 							 <div class="form-group">
@@ -77,8 +63,8 @@
 				    @endif
 						</div>
         </div><!-- /.box-footer-->
-      </div><!-- /.box-body -->
-		</div> <!-- /.box -->
+
+</div> <!-- /.box -->
 
 @section('footer')
     @parent

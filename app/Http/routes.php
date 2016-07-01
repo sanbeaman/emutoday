@@ -65,6 +65,12 @@ Route::group(['middleware' => ['web']], function() {
       'getLogout' => 'auth.logout'
     ]);
 
+		// Route::get('imagecache', function()
+		// {
+		// 	$img = Image::make('img39_hero.jpg');
+		// 	return $img->response();
+		// });
+
     Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
 
     Route::group(['prefix' => 'emu-today'], function() {
@@ -79,7 +85,10 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('magazine/issue/{year?}/{season?}', 'EmuToday\MagazineController@issue');
       Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
 
+			Route::get('announcement/create', 'EmuToday\AnnouncementController@create');
       Route::get('announcement/{id?}', 'EmuToday\AnnouncementController@index');
+
+			Route::resource('announcement', 'EmuToday\AnnouncementController');
 
       Route::get('hub', 'MainController@index');
 
@@ -135,7 +144,9 @@ Route::group(['middleware' => ['web']], function() {
       Route::get('event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
       Route::resource('event', 'Admin\EventController');
 
-
+			Route::get('queue', function() {
+					return view('admin.queue');
+				});
 
       Route::get('twitter', 'Admin\TwitterController@index');
       Route::post('approve-tweets', 'Admin\TwitterController@store');

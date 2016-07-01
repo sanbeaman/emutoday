@@ -18,6 +18,8 @@
     "font-awesome": "^4.6.3",
     "foundation-datepicker": "^1.5.3",
     "foundation-sites": "^6.2.3",
+    "moment": "^2.13.0",
+    "moment-timezone": "^0.5.4",
     "motion-ui": "^1.2.2",
     "vue-resource": "^0.9.1"
   }
