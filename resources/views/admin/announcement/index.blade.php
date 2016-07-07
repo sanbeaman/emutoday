@@ -21,8 +21,9 @@
 				<div class="box">
 					<div class="box-header">
 						<h3 class="box-title">Announcement List</h3>
-					</div>
-					<!-- /.box-header -->
+						@include('admin.layouts.components.boxtools', ['rte' => 'announcement', 'path' => 'admin/announcement'])
+
+					</div><!-- /.box-header -->
 					<div class="box-body">
 						<table id="main-announcement-table" class="table table-bordered table-hover">
 							<thead>

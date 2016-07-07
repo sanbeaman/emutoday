@@ -15,14 +15,13 @@
 @section('content')
 	@include('admin.layouts.modal')
 	<div class="box">
-		<div class="box-header">
-			<div class="row">
-				<div class="col-md-8">
-						<h3 class="box-title">Announcement List</h3>
-				</div><!-- /.col-md-5 -->
-				<div class="col-md-4">
-					<div class="box-tools">
-						@if(isset($announcements))
+		<div class="box box-primary">
+			<div class="box-header with-border">
+				<h3 class="box-title">Announcement List</h3>
+				@include('admin.layouts.components.boxtools', ['rte' => 'announcement', 'path' => 'admin/announcement'])
+			</div>	<!-- /.box-header -->
+
+						{{-- @if(isset($announcements))
 						<div class="input-group input-group-sm pull-left" style="width: 150px;">
 							<input type="text" name="table_search" class="form-control" placeholder="Search">
 
@@ -33,11 +32,10 @@
 						@endif
 						<div class="btn-group btn-group-sm pull-right">
 							<a href="{{ route('admin.announcement.create') }}" class="btn bg-orange"><i class="fa fa-plus-square"></i></a>
-						</div><!-- /.btn-group -->
-					</div>
-				</div><!-- /.col-md-7 -->
-			</div><!-- /.row -->
-		</div><!-- /.box-header -->
+						</div><!-- /.btn-group --> --}}
+
+
+	
 	@if(isset($announcements))
 
 		<div class="box-body table-responsive no-padding">

@@ -14969,6 +14969,10 @@ ol.breadcrumb {
 	padding:0;
 	background-color: transparent;
 }
+section.content, section.content-header {
+	padding: 8px;
+}
+
 /*.login-box,
 .register-box {
    width: 100%;

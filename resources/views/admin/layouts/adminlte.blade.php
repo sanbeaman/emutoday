@@ -347,16 +347,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
 				<div class="row">
 
 				<div class="col-xs-6">
-						<ol class="breadcrumb">
-			        <li><a class="btn btn-success btn-sm" href="/admin/dashboard"><i class="fa fa-dashboard fa-lg"></i></a></li>
-							<li class="active">Here</li>
-			      </ol>
+
+							<ol class="breadcrumb">
+								<li><a class="btn bg-olive btn-sm" href="{{URL::previous()}}"><i class="fa fa-arrow-circle-left fa-lg"></i></a></li>
+				        <li><a class="btn bg-purple btn-sm" href="/admin/dashboard"><i class="fa fa-dashboard fa-lg"></i></a></li>
+								<li class="active">Here</li>
+				      </ol>
+
 					</div><!-- /.col-xs-6 -->
 				<div class="col-xs-6">
 				{{-- {!! link_to(URL::previous(), 'Cancel', ['class' => 'btn btn-default pull-right']) !!} --}}
-				<div class="btn-group btn-group-sm pull-right" role="group" aria-label="...">
-					<a class="btn btn-success" href="{{URL::previous()}}"><i class="fa fa-arrow-circle-left fa-lg"></i></a>
-				</div>
+
 				{{-- <a href="{{URL::previous()}}"><i class="fa fa-arrow-circle-left pull-right bg-yellow"></i></a> --}}
 		</div><!-- /.col-xs-6 -->
 
