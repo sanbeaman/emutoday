@@ -33,7 +33,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>   <!--end content area-->
 @endsection

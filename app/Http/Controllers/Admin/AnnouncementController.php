@@ -25,9 +25,18 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
+			$user = auth()->user();
+			$announcements = $this->announcement->newQuery();
+			if ($user->hasRole('contributor_1'))
+			{
+				$announcements = $announcements->where('author_id', $user->id)->get();
+				return view('admin.announcement.role.index', compact('announcements'));
+			} else {
+
       $announcements = $this->announcement->get();
 
       return view('admin.announcement.index', compact('announcements'));
+			}
     }
 
     /**
@@ -37,7 +46,7 @@ class AnnouncementController extends Controller
      */
     public function create(Announcement $announcement)
     {
-          return view('admin.announcement.edit', compact('announcement'));
+          return view('admin.announcement.form', compact('announcement'));
     }
 
     /**
@@ -91,7 +100,7 @@ class AnnouncementController extends Controller
     public function edit($id)
     {
       $announcement = $this->announcement->findOrFail($id);
-      return view('admin.announcement.edit', compact('announcement'));
+      return view('admin.announcement.form', compact('announcement'));
     }
 
     /**

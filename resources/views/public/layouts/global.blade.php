@@ -102,7 +102,7 @@
 												<li><a href="#">For the Media</a></li>
 												<li><a href="/emu-today/magazine">Eastern Magazine</a></li>
 												<li><a href="#">Submit an Event</a></li>
-												<li><a href="#">Submit an Announcement</a></li>
+												<li><a href="/emu-today/announcement/create">Submit an Announcement</a></li>
 											</ul>
 										</div>
 										</div>

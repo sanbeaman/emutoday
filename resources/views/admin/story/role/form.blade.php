@@ -30,7 +30,7 @@
 	@endsection
 @section('content')
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-md-6">
 
 			<div class="box box-primary">
 
@@ -46,7 +46,9 @@
 					<div class="box-body">
 						<div class="form-group @if ($errors->has('title')) has-error @endif">
 				        <label for="title">Title</label>
-				        <input type="text" id="title" class="form-control" name="title" placeholder="Title">
+								{!! Form::text('title', null, ['class' => 'form-control', 'placeholder'=>'Title', 'id'=>'title']) !!}
+
+				        {{-- <input type="text" id="title" class="form-control" name="title" placeholder="Title"> --}}
 				        @if ($errors->has('title')) <p class="help-block">{{ $errors->first('title') }}</p> @endif
 				    </div>
 				    <div class="form-group">
@@ -74,23 +76,23 @@
 						<div class="col-md-3">
 							<div class="form-group">
 								{!! Form::label('start_date') !!}
-								{!! Form::text('start_date', null, ['class' => 'form-control', 'id'=>'start-date']) !!}
+								{!! Form::text('start_date', null, ['class' => 'form-control input-sm', 'id'=>'start-date']) !!}
 							</div>
 						</div><!-- /.col-md-4 -->
 						<div class="col-md-3">
 							<div class="form-group">
 								{!! Form::label('end_date') !!}
-								{!! Form::text('end_date', null, ['class' => 'form-control', 'id'=>'end-date']) !!}
+								{!! Form::text('end_date', null, ['class' => 'form-control input-sm', 'id'=>'end-date']) !!}
 							</div>
 						</div><!-- /.col-md-4 -->
 
 				  <div class="col-md-3">
 						<div class="form-group">
-								{!! Form::label('story_type') !!}
+								{!! Form::label('story_type','type') !!}
 									@if (is_string($stypes))
-											{!! Form::text('story_type', $stypes, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+											{!! Form::text('story_type', $stypes, ['class' => 'form-control input-sm', 'readonly' => 'readonly']) !!}
 									@else
-									{!! Form::select('story_type', $stypes, null, ['class' => 'form-control']) !!}
+									{!! Form::select('story_type', $stypes, null, ['class' => 'form-control input-sm']) !!}
 							@endif
 						</div>
 				  </div><!-- /.col-md-4 -->
@@ -111,6 +113,11 @@
 
 	</div><!-- /.col-sm-12 -->
 	</div> <!-- /.row -->
+	<div class="row">
+		<div class="col-md-6">
+
+		</div><!-- /.col-md-6 -->
+	</div><!-- /.row -->
 @endsection
 @section('footer-plugin')
     @parent
@@ -148,7 +155,7 @@ $(function () {
 	  // CKEDITOR.replace('story-content');
 		CKEDITOR.replace( 'story-content', {
 			// Define changes to default configuration here. For example:
-  filebrowserBrowseUrl : '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
+  	filebrowserBrowseUrl : '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
     filebrowserImageBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=images',
     filebrowserUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=files',
     filebrowserImageUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=images'
@@ -167,28 +174,7 @@ $(function () {
     //Money Euro
     $("[data-mask]").inputmask();
 
-    //Date range picker
-    $('#reservation').daterangepicker();
-    //Date range picker with time picker
-    $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
-    //Date range as a button
-    $('#daterange-btn').daterangepicker(
-        {
-          ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-          },
-          startDate: moment().subtract(29, 'days'),
-          endDate: moment()
-        },
-        function (start, end) {
-          $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-        }
-    );
+
 
 
 
@@ -207,17 +193,26 @@ $(function () {
       checkboxClass: 'icheckbox_flat-green',
       radioClass: 'iradio_flat-green'
     });
-		//Date picker
-		$('#end-date').datetimepicker({
-			format: 'YYYY-MM-DD HH:mm:ss'
-		});
 
-		//Date picker
+		//Start Date picker
 		$('#start-date').datetimepicker({
 			format: 'YYYY-MM-DD HH:mm:ss'
 		});
 
+		//End Date picker
+		$('#end-date').datetimepicker({
+			format: 'YYYY-MM-DD HH:mm:ss',
+			useCurrent: false //Important! See Issue #1075
+		});
+		$("#start-date").on("dp.change", function (e) {
+					$('#end-date').data("DateTimePicker").minDate(e.date);
+			});
+		$("#end-date").on("dp.change", function (e) {
+				$('#start-date').data("DateTimePicker").maxDate(e.date);
+		});
+
   });
+
 $('input[name=title]').on('blur', function () {
 		var slugElement = $('input[name=slug]');
 

@@ -5,6 +5,7 @@ namespace emutoday\Http\Controllers\Admin;
 use emutoday\Story;
 use emutoday\StoryImage;
 use emutoday\Tag;
+use emutoday\User;
 
 use Illuminate\Http\Request;
 use emutoday\Http\Requests;
@@ -27,7 +28,16 @@ class StoryController extends Controller
     */
     public function index(Request $request)
     {
-				$storys =   $this->story->newQuery();
+			$user = auth()->user();
+			$storys =   $this->story->newQuery();
+			if ($user->hasRole('contributor_1'))
+			{
+				$storys = $storys->where('author_id', $user->id)->get();
+				  return view('admin.story.role.index', compact('storys'));
+			} else {
+
+
+
 
 				$stype = $request->get('stype');
 				$order = $request->get('order');
@@ -64,6 +74,7 @@ class StoryController extends Controller
 
 
         return view('admin.story.index', $data);
+					}
     }
 
 		public function list($stype)
@@ -82,6 +93,7 @@ class StoryController extends Controller
 
 
         $story = new Story;
+
         if ($stype != 'story' ) {
             $story->story_type = $stype;
             // if ($stype == 'storyexternal'){
@@ -97,7 +109,7 @@ class StoryController extends Controller
         JavaScript::put([
             'storytype' => $stype
         ]);
-        return view('admin.story.create', compact('story', 'stypes'));
+        return view('admin.story.form', compact('story', 'stypes'));
 
 
     }
@@ -207,14 +219,21 @@ class StoryController extends Controller
     public function edit($id)
     {
         $story = $this->story->findOrFail($id);
-
+				$stypes = $story->story_type;
         $tags = \emutoday\Tag::lists('name', 'id');
 
-        JavaScript::put([
-              'storytype' => $story->story_type
-          ]);
+				$user = auth()->user();
 
-				return view('admin.story.edit', compact('story', 'tags'));
+				JavaScript::put([
+							'storytype' => $story->story_type
+					]);
+					
+				if ($user->hasRole('contributor_1'))
+				{
+					return view('admin.story.role.form', compact('story', 'stypes', 'tags'));
+				} else {
+      		return view('admin.story.form', compact('story', 'stypes', 'tags'));
+				}
 
 
     }
@@ -287,6 +306,65 @@ class StoryController extends Controller
         flash()->warning('Story has been deleted.');
         return redirect(route('admin.story.index'));//->with('status', 'Story has been deleted.');
     }
+
+
+		// public function imageUpload(Request $request)
+		// {
+		// $file = $request->file('upload');
+		// $uploadDestination = public_path() . '/imgs/uploads/story';
+		//
+		// $filename = preg_replace('/\s+/', '', $file->getClientOriginalName());
+		// $fileName = md5($filename) . "_" . $filename;
+		// $file->move($uploadDestination, $fileName);
+		// }
+
+		// public function imageBrowse(Request $request)
+		// {
+		// 	$test = $_GET['CKEditorFuncNum'];
+		// 	$images = [];
+		// 	$files = \File::files(public_path() . '/imgs/uploads/story');
+		// 	foreach ($files as $file) {
+		// 		$images[] = pathinfo($file);
+		// 	}
+		//
+		// 	return view('admin.story.imageview',[
+		// 				'files' => $images,
+		// 				'test' => $test
+		// 	]);
+		// 	}
+
+			public function imageBrowse(Request $request)
+			{
+				$CKEditor = Input::get('CKEditor');
+				  $funcNum = Input::get('CKEditorFuncNum');
+					$message = $url = '';
+					$uploadDestination = public_path() . '/imgs/uploads/story/';
+
+					if (Input::hasFile('upload')) {
+			        $file = Input::file('upload');
+			        if ($file->isValid()) {
+			            $filename = $file->getClientOriginalName();
+			            $file->move($uploadDestination, $filename);
+			            $url = $uploadDestination . $filename;
+			        } else {
+			            $message = 'An error occured while uploading the file.';
+			        }
+			    } else {
+			        $message = 'No file uploaded.';
+			    }
+			    return '<script>window.parent.CKEDITOR.tools.callFunction('.$funcNum.', "'.$url.'", "'.$message.'")</script>';
+
+			}
+			// Route::post('/upload_image', function() {
+			public function imageUpload(Request $request)
+			{
+					$file = $request->file('upload');
+					$uploadDestination = public_path() . '/imgs/uploads/story/';
+					$filename = preg_replace('/\s+/', "", $file->getClientOriginalName());
+					$fileName = md5($filename) . "_" . $filename;
+					$file->move($uploadDestination, $fileName);
+			}
+			// });
 
     private function syncTags(Story $story, array $tags)
     {

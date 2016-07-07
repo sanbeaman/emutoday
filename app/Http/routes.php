@@ -125,6 +125,15 @@ Route::group(['middleware' => ['web']], function() {
       // Route::get('admin/storyType/story/{story}', ['as' => 'admin.storyType.story', 'uses' => 'Admin\StoryController@build']);
       Route::post('story/{id}/addimage', 'Admin\StoryController@addImage');
 
+			Route::post('story/imageUpload',[
+										'as' => 'admin.story.imageupload',
+										'uses' => 'Admin\StoryController@imageUpload'
+			]);
+
+			Route::get('story/imageBrowse',[
+					'as' => 'admin.story.imagebrowse',
+					'uses' => 'Admin\StoryController@imageBrowse'
+				]);
       Route::resource('story', 'Admin\StoryController');
 
       Route::get('announcement/{announcement}/confirm', ['as' => 'admin.announcement.confirm', 'uses' => 'Admin\AnnouncementController@confirm']);
@@ -143,6 +152,11 @@ Route::group(['middleware' => ['web']], function() {
 
       Route::get('event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
       Route::resource('event', 'Admin\EventController');
+
+
+			Route::resource('role', 'Admin\RoleController');
+
+			Route::resource('permission', 'Admin\PermissionController');
 
 			Route::get('queue', function() {
 					return view('admin.queue');

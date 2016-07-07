@@ -11,7 +11,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	<!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	@section('style-vendor')
-		<link rel="stylesheet" href="{{ elixir('css/admin-styles.css') }}" />
+		{{-- <link rel="stylesheet" href="{{ elixir('css/admin-styles.css') }}" /> --}}
 
 		<!-- Bootstrap 3.3.6 -->
   	{{-- <link rel="stylesheet" href="/themes/admin-lte/bootstrap/css/bootstrap.min.css"> --}}
@@ -27,6 +27,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	@show
 
 	@section('style-app')
+		<link rel="stylesheet" href="{{ elixir('css/admin-styles.css') }}" />
 		<!-- Theme style -->
 
 		{{-- <link rel="stylesheet" href="/themes/admin-lte/dist/css/AdminLTE.min.css"> --}}
@@ -38,7 +39,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 		-->
 		{{-- <link rel="stylesheet" href="/themes/admin-lte/dist/css/skins/skin-purple.min.css"> --}}
 	@show
-	@section('scripthead')
+	@section('scriptshead')
 				{{-- @include('admin.layouts.scriptshead') --}}
 	@show
 	@include('include.js')
@@ -73,6 +74,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 				<!-- Navbar Right Menu -->
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
+						@can('super', $currentUser)
 						<!-- Messages: style can be found in dropdown.less-->
 						<li class="dropdown messages-menu">
 							<!-- Menu toggle button -->
@@ -237,6 +239,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 								</li>
 							</ul>
 						</li>
+					@endcan
 						<!-- User Account Menu -->
 						<li class="dropdown user user-menu">
 							<!-- Menu Toggle Button -->
@@ -244,7 +247,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 								<!-- The user image in the navbar-->
 								<img src="/assets/imgs/user/user2-160x160.jpg" class="user-image" alt="User Image">
 								<!-- hidden-xs hides the username on small devices so only the image appears. -->
-								<span class="hidden-xs">{{$admin->last_name}}</span>
+								<span class="hidden-xs">{{$currentUser->last_name}}</span>
 							</a>
 							<ul class="dropdown-menu">
 								<!-- The user image in the menu -->
@@ -252,9 +255,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 									<img src="/assets/imgs/user/user2-160x160.jpg" class="img-circle" alt="User Image">
 
 									<p>
-										{{$admin->first_name}} {{$admin->last_name}}
+										{{$currentUser->first_name}} {{$currentUser->last_name}}
 
-										<small>{{$admin->roles->pluck('name')}}</small>
+										<small>{{$currentUser->roles->pluck('name')}}</small>
 									</p>
 								</li>
 								<!-- Menu Body -->
@@ -275,7 +278,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 								<!-- Menu Footer-->
 								<li class="user-footer">
 									<div class="pull-left">
-										<a href="/admin/users/{{$admin->id}}" class="btn btn-default btn-flat">Profile</a>
+										<a href="/admin/users/{{$currentUser->id}}" class="btn btn-default btn-flat">Profile</a>
 									</div>
 									<div class="pull-right">
 										<a href="{{ route('auth.logout') }}" class="btn btn-default btn-flat">Sign out</a>
@@ -304,7 +307,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	          <img src="/assets/imgs/user/user2-160x160.jpg" class="img-circle" alt="User Image">
 	        </div>
 	        <div class="pull-left info">
-	          <p>{{ $admin->last_name }}</p>
+	          <p>{{ $currentUser->last_name }}</p>
 	          <!-- Status -->
 	          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
 	        </div>
@@ -326,64 +329,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 				Sidebar Menu
 				******************************** -->
 	      <ul class="sidebar-menu">
-					<li class="treeview {{ set_active('admin/announcement*') }}">
-						<a href="#"><i class="fa fa-bullhorn"></i> <span>Announcements</span> <i class="fa fa-angle-left pull-right"></i></a>
-						<ul class="treeview-menu">
-							<li class="{{ set_active('admin/announcement*') }}"><a href="/admin/announcement"><i class="fa fa-list"></i> <span>List</span></a></li>
-							<li class="{{ set_active('admin/announcement*') }}"><a href="/admin/announcement/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
-						</ul>
-					</li>
-					<li class="treeview {{ set_active('admin/event*') }}">
-						<a href="#"><i class="fa fa-calendar"></i> <span>Events</span> <i class="fa fa-angle-left pull-right"></i></a>
-						<ul class="treeview-menu">
-							<li class="{{ set_active('admin/event*') }}"><a href="/admin/event"><i class="fa fa-list"></i> <span>List</span></a></li>
-							<li class="{{ set_active('admin/event*') }}"><a href="/admin/event/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
-						</ul>
-					</li>
-					<li class="treeview {{ set_active('admin/story*') }}">
-						<a href="#"><i class="fa fa-file-text-o"></i> <span>Stories</span> <i class="fa fa-angle-left pull-right"></i></a>
-						<ul class="treeview-menu">
-							<li class="{{ set_active('admin/story*') }}"><a href="/admin/story"><i class="fa fa-list"></i> <span>List All</span></a></li>
-							{{-- <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li> --}}
-						</ul>
-					</li>
-					<li class="treeview {{ set_active('admin/page*') }}">
-						<a href="#"><i class="fa fa-newspaper-o"></i> <span>Pages</span> <i class="fa fa-angle-left pull-right"></i></a>
-						<ul class="treeview-menu">
-							<li class="{{ set_active('admin/page*') }}"><a href="/admin/page"><i class="fa fa-list"></i> <span>List</span></a></li>
-							<li class="{{ set_active('admin/page*') }}"><a href="/admin/page/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
-						</ul>
-					</li>
-					<li class="treeview {{ set_active('admin/page*') }}">
-						<a href="#"><i class="fa fa-envelope-o"></i> <span>Email Blasts</span> <i class="fa fa-angle-left pull-right"></i></a>
-						<ul class="treeview-menu">
-							<li class="{{ set_active('admin/emailblast*') }}"><a href="#"><i class="fa fa-list"></i> <span>List</span></a></li>
-							<li class="{{ set_active('admin/emailblast*') }}"><a href="#"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
-						</ul>
-					</li>
-					<li class="treeview {{ set_active('admin/magazine*') }}">
-						<a href="#"><i class="fa fa-book"></i> <span>Magazine</span> <i class="fa fa-angle-left pull-right"></i></a>
-						<ul class="treeview-menu">
-							<li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine"><i class="fa fa-list"></i> <span>List</span></a></li>
-							<li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
-						</ul>
-					</li>
-
-
-					<li class="treeview {{ set_active('admin/storyimages*') }}">
-						<a href="#"><i class="fa fa-picture-o"></i> <span>Images</span> <i class="fa fa-angle-left pull-right"></i></a>
-						<ul class="treeview-menu">
-							<li class="{{ set_active('admin/storyimages*') }}"><a href="/admin/storyimages"><i class="fa fa-list"></i> <span>List</span></a></li>
-							<li class="{{ set_active('admin/storyimages*') }}"><a href="/admin/storyimages/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
-						</ul>
-					</li>
-					<li class="header">
-						Other
-					</li>
-
-					<li class="{{ set_active('admin/users*') }}"><a href="/admin/users"><i class="fa fa-users"></i> <span>Users</span></a></li>
-
-					<li class="treeview {{ set_active('admin/twitter*') }}"><a href="/admin/twitter"><i class="fa fa-twitter"></i> <span>Tweets</span></a></li>
+					@include('admin.layouts.sidebar.menu')
 
 	      </ul>
 	      <!-- /.sidebar-menu -->
@@ -543,7 +489,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </script> --}}
 	<script src="/themes/admin-lte/dist/js/app.js" type="text/javascript"></script>
 	@show
-	@section('footer-script')
 
+	@section('footer-script')
 	@show
+
 	</body>
+	</html>

@@ -88,6 +88,7 @@
 				</div>   <!-- /.box -->
 		</div> <!-- /.col -->
     <div class="col-md-6">
+			
 					  @if ($story->storyImages()->count() < 3)
 					<!-- general form elements disabled -->
 				          <div class="box box-warning">

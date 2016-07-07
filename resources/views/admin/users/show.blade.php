@@ -1,68 +1,51 @@
 @extends('admin.layouts.adminlte')
 @section('content')
-	<div class="info-box">
-  <!-- Apply any bg-* class to to the icon to color it -->
-  <span class="info-box-icon bg-red"><i class="fa fa-star-o"></i></span>
-  <div class="info-box-content">
-    <span class="info-box-text">{{$user->last_name}}</span>
-    <ul>
-			@foreach ($userRoles as $userRole)
-				<li>
-					{{$userRole->name}}
-				</li>
+	<div class="row">
+		<div class="col-md-3">
+			<!-- Profile Image -->
+<div class="box box-primary">
+	<div class="box-body box-profile">
+		<img class="profile-user-img img-responsive img-circle" src="/assets/imgs/user/user2-160x160.jpg" alt="User profile picture">
 
-			@endforeach
+		<h3 class="profile-username text-center">{{$user->first_name}} {{$user->last_name}}</h3>
 
+		<p class="text-muted text-center"></p>
+
+		<ul class="list-group list-group-unbordered">
+			<li class="list-group-item">
+				<b>EMAIL</b> <a class="pull-right">{{$user->email}}</a>
+			</li>
+			<li class="list-group-item">
+				<b>PHONE</b> <a class="pull-right">{{$user->phone}}</a>
+			</li>
 		</ul>
-  </div><!-- /.info-box-content -->
-</div><!-- /.info-box -->
-    {!! Form::model($user,[
-        'method' => $user->exists ? 'put' : 'post',
-        'route' => $user->exists ? ['admin.users.update', $user->id] : ['admin.users.store']
-    ]) !!}
+		<a href="/admin/users/{{$user->id}}/edit" class="btn btn-primary btn-block"><b>Edit User</b></a>
 
-    <div class="form-group">
-        {!! Form::label('last_name') !!}
-        {!! Form::text('last_name', null, ['class' => 'form-control']) !!}
-    </div>
-		<div class="form-group">
-				{!! Form::label('first_name') !!}
-				{!! Form::text('first_name', null, ['class' => 'form-control']) !!}
-		</div>
-		<div class="form-group">
-				{!! Form::label('phone') !!}
-				{!! Form::text('phone', null, ['class' => 'form-control']) !!}
-		</div>
-    <div class="form-group">
-       {!! Form::label('email') !!}
-       {!! Form::text('email', null, ['class' => 'form-control']) !!}
-   </div>
+	</div>
+	<!-- /.box-body -->
+</div>
+<!-- /.box -->
+		</div><!-- /.col-md-3 -->
+		<div class="col-md-9">
+			<!-- About Me Box -->
+				<div class="box box-primary">
+					<div class="box-header with-border">
+						<h3 class="box-title">Roles</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+						<ul>
+							@foreach ($userRoles as $userRole)
+								<li>
+									{{$userRole->name}}
+								</li>
 
-   <div class="form-group">
-       {!! Form::label('password') !!}
-       {!! Form::password('password', ['class' => 'form-control']) !!}
-   </div>
+							@endforeach
 
-   <div class="form-group">
-       {!! Form::label('password_confirmation') !!}
-       {!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
-   </div>
+						</ul>
+				</div><!-- /.box-body -->
+				</div><!-- /.box -->
 
-	 <div class="input-group">
-
-
-		@can('super', $user)
-			{!! Form::label('role_list', 'Roles:') !!}
-			 {!! Form::select('role_list[]',$userRoles, $user->roles->lists('id')->toArray() , ['class' => 'form-control', 'multiple']) !!}
-		 @else
-			 @if($user->exists)
-			 {!! Form::label('role_list', 'Roles:') !!}
-			 {!! Form::text('role_list', $user->roles->lists('name') , ['class' => 'form-control','readonly' => 'readonly']) !!}
-		 @endif
-		 @endcan
-
-	 </div>
-   {!! Form::submit($user->exists ? 'Save User' : 'Create New User', ['class' => 'button']) !!}
-
-   {!! Form::close() !!}
+		</div><!-- /.col-md-9 -->
+	</div><!-- /.row -->
 @endsection

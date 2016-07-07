@@ -25,8 +25,7 @@ class StoreAnnouncementRequest extends Request
     {
         return [
           'title' => ['required'],
-          'announcement' => ['required'],
-          'start_date' => ['date_format:Y-m-d H:i:s']
+          'announcement' => ['required']
         ];
     }
 }
