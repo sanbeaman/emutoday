@@ -33,6 +33,11 @@ class StoryImage extends Model
         return $this->belongsTo(Story::class);
     }
 
+		public function imagetype()
+		{
+			return $this->belongsTo('emutoday\Imagetype');
+		}
+
     // public function mainImageURL()
     // {
     //     return $this->image_path . $this->filename;

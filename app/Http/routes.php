@@ -167,6 +167,8 @@ Route::group(['middleware' => ['web']], function() {
 
 			Route::resource('permission', 'Admin\PermissionController');
 
+			Route::resource('imagetype', 'Admin\ImagetypeController');
+
 			Route::get('queue', function() {
 					return view('admin.queue');
 				});
