@@ -15,8 +15,9 @@
 									<table class="table table-hover table-bordered">
 										<tr>
 											<th>id</th>
-											<th>Group</th>
+											<th>group</th>
 			                <th>type</th>
+											<th>name</th>
 											<th>width</th>
 			                <th>height</th>
 											<th>Edit</th>
@@ -30,6 +31,7 @@
 														</td>
 														  <td>{{ $imagetype->group }}</td>
 															<td>{{ $imagetype->type }}</td>
+															<td>{{ $imagetype->name }}</td>
 															<td>{{ $imagetype->width }}</td>
 															<td>{{ $imagetype->height }}</td>
 					                    <td>

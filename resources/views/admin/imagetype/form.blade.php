@@ -43,18 +43,26 @@
 							'route' => $imagetype->exists ? ['admin.imagetype.update', $imagetype->id] : ['admin.imagetype.store']
 							]) !!}
 							<div class="row">
-								<div class="col-md-6">
+								<div class="col-md-4">
 									<div class="form-group">
 										{!! Form::label('group') !!}
 										{!! Form::text('group', null, ['class' => 'form-control']) !!}
 									</div>
-								</div><!-- /.col-md-6 -->
-								<div class="col-md-6">
+								</div><!-- /.col-md-4 -->
+								<div class="col-md-4">
 									<div class="form-group">
 										{!! Form::label('type') !!}
 										{!! Form::text('type', null, ['class' => 'form-control']) !!}
 									</div>
-								</div><!-- /.col-md-6 -->
+								</div><!-- /.col-md-4 -->
+								<div class="col-md-4">
+									@if($imagetype->exists)
+									<div class="form-group">
+										{!! Form::label('name') !!}
+										{!! Form::text('name', null, ['class' => 'form-control', 'readonly'=>'readonly']) !!}
+									</div>
+								@endif
+								</div><!-- /.col-md-4 -->
 							</div><!-- /.row -->
 							<div class="row">
 								<div class="col-md-6">

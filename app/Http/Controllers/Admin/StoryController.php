@@ -93,6 +93,7 @@ class StoryController extends Controller
 
 
         $story = new Story;
+				$stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
 
         if ($stype != 'story' ) {
             $story->story_type = $stype;
@@ -109,7 +110,7 @@ class StoryController extends Controller
         JavaScript::put([
             'storytype' => $stype
         ]);
-        return view('admin.story.form', compact('story', 'stypes'));
+        return view('admin.story.form', compact('story', 'stypes','stypelist'));
 
 
     }
@@ -216,6 +217,20 @@ class StoryController extends Controller
 
 
     }
+
+		public function promoteStory($id, Request $request)
+    {
+        $story = $this->story->findOrFail($id);
+        //return 'working on it' . $story->id;
+        //
+				$story->story_type = $request->new_story_type;
+				$story->save();
+
+
+				flash()->success('Story has been Promoted.');
+				return redirect(route('admin.story.edit', $story->id));
+
+    }
     public function edit($id)
     {
         $story = $this->story->findOrFail($id);
@@ -223,16 +238,17 @@ class StoryController extends Controller
         $tags = \emutoday\Tag::lists('name', 'id');
 
 				$user = auth()->user();
+				$stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
 
 				JavaScript::put([
 							'storytype' => $story->story_type
 					]);
-					
+
 				if ($user->hasRole('contributor_1'))
 				{
 					return view('admin.story.role.form', compact('story', 'stypes', 'tags'));
 				} else {
-      		return view('admin.story.form', compact('story', 'stypes', 'tags'));
+      		return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist'));
 				}
 
 

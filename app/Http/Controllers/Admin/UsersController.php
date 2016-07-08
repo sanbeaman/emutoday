@@ -1,6 +1,8 @@
 <?php
 namespace emutoday\Http\Controllers\Admin;
 use emutoday\User;
+use emutoday\Mediafile;
+
 use Illuminate\Http\Request;
 use emutoday\Http\Requests;
 
@@ -19,10 +21,11 @@ class UsersController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-    public function create(User $user)
+    public function create(User $user, Mediafile $mediafile)
     {
+				$mediafiles = null;
 				$userRoles = \emutoday\Role::lists('name', 'id');
-        return view('admin.users.form', compact('user','userRoles' ));
+        return view('admin.users.form', compact('user','userRoles','mediafiles' ));
     }
 
     public function store(Requests\StoreUserRequest $request)

@@ -25,7 +25,7 @@
 	@endsection
 @section('content')
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-8">
 
 			<div class="box box-primary">
 
@@ -133,22 +133,38 @@
 		</div><!-- /.box -->
 	</div><!-- /.col-md-6-->
 
-		<div class="col-md-6">
-			@if ($story->storyImages()->count() < 3)
-		<!-- general form elements disabled -->
+		<div class="col-md-4">
+			@if($story->exists)
+					@if($story->story_type == 'storybasic')
 						<div class="box box-warning">
 							<div class="box-header with-border">
-								<form action="addimage" method="POST">
+								<form action="promoteStory" method="POST">
 										{{ csrf_field() }}
-									<button class="btn btn-primary" href="#">Add Image</button>
+										{!! Form::select('new_story_type', $stypelist, 'storypromoted', ['class' => 'form-control']) !!}
+
+
+									<button class="btn btn-primary" href="#">Promote Story</button>
 
 								</form>
 							</div>
 						</div>
-			<!--     add image asset -->
-			@endif
+					@else
+							@if ($story->storyImages()->count() < 3)
+						<!-- general form elements disabled -->
+										<div class="box box-warning">
+											<div class="box-header with-border">
+												<form action="addimage" method="POST">
+														{{ csrf_field() }}
+													<button class="btn btn-primary" href="#">Add Image</button>
 
-			@each('admin.story.subviews.storyimage', $story->storyImages, 'storyImage')
+												</form>
+											</div>
+										</div>
+							<!--     add image asset -->
+							@endif
+							@each('admin.story.subviews.storyimage', $story->storyImages, 'storyImage')
+					@endif
+				@endif
 		</div><!-- /.col-md-6 -->
 	</div><!-- /.row -->
 @endsection

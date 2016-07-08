@@ -37,6 +37,8 @@ class User extends Authenticatable
 			return $this->belongsToMany('emutoday\Mediafile');
 		}
 
+
+	
 		// public function avatarImgUrl()
 		// {
 		// 	$mfile = $this->belongsToMany('emutoday\Mediafile')->first();

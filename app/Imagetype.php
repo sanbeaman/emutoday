@@ -12,7 +12,7 @@ class Imagetype extends Model
      *
      * @var array
      */
-    protected $fillable = ['group','type','width','height','infotxt', 'helptxt','rules','notes'];
+    protected $fillable = ['group','type','name','width','height','infotxt', 'helptxt','rules','notes'];
 
 		/**
 		 * The one-to-many relationship with storyImages

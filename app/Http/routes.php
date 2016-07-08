@@ -100,7 +100,7 @@ Route::group(['middleware' => ['web']], function() {
 
     //watch out for match anything ROUTES
 
-    Route::group(['prefix' => 'admin'], function()
+    Route::group(['prefix' => 'admin' ], function()
     {
 			Route::get('delete', function() {
 				return back();
@@ -129,7 +129,7 @@ Route::group(['middleware' => ['web']], function() {
       // Route::get('admin/storyType/{storyType?}', ['as' => 'admin.storyType', 'uses' => 'Admin\StoryController@build']);
       // Route::get('admin/storyType/story/{story}', ['as' => 'admin.storyType.story', 'uses' => 'Admin\StoryController@build']);
       Route::post('story/{id}/addimage', 'Admin\StoryController@addImage');
-
+  		Route::post('story/{id}/promoteStory', 'Admin\StoryController@promoteStory');
 			Route::post('story/imageUpload',[
 										'as' => 'admin.story.imageupload',
 										'uses' => 'Admin\StoryController@imageUpload'

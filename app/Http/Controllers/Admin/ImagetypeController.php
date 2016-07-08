@@ -52,7 +52,11 @@ class ImagetypeController extends Controller
 				 'width' => 'integer',
 				 'height' => 'integer'
 		 ]);
-		 $this->imagetype->create($request->all());
+		 $name = $request->group . '_' . $request->type;
+		 $this->imagetype->create(
+		 $request->all() + ['name'=> $name]
+	 );
+
 
 			// $id = $role->id;
 			flash()->success('imagetype has been created.');
@@ -92,7 +96,10 @@ class ImagetypeController extends Controller
     public function update(Request $request, $id)
     {
 			$imagetype = $this->imagetype->findOrFail($id);
-			$imagetype->fill($request->all())->save();
+			$name = $request->group .'_'.$request->type;
+			$imagetype->fill(
+			['name'=>$name] + $request->all()
+			)->save();
 
 			flash()->success('imagetype has been updated.');
 			return redirect(route('admin.imagetype.edit', $imagetype->id));

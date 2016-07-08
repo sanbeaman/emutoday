@@ -6,7 +6,20 @@
 	@endsection
 	@section('style-plugin')
 		@parent
+		<!-- DataTables -->
+	<link rel="stylesheet" href="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.css">
 
+		<link rel="stylesheet" href="/themes/admin-lte/plugins/daterangepicker/daterangepicker-bs3.css">
+		<!-- bootstrap datepicker -->
+		<link rel="stylesheet" href="/themes/admin-lte/plugins/datepicker/datepicker3.css">
+		<!-- iCheck for checkboxes and radio inputs -->
+		<link rel="stylesheet" href="/themes/admin-lte/plugins/iCheck/all.css">
+		<!-- Bootstrap Color Picker -->
+		<link rel="stylesheet" href="/themes/admin-lte/plugins/colorpicker/bootstrap-colorpicker.min.css">
+		<!-- Bootstrap time Picker -->
+		<link rel="stylesheet" href="/themes/admin-lte/plugins/timepicker/bootstrap-timepicker.min.css">
+		<!-- Select2 -->
+		<link rel="stylesheet" href="/themes/admin-lte/plugins/select2/select2.min.css">
 	@endsection
 
 	@section('style-app')
@@ -17,79 +30,104 @@
 	@endsection
 
 @section('content')
-	<div class="row">
-		<div class="col-md-6">
-			<div class="box box-default">
-				<div class="box-header with-border">
-					<h3 class="box-title">box-default</h3>
-					<div class="box-tools pull-right">
-						<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-					</div>
-				</div><!-- /.box-header -->
-				<div class="box-body">
-					{{-- <table id="main-story-table" class="table table-bordered table-hover">
-						<thead>
-							<tr>
-							<th class="text-center">ID</th>
-							<th class="text-left">Type</th>
-							<th class="text-left">Title</th>
-							<th class="text-center">Featured</th>
-							<th class="text-center">Approved</th>
-							<th class="text-left">Live</th>
-							<th class="text-left">Start Date</th>
-							<th class="text-left">End Date</th>
-							<th class="text-left">Edit</th>
-							<th class="text-left">Delete</th>
-						</tr>
-				</thead>
-			</table> --}}
-			{{-- {!! $storys->render() !!} --}}
-			{{-- {{ $storys->links() }} --}}
-		</div>
-		<!-- /.box-body -->
-		<div class="box-footer">
-		</div>
-	</div><!-- /.box -->
-
-		</div><!-- /.col-md-6 -->
-		<div class="col-md-6">
-			<div class="box box-danger">
-						<div class="box-header">
-							<h3 class="box-title">box-danger</h3>
-							<div class="box-tools pull-right">
-								<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-							</div>
-						</div>
-						<div class="box-body">
+						<div class="box box-default">
+	        		<div class="box-header with-border">
+	          		<h3 class="box-title">Story Queue</h3>
+	          		<div class="box-tools pull-right">
+	            		<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+	          		</div>
+	        		</div><!-- /.box-header -->
 							<div class="box-body">
-								{{-- <table id="main-announcement-table" class="table table-bordered table-hover">
+								<table id="main-story-table" class="table table-bordered table-hover">
 									<thead>
 										<tr>
-												<th class="text-center">ID</th>
-												<th class="text-left">Title</th>
-												<th class="text-center">Approved</th>
-													<th class="text-center">Promoted</th>
-													<th class="text-left">Start Date</th>
-													<th class="text-left">End Date</th>
-												<th class="text-left">Edit</th>
-												<th class="text-left">Delete</th>
-										</tr>
-									</thead>
-
-								</table> --}}
-								{{-- {!! $storys->render() !!} --}}
-								{{-- {{ $storys->links() }} --}}
-							</div>
-							<!-- /.box-body -->
-						</div>
-						<!-- /.box-body -->
+		                <th class="text-center">ID</th>
+										<th class="text-left">Type</th>
+		                <th class="text-left">Title</th>
+										<th class="text-center">Featured</th>
+										<th class="text-center">Approved</th>
+										<th class="text-left">Live</th>
+										<th class="text-left">Start Date</th>
+										<th class="text-left">End Date</th>
+										<th class="text-left">Edit</th>
+										<th class="text-left">Delete</th>
+		            	</tr>
+							</thead>
+						</table>
+						{{-- {!! $storys->render() !!} --}}
+						{{-- {{ $storys->links() }} --}}
 					</div>
-					<!-- /.box -->
+					<!-- /.box-body -->
+	        <div class="box-footer">
+	        </div>
+	      </div><!-- /.box -->
 
-		</div><!-- /.col-md-6 -->
-	</div><!-- /.row -->
+				<div class="box box-danger">
+	            <div class="box-header">
+	              <h3 class="box-title">Announcement Queue</h3>
+								<div class="box-tools pull-right">
+									<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+								</div>
+	            </div>
+	            <div class="box-body">
+								<div class="box-body">
+									<table id="main-announcement-table" class="table table-bordered table-hover">
+										<thead>
+											<tr>
+					                <th class="text-center">ID</th>
+					                <th class="text-left">Title</th>
+													<th class="text-center">Approved</th>
+													  <th class="text-center">Promoted</th>
+														<th class="text-left">Start Date</th>
+														<th class="text-left">End Date</th>
+													<th class="text-left">Edit</th>
+													<th class="text-left">Delete</th>
+					            </tr>
+										</thead>
 
+									</table>
+									{{-- {!! $storys->render() !!} --}}
+									{{-- {{ $storys->links() }} --}}
+								</div>
+								<!-- /.box-body -->
+	            </div>
+	            <!-- /.box-body -->
+	          </div>
+	          <!-- /.box -->
+						<div class="box box-danger">
+									<div class="box-header">
+										<h3 class="box-title">Event Queue</h3>
+										<div class="box-tools pull-right">
+											<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+										</div>
+									</div>
+									<div class="box-body">
+										<div class="box-body">
+											<table id="main-event-table" class="table table-bordered table-hover">
+												<thead>
+													<tr>
+															<th class="text-center">ID</th>
+															<th class="text-left">Title</th>
+															<th class="text-center">Featured</th>
+															<th class="text-left">Approved</th>
+															<th class="text-center">Canceled</th>
+															<th class="text-left">Promoted</th>
+															<th class="text-left">Start Date</th>
+															<th class="text-left">End Date</th>
+															<th class="text-left">Edit</th>
+															<th class="text-left">Delete</th>
+													</tr>
+												</thead>
 
+											</table>
+											{{-- {!! $storys->render() !!} --}}
+											{{-- {{ $storys->links() }} --}}
+										</div>
+										<!-- /.box-body -->
+									</div>
+									<!-- /.box-body -->
+								</div>
+								<!-- /.box -->
 
 @endsection
 @section('footer-vendor')
