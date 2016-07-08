@@ -112,6 +112,11 @@ Route::group(['middleware' => ['web']], function() {
 
       Route::resource('magazine', 'Admin\MagazineController');
 
+
+			Route::post('user/{user}/addMediafileUser', ['as' => 'store_mediafile_user', 'uses' => 'Admin\MediafileController@addMediafileUser']);
+			Route::put('user/{user}/updateMediafileUser', ['as' => 'update_mediafile_user', 'uses' => 'Admin\MediafileController@updateMediafileUser']);
+			Route::delete('user/{user}/removeMediafileUser', ['as' => 'remove_mediafile_user', 'uses' => 'Admin\MediafileController@removeMediafileUser']);
+
       Route::get('users/{users}/confirm', ['as' => 'admin.users.confirm', 'uses' => 'Admin\UsersController@confirm']);
       Route::resource('users', 'Admin\UsersController');
 
@@ -152,6 +157,10 @@ Route::group(['middleware' => ['web']], function() {
 
       Route::get('event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
       Route::resource('event', 'Admin\EventController');
+
+
+
+			Route::resource('mediafile', 'Admin\MediafileController');
 
 
 			Route::resource('role', 'Admin\RoleController');

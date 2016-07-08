@@ -2,10 +2,19 @@
 
 namespace emutoday\Presenters;
 
-use Lewis\Presenter\AbstractPresenter;
+use Laracasts\Presenter\Presenter;
+use Carbon\Carbon;
 
-class UserPresenter extends AbstractPresenter
+class UserPresenter extends Presenter
 {
+	public function avatarUrl()
+	{
+		dd($mediafile = $this->mediaFiles->first());
+
+		return $mediafile->path . $mediafile->name . '.' . $mediafile->ext;
+
+	}
+
     public function lastLoginDifference()
     {
         return $this->last_login_at->diffForHumans();

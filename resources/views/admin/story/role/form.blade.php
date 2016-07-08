@@ -41,6 +41,8 @@
 
 			<div class="box-header with-border">
 					<h3 class="box-title">{{$story->story_folder}} Story</h3>
+					@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story', 'cuser'=>$currentUser])
+
 			</div> 	<!-- /.box-header -->
 			<form role="form">
 					<div class="box-body">

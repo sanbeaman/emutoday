@@ -19,13 +19,10 @@
 						</div>
 						@endif
 							<div class="form-group">
-
-										 {{-- {!! Form::label('image_type', 'Image Type:') !!} --}}
-										 {!! Form::hidden('image_type', $storyImage->image_type, ['class' => 'form-control input-sm', 'readonly' => 'readonly']) !!}
-
-											{{-- {!! Form::label('image_name', 'Name:') !!} --}}
-											{!! Form::hidden('image_name', null, ['class' => 'form-control input-sm', 'readonly' => 'readonly']) !!}
-
+								{{-- {!! Form::label('image_type', 'Image Type:') !!} --}}
+								{!! Form::hidden('image_type', $storyImage->image_type, ['class' => 'form-control input-sm', 'readonly' => 'readonly']) !!}
+								{{-- {!! Form::label('image_name', 'Name:') !!} --}}
+								{!! Form::hidden('image_name', null, ['class' => 'form-control input-sm', 'readonly' => 'readonly']) !!}
 							</div>
 							<div class="form-group">
 								{!! Form::file('image', null, array('required', 'class'=>'form-control input-sm')) !!}

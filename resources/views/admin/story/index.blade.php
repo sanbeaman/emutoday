@@ -17,19 +17,8 @@
 				<div class="box">
 					<div class="box-header">
 						<h3 class="box-title">Story List</h3>
-							<button class="btn btn-primary pull-right" type="button" data-toggle="collapse" data-target="#collapseNew" aria-expanded="false" aria-controls="collapseExample">
-								<span class="glyphicon glyphicon-plus-sign"></span>
-								<span class="glyphicon glyphicon-chevron-down"></span>
-							</button>
-							<div class="collapse" id="collapseNew">
-								<div class="well">
-							<a href="{{ route('admin_story_setup', ['stype' => 'storybasic']) }}" class="btn btn-primary btn-sm">Create News Story</a>
-							<a href="{{ route('admin_story_setup', ['stype' => 'story']) }}" class="btn btn-primary btn-sm">Create Promoted Story</a>
-							<a href="{{ route('admin_story_setup', ['stype' => 'storyexternal']) }}" class="btn btn-primary btn-sm">Create External Story</a>
-							</div>
-						</div>
-					</div>
-					<!-- /.box-header -->
+						@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story', 'cuser'=>$currentUser])
+					</div><!-- /.box-header -->
 					<div class="box-body">
 						<table id="main-story-table" class="table table-bordered table-hover">
 							<thead>

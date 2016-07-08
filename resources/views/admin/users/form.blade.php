@@ -29,12 +29,13 @@
 	@section('content')
 
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-sm-6">
 				<div class="box box-primary">
 						<div class="box-header">
 							<h3 class="box-title">{{$user->exists ? 'Editing User: '. $user->last_name. ', '.$user->first_name: 'Create New User'}}</h3>
 						</div>
 						<div class="box-body">
+
 
 						{!! Form::model($user,[
 							'method' => $user->exists ? 'put' : 'post',
@@ -107,6 +108,89 @@
 								</div><!-- /.box-footer -->
 					</div><!-- /.box -->
 			</div><!--	/.col-sm-12 -->
+			<div class="col-sm-6">
+				@if(count($mediafiles) > 0 )
+					@foreach ($mediafiles as $mediafile)
+								<div class="box box-info">
+									{{-- @if(count($magazine->mediafiles) > 0)
+										<h4>{{$magazine->mediafiles()->first()}}</h4>
+										@else --}}
+									<div class="box-header with-border">
+										<h3 class="box-title">User Image</h3>
+									</div><!-- /.box-header -->
+									<div class="box-body">
+										{!! Form::model($mediafile, [
+											'method' => 'put',
+											'route' => ['update_mediafile_user', $mediafile->id]
+											]) !!}
+											<div class="media-left">
+
+												<img class="media-object" src="/imgs/user/thumbnails/{{ 'thumb-' . $mediafile->name . '.' .
+													$mediafile->ext . '?'. 'time='. time() }}" alt="{{$mediafile->name}}">
+												</div>
+												<div class="form-group">
+													{!! Form::file('photo', null, array('required','id' => 'photo', 'class'=>'form-control input-sm')) !!}
+												</div>
+												<div class="form-group">
+													{!! Form::label('caption') !!}
+													{!! Form::text('caption', null, ['class' => 'form-control']) !!}
+												</div>
+												<div class="form-group">
+													{!! Form::label('note') !!}
+													{!! Form::text('note', null, ['class' => 'form-control']) !!}
+												</div>
+												<div class="form-group">
+													{!! Form::submit('Update Image', array('class'=>'btn btn-primary')) !!}
+												</div>
+												{{ csrf_field() }}
+												{!! Form::close() !!}
+											</div> <!-- /.box-body -->
+											<div class="box-footer">
+												<div class="form-group">
+				 				       {!! Form::model($mediafile, ['route' => ['remove_mediafile_user', $mediafile->id],
+				 				       'method' => 'DELETE',
+				 				       'class' => 'form',
+				 				       'files' => true]
+				 				       ) !!}
+				 							 {!! Form::submit('Delete Image', array('class'=>'btn btn-warning', 'Onclick' => 'return ConfirmDelete();')) !!}
+				 				       {!! Form::close() !!}
+				 							  </div>
+											</div><!-- /.box-footer -->
+									</div> <!-- /.box -->
+						@endforeach
+						@else
+						<div class="box box-info">
+									<div class="box-header with-border">
+										<h3 class="box-title">Add User Image</h3>
+									</div><!-- /.box-header -->
+				<div class="box-body">
+			{!! Form::open(array('method' => 'post',
+													'route' => ['store_mediafile_user', $user->id],
+													'files' => true)) !!}
+					<div class="form-group">
+						{!! Form::file('photo', null, array('required','id' => 'photo', 'class'=>'form-control input-sm')) !!}
+					</div>
+							<div class="form-group">
+							{!! Form::label('caption') !!}
+							{!! Form::text('caption', null, ['class' => 'form-control']) !!}
+						</div>
+						<div class="form-group">
+							{!! Form::label('note') !!}
+							{!! Form::text('note', null, ['class' => 'form-control']) !!}
+						</div>
+							<div class="form-group">
+							{!! Form::submit('Add User Image', array('class'=>'btn btn-primary')) !!}
+						</div>
+					{{ csrf_field() }}
+				{!! Form::close() !!}
+
+					</div> <!-- /.box-body -->
+
+				</div> <!-- /.box -->
+			@endif
+
+			{{-- @each('admin.magazine.subviews.coverimage',$mediafiles, 'mediafile', 'admin.magazine.subviews.addcoverimage') --}}
+			</div> <!-- /.col-sm-6 -->
 		</div><!--/.row -->
 @endsection
 
@@ -153,6 +237,14 @@
     @parent
 <!-- Page script -->
 			<script>
+			function ConfirmDelete()
+			{
+					var x = confirm("Are you sure you want to delete?");
+					if (x)
+							return true;
+					else
+							return false;
+			}
 			  $(function () {
 			    //Initialize Select2 Elements
 			    $(".select2").select2();

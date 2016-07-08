@@ -16,27 +16,8 @@
 	@include('admin.layouts.modal')
 	<div class="box">
 		<div class="box-header">
-			<div class="row">
-				<div class="col-md-8">
-						<h3 class="box-title">Story List</h3>
-				</div><!-- /.col-md-5 -->
-				<div class="col-md-4">
-					<div class="box-tools">
-						@if(isset($storys))
-						<div class="input-group input-group-sm pull-left" style="width: 150px;">
-							<input type="text" name="table_search" class="form-control" placeholder="Search">
-
-							<div class="input-group-btn">
-								<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-							</div>
-						</div>
-						@endif
-						<div class="btn-group btn-group-sm pull-right">
-							<a href="{{ route('admin_story_setup', ['stype' => 'storybasic']) }}" class="btn bg-orange"><i class="fa fa-plus-square"></i></a>
-						</div><!-- /.btn-group -->
-					</div>
-				</div><!-- /.col-md-7 -->
-			</div><!-- /.row -->
+			<h3 class="box-title">Story List</h3>
+			@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story', 'cuser'=>$currentUser])
 		</div><!-- /.box-header -->
 	@if(isset($storys))
 

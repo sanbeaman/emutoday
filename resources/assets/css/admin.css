@@ -19,7 +19,10 @@ ol.breadcrumb {
 section.content, section.content-header {
 	padding: 8px;
 }
-
+.dropdown-menu {
+	left: auto;
+	right: 0;
+}
 /*.login-box,
 .register-box {
    width: 100%;

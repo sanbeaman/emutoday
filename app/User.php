@@ -3,7 +3,7 @@
 namespace emutoday;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use emutoday\Mediafile;
 
 class User extends Authenticatable
 {
@@ -31,6 +31,18 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = bcrypt($value);
     }
+
+		public function mediaFiles()
+		{
+			return $this->belongsToMany('emutoday\Mediafile');
+		}
+
+		// public function avatarImgUrl()
+		// {
+		// 	$mfile = $this->belongsToMany('emutoday\Mediafile')->first();
+		// 	//dd($this->mediaFiles()->first());
+		// 	 return $mfile->path . $mfile->name .'.'.$mfile->ext;
+		// }
 
 
 }

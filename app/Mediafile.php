@@ -7,10 +7,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Mediafile extends Model
 {
-	public function magazines()
-	{
-		return $this->belongsToMany('emutoday\Magazine');
-	}
 
 	public function delete()
 	{
@@ -19,5 +15,15 @@ class Mediafile extends Model
 			$this->path . 'thumbnails/' . 'thumb-' . $this->name.'.'.$this->ext
 		]);
 		parent::delete();
+	}
+	
+	public function magazines()
+	{
+		return $this->belongsToMany('emutoday\Magazine');
+	}
+
+	public function users()
+	{
+		return $this->belongsToMany('emutoday\User');
 	}
 }

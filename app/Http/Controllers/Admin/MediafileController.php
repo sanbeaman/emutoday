@@ -5,20 +5,131 @@ namespace emutoday\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use emutoday\Http\Requests;
-use emutoday\Http\Controllers\Controller;
-
+use emutoday\User;
+use emutoday\Mediafile;
 // import the Intervention Image Manager Class
 use Intervention\Image\ImageManagerStatic as Image;
+// use Illuminate\Routing\Route;
 
 class MediafileController extends Controller
 {
       protected $mediafile;
 
-			public function __construct(Mediafile $mediafile)
+			public function __construct(Mediafile $mediafile, User $user)
 			{
 					$this->mediafile = $mediafile;
+					$this->user = $user;
 					parent::__construct();
 			}
+
+
+			public function addMediafileUser($id, Request $request)
+			{
+
+
+					$user = $this->user->findOrFail($id);
+					//define the image paths
+					$destinationFolder = '/imgs/user/';
+
+					$mediafile = new Mediafile();
+					//assign the image paths to new model, so we can save them to DB
+					$mediafile->path = $destinationFolder;
+
+
+						//parts of the image we will need
+					// if ( ! empty(Input::file('photo'))){
+						$imgFile = $request->file('photo');
+
+						// $imgFile = Input::file('photo');
+						$imgFilePath = $imgFile->getRealPath();
+						$imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
+
+					switch ($imgFileOriginalExtension) {
+							case 'jpg':
+							case 'jpeg':
+							 $imgFileExtension = 'jpg';
+							 break;
+							 default:
+							 $imgFileExtension = $imgFileOriginalExtension;
+						 }
+						 $mediafile->name = 'user'. '-' .$user->id;
+						 $mediafile->ext = $imgFileExtension;
+
+						 $imgFileName = $mediafile->name . '.' . $mediafile->ext;
+
+
+					$image = Image::make($imgFilePath)
+					 ->save(public_path() . $destinationFolder . $imgFileName)
+					 ->fit(100)
+					 ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
+
+				// 	}
+				//
+					$mediafile->filename = $destinationFolder . $imgFileName;
+					$mediafile->caption = $request->input('caption');
+					$mediafile->note = $request->input('note');
+					$mediafile->save();
+					$user->mediaFiles()->save($mediafile);
+					flash()->success('User Image has been added');
+					return redirect(route('admin.users.edit', $user->id));//->with('status', 'Story has been created.');
+
+
+			}
+
+			public function updateMediafileUser($id, Request $request)
+			{
+					$mediafile = $this->mediafile->findOrFail($id);
+					$mediafile->caption = $request->get('caption');
+					$mediafile->note = $request->get('note');
+					$user = $mediafile->users->first();
+					if ($request->hasFile('photo'))
+					{
+						$imgFile = $request->file('photo');
+
+					// $imgFile = Input::file('photo');
+					$imgFilePath = $imgFile->getRealPath();
+					$imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
+
+							switch ($imgFileOriginalExtension) {
+									case 'jpg':
+									case 'jpeg':
+									 $imgFileExtension = 'jpg';
+									 break;
+									 default:
+									 $imgFileExtension = $imgFileOriginalExtension;
+								 }
+					 $mediafile->name = 'user'. '-' . $user->id;
+					 $mediafile->ext = $imgFileExtension;
+
+					 $imgFileName = $mediafile->name . '.' . $mediafile->ext;
+					 $image = Image::make($imgFilePath)
+										 ->save(public_path() . $mediafile->path . $imgFileName)
+										 ->fit(100)
+										 ->save(public_path() . $mediafile->path  . 'thumbnails/' . 'thumb-' . $imgFileName);
+
+				}
+				$mediafile->filename = $mediafile->path . $mediafile->name . '.' . $mediafile->ext;
+				$user->mediaFiles()->save($mediafile);
+				flash()->success('User Image has been updated');
+				return redirect()->back();//->with('status', 'Story has been created.');
+
+			}
+			public function removeMediafileUser($id)
+	    {
+	        $mediafile = $this->mediafile->findOrFail($id);
+
+	        $pathToImageForDelete = public_path() . $mediafile->path . $mediafile->name . '.' . $mediafile->ext;
+	        \File::delete($pathToImageForDelete);
+
+	        $pathToImageThumbForDelete = public_path() . $mediafile->path . 'thumbnails/' . 'thumb-' . $mediafile->name . '.' . $mediafile->ext;
+	        \File::delete($pathToImageThumbForDelete);
+
+	        $mediafile->delete();
+	        flash()->warning('Record has been deleted');
+
+	        return redirect()->back();//->with('status', 'Record has been deleted.');
+	    }
+
 
 			public function index()
     {

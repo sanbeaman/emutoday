@@ -105,10 +105,10 @@ class MagazineController extends Controller
 		 ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
 
 		}
-		$magazine = $mediafile->magazines->first();
-		$magazine->mediafiles()->save($mediafile);
-		flash()->success('Cover Image has been updated');
-		return redirect(route('admin.magazine.edit', $magazine->id));//->with('status', 'Story has been created.');
+		$user = $mediafile->users->first();
+		$user->mediafiles()->save($mediafile);
+		flash()->success('User Image has been updated');
+		return redirect()->back();//->with('status', 'Story has been created.');
 
 
 		}

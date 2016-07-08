@@ -36,6 +36,8 @@
 
 			<div class="box-header with-border">
 					<h3 class="box-title">{{$story->story_folder}} Story</h3>
+					@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story/', 'cuser'=>$currentUser])
+
 			</div> 	<!-- /.box-header -->
 			<form role="form">
 					<div class="box-body">
@@ -130,10 +132,23 @@
 			{!! Form::close() !!}
 		</div><!-- /.box -->
 	</div><!-- /.col-md-6-->
-	</div> <!-- /.row -->
-	<div class="row">
-		<div class="col-md-6">
 
+		<div class="col-md-6">
+			@if ($story->storyImages()->count() < 3)
+		<!-- general form elements disabled -->
+						<div class="box box-warning">
+							<div class="box-header with-border">
+								<form action="addimage" method="POST">
+										{{ csrf_field() }}
+									<button class="btn btn-primary" href="#">Add Image</button>
+
+								</form>
+							</div>
+						</div>
+			<!--     add image asset -->
+			@endif
+
+			@each('admin.story.subviews.storyimage', $story->storyImages, 'storyImage')
 		</div><!-- /.col-md-6 -->
 	</div><!-- /.row -->
 @endsection
