@@ -26,10 +26,14 @@
 		@parent
 	@endsection
 @section('content')
-<section class="content">
-
-
 	<div class="row">
+		<div class="col-md-6">
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">{{$magazine->exists ? 'Edit Magazine' : 'New Magazine'}}</h3>
+					@include('admin.layouts.components.boxtools', ['rte' => 'magazine', 'path' => 'admin/magazine'])
+				</div>	<!-- /.box-header -->
+				<div class="box-body">
 		{!! Form::model($magazine, [
 			'method' =>  'post',
 			'route' => ['admin.magazine.store']
@@ -56,11 +60,14 @@
         {!! Form::label('teaser') !!}
         {!! Form::text('teaser', null, ['class' => 'form-control']) !!}
     </div>
+	</div><!-- /.box-body -->
+	<div class="box-footer">
 		{!! Form::submit('Create New Magazine', ['class' => 'btn btn-primary']) !!}
 
 		{!! Form::close() !!}
-		</section>
-	</div> <!-- END Row top page input -->
+	</div><!-- /.box-footer -->
+	</div><!-- /.box -->
+</div><!-- /.row -->
 @endsection
 @section('scriptsfooter')
 	@parent

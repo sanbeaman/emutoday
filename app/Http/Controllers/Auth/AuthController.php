@@ -19,4 +19,13 @@ class AuthController extends Controller
         $this->redirectTo = route('admin.dashboard');
         $this->middleware('guest', ['except' => 'getLogout']);
     }
+
+		public function authenticate()
+		{
+			if(Auth::attempt(['email'=> $email, 'password'=> $password])){
+				//Authenticate passed
+				return redirect()->intended('admin.dashboard');
+				
+			}
+		}
 }

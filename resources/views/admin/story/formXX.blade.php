@@ -3,16 +3,11 @@
 @section('title', $story->exists ? 'Editing '.$story->title : 'Create New Story')
 	@section('style-plugin')
 		@parent
-		<!-- daterange picker -->
-<link rel="stylesheet" href="/themes/admin-lte/plugins/daterangepicker/daterangepicker-bs3.css">
-<!-- bootstrap datepicker -->
-<link rel="stylesheet" href="/themes/admin-lte/plugins/datepicker/datepicker3.css">
+
 <!-- iCheck for checkboxes and radio inputs -->
 <link rel="stylesheet" href="/themes/admin-lte/plugins/iCheck/all.css">
 <!-- Bootstrap Color Picker -->
-<link rel="stylesheet" href="/themes/admin-lte/plugins/colorpicker/bootstrap-colorpicker.min.css">
-<!-- Bootstrap time Picker -->
-<link rel="stylesheet" href="/themes/admin-lte/plugins/timepicker/bootstrap-timepicker.min.css">
+
 <!-- Select2 -->
 <link rel="stylesheet" href="/themes/admin-lte/plugins/select2/select2.min.css">
 
@@ -21,23 +16,16 @@
 <!-- bootstrap wysihtml5 - text editor -->
 <link rel="stylesheet" href="/themes/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     @endsection
-		@section('scripts-vendor')
-			<!-- Vendor Scripts that need to be loaded in the header before other plugin or app scripts -->
-			@parent
-		@endsection
-		@section('scripts-plugin')
-			<!-- Scripts  for code libraries and plugins that need to be loaded in the header -->
-			<script src="/themes/plugins/ckeditor/ckeditor.js"></script>
-			@parent
-		@endsection
-		@section('scripts-app')
-			<!-- App related Scripts  that need to be loaded in the header -->
-			@parent
-		@endsection
+		@section('scriptshead')
+					{{-- @include('admin.layouts.scriptshead') --}}
+					<script src="/themes/plugins/ckeditor/ckeditor.js"></script>
 
+		@parent
+
+	@endsection
 @section('content')
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-md-8">
 
 			<div class="box box-primary">
 
@@ -48,12 +36,16 @@
 
 			<div class="box-header with-border">
 					<h3 class="box-title">{{$story->story_folder}} Story</h3>
+					@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story/', 'cuser'=>$currentUser])
+
 			</div> 	<!-- /.box-header -->
 			<form role="form">
 					<div class="box-body">
 						<div class="form-group @if ($errors->has('title')) has-error @endif">
 				        <label for="title">Title</label>
-				        <input type="text" id="title" class="form-control" name="title" placeholder="Title">
+								{!! Form::text('title', null, ['class' => 'form-control', 'placeholder'=>'Title', 'id'=>'title']) !!}
+
+				        {{-- <input type="text" id="title" class="form-control" name="title" placeholder="Title"> --}}
 				        @if ($errors->has('title')) <p class="help-block">{{ $errors->first('title') }}</p> @endif
 				    </div>
 				    <div class="form-group">
@@ -78,46 +70,104 @@
 					  @endif
   				</div>
 					<div class="row">
-						<div class="col-md-3">
+						<div class="col-md-6">
 							<div class="form-group">
 								{!! Form::label('start_date') !!}
 								{!! Form::text('start_date', null, ['class' => 'form-control', 'id'=>'start-date']) !!}
 							</div>
-						</div><!-- /.col-md-4 -->
-						<div class="col-md-3">
+						</div><!-- /.col-md-6 -->
+						<div class="col-md-6">
 							<div class="form-group">
 								{!! Form::label('end_date') !!}
 								{!! Form::text('end_date', null, ['class' => 'form-control', 'id'=>'end-date']) !!}
 							</div>
-						</div><!-- /.col-md-4 -->
-
-				  <div class="col-md-3">
-						<div class="form-group">
-								{!! Form::label('story_type') !!}
-									@if (is_string($stypes))
-											{!! Form::text('story_type', $stypes, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
-									@else
-									{!! Form::select('story_type', $stypes, null, ['class' => 'form-control']) !!}
-							@endif
-						</div>
-				  </div><!-- /.col-md-4 -->
-				  <div class="col-md-3">
-						<div class="form-group">
-							{!! Form::submit($story->exists ? 'Save Story' : 'Create New Story', ['class' => 'btn btn-primary']) !!}
-						</div>
-				  </div><!-- /.col-md-3 -->
-				</div><!-- /.row -->
-					{!! Form::close() !!}
+						</div><!-- /.col-md-6 -->
+					</div><!-- /.row -->
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+									{!! Form::label('is_approved','Approved?', ['class'=>'text-center']) !!}
+									<div class="row">
+								<div class="col-md-4">
+									{!! Form::radio('is_approved', 1, $story->is_approved,['class' => 'form-control', 'id'=>'is-approved-yes']) !!}  {!! Form::label('is_approved', 'yes') !!}
+										</div><!-- /.col-md-4 -->
+										<div class="col-md-4">
+											{{ Form::radio('is_approved', 0, $story->is_approved,['class' => 'form-control', 'id'=>'is-approved-no']) }}  {!! Form::label('is_approved', 'no') !!}
+										</div><!-- /.col-md-4-->
+								</div><!-- /.row -->
+							</div><!-- /.form-group-->
+						</div><!-- /.col-md-6 -->
+						<div class="col-md-6">
+							<div class="form-group">
+						{!! Form::label('is_featured') !!}
+						<div class="row">
+							<div class="col-md-4">
+								{!! Form::radio('is_featured', 1, $story->is_featured,['class' => 'form-control', 'id'=>'is-featured-yes']) !!}  {!! Form::label('is_featured', 'yes') !!}
+							</div><!-- /.col-md-6 -->
+							<div class="col-md-4">
+								{!! Form::radio('is_featured', 0, $story->is_featured,['class' => 'form-control', 'id'=>'is-featured-no'] ) !!}  {!! Form::label('is_featured', 'no') !!}
+							</div><!-- /.col-md-6 -->
+						</div><!-- /.row -->
+					</div><!-- /.form-group -->
+						</div><!-- /.col-md-6 -->
+					</div><!-- /.row -->
+					<div class="row">
+						<h4>{{$story->exists ? $story->storyType->group : 'Group'}}</h4>
+						<div class="col-md-6">
+							<div class="form-group">
+									{!! Form::label('story_type') !!}
+										@if (is_string($stypes))
+												{!! Form::text('story_type', $stypes, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+										@else
+										{!! Form::select('story_type', $stypes, null, ['class' => 'form-control']) !!}
+								@endif
+							</div>
+						</div><!-- /.col-md-6 -->
+						<div class="col-md-6">
+							<div class="form-group">
+								{!! Form::submit($story->exists ? 'Save Story' : 'Create New Story', ['class' => 'btn btn-primary btn-block']) !!}
+							</div>
+						</div><!-- /.col-md-6 -->
+					</div><!-- /.row -->
 			</div><!-- /.box-body -->
-		{{-- <div id="el">
-			<test-date></test-date>
-</div> --}}
-		{{-- <input id="datetimepicker_start_time" type="text" > --}}
-
+			{!! Form::close() !!}
 		</div><!-- /.box -->
+	</div><!-- /.col-md-6-->
 
-	</div><!-- /.col-sm-12 -->
-	</div> <!-- /.row -->
+		<div class="col-md-4">
+			@if($story->exists)
+					@if($story->story_type == 'storybasic')
+						<div class="box box-warning">
+							<div class="box-header with-border">
+								<form action="promoteStory" method="POST">
+										{{ csrf_field() }}
+										{!! Form::select('new_story_type', $stypelist, 'storypromoted', ['class' => 'form-control']) !!}
+
+
+									<button class="btn btn-primary" href="#">Promote Story</button>
+
+								</form>
+							</div>
+						</div>
+					@else
+							@if ($story->storyImages()->count() < 3)
+						<!-- general form elements disabled -->
+										<div class="box box-warning">
+											<div class="box-header with-border">
+												<form action="addimage" method="POST">
+														{{ csrf_field() }}
+													<button class="btn btn-primary" href="#">Add Image</button>
+
+												</form>
+											</div>
+										</div>
+							<!--     add image asset -->
+							@endif
+							@each('admin.story.subviews.storyimage', $story->storyImages, 'storyImage')
+					@endif
+				@endif
+		</div><!-- /.col-md-6 -->
+	</div><!-- /.row -->
 @endsection
 @section('footer-plugin')
     @parent
@@ -130,10 +180,7 @@
 <script src="/themes/admin-lte/plugins/input-mask/jquery.inputmask.extensions.js"></script>
 <!-- date-range-picker -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-<script src="/themes/admin-lte/plugins/daterangepicker/daterangepicker.js"></script>
-<!-- bootstrap datepicker -->
-<script src="/themes/admin-lte/plugins/datepicker/bootstrap-datepicker.js"></script>
-<!-- bootstrap datetimepicker -->
+
 <script src="/themes/plugins/eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 
 
@@ -142,9 +189,6 @@
 <script src="/themes/admin-lte/plugins/iCheck/icheck.min.js"></script>
 <!-- FastClick -->
 <script src="/themes/admin-lte/plugins/fastclick/fastclick.js"></script>
-{{-- <script src="https://cdn.ckeditor.com/4.5.7/standard/ckeditor.js"></script> --}}
-<!-- Bootstrap WYSIHTML5 -->
-<script src="/themes/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
 
 	@endsection
 	@section('footer-script')
@@ -167,37 +211,13 @@ $(function () {
     //Initialize Select2 Elements
     $(".select2").select2();
 
-    //Datemask dd/mm/yyyy
-    $("#datemask").inputmask("dd/mm/yyyy", {"placeholder": "dd/mm/yyyy"});
-    //Datemask2 mm/dd/yyyy
-    $("#datemask2").inputmask("mm/dd/yyyy", {"placeholder": "mm/dd/yyyy"});
-    //Money Euro
-    $("[data-mask]").inputmask();
 
-    //Date range picker
-    $('#reservation').daterangepicker();
-    //Date range picker with time picker
-    $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
-    //Date range as a button
-    $('#daterange-btn').daterangepicker(
-        {
-          ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-          },
-          startDate: moment().subtract(29, 'days'),
-          endDate: moment()
-        },
-        function (start, end) {
-          $('#daterange-btn span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-        }
-    );
-
-
+		$('input[type="radio"]').iCheck({
+			checkboxClass: 'icheckbox_flat-blue',
+			radioClass: 'iradio_flat-blue'
+		})
+		$('#is-featured-no').iCheck('check');
+		$('#is-featured-yes').iCheck('disable');
 
     //iCheck for checkbox and radio inputs
     $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
@@ -214,15 +234,25 @@ $(function () {
       checkboxClass: 'icheckbox_flat-green',
       radioClass: 'iradio_flat-green'
     });
-		//Date picker
-		$('#end-date').datetimepicker({
-			format: 'YYYY-MM-DD HH:mm:ss'
-		});
 
-		//Date picker
+		//Start Date picker
 		$('#start-date').datetimepicker({
 			format: 'YYYY-MM-DD HH:mm:ss'
 		});
+
+		//End Date picker
+		$('#end-date').datetimepicker({
+			format: 'YYYY-MM-DD HH:mm:ss',
+			useCurrent: false //Important! See Issue #1075
+		});
+		$("#start-date").on("dp.change", function (e) {
+					$('#end-date').data("DateTimePicker").minDate(e.date);
+			});
+			$("#end-date").on("dp.change", function (e) {
+					$('#start-date').data("DateTimePicker").maxDate(e.date);
+			});
+
+
 
   });
 $('input[name=title]').on('blur', function () {

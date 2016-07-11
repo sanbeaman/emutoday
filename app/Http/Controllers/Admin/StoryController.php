@@ -6,10 +6,12 @@ use emutoday\Story;
 use emutoday\StoryImage;
 use emutoday\Tag;
 use emutoday\User;
+use emutoday\Imagetype;
+use emutoday\StoryType;
 
 use Illuminate\Http\Request;
 use emutoday\Http\Requests;
-
+use DB;
 use JavaScript;
 
 class StoryController extends Controller
@@ -28,17 +30,18 @@ class StoryController extends Controller
     */
     public function index(Request $request)
     {
+
 			$user = auth()->user();
+			if($user == null)
+			{
+				return redirect(route('admin.dashboard'));
+			}
 			$storys =   $this->story->newQuery();
 			if ($user->hasRole('contributor_1'))
 			{
 				$storys = $storys->where('author_id', $user->id)->get();
 				  return view('admin.story.role.index', compact('storys'));
 			} else {
-
-
-
-
 				$stype = $request->get('stype');
 				$order = $request->get('order');
 				$dir = $request->get('dir');
@@ -71,10 +74,8 @@ class StoryController extends Controller
 				$data['stype'] = $stype;
 				$data['stypes'] = $stypes;
 
-
-
-        return view('admin.story.index', $data);
-					}
+				return view('admin.story.index', $data);
+				}
     }
 
 		public function list($stype)
@@ -197,7 +198,28 @@ class StoryController extends Controller
         flash()->success('Story has been created.');
         return redirect(route('admin.story.edit', $story->id));//->with('status', 'Story has been created.');
     }
+		public function addNewImage($id, Request $request)
+		{
+				$story = $this->story->findOrFail($id);
 
+				$story->storyImages()->create([
+							'image_name'=> 'img' . $story->id . '_' . $request->img_type,
+							'image_type'=>  $request->img_name,
+							'imagetype_id'=> $request->img_id
+					]);
+				// $storyImage = $story->addImage('hero');
+
+
+				// $storyImage = $story->storyImages()->create([
+				//         'image_name'=> 'img' . $story->id . '_hero',
+				//         'image_type'=> 'imagehero',
+				//     ]);
+
+				flash()->success('New Image Added.');
+				return redirect(route('admin.story.edit', $story->id));
+
+
+		}
 
     public function addImage($id)
     {
@@ -225,10 +247,27 @@ class StoryController extends Controller
         //
 				$story->story_type = $request->new_story_type;
 				$story->save();
+				$storyGroup = $story->storyType->group;
+				$requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
+				$otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
+				$stypelist = StoryType::where('level', 1)->lists('name','shortname');
+				$stypes = $story->story_type;
+
+				foreach ($requiredImages as $img) {
+						$story->storyImages()->create([
+							'image_name'=> 'img' . $story->id . '_' . $img->type,
+							'image_type'=> $img->name,
+							'imagetype_id'=> $img->id
+					]);
+				}
+
+
 
 
 				flash()->success('Story has been Promoted.');
-				return redirect(route('admin.story.edit', $story->id));
+				return view('admin.story.form2', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages'));
+
+				// return redirect(route('admin.story.edit', $story->id));
 
     }
     public function edit($id)
@@ -237,18 +276,35 @@ class StoryController extends Controller
 				$stypes = $story->story_type;
         $tags = \emutoday\Tag::lists('name', 'id');
 
-				$user = auth()->user();
+
+
 				$stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
 
 				JavaScript::put([
 							'storytype' => $story->story_type
 					]);
+					$user = auth()->user();
+					if($user == null)
+					{
+						return redirect(route('admin.dashboard'));
+					}
+						
 
 				if ($user->hasRole('contributor_1'))
 				{
 					return view('admin.story.role.form', compact('story', 'stypes', 'tags'));
+
 				} else {
-      		return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist'));
+					$storyGroup = $story->storyType->group;
+					$imagetypeNames = Imagetype::ofGroup($storyGroup)->get()->keyBy('id');
+					$currentStoryImages = $story->storyImages->pluck('image_type','imagetype_id');
+					$leftOverImages = $imagetypeNames->diffKeys($currentStoryImages);
+					// dd($leftOverImages);
+					$requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
+					$otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
+					return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
+
+      		// return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist',''));
 				}
 
 

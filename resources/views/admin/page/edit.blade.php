@@ -35,13 +35,21 @@
 
 		@endsection
 
+			@section('scripts-vendor')
+				<!-- Vendor Scripts that need to be loaded in the header before other plugin or app scripts -->
+				@parent
+			@endsection
+			@section('scripts-plugin')
+				<!-- Scripts  for code libraries and plugins that need to be loaded in the header -->
+					<script src="/themes/plugins/ckeditor/ckeditor.js"></script>
+				@parent
+			@endsection
+			@section('scripts-app')
+				<!-- App related Scripts  that need to be loaded in the header -->
+				<script src="/js/redips-drag-min.js"></script>
 
-@section('scripthead')
-          @parent
-
-          <script src="{{'/js/redips-drag-min.js' }}"></script>
-
-    @endsection
+				@parent
+			@endsection
 @section('content')
 			<div class="box box-info">
 				<div class="box-header">
@@ -128,6 +136,7 @@
 
 @endsection
 @section('footer-vendor')
+
 	@parent
 @endsection
 
@@ -139,11 +148,11 @@
 
 @section('footer-app')
 	@parent
+	  <script src="{{ '/js/my-redips.js' }}"></script>
 @endsection
 
 @section('footer-script')
 	@parent
-	    <script src="{{ '/js/my-redips.js' }}"></script>
 
 	<script>
 

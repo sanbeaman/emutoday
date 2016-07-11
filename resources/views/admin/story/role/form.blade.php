@@ -21,13 +21,20 @@
 <!-- bootstrap wysihtml5 - text editor -->
 <link rel="stylesheet" href="/themes/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     @endsection
-		@section('scriptshead')
-					{{-- @include('admin.layouts.scriptshead') --}}
-					<script src="/themes/plugins/ckeditor/ckeditor.js"></script>
+		@section('scripts-vendor')
+			<!-- Vendor Scripts that need to be loaded in the header before other plugin or app scripts -->
+			@parent
+		@endsection
+		@section('scripts-plugin')
+			<!-- Scripts  for code libraries and plugins that need to be loaded in the header -->
+			<script src="/themes/plugins/ckeditor/ckeditor.js"></script>
+			@parent
+		@endsection
+		@section('scripts-app')
+			<!-- App related Scripts  that need to be loaded in the header -->
+			@parent
+		@endsection
 
-		@parent
-
-	@endsection
 @section('content')
 		<div class="row">
 			<div class="col-md-6">

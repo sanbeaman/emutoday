@@ -17,9 +17,10 @@
 @section('content')
 		@include('admin.layouts.modal')
 				<div class="box">
-					<div class="box-header">
+					<div class="box-header with-border">
 						<h3 class="box-title">Magazine List</h3>
-					</div><!-- /.box-header -->
+						@include('admin.layouts.components.boxtools', ['rte' => 'magazine', 'path' => 'admin/magazine'])
+					</div>	<!-- /.box-header -->
 					<div class="box-body">
 						<table id="main-magazine-table" class="table table-bordered table-hover">
 							<thead>

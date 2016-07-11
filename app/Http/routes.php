@@ -128,7 +128,8 @@ Route::group(['middleware' => ['web']], function() {
       Route::get('story/{story}/confirm', ['as' => 'admin.story.confirm', 'uses' => 'Admin\StoryController@confirm']);
       // Route::get('admin/storyType/{storyType?}', ['as' => 'admin.storyType', 'uses' => 'Admin\StoryController@build']);
       // Route::get('admin/storyType/story/{story}', ['as' => 'admin.storyType.story', 'uses' => 'Admin\StoryController@build']);
-      Route::post('story/{id}/addimage', 'Admin\StoryController@addImage');
+			Route::post('story/{id}/addnewimage','Admin\StoryController@addNewImage');
+			Route::post('story/{id}/addimage', 'Admin\StoryController@addImage');
   		Route::post('story/{id}/promoteStory', 'Admin\StoryController@promoteStory');
 			Route::post('story/imageUpload',[
 										'as' => 'admin.story.imageupload',

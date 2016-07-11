@@ -32,7 +32,9 @@ return array(
 
     'paths' => array(
         public_path('imgs'),
-				public_path('imgs/story')
+				public_path('imgs/story'),
+				public_path('imgs/magazine'),
+				public_path('imgs/user')
     ),
 
     /*

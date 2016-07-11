@@ -16,7 +16,12 @@ class Mediafile extends Model
 		]);
 		parent::delete();
 	}
-	
+	public function getFullPath(){
+		return $this->path . $this->name . '.' . $this->ext;
+	}
+	public function getMediaNameAttribute(){
+		return $this->name . '.' . $this->ext;
+	}
 	public function magazines()
 	{
 		return $this->belongsToMany('emutoday\Magazine');

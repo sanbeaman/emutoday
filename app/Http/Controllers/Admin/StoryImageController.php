@@ -180,9 +180,9 @@ class StoryImageController extends Controller
         //File::delete(public_path($storyImage->image_path) . $storyImage->image_name . '.' . $storyImage->image_extension);
         //Storage::delete(public_path($thumbPath). 'thumb-' . $storyImage->image_name . '.' . $storyImage->image_extension);
         $storyImage->delete();
-        flash()->warning('Record has been deleted');
+        flash()->warning('Image has been deleted');
 
-        return redirect(route('admin.storyimages.index'));//->with('status', 'Record has been deleted.');
+        return redirect()->back();//->with('status', 'Record has been deleted.');
     }
     public function formatCheckboxValue($storyImage)
     {

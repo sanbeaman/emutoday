@@ -17,8 +17,8 @@
 	@endsection
 
 @section('content')
-	<div class="row">
-		<div class="col-md-6">
+ <div class="row">
+	 <div class="col-md-6">
 			<div class="box box-default">
 				<div class="box-header with-border">
 					<h3 class="box-title">box-default</h3>
@@ -27,6 +27,7 @@
 					</div>
 				</div><!-- /.box-header -->
 				<div class="box-body">
+
 					{{-- <table id="main-story-table" class="table table-bordered table-hover">
 						<thead>
 							<tr>
@@ -136,6 +137,7 @@
 @endsection
 @section('footer-app')
 	@parent
+	{{-- <script src="/js/vue-drag.js"></script> --}}
 @endsection
 @section('footer-script')
     @parent

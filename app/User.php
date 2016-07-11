@@ -37,8 +37,13 @@ class User extends Authenticatable
 			return $this->belongsToMany('emutoday\Mediafile');
 		}
 
+		public function announcements()
+		{
+			return $this->hasMany('emutoday\Announcement', 'author_id');
+		}
 
-	
+
+
 		// public function avatarImgUrl()
 		// {
 		// 	$mfile = $this->belongsToMany('emutoday\Mediafile')->first();

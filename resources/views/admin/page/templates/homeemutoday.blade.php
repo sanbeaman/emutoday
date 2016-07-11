@@ -1,22 +1,27 @@
 <div id="redips-drag">
     <!-- tables inside this DIV could have drag-able content -->
     <!-- left container -->
-    <div id="left">
+	<div class="row">
+    <div id="left" class="col-md-6">
         <table id="table1">
             <colgroup>
+								<col width="50"/>
                 <col width="50"/>
                 <col width="100"/>
                 <col width="300"/>
             </colgroup>
             @foreach ($storys as $story)
                 <tr>
+									<td class="{{$story->is_featured?'bg-orange':'bg-navy'}}">
+										{{$story->id}}
+									</td>
                     <td class="redips-single">
                         {{-- <img src="{{$story->grabStoryImageByType('imagemain')->mainImageURL() }}" id="{{$story->id}}" class="redips-drag orange" alt="feature-image"></a> --}}
 
                         @if($story->is_featured)
-                            <div id="drag-{{$story->id}}x" class="redips-drag orange"></a>{{$story->id}}</div>
+                            <div id="drag-{{$story->id}}x" class="redips-drag  bg-orange"></a>{{$story->id}}</div>
                         @else
-                            <div id="drag-{{$story->id}}" class="redips-drag blue"></a>{{$story->id}}</div>
+                            <div id="drag-{{$story->id}}" class="redips-drag  bg-navy"></a>{{$story->id}}</div>
                         @endif
 
 
@@ -34,7 +39,7 @@
     </div>
 
     <!-- right container -->
-    <div id="right">
+    <div id="right" class="col-md-6">
         <table id="table2">
         <colgroup>
             <col width="400" />
@@ -73,5 +78,5 @@
     	<input type="button" value="Relocate" class="button" onclick="javascript:reloc()"/>
     </div>
 
-
+</div><!-- row -->
 </div> <!-- END redips-drag -->

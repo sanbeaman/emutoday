@@ -16,16 +16,22 @@
 <!-- bootstrap wysihtml5 - text editor -->
 <link rel="stylesheet" href="/themes/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     @endsection
-		@section('scriptshead')
-					{{-- @include('admin.layouts.scriptshead') --}}
-					<script src="/themes/plugins/ckeditor/ckeditor.js"></script>
-
-		@parent
-
-	@endsection
+		@section('scripts-vendor')
+			<!-- Vendor Scripts that need to be loaded in the header before other plugin or app scripts -->
+			@parent
+		@endsection
+		@section('scripts-plugin')
+			<!-- Scripts  for code libraries and plugins that need to be loaded in the header -->
+			<script src="/themes/plugins/ckeditor/ckeditor.js"></script>
+			@parent
+		@endsection
+		@section('scripts-app')
+			<!-- App related Scripts  that need to be loaded in the header -->
+			@parent
+		@endsection
 @section('content')
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-md-7">
 
 			<div class="box box-primary">
 
@@ -35,7 +41,7 @@
     ]) !!}
 
 			<div class="box-header with-border">
-					<h3 class="box-title">{{$story->story_folder}} Story</h3>
+					<h3 class="box-title">{{$story->storyType->group}} Story</h3>
 					@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story/', 'cuser'=>$currentUser])
 
 			</div> 	<!-- /.box-header -->
@@ -112,6 +118,7 @@
 						</div><!-- /.col-md-6 -->
 					</div><!-- /.row -->
 					<div class="row">
+
 						<div class="col-md-6">
 							<div class="form-group">
 									{!! Form::label('story_type') !!}
@@ -133,37 +140,30 @@
 		</div><!-- /.box -->
 	</div><!-- /.col-md-6-->
 
-		<div class="col-md-4">
+		<div class="col-md-5">
 			@if($story->exists)
 					@if($story->story_type == 'storybasic')
-						<div class="box box-warning">
-							<div class="box-header with-border">
-								<form action="promoteStory" method="POST">
+							<div class="box box-warning">
+								<div class="box-header with-border">
+									<form action="promoteStory" method="POST">
 										{{ csrf_field() }}
 										{!! Form::select('new_story_type', $stypelist, 'storypromoted', ['class' => 'form-control']) !!}
-
-
-									<button class="btn btn-primary" href="#">Promote Story</button>
-
-								</form>
+										<button class="btn btn-primary" href="#">Promote Story</button>
+									</form>
+								</div>
 							</div>
-						</div>
 					@else
-							@if ($story->storyImages()->count() < 3)
-						<!-- general form elements disabled -->
-										<div class="box box-warning">
-											<div class="box-header with-border">
-												<form action="addimage" method="POST">
-														{{ csrf_field() }}
-													<button class="btn btn-primary" href="#">Add Image</button>
-
-												</form>
-											</div>
-										</div>
-							<!--     add image asset -->
+							@if ($story->storyImages()->count() > 0)
+								@each('admin.story.subviews.storyimage', $story->storyImages, 'storyImage')
 							@endif
-							@each('admin.story.subviews.storyimage', $story->storyImages, 'storyImage')
+							@if ($leftOverImages->count() > 0)
+								@foreach($leftOverImages as $leftOverImage)
+										@include('admin.story.subviews.addstoryimage',['otherImage' => $leftOverImage, 'story_id' => $story->id ])
+								@endforeach
+
+							@endif
 					@endif
+
 				@endif
 		</div><!-- /.col-md-6 -->
 	</div><!-- /.row -->

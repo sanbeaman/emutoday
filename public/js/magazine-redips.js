@@ -21,14 +21,15 @@ var redipsInit,
 	// pos = {},
 	story_ids = [],
 	rd = REDIPS.drag;
-
+	console.log('rd');
 // redips initialization
 redipsInit = function () {
-	var num = 0,			// number of successfully placed elements
+
+		var num = 0,			// number of successfully placed elements
 		rd = REDIPS.drag;	// reference to the REDIPS.drag lib
 
-	// initialization
-	rd.init();
+		// initialization
+		rd.init();
 	// enable shift animation
 	//rd.shift.animation = true;
 	// save initial DIV positions to "pos" object (it should go after initialization)
@@ -309,8 +310,10 @@ if (!Array.prototype.indexOf) {
 
 // add onload event listener
 if (window.addEventListener) {
+
 	window.addEventListener('load', redipsInit, false);
 }
 else if (window.attachEvent) {
+
 	window.attachEvent('onload', redipsInit);
 }

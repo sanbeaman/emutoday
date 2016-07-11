@@ -131,7 +131,7 @@ class Story extends Model
      */
     public function storyType()
     {
-        return $this->belongsTo('emutoday\StoryType', 'story_type');
+        return $this->belongsTo('emutoday\StoryType', 'story_type', 'shortname');
     }
 
     /**

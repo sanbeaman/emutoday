@@ -19,7 +19,8 @@ class StoryImage extends Model
                             'teaser',
                             'moretext',
                             'image_extension',
-                            'image_type'
+                            'image_type',
+														'imagetype_id'
     ];
     /**
     * All of the relationships to be touched.
@@ -33,9 +34,9 @@ class StoryImage extends Model
         return $this->belongsTo(Story::class);
     }
 
-		public function imagetype()
+		public function imgtype()
 		{
-			return $this->belongsTo('emutoday\Imagetype');
+			return $this->belongsTo('emutoday\Imagetype','imagetype_id');
 		}
 
     // public function mainImageURL()

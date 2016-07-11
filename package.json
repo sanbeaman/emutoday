@@ -21,6 +21,7 @@
     "moment": "^2.13.0",
     "moment-timezone": "^0.5.4",
     "motion-ui": "^1.2.2",
+    "vue-dragula": "^1.0.4",
     "vue-resource": "^0.9.1"
   }
 }

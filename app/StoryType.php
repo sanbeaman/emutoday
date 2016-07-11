@@ -16,4 +16,6 @@ class StoryType extends Model
     {
         return $this->hasMany('emutoday\Story', 'story_type');
     }
+
+		
 }

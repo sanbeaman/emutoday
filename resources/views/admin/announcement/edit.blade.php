@@ -105,7 +105,7 @@
 	@parent
 @endsection
 @section('footer-plugin')
-	<script src="/js/admintools.js"></script>
+	{{-- <script src="/js/admintools.js"></script> --}}
 
 	@parent
 	@endsection

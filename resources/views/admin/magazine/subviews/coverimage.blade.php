@@ -11,10 +11,11 @@
 			'route' => ['update_magazine_cover',$mediafile->id ] ,
 			'files' => true
 		]) !!}
-			<div class="media-left">
-				<img class="media-object" src="/imgs/magazine/thumbnails/{{ 'thumb-' . $mediafile->name . '.' .
-				$mediafile->ext . '?'. 'time='. time() }}" alt="{{$mediafile->name}}">
-			</div>
+			<div class="form-group">
+				<img src="/imagecache/betterthumb/{{$mediafile->filename}}" alt="{{$mediafile->name}}">
+			</div><!-- /.form-group -->
+
+
 			<div class="form-group">
 			{!! Form::label('caption') !!}
 			{!! Form::text('caption', null, ['class' => 'form-control']) !!}

@@ -39,16 +39,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
 		-->
 		{{-- <link rel="stylesheet" href="/themes/admin-lte/dist/css/skins/skin-purple.min.css"> --}}
 	@show
-	@section('scriptshead')
-				{{-- @include('admin.layouts.scriptshead') --}}
+	@section('scripts-vendor')
+		<!-- Vendor Scripts that need to be loaded in the header before other plugin or app scripts -->
+	@show
+	@section('scripts-plugin')
+		<!-- Scripts  for code libraries and plugins that need to be loaded in the header -->
+	@show
+	@section('scripts-app')
+		<!-- App related Scripts  that need to be loaded in the header -->
+
 	@show
 	@include('include.js')
-<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
 
   </head>
 
@@ -487,6 +488,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	  <div class="control-sidebar-bg"></div>
 	</div> <!-- wrapper -->
 	@section('footer-vendor')
+
 		<script src="{{ elixir('js/vendor-scripts.js') }}"></script>
 	@show
 	@section('footer-plugin')

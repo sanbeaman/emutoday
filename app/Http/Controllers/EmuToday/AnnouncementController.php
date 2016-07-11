@@ -18,6 +18,7 @@ class AnnouncementController extends Controller
   public function __construct(Announcement $announcement)
   {
       $this->announcement = $announcement;
+			$this->middleware('auth', ['except'=>'index']);
   }
 
   // public function index($id = null)
@@ -37,7 +38,18 @@ class AnnouncementController extends Controller
 			'jsis'=> 'hi',
 			'currentDate' => $cdate_format
 			]);
-		return view('public.announcement.create', compact('announcement'));
+			if (\Auth::check()) {
+    // The user is logged in...
+     	$user = \Auth::user();
+		} else {
+			// return 'Need to Connect to LDAP';
+			return redirect(route('auth.login'));
+		}
+
+		$announcements = $user->announcements;//$this->announcement->where('is_approved', '0')->orderBy('start_date', 'dsc')->paginate(4);
+		return view('public.announcement.edit', compact('announcement','announcements'));
+		// return redirect(route('emu-today.announcement.edit',$announcement->id ));
+		// return view('public.announcement.edit', compact('announcement'));
 	}
 
 
@@ -50,10 +62,12 @@ class AnnouncementController extends Controller
 	 ]);
 
 		$announcement = new Announcement();
-		// $s_date = $request->start_date;
+
+		$announcement->author_id = auth()->user()->id;
 		$announcement->title = $request->title;
 		$announcement->announcement = $request->announcement;
 		$announcement->start_date = Carbon::parse($request->start_date);
+		$announcement->end_date = Carbon::parse($request->end_date);
 		$announcement->save();
 		// dd($announcement->id);
 		// if ($request->end_date)
@@ -66,8 +80,17 @@ class AnnouncementController extends Controller
 			JavaScript::put([
 				'currentDate' => Carbon::now()
 			]);
+			if (\Auth::check()) {
+		// The user is logged in...
+			$user = \Auth::user();
+		} else {
+			return 'Need to Connect to LDAP';
+		}
+
+		$announcements = $user->announcements;
 			$announcement = $this->announcement->findOrFail($id);
-		  $announcements = $this->announcement->where('is_approved', '0')->orderBy('start_date', 'dsc')->paginate(4);
+
+			// where('is_approved', '0')->orderBy('start_date', 'dsc')->paginate(4);
 			return view('public.announcement.edit', compact('announcement','announcements', 'id' ));
 	}
 
@@ -87,6 +110,7 @@ class AnnouncementController extends Controller
 	 		$announcement->title = $request->title;
 	 		$announcement->announcement = $request->announcement;
 	 		$announcement->start_date = Carbon::parse($request->start_date);
+			$announcement->end_date = Carbon::parse($request->end_date);
 	 		$announcement->save();
 	 		// dd($announcement->id);
 	 		// if ($request->end_date)

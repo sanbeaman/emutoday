@@ -9,17 +9,18 @@
 @section('style-app')
 	@parent
 @endsection
-
-
-@section('scripthead')
+@section('scripts-vendor')
+	@parent
+@endsection
+@section('scripts-plugin')
+	@parent
+@endsection
+@section('scripts-app')
 	@parent
 @endsection
 @section('content')
-	<section class="content">
-		<div class="row">
 
-		</div><!-- /.row -->
-	</section>
+
 @section('footer-vendor')
 	@parent
 @endsection
