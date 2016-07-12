@@ -18,12 +18,12 @@ class MainController extends Controller
 {
     protected $pages;
 
-    public function __construct(Page $pages, Story $storys, Announcement $announcements, Event $events)
+    public function __construct(Page $page, Story $story, Announcement $announcement, Event $event)
     {
-        $this->pages = $pages;
-        $this->storys = $storys;
-        $this->announcements = $announcements;
-        $this->events = $events;
+        $this->page = $page;
+        $this->story = $story;
+        $this->announcement = $announcement;
+        $this->event = $event;
 
 
     }
@@ -31,28 +31,28 @@ class MainController extends Controller
     public function index()
     {
         $currentDateTime = Carbon::now();
-        // $page = $this->pages->where([
+        // $page = $this->page->where([
         //     ['start_date', '<=', $currentDateTime],
         //     ['end_date', '>=', $currentDateTime],
         // ])->first();
-        $page = $this->pages->where('is_active', 1)->first();
-        $currentStorysBasic = $this->storys->where('story_type', 'storybasic')->paginate(3);
-        $currentAnnouncements = $this->announcements->paginate(3);
+        $page = $this->page->where('is_active', 1)->first();
+        $currentStorysBasic = $this->story->where('story_type', 'storybasic')->paginate(3);
+        $currentAnnouncements = $this->announcement->paginate(3);
         $barImgs = collect();
         $storys = $page->storys()->get();
 
         foreach ($storys as $story) {
             if ($story->pivot->page_position === 0) {
-                $heroImg = $story->storyImages()->where('image_type', 'imagehero')->first();
+                $heroImg = $story->storyImages()->where('image_type', 'front')->first();
             } else {
-                $barImgs[$story->pivot->page_position] = $story->storyImages()->where('image_type', 'imagesmall')->first();
+                $barImgs[$story->pivot->page_position] = $story->storyImages()->where('image_type', 'small')->first();
                 // $barImgs->push( $story->storyImages()->where('image_type', 'imagesmall')->first() );
             }
 
         }
-       //$events = $this->events->where(['start_date', '>=', $currentDateTime])->orderBy('start_date','desc')->get();
+       //$events = $this->event->where(['start_date', '>=', $currentDateTime])->orderBy('start_date','desc')->get();
     //   $fakeDate = Carbon::now()->subYear();
-        $events = $this->events->where('start_date', '>=', Carbon::now()->startOfDay())->orderBy('start_date', 'asc')->paginate(4);
+        $events = $this->event->where('start_date', '>=', Carbon::now()->startOfDay())->orderBy('start_date', 'asc')->paginate(4);
 
 
         $storyImages = $page->storyImages();
@@ -73,16 +73,18 @@ class MainController extends Controller
 
     public function main($story_type, $id)
     {
-        $story = $this->storys->findOrFail($id);
-        $mainStoryImage =  $story->storyImages()->where('image_type', 'imagemain')->first();
+        $story = $this->story->findOrFail($id);
+        $mainStoryImage =  $story->storyImages()->where('image_type', 'story')->first();
 
-        $sideStorysFeatured = $this->storys->where([
+        $sideStorysFeatured = $this->story->where([
             ['story_type', 'storypromoted'],
             ['id', '<>', $id],
+						['is_approved', 1],
             ])->orderBy('created_at', 'desc')->take(3)->get();
-        $sideStorysStudent = $this->storys->where([
+        $sideStorysStudent = $this->story->where([
             ['story_type', 'storystudent'],
             ['id', '<>', $id],
+						['is_approved', 1],
         ])->orderBy('created_at', 'desc')->take(3)->get();
 
         JavaScript::put([
