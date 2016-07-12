@@ -20,7 +20,8 @@ class StoryImage extends Model
                             'moretext',
                             'image_extension',
                             'image_type',
-														'imagetype_id'
+														'imagetype_id',
+														'group'
     ];
     /**
     * All of the relationships to be touched.

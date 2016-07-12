@@ -172,7 +172,7 @@ class MagazineController extends Controller
             }
 
 
-        $sideNewsStorys = $this->storys
+        $sideNewsStorys = $this->story
                             ->where([
                               ['story_type', 'storybasic'],
                               ['id', '<>', $id],

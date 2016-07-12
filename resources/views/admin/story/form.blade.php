@@ -32,20 +32,15 @@
 @section('content')
 		<div class="row">
 			<div class="col-md-7">
-
-			<div class="box box-primary">
-
-    {!! Form::model($story, [
-        'method' => $story->exists ? 'put' : 'post',
-        'route' => $story->exists ? ['admin.story.update', $story->id] : ['admin.story.store']
-    ]) !!}
-
-			<div class="box-header with-border">
-					<h3 class="box-title">{{$story->storyType->group}} Story</h3>
-					@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story/', 'cuser'=>$currentUser])
-
-			</div> 	<!-- /.box-header -->
-			<form role="form">
+				<div class="box box-primary">
+					  {!! Form::model($story, [
+				        'method' => $story->exists ? 'put' : 'post',
+				        'route' => $story->exists ? ['admin.story.update', $story->id] : ['admin.story.store']
+				    ]) !!}
+						<div class="box-header with-border">
+							<h3 class="box-title">Create {{$story->exists ? $story->storyType->group : 'New' }} Story</h3>
+								@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story/', 'cuser'=>$currentUser])
+						</div> 	<!-- /.box-header -->
 					<div class="box-body">
 						<div class="form-group @if ($errors->has('title')) has-error @endif">
 				        <label for="title">Title</label>

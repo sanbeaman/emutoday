@@ -111,6 +111,7 @@ class StoryController extends Controller
         JavaScript::put([
             'storytype' => $stype
         ]);
+
         return view('admin.story.form', compact('story', 'stypes','stypelist'));
 
 
@@ -167,33 +168,51 @@ class StoryController extends Controller
          ['author_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'teaser','content', 'external_link', 'story_type') + ['start_date' => $pubStartDate] + ['end_date' => $pubEndDate ]
 
         );
+				$storyGroup = $story->storyType->group;
 
-        //Auth::user()->storys()->create($request->all());
-        if ($story->story_type == 'storyexternal') {
-            $storyImage = $story->storyImages()->create([
-                    'image_name'=> 'img' . $story->id . '_small',
-                    'image_type'=> 'imagesmall',
-                ]);
-            // flash()->success('Story has been created.');
-            // return redirect(route('admin_story_form',['stype' => $story->story_type, $story->id] ));//->with('status', 'Story has been created.');
+				if($storyGroup != 'basic') {
+
+					$requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
+					$otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
+					$stypelist = StoryType::where('level', 1)->lists('name','shortname');
+					$stypes = $story->story_type;
+
+					foreach ($requiredImages as $img) {
+							$story->storyImages()->create([
+								'imagetype_id'=> $img->id,
+								'group'=> $storyGroup,
+								'image_type'=> $img->type,
+								'image_name'=> 'img' . $story->id . '_' . $img->type
+						]);
+					}
+				}
+        // //Auth::user()->storys()->create($request->all());
+        // if ($story->story_type == 'storyexternal') {
+        //     $storyImage = $story->storyImages()->create([
+        //             'image_name'=> 'img' . $story->id . '_small',
+        //             'image_type'=> 'imagesmall',
+        //         ]);
+        //     // flash()->success('Story has been created.');
+        //     // return redirect(route('admin_story_form',['stype' => $story->story_type, $story->id] ));//->with('status', 'Story has been created.');
+				//
+				//
+        // } else {
 
 
-        } else {
-
-            if($story->story_type != 'storybasic')
-            {
-                $storyImage = $story->storyImages()->create([
-                    'image_name'=> 'img' . $story->id . '_small',
-                    'image_type'=> 'imagesmall',
-                ]);
-                $storyImage = $story->storyImages()->create([
-                    'image_name'=> 'img' . $story->id . '_main',
-                    'image_type'=> 'imagemain',
-                ]);
-            }
 
 
-        }
+            // if($story->story_type != 'storybasic')
+            // {
+            //     $storyImage = $story->storyImages()->create([
+            //         'image_name'=> 'img' . $story->id . '_small',
+            //         'image_type'=> 'imagesmall',
+            //     ]);
+            //     $storyImage = $story->storyImages()->create([
+            //         'image_name'=> 'img' . $story->id . '_main',
+            //         'image_type'=> 'imagemain',
+            //     ]);
+            // }
+
 
         flash()->success('Story has been created.');
         return redirect(route('admin.story.edit', $story->id));//->with('status', 'Story has been created.');
@@ -353,7 +372,7 @@ class StoryController extends Controller
         $stype = $story->story_type;
 
         if ($stype == 'storyexternal') {
-					$smallStoryImg = $story->storyImages()->where('image_type', 'imagesmall')->first();
+					$smallStoryImg = $story->storyImages()->where('image_type', 'small')->first();
 
             return view('admin.story.previewexternal', compact('story','smallStoryImg'));
         } else if ($stype == 'storybasic') {
@@ -361,9 +380,9 @@ class StoryController extends Controller
             return view('admin.story.preview', compact('story'));
         } else {
 
-          $mainStoryImg = $story->storyImages()->where('image_type', 'imagemain')->first();
+          $mainStoryImg = $story->storyImages()->where('image_type', 'story')->first();
 
-          $smallStoryImg = $story->storyImages()->where('image_type', 'imagesmall')->first();
+          $smallStoryImg = $story->storyImages()->where('image_type', 'small')->first();
           // dd($smallStoryImg);
           return view('admin.story.preview', compact('story','mainStoryImg','smallStoryImg'));
         }
