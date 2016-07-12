@@ -12,10 +12,10 @@ class MagazineController extends Controller
 {
     protected $magazine;
 
-    public function __construct(Magazine $magazines, Story $storys)
+    public function __construct(Magazine $magazine, Story $story)
     {
-        $this->magazines = $magazines;
-        $this->storys = $storys;
+        $this->magazine = $magazine;
+        $this->story = $story;
 
     }
     public function index($year = null, $season = null)
@@ -24,18 +24,18 @@ class MagazineController extends Controller
         $currentIssue = false;
         if ($year == null) {
 
-          $magazine = $this->magazines->where([
+          $magazine = $this->magazine->where([
               ['is_published', 1],
               ['is_archived', 0],
           ])->first();
             $currentIssue = true;
         } else {
           if ($season == null) {
-            $magazine = $this->magazines->where([
+            $magazine = $this->magazine->where([
                 ['year', $year],
             ])->first();
           } else {
-            $magazine = $this->magazines->where([
+            $magazine = $this->magazine->where([
                 ['year', $year],
                 ['season', $season],
             ])->first();
@@ -48,16 +48,16 @@ class MagazineController extends Controller
         ]);
         // $magazine = $this->magazines->findOrFail($id);
         // $storyImages = $this->magazines->storyImages();
-        $storyImages = $this->magazines->storyImages();
+        $storyImages = $this->magazine->storyImages();
         $barImgs = collect();
 
         if ($currentIssue){
 
           foreach ($magazine->storys as $story) {
                 if ($story->pivot->story_position === 0) {
-                    $heroImg = $story->storyImages()->where('image_type', 'magazine_front')->first();
+                    $heroImg = $story->storyImages()->where('image_type', 'front')->first();
                 } else {
-                    $barImgs->push( $story->storyImages()->where('image_type', 'magazine_small')->first() );
+                    $barImgs->push( $story->storyImages()->where('image_type', 'small')->first() );
                 }
 
             }
@@ -65,9 +65,9 @@ class MagazineController extends Controller
         } else {
           foreach ($magazine->storys as $story) {
               if ($story->pivot->story_position === 0) {
-                  $barImgs->push( $story->storyImages()->where('image_type', 'magazine_small')->first() );
+                  $barImgs->push( $story->storyImages()->where('image_type', 'small')->first() );
               } else {
-                  $barImgs->push( $story->storyImages()->where('image_type', 'magazine_small')->first() );
+                  $barImgs->push( $story->storyImages()->where('image_type', 'small')->first() );
               }
 
           }
@@ -112,26 +112,26 @@ class MagazineController extends Controller
     {
         $currentDateTime = Carbon::now();
         if ($year == null) {
-          $magazine = $this->magazines->where([
+          $magazine = $this->magazine->where([
               ['is_published', 1],
               ['is_archived', 0],
           ])->first();
         } else {
-          $magazine = $this->magazines->where([
+          $magazine = $this->magazine->where([
               ['year', $year],
               ['season', $season],
           ])->first();
         }
 
-        $storyImages = $this->magazines->storyImages();
+        $storyImages = $this->magazine->storyImages();
         $barImgs = collect();
 
 
         foreach ($magazine->storys as $story) {
             if ($story->pivot->story_position === 0) {
-                $barImgs->push( $story->storyImages()->where('image_type', 'magazine_small')->first() );
+                $barImgs->push( $story->storyImages()->where('image_type', 'small')->first() );
             } else {
-                $barImgs->push( $story->storyImages()->where('image_type', 'magazine_small')->first() );
+                $barImgs->push( $story->storyImages()->where('image_type', 'small')->first() );
             }
 
         }
@@ -145,12 +145,12 @@ class MagazineController extends Controller
     }
     public function article($id)
     {
-        $story = $this->storys->findOrFail($id);
+        $story = $this->story->findOrFail($id);
         $magazine = $story->magazine->first();
         //$story = $magazine->storys()->where('id', $id)->first();
-        $mainImage = $story->storyImages()->where('image_type', 'magazine_story')->first();
+        $mainImage = $story->storyImages()->where('image_type', 'story')->first();
 				// dd($mainImage);
-        $sideFeaturedStorys = $this->storys
+        $sideFeaturedStorys = $this->story
                                   ->where([
                                     ['story_type', 'storypromoted'],
                                     ['id', '<>', $id],
@@ -167,8 +167,7 @@ class MagazineController extends Controller
             foreach ($sideFeaturedStorys as $sideFeaturedStory) {
                 $sideStoryBlurbs->push($sideFeaturedStory
 																->storyImages()
-																->where('image_type', 'emutoday_small')
-																->orWhere('image_type', 'student_small')
+																->where('image_type', 'small')
 																->first());
             }
 

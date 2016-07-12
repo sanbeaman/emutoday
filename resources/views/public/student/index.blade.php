@@ -32,11 +32,11 @@
 
               <div id="student-feature">
                    <div class="row">
-                       <div class="large-7 medium-12 hide-for-small columns"><img src="/assets/imgs/student/profiles-feature.jpg"  alt="feature student image"/></div>
+                       <div class="large-7 medium-12 hide-for-small columns"><img src="/imagecache/original/{{$featureImg->filename}}"  alt="feature student image"/></div>
                        <div class="large-5 medium-12 small-12 columns">
-                           <h4 class="green">Do you know a student who could be featured in student profiles?</h4>
-                           <p>Nam sitas autectatem aut volupta spellestio. Adistiore liquis nis reiurer itatur, et fugiam, ute cone labo. Dam restrum faccusa essite maximus, ut exceprae audant erum fuga. </p>
-                           <p><a class="button large emu-button">Suggest a Student</a></p>
+                           <h4 class="green">{{$featureImg->caption}}</h4>
+                           <p>{{$featureImg->teaser}}</p>
+                           <p><a class="button large emu-button">{{$featureImg->moretext}}</a></p>
                        </div>
 
                   </div>
