@@ -55,9 +55,9 @@ class MagazineController extends Controller
 
           foreach ($magazine->storys as $story) {
                 if ($story->pivot->story_position === 0) {
-                    $heroImg = $story->storyImages()->where('image_type', 'imagehero')->first();
+                    $heroImg = $story->storyImages()->where('image_type', 'magazine_front')->first();
                 } else {
-                    $barImgs->push( $story->storyImages()->where('image_type', 'imagesmall')->first() );
+                    $barImgs->push( $story->storyImages()->where('image_type', 'magazine_small')->first() );
                 }
 
             }
@@ -65,9 +65,9 @@ class MagazineController extends Controller
         } else {
           foreach ($magazine->storys as $story) {
               if ($story->pivot->story_position === 0) {
-                  $barImgs->push( $story->storyImages()->where('image_type', 'imagesmall')->first() );
+                  $barImgs->push( $story->storyImages()->where('image_type', 'magazine_small')->first() );
               } else {
-                  $barImgs->push( $story->storyImages()->where('image_type', 'imagesmall')->first() );
+                  $barImgs->push( $story->storyImages()->where('image_type', 'magazine_small')->first() );
               }
 
           }
@@ -129,9 +129,9 @@ class MagazineController extends Controller
 
         foreach ($magazine->storys as $story) {
             if ($story->pivot->story_position === 0) {
-                $barImgs->push( $story->storyImages()->where('image_type', 'imagesmall')->first() );
+                $barImgs->push( $story->storyImages()->where('image_type', 'magazine_small')->first() );
             } else {
-                $barImgs->push( $story->storyImages()->where('image_type', 'imagesmall')->first() );
+                $barImgs->push( $story->storyImages()->where('image_type', 'magazine_small')->first() );
             }
 
         }
@@ -148,22 +148,28 @@ class MagazineController extends Controller
         $story = $this->storys->findOrFail($id);
         $magazine = $story->magazine->first();
         //$story = $magazine->storys()->where('id', $id)->first();
-        $mainImage = $story->storyImages()->where('image_type', 'imagemain')->first();
-
+        $mainImage = $story->storyImages()->where('image_type', 'magazine_story')->first();
+				// dd($mainImage);
         $sideFeaturedStorys = $this->storys
                                   ->where([
                                     ['story_type', 'storypromoted'],
                                     ['id', '<>', $id],
+																		['is_approved', 1],
                                   ])
                                   ->orWhere([
                                     ['story_type', 'storystudent'],
                                     ['id', '<>', $id],
+																		['is_approved', 1],
                                   ])
                                   ->orderBy('created_at', 'desc')->with('storyImages')->take(3)->get();
 
         $sideStoryBlurbs = collect();
             foreach ($sideFeaturedStorys as $sideFeaturedStory) {
-                $sideStoryBlurbs->push($sideFeaturedStory->storyImages()->where('image_type', 'imagesmall')->first());
+                $sideStoryBlurbs->push($sideFeaturedStory
+																->storyImages()
+																->where('image_type', 'emutoday_small')
+																->orWhere('image_type', 'student_small')
+																->first());
             }
 
 
@@ -171,6 +177,7 @@ class MagazineController extends Controller
                             ->where([
                               ['story_type', 'storybasic'],
                               ['id', '<>', $id],
+															['is_approved', 1],
                                 ])->orderBy('created_at', 'desc')->take(3)->get();
 
         return view('public.magazine.article', compact('magazine','story', 'mainImage','sideStoryBlurbs','sideNewsStorys'));

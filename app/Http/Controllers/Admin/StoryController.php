@@ -288,7 +288,7 @@ class StoryController extends Controller
 					{
 						return redirect(route('admin.dashboard'));
 					}
-						
+
 
 				if ($user->hasRole('contributor_1'))
 				{
@@ -316,7 +316,7 @@ class StoryController extends Controller
 
         $story = $this->story->findOrFail($id);
 
-        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','external_link', 'story_type'));
+        $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','external_link', 'story_type','is_approved', 'is_featured'));
 				$story->start_date = \Carbon\Carbon::parse($request->start_date);
         $story->end_date = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
         $story->save();

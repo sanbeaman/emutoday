@@ -92,20 +92,20 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-									{!! Form::label('is_approved','Approved?', ['class'=>'text-center']) !!}
+									{!! Form::label('is_approved','Approved', ['class'=>'text-center']) !!}
 									<div class="row">
 								<div class="col-md-4">
 									{!! Form::radio('is_approved', 1, $story->is_approved,['class' => 'form-control', 'id'=>'is-approved-yes']) !!}  {!! Form::label('is_approved', 'yes') !!}
 										</div><!-- /.col-md-4 -->
 										<div class="col-md-4">
-											{{ Form::radio('is_approved', 0, $story->is_approved,['class' => 'form-control', 'id'=>'is-approved-no']) }}  {!! Form::label('is_approved', 'no') !!}
+									{{ Form::radio('is_approved', 0, $story->is_approved,['class' => 'form-control', 'id'=>'is-approved-no']) }}  {!! Form::label('is_approved', 'no') !!}
 										</div><!-- /.col-md-4-->
 								</div><!-- /.row -->
 							</div><!-- /.form-group-->
 						</div><!-- /.col-md-6 -->
 						<div class="col-md-6">
 							<div class="form-group">
-						{!! Form::label('is_featured') !!}
+						{!! Form::label('is_featured', 'Featured') !!}
 						<div class="row">
 							<div class="col-md-4">
 								{!! Form::radio('is_featured', 1, $story->is_featured,['class' => 'form-control', 'id'=>'is-featured-yes']) !!}  {!! Form::label('is_featured', 'yes') !!}

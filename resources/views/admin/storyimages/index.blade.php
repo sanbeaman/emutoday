@@ -42,6 +42,7 @@
                 <th class="text-center">ID</th>
                 <th class="text-center">Thumbnail</th>
                 <th class="text-left">Image Name</th>
+								<th class="text-left">Image Type</th>
                 <th class="text-center">Story ID</th>
                 <th class="text-center">Edit</th>
                 <th class="text-center">Delete</th>
@@ -57,6 +58,7 @@
                         <img src="{{ $storyImage->present()->thumbnailImageURL.'?'. 'time='. time() }}">
                     </td>
                     <td class="text-left">{{ $storyImage->image_name }}</td>
+										  <td class="text-left">{{ $storyImage->image_type }}</td>
                     <td class="text-center">{{ $storyImage->story_id }}</td>
                     <td class="text-center">
                         <a href="{{ route('admin.storyimages.edit', $storyImage->id) }}">

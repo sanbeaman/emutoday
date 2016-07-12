@@ -39,6 +39,11 @@ class StoryImage extends Model
 			return $this->belongsTo('emutoday\Imagetype','imagetype_id');
 		}
 
+		public function scopeOfType($query, $itype)
+		{
+			return $query->where('image_type',$itype);
+		}
+
     // public function mainImageURL()
     // {
     //     return $this->image_path . $this->filename;
