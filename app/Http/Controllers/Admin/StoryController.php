@@ -222,9 +222,11 @@ class StoryController extends Controller
 				$story = $this->story->findOrFail($id);
 
 				$story->storyImages()->create([
-							'image_name'=> 'img' . $story->id . '_' . $request->img_type,
-							'image_type'=>  $request->img_name,
-							'imagetype_id'=> $request->img_id
+					'imagetype_id'=> $img->id,
+					'group'=> $storyGroup,
+					'image_type'=> $img->type,
+					'image_name'=> 'img' . $story->id . '_' . $img->type
+
 					]);
 				// $storyImage = $story->addImage('hero');
 
@@ -274,9 +276,11 @@ class StoryController extends Controller
 
 				foreach ($requiredImages as $img) {
 						$story->storyImages()->create([
-							'image_name'=> 'img' . $story->id . '_' . $img->type,
-							'image_type'=> $img->name,
-							'imagetype_id'=> $img->id
+							'imagetype_id'=> $img->id,
+							'group'=> $storyGroup,
+							'image_type'=> $img->type,
+							'image_name'=> 'img' . $story->id . '_' . $img->type
+					
 					]);
 				}
 
