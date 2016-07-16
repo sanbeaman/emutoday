@@ -40,7 +40,7 @@
 									</div><!-- /.form-group -->
 									<div class="form-group">
 										<label>Start Date
-											{!! Form::text('start_date_view', null, ['class' => 'form-control', 'id'=>'view-announcement-start-date','aria-describedby' =>'start-date-helptext','required'=> 'required']) !!}
+											{!! Form::text('select_start_date', null, ['class' => 'form-control', 'id'=>'select-announcement-start-date','aria-describedby' =>'start-date-helptext','required'=> 'required']) !!}
 											<span class="form-error">
 												Please Include a Start Date.
 											</span>
@@ -51,11 +51,11 @@
 								</div><!-- /.col-md-3 -->
 									<div class="medium-4 columns">
 										<div class="form-group">
-											{!! Form::text('end_date', null, ['class' => 'form-control datetimepicker', 'id'=>'announcement-end-date','data-abide-ignore'=>' data-abide-ignore']) !!}
+											{!! Form::text('end_date', null, ['class' => 'form-control', 'id'=>'announcement-end-date','data-abide-ignore'=>' data-abide-ignore']) !!}
 										</div><!-- /.form-group -->
 										<div class="form-group">
 											<label>End Date
-												{!! Form::text('end_date_view', null, ['class' => 'form-control', 'id'=>'view-announcement-end-date','aria-describedby' =>'end-date-helptext']) !!}
+												{!! Form::text('select_end_date', null, ['class' => 'form-control', 'id'=>'select-announcement-end-date','aria-describedby' =>'end-date-helptext']) !!}
 												<span class="form-error">
 													Please Include a Start Date.
 												</span>
@@ -110,49 +110,85 @@
 	@parent
 	<!-- Bootstrap WYSIHTML5 -->
 	<script>
+
 	$(function(){
-		var now = JSvars.currentDate;
-		var startDate = new Date(JSvars.currentDate);
+		var nowTemp = new Date();
+		var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+	console.log('nowTemp===='+nowTemp);
+	console.log('now===='+ now);
+
+
 		var announceStartDate = new Date($('#announcement-start-date').val());
 		var announceEndDate = new Date($('#announcement-end-date').val());
+		console.log('announceStartDate===='+announceStartDate);
+		console.log('announceEndDate===='+ announceEndDate);
+ var initEndDate;
+	var initStartDate;
 
-		var checkin = $('#view-announcement-start-date').fdatepicker({
-					format: 'mm-dd-yyyy',
-					disableDblClickSelection: true,
+	var checkin = $('#select-announcement-start-date').fdatepicker({
+					// format: 'mm-dd-yyyy',
+					// disableDblClickSelection: true,
 					onRender: function (date) {
-						return new Date(announceStartDate);
-						// return date.valueOf() < now.valueOf() ? 'disabled' : '';
+
+						// return new Date(announceStartDate);
+						return date.valueOf() < now.valueOf() ? 'disabled' : '';
 				}
 			})
-			.on('show', function() {
-				if($('#announcement-start-date').val()) {
-					checkin.update(announceStartDate)
-				}
-
-			})
-
-
 			.on('changeDate', function (ev) {
-				if (ev.date.valueOf() > checkout.date.valueOf()) {
-					var newDate = new Date(ev.date)
-					newDate.setDate(newDate.getDate() + 1);
-					checkout.update(newDate);
-				}
-				startDate = new Date(ev.date);
-				$('#announcement-start-date').val(startDate);
-				checkin.hide();
-				$('#view-announcement-end-date')[0].focus();
+				var cDate = new Date(ev.date);
+				console.log('changeStartDate=' + cDate );
+						if (ev.date.valueOf() > checkout.date.valueOf()) {
+							// var newDate = new Date(ev.date)
+							// newDate.setDate(newDate.getDate() + 1);
+							// checkout.update(newDate);
+						}
+						$('#announcement-start-date').val(cDate);
+						checkin.hide();
+						$('#select-announcement-end-date')[0].focus();
 			}).data('datepicker');
 
-			var checkout = $('#view-announcement-end-date').fdatepicker({
-				format: 'mm-dd-yyyy',
-				disableDblClickSelection: true,
+
+			var checkout = $('#select-announcement-end-date').fdatepicker({
+				// format: 'mm-dd-yyyy',
+				// disableDblClickSelection: true,
 				onRender: function (date) {
 					return date.valueOf() <= checkin.date.valueOf() ? 'disabled' : '';
 				}
 			}).on('changeDate', function (ev) {
+				var newDate = new Date(ev.date);
+				var newDate2 = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), 0, 0, 0, 0);
+
+				console.log('changeEndDate=' + newDate);
+
+				console.log('newDate=' + newDate2);
+
+				// $('#announcement-end-date').val(newDate2);
 				checkout.hide();
+			}).on('hide', function (ev) {
+					$('#announcement-end-date').val(new Date(checkout.date.valueOf()));
 			}).data('datepicker');
+
+
+			if ($('#announcement-start-date').val()) {
+				initStartDate = $('#announcement-start-date').val();
+					checkin.update(initStartDate);
+			} else {
+				initStartDate =  new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+
+			}
+			console.log(initStartDate);
+			if ($('#announcement-end-date').val()) {
+				initEndDate = $('#announcement-end-date').val();
+				checkout.update($('#announcement-end-date').val());
+			} else {
+				initEndDate =  '';
+
+			}
+				console.log(initEndDate);
+
+
+
+
 
 
 

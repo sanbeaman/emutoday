@@ -5,7 +5,7 @@ The ORDER of ROUTES is critical
 */
 use emutoday\Building;
 use emutoday\Event;
-
+use emutoday\Category;
 use Illuminate\Support\Facades\Input;
 
 Route::group(['prefix' => 'api'], function() {
@@ -14,26 +14,51 @@ Route::group(['prefix' => 'api'], function() {
   Route::get('calendar/month/{year?}/{month?}/{day?}','Api\CalendarController@eventsInMonth');
   Route::get('calendar/events/{year?}/{month?}/{day?}','Api\CalendarController@eventsByDay');
   //events api
-  Route::get('eventview', function() {
-    return view('public.event.home');
-  });
-  Route::get('eventfoam', function() {
-    return view('public.event.form');
-  });
+  // Route::get('eventview', function() {
+  //   return view('public.event.home');
+  // });
+  // Route::get('eventfoam', function() {
+  //   return view('public.event.form');
+  // });
   // Route::get('calendar/events', 'Api\EventsController@byDate');
+	// Route::get('event-catgeories', function() {
+	// 	$text = Input::get('q');
+	// 	return Building::likeSearch('name', $text)->get();
+	// 	//return Building::ofMapType('illustrated')->get();
+	// });
+	Route::get('zbuildings', function() {
+		$text = Input::get('q');
+		return Building::likeSearch('name', $text)->get();
+		//return Building::ofMapType('illustrated')->get();
+	});
+
+	Route::get('zcats', function() {
+		$text = Input::get('q');
+		return Category::likeSearch('category', $text)->get();
+		//return Building::ofMapType('illustrated')->get();
+	});
 
 
+	Route::get('zevent-catgeories', function() {
+
+		// $cats = \emutoday\Category::lists('category', 'id');
+
+		return \emutoday\Category::all();
+		//return Building::ofMapType('illustrated')->get();
+	});
+
+	Route::get('list-event-categories', ['uses'=> 'Api\EventController@listEventCategories']);
+
+	Route::get('buildings', ['uses'=> 'Api\EventController@buildings']);
 	Route::get('event', ['as' => 'api.event', 'uses' => 'Api\EventController@index']);
-	Route::resource('events', 'Api\EventController');
+	Route::resource('event', 'Api\EventController');
 
 		Route::get('events/{id}/categories', 'Api\CategoriesController@index');
    Route::resource('categories', 'Api\CategoriesController', ['only'=>['index', 'show']] );
-    Route::resource('minicalendars', 'Api\MiniCalendarsController', ['only'=>['index', 'show']] );
-   Route::get('buildings', function() {
-     $text = Input::get('q');
-     return Building::likeSearch('name', $text)->get();
-     //return Building::ofMapType('illustrated')->get();
-   });
+
+		Route::resource('minicalendars', 'Api\MiniCalendarsController', ['only'=>['index', 'show']] );
+		// Route::get('buildings', 'Api\BuildingController', ['only'=>['index']]);
+
    Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
 	 Route::post('story/delete', ['as' => 'api.story.delete', 'uses' => 'Api\StoryController@delete']);
 
@@ -90,12 +115,18 @@ Route::group(['middleware' => ['web']], function() {
 
 			Route::resource('announcement', 'EmuToday\AnnouncementController');
 
-      Route::get('hub', 'MainController@index');
+			Route::get('formvue', function () {
+				return view('public.event.formvue');
+			});
+
+			Route::resource('event', 'EmuToday\EventController',['except'=>['index', 'show']]);
+
+			Route::get('hub', 'MainController@index');
 
 
-      Route::get('events', function() {
-          return view('public.event.index');
-        });
+      // Route::get('events', function() {
+      //     return view('public.event.index');
+      //   });
     });
 
     //watch out for match anything ROUTES

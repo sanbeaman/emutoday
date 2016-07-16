@@ -8,7 +8,10 @@ class Category extends Node
 {
     protected $table = 'cea_categories';
 
-    
+		public function scopeLikeSearch($query, $field, $value){
+			return $query->where($field, 'LIKE', "%$value%");
+		}
+
     public function events() {
       return $this->belongsToMany('emutoday\Event', 'cea_category_event');
     }

@@ -280,7 +280,7 @@ class StoryController extends Controller
 							'group'=> $storyGroup,
 							'image_type'=> $img->type,
 							'image_name'=> 'img' . $story->id . '_' . $img->type
-					
+
 					]);
 				}
 

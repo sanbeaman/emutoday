@@ -1,6 +1,7 @@
 <?php
 
 namespace emutoday\Http\Controllers\EmuToday;
+
 use emutoday\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
 use emutoday\Announcement;
@@ -68,6 +69,8 @@ class AnnouncementController extends Controller
 		$announcement->announcement = $request->announcement;
 		$announcement->start_date = Carbon::parse($request->start_date);
 		$announcement->end_date = Carbon::parse($request->end_date);
+		// $announcement->start_date = $request->start_date;
+		// $announcement->end_date = $request->end_date;
 		$announcement->save();
 		// dd($announcement->id);
 		// if ($request->end_date)

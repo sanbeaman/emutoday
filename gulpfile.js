@@ -16,6 +16,7 @@ require('laravel-elixir-vueify');
 		// COPY Vendor Style Files to Resource Folder
 		//
 		mix.copy('node_modules/foundation-datepicker/css/foundation-datepicker.css','resources/assets/css/foundation-datepicker.css')
+		mix.copy('node_modules/select2/dist/css/select2.css','resources/assets/css/select2.css')
 
 		// COPY Vendor Script Files to Resource Folder
 		//
@@ -23,6 +24,8 @@ require('laravel-elixir-vueify');
 
 		// mix.copy('node_modules/motion-ui/dist/motion-ui.js', 'resources/assets/js/foundation');
 		mix.copy('node_modules/foundation-datepicker/js/foundation-datepicker.js','resources/assets/js/plugins');
+
+		mix.copy('node_modules/select2/dist/js/select2.js', 'resources/assets/js/select2.js');
 
 		// FOUNDATION SASS
 		//
@@ -45,18 +48,21 @@ require('laravel-elixir-vueify');
 			mix.styles([
 					'zfoundation.css',
 					'resources/assets/css/foundation-datepicker.css',
+					'resources/assets/css/vendor-public/select2.css',
 					'main-styles.css',
 					'story-styles.css',
 					'magazine-styles.css',
 					'tweeks.css',
-					'media-queries.css'
+					'media-queries.css',
+					'resources/assets/css/vendor-public/datedropper.css',
+					'resources/assets/css/vendor-public/timedropper.css',
 				], 'public/css/public-styles.css');
 
 
 				mix.scripts(
 			    [
-			      'vendor/jquery.min.js',
-			      'vendor/what-input.min.js',
+			      'vendor-public/jquery.min.js',
+						'vendor-public/what-input.min.js',
 			      'foundation/motion-ui.js',
 			      'foundation/foundation.core.js',
 			      'foundation/foundation.abide.js',
@@ -85,9 +91,8 @@ require('laravel-elixir-vueify');
 			      'foundation/foundation.util.nest.js',
 			      'foundation/foundation.util.timerAndImageLoader.js',
 			      'foundation/foundation.util.touch.js',
-			      'foundation/foundation.util.triggers.js',
-			      'resources/assets/js/plugins/foundation-datepicker.js',
-			      'app.js'
+			      'foundation/foundation.util.triggers.js'
+
 			    ],
 			    'resources/assets/js/foundation-all.js'
 			  );
@@ -98,10 +103,16 @@ require('laravel-elixir-vueify');
 				|---------------------------
 				 */
 					mix.scripts([
-						'resources/assets/js/foundation-all.js'
+						'resources/assets/js/foundation-all.js',
+						'resources/assets/js/plugins/foundation-datepicker.js',
+						'resources/assets/js/vendor-public/select2.js',
+						'resources/assets/js/vendor-public/datedropper.js',
+						'resources/assets/js/vendor-public/timedropper.js',
+						'app.js'
 					], 'public/js/public-scripts.js' );
 
 					mix.browserify('calview.js', 'public/js/calview.js');
+					mix.browserify('vue-event-form.js', 'public/js/vue-event-form.js');
 					// mix.version(['css/public-styles.css','js/public-scripts.js']);
 
 	});
