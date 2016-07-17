@@ -13,6 +13,6 @@ class Category extends Node
 		}
 
     public function events() {
-      return $this->belongsToMany('emutoday\Event', 'cea_category_event');
+      return $this->belongsToMany('emutoday\Event', 'cea_category_event', 'category_id', 'event_id');
     }
 }

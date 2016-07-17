@@ -30,6 +30,27 @@ class AnnouncementController extends Controller
       return view('public.announcement.index', compact('announcements', 'id'));
 
   }
+	// public function create(Announcement $announcement)
+	// {
+	// 	$cdate = Carbon::now();
+	// 	$cdate_format = $cdate->format('m-d-Y');
+	// 	JavaScript::put([
+	// 		'jsis'=> 'hi',
+	// 		'currentDate' => $cdate_format
+	// 		]);
+	// 		if (\Auth::check()) {
+  //   // The user is logged in...
+  //    	$user = \Auth::user();
+	// 	} else {
+	// 		// return 'Need to Connect to LDAP';
+	// 		return redirect(route('auth.login'));
+	// 	}
+	//
+	// 	$announcements = $user->announcements;//$this->announcement->where('is_approved', '0')->orderBy('start_date', 'dsc')->paginate(4);
+	// 	return view('public.announcement.edit', compact('announcement','announcements'));
+	// 	// return redirect(route('emu-today.announcement.edit',$announcement->id ));
+	// 	// return view('public.announcement.edit', compact('announcement'));
+	// }
 
 	public function create(Announcement $announcement)
 	{
@@ -47,8 +68,14 @@ class AnnouncementController extends Controller
 			return redirect(route('auth.login'));
 		}
 
-		$announcements = $user->announcements;//$this->announcement->where('is_approved', '0')->orderBy('start_date', 'dsc')->paginate(4);
-		return view('public.announcement.edit', compact('announcement','announcements'));
+		// $announcements = $user->announcements;//$this->announcement->where('is_approved', '0')->orderBy('start_date', 'dsc')->paginate(4);
+		$approveditems = $user->announcements()->where('is_approved', '1')->get();;
+
+		$submitteditems = $user->announcements()->where('is_approved', '0')->get();
+		// dd($submitteditems);
+		return view('public.announcement.form', compact('announcement','approveditems','submitteditems'));
+
+
 		// return redirect(route('emu-today.announcement.edit',$announcement->id ));
 		// return view('public.announcement.edit', compact('announcement'));
 	}
@@ -78,6 +105,25 @@ class AnnouncementController extends Controller
 		flash()->success('Announcement has been saved and will be sent for approval');
 		return redirect(route('emu-today.announcement.edit',$announcement->id ));
 	}
+	// public function edit($id)
+	// {
+	// 		JavaScript::put([
+	// 			'currentDate' => Carbon::now()
+	// 		]);
+	// 		if (\Auth::check()) {
+	// 	// The user is logged in...
+	// 		$user = \Auth::user();
+	// 	} else {
+	// 		return 'Need to Connect to LDAP';
+	// 	}
+	//
+	// 	$announcements = $user->announcements;
+	// 		$announcement = $this->announcement->findOrFail($id);
+	//
+	// 		// where('is_approved', '0')->orderBy('start_date', 'dsc')->paginate(4);
+	// 		return view('public.announcement.edit', compact('announcement','announcements', 'id' ));
+	// }
+
 	public function edit($id)
 	{
 			JavaScript::put([
@@ -90,11 +136,14 @@ class AnnouncementController extends Controller
 			return 'Need to Connect to LDAP';
 		}
 
-		$announcements = $user->announcements;
-			$announcement = $this->announcement->findOrFail($id);
 
-			// where('is_approved', '0')->orderBy('start_date', 'dsc')->paginate(4);
-			return view('public.announcement.edit', compact('announcement','announcements', 'id' ));
+		$announcement = $this->announcement->findOrFail($id);
+		// $announcements = $user->announcements;//$this->announcement->where('is_approved', '0')->orderBy('start_date', 'dsc')->paginate(4);
+		$approved = $user->announcements->where('is_approved', '1');
+		$submitted = $user->announcements->where('is_approved', '0');
+
+		return view('public.announcement.form', compact('announcement','approved','submitted'));
+
 	}
 
 	public function update(Request $request, $id)

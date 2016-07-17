@@ -8,17 +8,17 @@
 				@include('public.layouts.components.errors')
 				<div class="row">
 						<div class="medium-6 columns">
-							<h3 class="cal-caps toptitle">Events Calendar</h3>
-							<div id="vue-event-form">
-									<event-form authorid="{{$currentUser->id}}" eventexists="{{$event->exists ? true: false}}" editeventid="{{$event->exists ? $event->id : null }}">
+							<h3 class="cal-caps toptitle">Announcements</h3>
+							<div id="vue-event-announcement">
+									<announcement-form authorid="{{$currentUser->id}}" recordexists="{{$announcement->exists ? true: false}}" editid="{{$announcement->exists ? $announcement->id : null }}">
 										<input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
-									</event-form>
+									</announcement-form>
 							</div><!-- /#vue-event-form -->
 						</div><!-- /.medium-6 column -->
 						<div class="medium-6 columns">
 							<div class="row">
 								<div class="small-12 column">
-									<h3 class="cal-caps toptitle">Approved Events</h3>
+									<h3 class="cal-caps toptitle">Approved Announcements</h3>
 									<table id="user-events-table" class="table table-bordered table-hover">
 														<thead>
 															<tr>
@@ -31,14 +31,14 @@
 																</tr>
 														</thead>
 														<tbody>
-																@foreach($approvedevents as $event)
+																@foreach($approveditems as $item)
 																		<tr>
-																			<td>{{ $event->id }}</td>
-																				<td>{{ $event->title }}</td>
-																			<td>{{ $event->submission_date }}</td>
+																			<td>{{ $item->id }}</td>
+																				<td>{{ $item->title }}</td>
+																			<td>{{ $item->submission_date }}</td>
 
-																			<td>{{ $event->approved_date }}</td>
-																			<td>{{ $event->start_date }}</td>
+																			<td>{{ $item->approved_date }}</td>
+																			<td>{{ $item->start_date }}</td>
 																		</tr>
 																@endforeach
 														</tbody>
@@ -62,14 +62,14 @@
 																</tr>
 														</thead>
 														<tbody>
-																@foreach($submittedevents as $event)
+																@foreach($submitteditems as $item)
 																		<tr>
-																			<td>{{ $event->id }}</td>
-																				<td>{{ $event->title }}</td>
-																			<td>{{ $event->submission_date }}</td>
+																			<td>{{ $item->id }}</td>
+																				<td>{{ $item->title }}</td>
+																			<td>{{ $item->submission_date }}</td>
 
-																			<td>{{ $event->approved_date }}</td>
-																			<td>{{ $event->start_date }}</td>
+																			<td>{{ $item->approved_date }}</td>
+																			<td>{{ $item->start_date }}</td>
 																		</tr>
 																@endforeach
 														</tbody>
@@ -90,5 +90,5 @@
 
 @section('scriptsfooter')
   @parent
-  <script type="text/javascript" src="/js/vue-event-form.js"></script>
+  <script type="text/javascript" src="/js/vue-announcement-form.js"></script>
 @endsection

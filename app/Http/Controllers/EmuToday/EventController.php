@@ -78,16 +78,21 @@ class EventController extends Controller
     public function edit($id)
     {
 			$event = $this->event->findOrFail($id);
-		  // $cats = \emutoday\Category::lists('category', 'id');
-			// $categories = $event->categories;
-			// dd($categories);
-			// dd($event->toJson());
+			$user = \Auth::user();
+			$approvedevents = $this->event->where([
+				['author_id', $user->id],
+				['approved',1]
+				])->get();
+				$submittedevents = $this->event->where([
+					['author_id', $user->id],
+					['approved',0]
+					])->get();
 
 			  JavaScript::put([
 					'jsis' => 'hi',
-					'newevent' => $event->toJson(),
+
 				]);
-			return view('public.event.form', compact('event'));
+			return view('public.event.form', compact('event', 'approvedevents','submittedevents'));
 
     }
 

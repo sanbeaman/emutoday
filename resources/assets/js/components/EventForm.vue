@@ -52,13 +52,13 @@
 									<div class="row">
 										<div class="medium-8 columns">
 												<label>Building</label>
-											<select id="select-zbuilding" class="js-example-basic-multiple" style="width: 100%" v-myselect="zbuilding"  ajaxurl="/api/zbuildings" data-placeholder="zbuildings" data-tags="false" multiple="multiple" data-maximum-selection-length="1">
+											<select id="select-zbuilding" class="js-example-basic-multiple" style="width: 100%" v-myselect="zbuildings"  ajaxurl="/api/zbuildings" v-bind:resultvalue="buildings" data-tags="false" multiple="multiple" data-maximum-selection-length="1">
 												<!-- <option value="0">default</option> -->
 											</select>
 										</div><!-- /.medium-8 columns -->
 										<div class="medium-4 columns">
 											<label>Room</label>
-											<input v-model="newevent.buildingRoom" v-bind:class="[formErrors.buildingRoom ? 'invalid-input' : '']" name="select-building-room" type="text">
+											<input v-model="newevent.room" v-bind:class="[formErrors.room ? 'invalid-input' : '']" name="room" type="text">
 
 										</div><!-- /.medium-4 columns -->
 									</div><!-- /.row -->
@@ -130,7 +130,7 @@
 						<div class="small-12 column">
 							<div class="form-group">
 								<label>Categories: <i class="fi-star reqstar"></i></label>
-								<select  v-bind:class="[formErrors.categories ? 'invalid-input' : '']" id="select-zcats" style="width: 100%" v-myselect="zcategories" ajaxurl="/api/zcats" data-close-on-select="false" data-placeholder="zcats" data-tags="false"  multiple="multiple">
+								<select  v-bind:class="[formErrors.categories ? 'invalid-input' : '']" id="select-zcats" style="width: 100%" v-myselect="zcategories" v-bind:resultvalue="zcats" ajaxurl="/api/zcats" data-close-on-select="false" data-placeholder="zcats" data-tags="false"  multiple="multiple">
 									<option value="0">
 										default
 									</option>
@@ -324,7 +324,7 @@
 					<div class="row">
 						<div class="medium-12 column">
 							<div class="form-group">
-								<button v-on:click="submitForm" type="submit" class="button button-primary">Sumbit For Approval</button>
+								<button v-on:click="submitForm" type="submit" class="button button-primary">Submit For Approval</button>
 							</div>
 								</form>
 						</div><!-- /.medium-12 column -->
@@ -385,7 +385,9 @@ textarea {
     color: #E33100;
 		vertical-align:text-top;
 }
-
+button.button-primary {
+	margin-top: 1rem;
+}
 </style>
 
 <script>
@@ -421,13 +423,14 @@ module.exports  = {
 							description: 255
 						},
 						newbuilding: '',
-						zbuilding: [],
 						zcategories: [],
+						zbuildings: [],
 			      buildings: [],
+						  zcats: [],
 			      categories: {},
 			      minicalendars: {},
 			      newevent: {
-								on_campus: 0,
+								on_campus: 1,
 								all_day: 0,
 								no_end_time: 0,
 								free: 0,
@@ -443,7 +446,7 @@ module.exports  = {
 			      formErrors : {}
 			    }
 			  },
-				created: function() {
+				ready: function() {
 					//  this.fetchCategoryList();
 						// console.log('editevent='+ this.editevent)
 							console.log('eventexists'+ this.eventexists)
@@ -455,15 +458,18 @@ module.exports  = {
 						}
 
 
-						// this.fetchMiniCalendarList();
+						 this.fetchMiniCalendarList();
 				},
 
 
 			  computed: {
 					computedLocation: function() {
-						var buildingChoice = (this.zbuilding.length > 0)?this.zbuilding[0]:'';
-
-						var room = (this.newevent.buildingRoom)?' - Room:' + this.newevent.buildingRoom:'';
+						if (this.buildings) {
+							var buildingChoice = (this.buildings.length > 0)?this.buildings[0]:'';
+						} else {
+							return
+						}
+						var room = (this.newevent.room)?' - Room:' + this.newevent.room:'';
 						return buildingChoice + room;
 						// return this.zbuilding[0] + room
 					},
@@ -525,6 +531,8 @@ module.exports  = {
 									console.log('response.statusText=' + response.statusText);
 									// console.log('response.data=' + response.data.json());
 									this.newevent = response.data;
+
+									this.checkOverData();
 								}, (response) => {
 									//error callback
 									console.log("ERRORS");
@@ -533,29 +541,30 @@ module.exports  = {
 
 								}).bind(this);
 					},
-					// checkCost: function() {
-					// 	if (this.newevent.free == 1 || this.newevent.free == true  ) {
-					// 		this.newevent.cost = '0.00';
-					// 	} else {
-					// 		this.newevent.cost = '';
-					// 	}
-					// },
-			    // fetchEvents: function() {
-			    //   this.$http.get('/api/events', function(data) {
-			    //     this.events = data;
-			    //   });
-			    // },
-			    // fetchCategoryList: function() {
-			    //   this.$http.get('/api/categories').then(function(response){
-			    //     console.log('response->categories=' + JSON.stringify(response.data));
-			    //     this.categories = response.data.data;
-					//
-			    //   }, function(response) {
-			    //   //  this.$set(this.formErrors, response.data);
-			    //       console.log(response);
-			    //   });
-			    // },
-			    fetchMiniCalendarList: function() {
+					checkOverData: function() {
+
+						if (this.newevent.building) {
+							this.buildings.push(this.newevent.building);
+						}
+						if (this.newevent.room) {
+							this.newevent.room = this.newevent.room;
+						}
+
+						if (this.newevent.eventcategories){
+							for (var i= 0; i < this.newevent.eventcategories.length ; i++){
+								var reduceobj = this.newevent.eventcategories[i].id;
+								this.zcats.push(reduceobj)
+
+							}
+
+							console.log('this.zcats'+ this.zcats.length)
+						}
+
+						// this.newbuilding = this.newevent.building;
+						// this.zbuilding.push(this.newevent.building);
+
+					},
+					fetchMiniCalendarList: function() {
 			      this.$http.get('/api/minicalendars').then(function(response){
 			        // console.log('response->minicalendars=' + JSON.stringify(response.data));
 			        this.minicalendars = response.data.data;
@@ -565,16 +574,7 @@ module.exports  = {
 			          console.log(response);
 			      });
 			    },
-					// categoriesValChange: function(value){
-					// 	this.categories = '';
-					// 	this.categories = value;
-					// 	console.log(this.categories);
-					// },
-					// buildingValChange: function(value){
-					// 	this.newbuilding = '';
-					// 	this.newbuilding = value;
-					// 	console.log(this.newbuilding);
-					// },
+
 			    submitForm: function(e) {
 			    //  console.log('this.eventform=' + this.eventform.$valid);
 					e.preventDefault();

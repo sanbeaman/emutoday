@@ -11826,98 +11826,44 @@ exports.insert = function (css) {
 
 },{}],6:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n p[_v-0879ddea] {\n\t margin:0;\n }\n      label[_v-0879ddea] {\n           display: block;\n           /*margin-bottom: 1.5em;*/\n       }\n\n       label > span[_v-0879ddea] {\n           display: inline-block;\n           width: 8em;\n           vertical-align: top;\n       }\n.valid-titleField[_v-0879ddea] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.no-input[_v-0879ddea] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.invalid-input[_v-0879ddea] {\n  background-color: rgba(236, 88, 64, 0.1);\n  border: 1px dotted red;\n}\n.invalid[_v-0879ddea] {\n  color: #ff0000;\n}\n\n\nfieldset label.radiobtns[_v-0879ddea]  {\n  display: inline;\n  margin: 4px;\n  padding: 2px;\n}\n\n[type='text'][_v-0879ddea], [type='password'][_v-0879ddea], [type='date'][_v-0879ddea], [type='datetime'][_v-0879ddea], [type='datetime-local'][_v-0879ddea], [type='month'][_v-0879ddea], [type='week'][_v-0879ddea], [type='email'][_v-0879ddea], [type='number'][_v-0879ddea], [type='search'][_v-0879ddea], [type='tel'][_v-0879ddea], [type='time'][_v-0879ddea], [type='url'][_v-0879ddea], [type='color'][_v-0879ddea],\ntextarea[_v-0879ddea] {\n\tmargin: 0;\n\tpadding: 0;\n\tpadding-left: 8px;\n}\n[type='file'][_v-0879ddea], [type='checkbox'][_v-0879ddea], [type='radio'][_v-0879ddea] {\n\tmargin: 0;\n\tmargin-left: 8px;\n\tpadding: 0;\n\tpadding-left: 2px;\n}\n.reqstar[_v-0879ddea] {\n    font-size: .5rem;\n    color: #E33100;\n\t\tvertical-align:text-top;\n}\nbutton.button-primary[_v-0879ddea] {\n\tmargin-top: 1rem;\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n p[_v-53150522] {\n\t margin:0;\n }\n      label[_v-53150522] {\n           display: block;\n           /*margin-bottom: 1.5em;*/\n       }\n\n       label > span[_v-53150522] {\n           display: inline-block;\n           width: 8em;\n           vertical-align: top;\n       }\n.valid-titleField[_v-53150522] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.no-input[_v-53150522] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.invalid-input[_v-53150522] {\n  background-color: rgba(236, 88, 64, 0.1);\n  border: 1px dotted red;\n}\n.invalid[_v-53150522] {\n  color: #ff0000;\n}\n\n\nfieldset label.radiobtns[_v-53150522]  {\n  display: inline;\n  margin: 4px;\n  padding: 2px;\n}\n\n[type='text'][_v-53150522], [type='password'][_v-53150522], [type='date'][_v-53150522], [type='datetime'][_v-53150522], [type='datetime-local'][_v-53150522], [type='month'][_v-53150522], [type='week'][_v-53150522], [type='email'][_v-53150522], [type='number'][_v-53150522], [type='search'][_v-53150522], [type='tel'][_v-53150522], [type='time'][_v-53150522], [type='url'][_v-53150522], [type='color'][_v-53150522],\ntextarea[_v-53150522] {\n\tmargin: 0;\n\tpadding: 0;\n\tpadding-left: 8px;\n}\n[type='file'][_v-53150522], [type='checkbox'][_v-53150522], [type='radio'][_v-53150522] {\n\tmargin: 0;\n\tmargin-left: 8px;\n\tpadding: 0;\n\tpadding-left: 2px;\n}\n.reqstar[_v-53150522] {\n    font-size: .5rem;\n    color: #E33100;\n\t\tvertical-align:text-top;\n}\n\nbutton.button-primary[_v-53150522]{\n\tmargin-top: 1rem;\n}\n\n")
 'use strict';
 
 module.exports = {
 	props: {
 		authorid: { default: '0' },
-		eventexists: { default: false },
-		editeventid: { default: '' }
+		recordexists: { default: false },
+		editid: { default: '' }
 	},
 	data: function data() {
 		return {
-			sdate: '',
-			edate: '',
-			stime: '',
-			rdate: '',
-			ticketoptions: [{ text: 'Online', value: 'online' }, { text: 'Phone', value: 'phone' }, { text: 'Ticket Office', value: 'office' }, { text: 'Online, Phone and Ticket Office', value: 'all' }, { text: 'Other', value: 'other' }],
-			participants: [{ text: 'Campus Only', value: 'campus' }, { text: 'Open to Public', value: 'public' }, { text: 'Students Only', value: 'students' }, { text: 'Invitation Only', value: 'invite' }, { text: 'Tickets Required', value: 'tickets' }],
+			record: {
+				title: '',
+				announcement: '',
+				start_date: '',
+				end_date: ''
+			},
 			totalChars: {
 				start: 0,
 				title: 100,
-				description: 255
-			},
-			newbuilding: '',
-			zcategories: [],
-			zbuildings: [],
-			buildings: [],
-			zcats: [],
-			categories: {},
-			minicalendars: {},
-			newevent: {
-				on_campus: 1,
-				all_day: 0,
-				no_end_time: 0,
-				free: 0,
-				title: '',
-				description: ''
+				announcement: 255
 			},
 			response: {},
-			formStatus: {},
-			vModelLike: "",
 			formInputs: {},
 			formErrors: {}
 		};
 	},
 	ready: function ready() {
-		//  this.fetchCategoryList();
-		// console.log('editevent='+ this.editevent)
-		console.log('eventexists' + this.eventexists);
 
-		if (this.eventexists) {
-			console.log('editeventid' + this.editeventid);
-			this.fetchCurrentEvent(this.editeventid);
+		if (this.recordexists) {
+			console.log('editeventid' + this.editid);
+			this.fetchCurrentEvent(this.editid);
 		}
-
-		this.fetchMiniCalendarList();
 	},
 
 	computed: {
-		computedLocation: function computedLocation() {
-			if (this.buildings) {
-				var buildingChoice = this.buildings.length > 0 ? this.buildings[0] : '';
-			} else {
-				return;
-			}
-			var room = this.newevent.room ? ' - Room:' + this.newevent.room : '';
-			return buildingChoice + room;
-			// return this.zbuilding[0] + room
-		},
-		isOnCampus: function isOnCampus() {
-			return this.newevent.on_campus == 1 ? true : false;
-		},
-		realCost: function realCost() {
-			if (this.newevent.free == 1) {
-				return '0.00';
-			} else {
-				// this.newevent.cost = '';
-				return '';
-			}
-			// return this.newevent.free == 1 ? false:true;
-		},
-		hasCost: function hasCost() {
-			if (this.newevent.free == 1) {
-				this.newevent.cost = '0.00';
-				return false;
-			} else {
-				this.newevent.cost = '';
-				return true;
-			}
-			// return this.newevent.free == 1 ? false:true;
-		},
 		titleChars: function titleChars() {
-			var str = this.newevent.title;
+			var str = this.record.title;
 
 			console.log(str.length);
 			var cclength = str.length;
@@ -11925,17 +11871,11 @@ module.exports = {
 			// this.totalChars.title - (this.newevent.title).length
 		},
 		descriptionChars: function descriptionChars() {
-			var str = this.newevent.description;
+			var str = this.record.announcement;
 			console.log(str.length);
 			var cclength = str.length;
-			return this.totalChars.description - cclength;
+			return this.totalChars.announcement - cclength;
 			// this.totalChars.title - (this.newevent.title).length
-		},
-		hasStartTime: function hasStartTime() {
-			return this.newevent.all_day == 1 ? false : true;
-		},
-		hasEndTime: function hasEndTime() {
-			return this.newevent.all_day == 1 || this.newevent.no_end_time == 1 ? false : true;
 		}
 
 	},
@@ -11943,13 +11883,13 @@ module.exports = {
 		fetchCurrentEvent: function fetchCurrentEvent() {
 			var _this = this;
 
-			this.$http.get('/api/event/' + this.editeventid + '/edit').then(function (response) {
+			this.$http.get('/api/announcement/' + this.editid + '/edit').then(function (response) {
 				//response.status;
 				console.log('response.status=' + response.status);
 				console.log('response.ok=' + response.ok);
 				console.log('response.statusText=' + response.statusText);
 				// console.log('response.data=' + response.data.json());
-				_this.newevent = response.data;
+				_this.record = response.data;
 
 				_this.checkOverData();
 			}, function (response) {
@@ -11960,36 +11900,8 @@ module.exports = {
 			}).bind(this);
 		},
 		checkOverData: function checkOverData() {
-
-			if (this.newevent.building) {
-				this.buildings.push(this.newevent.building);
-			}
-			if (this.newevent.room) {
-				this.newevent.room = this.newevent.room;
-			}
-
-			if (this.newevent.eventcategories) {
-				for (var i = 0; i < this.newevent.eventcategories.length; i++) {
-					var reduceobj = this.newevent.eventcategories[i].id;
-					this.zcats.push(reduceobj);
-				}
-
-				console.log('this.zcats' + this.zcats.length);
-			}
-
-			// this.newbuilding = this.newevent.building;
-			// this.zbuilding.push(this.newevent.building);
+			console.log('this.record' + this.record.length);
 		},
-		fetchMiniCalendarList: function fetchMiniCalendarList() {
-			this.$http.get('/api/minicalendars').then(function (response) {
-				// console.log('response->minicalendars=' + JSON.stringify(response.data));
-				this.minicalendars = response.data.data;
-			}, function (response) {
-				//  this.$set(this.formErrors, response.data);
-				console.log(response);
-			});
-		},
-
 		submitForm: function submitForm(e) {
 			var _this2 = this;
 
@@ -11998,16 +11910,9 @@ module.exports = {
 			// this.newevent.start_date = this.sdate;
 			// this.newevent.end_date = this.edate;
 			// this.newevent.reg_deadline = this.rdate;
-			this.newevent.author_id = this.authorid;
-			if (this.newevent.on_campus == true) {
-				this.newevent.location = this.computedLocation;
-			} else {
-				this.newevent.location = this.newevent.locationoffcampus;
-			}
-			// this.newevent.location = (this.on_campus)?this.computedLocation: this.newevent.location;
-			this.newevent.categories = this.zcategories;
-			console.log("cats=" + this.newevent.categories);
-			this.$http.post('/api/event', this.newevent).then(function (response) {
+			this.record.author_id = this.authorid;
+
+			this.$http.post('/api/announcement', this.record).then(function (response) {
 				//response.status;
 				console.log('response.status=' + response.status);
 				console.log('response.ok=' + response.ok);
@@ -12015,60 +11920,13 @@ module.exports = {
 				// console.log('response.data=' + response.data.json());
 			}, function (response) {
 				//error callback
-				// console.log("FORM ERRORS     "+ response.json() );
-
 				_this2.formErrors = response.data.error.message;
 			}).bind(this);
 		}
 	},
-	// .then(function(response){
-	//get status
-	// response.status;
-	//   console.log('response.status=' + response.status);
-	//   console.log('response.ok=' + response.ok);
-	//     console.log('response.statusText=' + response.statusText);
-	//     console.log('response.request=' + JSON.stringify(response.request));
-
-	// var responseData = response.data;
-
-	// console.log('response-length=' + responseData.length);
-
-	// for (var key in responseData){
-	//     var attrName = key;
-	//     var attrValue = responseData[key];
-	// 		console.log('attrName='+attrName +'____attrValue='+attrValue);
-	// }
-
-	// // //get all headers
-	// response.headers();
-	// // //get 'expirese' header
-	// response.headers('expires');
-	//
-	// //set data on vm
-	// if (response.data.errors){
-	// 	console.log('has errrrrrrrrrrrrors');
-	//     this.formErrors = response.data.errors;
-	//
-	// } else {
-	//   this.formErrors = {};
-	// }
-	// console.log('json-'+JSON.stringify(response.data));
-	//     }, function(response) {
-	// 				console.log(this.newevent.title);
-	// 				console.log("FORM ERRORS     "+ JSON.stringify(response.data));
-	//
-	//       	this.formErrors =  response.data.error.message;
-	//
-	//     }).bind(this);
-	//   }
-	// },
 	watch: {},
-
 	directives: {
-		mydatedropper: require('../directives/mydatedropper.js'),
-		mytimedropper: require('../directives/mytimedropper.js'),
-		myselect: require('../directives/myselect.js')
-
+		mydatedropper: require('../directives/mydatedropper.js')
 	},
 	components: {
 		// listselect2: require('./ListSelect2.vue')
@@ -12091,22 +11949,22 @@ module.exports = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form _v-0879ddea=\"\">\n\t<slot name=\"csrf\" _v-0879ddea=\"\"></slot>\n\t<!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"small-12 columns\" _v-0879ddea=\"\">\n\t\t\t<!-- <div class=\"form-group\">\n\t\t\t\t<label>zBuilding</label>\n\t\t\t\t\t<select id=\"select-zbuilding\" style=\"width: 75%\" v-myselect=\"zbuilding\"  ajaxurl=\"/api/zbuildings\" data-placeholder=\"zbuildings\" data-tags=\"false\" multiple=\"multiple\" data-maximum-selection-length=\"1\">\n\t\t\t\t\t\t<option value=\"0\">default</option>\n\t\t\t\t\t</select>\n\t\t\t</div> -->\n\t\t\t<!-- /.data-minimum-results-for-search=\"Infinity\" data-maximum-input-length=\"0\" form-group -->\n\t\t\t<!-- <div class=\"form-group\">\n\t\t\t\t<label>zCats</label>\n\t\t\t\t\t<select id=\"select-zcats\" style=\"width: 75%\" v-myselect=\"zcategories\" ajaxurl=\"/api/zcats\" data-close-on-select=\"false\" data-placeholder=\"zcats\" data-tags=\"false\"  multiple=\"multiple\">\n\t\t\t\t\t\t<option value=\"0\">\n\t\t\t\t\t\t\tdefault\n\t\t\t\t\t\t</option>\n\t\t\t\t\t</select>\n\t\t\t</div> -->\n\t\t\t<!-- /.form-group -->\n\t\t\t\t<!-- <input v-model=\"newevent.building2\" v-bind:class=\"[formErrors.building ? 'invalid-input' : '']\" name=\"select-building\" type=\"text\"> -->\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Title <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t\t<p class=\"help-text\" id=\"title-helptext\" _v-0879ddea=\"\">Please enter a title ({{titleChars}} characters left)</p>\n\t\t\t\t\t\t<input v-model=\"newevent.title\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-0879ddea=\"\">\tPlease Include a Title!</p>\n    \t\t</div>\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Short Title\t</label>\n\t\t\t\t\t\t<input v-model=\"newevent.short_title\" type=\"text\" placeholder=\"Short Title\" name=\"short-title\" _v-0879ddea=\"\">\n\t\t\t\t</div>\n\t\t</div><!-- /.small-12 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Is Event on Campus?\n\t\t\t\t\t\t<input id=\"on-campus-yes\" name=\"on_campus\" type=\"checkbox\" value=\"1\" v-model=\"newevent.on_campus\" _v-0879ddea=\"\">\n\t\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-6 columns -->\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\n\t\t</div><!-- /.medium-6 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t\t<template v-if=\"isOnCampus\">\n\t\t\t\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<div class=\"medium-8 columns\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Building</label>\n\t\t\t\t\t\t\t<select id=\"select-zbuilding\" class=\"js-example-basic-multiple\" style=\"width: 100%\" v-myselect=\"zbuildings\" ajaxurl=\"/api/zbuildings\" v-bind:resultvalue=\"buildings\" data-tags=\"false\" multiple=\"multiple\" data-maximum-selection-length=\"1\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t<!-- <option value=\"0\">default</option> -->\n\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t</div><!-- /.medium-8 columns -->\n\t\t\t\t\t\t<div class=\"medium-4 columns\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Room</label>\n\t\t\t\t\t\t\t<input v-model=\"newevent.room\" v-bind:class=\"[formErrors.room ? 'invalid-input' : '']\" name=\"room\" type=\"text\" _v-0879ddea=\"\">\n\n\t\t\t\t\t\t</div><!-- /.medium-4 columns -->\n\t\t\t\t\t</div><!-- /.row -->\n\t\t\t\t</template>\n\t\t\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<template v-if=\"isOnCampus\">\n\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Location <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t\t\t\t<input v-model=\"computedLocation\" v-bind:class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" readonly=\"readonly\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Location <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t\t\t\t<input v-model=\"newevent.locationoffcampus\" v-bind:class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t</div><!-- /.medium-12 column -->\n\t\t\t\t</div><!-- /.row -->\n\t\t\t</div><!-- /.medium-12 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"small-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label for=\"start-date\" _v-0879ddea=\"\">Start Date: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t<input id=\"start-date\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"newevent.start_date\" aria-describedby=\"errorStartDate\" v-mydatedropper=\"\" _v-0879ddea=\"\">\n\t\t\t\t\t<p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-0879ddea=\"\">Need a Start Date</p>\n\t\t\t\t</div><!--form-group -->\n\t\t</div><!-- /.small-6 columns -->\n\t\t<div class=\"small-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<label for=\"end-date\" _v-0879ddea=\"\">End Date: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t\t<input id=\"end-date\" v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"newevent.end_date\" aria-describedby=\"errorEndDate\" v-mydatedropper=\"\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<!-- <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\"></datepicker> -->\n\t\t\t\t\t\t<p v-if=\"formErrors.end_date\" class=\"help-text invalid\" _v-0879ddea=\"\">Need an End Date</p>\n\n\t\t\t\t\t</div><!--form-group -->\n\t\t</div><!-- /.small-6 columns -->\n\t</div><!-- /.row -->\n\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"small-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t  <label for=\"all-day\" _v-0879ddea=\"\">All Day Event:\n\t\t\t\t\t<input id=\"all-day\" name=\"all_day\" type=\"checkbox\" value=\"1\" v-model=\"newevent.all_day\" _v-0879ddea=\"\">\n\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.small-6 column -->\n\t\t\t<div class=\"small-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div v-show=\"hasEndTime\" class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label for=\"no-end-time\" _v-0879ddea=\"\">No End Time:\n\t\t\t\t\t\t<input id=\"no-end-time\" name=\"no_end_time\" type=\"checkbox\" value=\"1\" v-model=\"newevent.no_end_time\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t<!-- <label for=\"no-end-time-no\" class=\"radiobtns\">no</label><input id=\"no-end-time-no\"  name=\"no_end_time\" type=\"radio\" value=\"0\" v-model=\"newevent.no_end_time\"/> -->\n\t\t\t\t\t\t</label></div>\n\t\t\t</div><!-- /.small-6 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div v-show=\"hasStartTime\" class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<label for=\"start-time\" _v-0879ddea=\"\">Start Time: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t<input id=\"start-time\" type=\"text\" v-model=\"newevent.start_time\" v-mytimedropper=\"\" _v-0879ddea=\"\">\n\t\t\t\t</div><!-- /.form-group -->\n\t\t\t</div><!-- /.medium-6 columns -->\n\t\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div v-show=\"hasEndTime\" class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label for=\"end-time\" _v-0879ddea=\"\">End Time: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t<input id=\"end-time\" type=\"text\" v-model=\"newevent.end_time\" v-mytimedropper=\"\" _v-0879ddea=\"\">\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t</div><!-- /.medium-6 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"small-12 column\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label _v-0879ddea=\"\">Categories: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t<select v-bind:class=\"[formErrors.categories ? 'invalid-input' : '']\" id=\"select-zcats\" style=\"width: 100%\" v-myselect=\"zcategories\" v-bind:resultvalue=\"zcats\" ajaxurl=\"/api/zcats\" data-close-on-select=\"false\" data-placeholder=\"zcats\" data-tags=\"false\" multiple=\"multiple\" _v-0879ddea=\"\">\n\t\t\t\t\t<option value=\"0\" _v-0879ddea=\"\">\n\t\t\t\t\t\tdefault\n\t\t\t\t\t</option>\n\t\t\t\t</select>\n\t\t\t\t\t<!-- <listselect2 v-on:val-change=\"categoriesValChange\" v-bind:class=\"[formErrors.categories ? 'invalid-input' : '']\" id=\"select-categories\" ismultiple='true' :resultvalue.sync=\"newevent.categoriessync\" ajaxurl=\"/api/zevent-catgeories\" minforsearch=\"Infinity\" tags=\"false\" placeholder=\"Choose Categories\"></listselect2> -->\n\t\t\t</div><!-- /.form-group -->\n\t\t\t\t\t<!-- <div class=\"form-group\" v-bind:class=\"[formErrors.categories ? 'invalid-input' : '']\">\n\n\t\t\t\t\t\t\t<label for=\"categories\">Categories:</label>\n\t\t\t\t\t\t\t<select v-model=\"newevent.categories\" id=\"categories\" multiple=\"multiple\" class=\"multiselect\">\n\t\t\t\t\t\t\t\t<option v-for=\"category in categories\" :value=\"category.id\">\n\t\t\t\t\t\t\t\t\t{{category.category}}\n\t\t\t\t\t\t\t\t</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</div> -->\n\t\t</div><!-- /.small-12 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label _v-0879ddea=\"\">Contact Person <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i>\n\t\t\t\t\t<input v-model=\"newevent.contact_person\" v-bind:class=\"[formErrors.contact_person ? 'invalid-input' : '']\" name=\"contact-person\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t<p v-if=\"formErrors.contact_person\" class=\"help-text invalid\" _v-0879ddea=\"\">Need a Contact Person!</p>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-6 columns -->\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label _v-0879ddea=\"\">Contact Email: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i> <em _v-0879ddea=\"\">(ex. janedoe@emich.edu)</em>\n\t\t\t\t\t<input v-model=\"newevent.contact_email\" v-bind:class=\"[formErrors.contact_email ? 'invalid-input' : '']\" name=\"contact-email\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t<p v-if=\"formErrors.contact_email\" class=\"help-text invalid\" _v-0879ddea=\"\">Need a Contact Email!</p>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-6 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\n\t\t\t\t<label _v-0879ddea=\"\">Contact Phone <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i> <em _v-0879ddea=\"\">(ex. 734.487.1849)</em>\n\t\t\t\t\t<input v-model=\"newevent.contact_phone\" v-bind:class=\"[formErrors.contact_phone ? 'invalid-input' : '']\" name=\"contact-phone\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t<p v-if=\"formErrors.contact_phone\" class=\"help-text invalid\" _v-0879ddea=\"\">Need a Contact Phone!</p>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-6 columns -->\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label _v-0879ddea=\"\">Contact Fax: <em _v-0879ddea=\"\">(ex. 734.487.1849)</em>\n\t\t\t\t\t<input v-model=\"newevent.contact_fax\" v-bind:class=\"[formErrors.contact_fax ? 'invalid-input' : '']\" name=\"contact-fax\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-6 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Related Link: <em _v-0879ddea=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t<input v-model=\"newevent.related_link_1\" v-bind:class=\"[formErrors.related_link_1 ? 'invalid-input' : '']\" name=\"related-link-1\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t</label>\n\t\t\t\t\t<label _v-0879ddea=\"\">Related Link: <em _v-0879ddea=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t<input v-model=\"newevent.related_link_2\" v-bind:class=\"[formErrors.related_link_2 ? 'invalid-input' : '']\" name=\"related-link-2\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t</label>\n\t\t\t\t\t<label _v-0879ddea=\"\">Related Link: <em _v-0879ddea=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t<input v-model=\"newevent.related_link_1\" v-bind:class=\"[formErrors.related_link_1 ? 'invalid-input' : '']\" name=\"related-link-1\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.medium-12 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label for=\"reg-deadline\" _v-0879ddea=\"\">Registration Deadline</label>\n\t\t\t\t\t<input id=\"reg-deadline\" type=\"text\" v-model=\"newevent.reg_deadline\" :value.sync=\"rdate\" aria-describedby=\"errorRegDeadline\" v-mydatedropper=\"\" _v-0879ddea=\"\">\n\t\t\t\t</div>\n\t\t\t</div><!-- /.medium-6 columns-->\n\t\t</div><!-- /.row -->\n\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"medium-12 columns\" _v-0879ddea=\"\">\n\n\t\t\t\t\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t<div class=\"medium-4 columns\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Free</label>\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t<input id=\"free\" name=\"free\" type=\"checkbox\" value=\"1\" v-model=\"newevent.free\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t\t\t\t</div><!-- /.medium-4 columns -->\n\t\t\t\t\t\t\t<div class=\"medium-8 columns\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Event Cost <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t\t\t\t<div v-show=\"hasCost\" class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"input-group-label\" _v-0879ddea=\"\">$</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.cost\" v-bind:class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" value=\"{{realCost}}\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t</div><!-- /. input-group -->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div v-else=\"\" class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"input-group-label\" _v-0879ddea=\"\">$</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.cost\" v-bind:class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" value=\"{{realCost}}\" type=\"text\" readonly=\"readonly\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t</div><!-- /. input-group -->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div><!-- /.medium-8 columns -->\n\t\t\t\t\t\t</div><!-- /.row -->\n\n\n\t\t\t</div><!-- /.medium-6 -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Tickets Available\n\t\t\t\t\t\t<select v-model=\"newevent.tickets\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t<option v-for=\"ticketoption in ticketoptions\" v-bind:value=\"ticketoption.value\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t {{ ticketoption.text }}\n\t\t\t\t\t\t </option>\n\t\t\t\t\t</select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<template v-if=\"newevent.tickets == 'online' || newevent.tickets == 'all'\">\n\t\t\t\t\t\t<label _v-0879ddea=\"\">Link: <em _v-0879ddea=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_online\" v-bind:class=\"[formErrors.ticket_details_online ? 'invalid-input' : '']\" name=\"ticket-details-online\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</template>\n\t\t\t\t\t<template v-if=\"newevent.tickets == 'phone' || newevent.tickets == 'all'\">\n\t\t\t\t\t\t<label _v-0879ddea=\"\">Tickets by Phone <em _v-0879ddea=\"\">(ex. 734.487.1849)</em>\n\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_phone\" v-bind:class=\"[formErrors.ticket_details_phone ? 'invalid-input' : '']\" name=\"ticket-details-phone\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</template>\n\t\t\t\t\t<template v-if=\"newevent.tickets == 'office' || newevent.tickets == 'all'\">\n\t\t\t\t\t\t<label _v-0879ddea=\"\">Address\n\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_office\" v-bind:class=\"[formErrors.ticket_details_office ? 'invalid-input' : '']\" name=\"ticket-details-office\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</template>\n\t\t\t\t\t<template v-if=\"newevent.tickets == 'other'\">\n\t\t\t\t\t\t<label _v-0879ddea=\"\">Other\n\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_other\" v-bind:class=\"[formErrors.ticket_details_other ? 'invalid-input' : '']\" name=\"ticket-details-other\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</template>\n\t\t\t\t</div><!-- /.form-group -->\n\t\t\t</div><!-- /.medium-12 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label _v-0879ddea=\"\">Participants\n\t\t\t\t\t<select v-model=\"newevent.participants\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<option v-for=\"participant in participants\" v-bind:value=\"participant.value\" _v-0879ddea=\"\">\n\t\t\t\t\t {{ participant.text }}\n\t\t\t\t \t</option>\n\t\t\t\t</select>\n\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!--/.medium-12 column -->\n\t</div><!-- /.row -->\n\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label for=\"lbc-reviewed\" _v-0879ddea=\"\">LBC Approved: <em _v-0879ddea=\"\">(pre-approval required)</em>\n\t\t\t\t\t<input id=\"lbc-reviewed\" name=\"lbc-reviewed\" type=\"checkbox\" value=\"1\" v-model=\"newevent.lbc_reviewed\" _v-0879ddea=\"\">\n\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.medium-6 columns -->\n\t\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\n\t\t\t</div><!-- /.medium-6 columns -->\n\t\t</div><!-- /.row -->\n\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Description <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i> <p class=\"help-text\" id=\"description-helptext\" _v-0879ddea=\"\">({{descriptionChars}} characters left)</p>\n\n\t\t\t\t\t<textarea v-model=\"newevent.description\" v-bind:class=\"[formErrors.description ? 'invalid-input' : '']\" name=\"description\" type=\"textarea\" rows=\"6\" _v-0879ddea=\"\"></textarea>\n\t\t\t\t</label>\n\t\t\t\t<p v-if=\"formErrors.description\" class=\"help-text invalid\" _v-0879ddea=\"\">Need a Description!</p>\n\n\t\t\t\t</div>\n\t\t\t</div><!-- /.medium-12 column -->\n\t\t</div><!-- /.row -->\n\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t<label _v-0879ddea=\"\">Group Website Calendar <p class=\"help-text\" id=\"minicalendar-helptext\" _v-0879ddea=\"\">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>\n\t\t\t\t\t<select v-model=\"newevent.mini_calendar\" id=\"mini_calendar\" _v-0879ddea=\"\">\n\t\t\t\t<option v-for=\"minicalendar in minicalendars\" :value=\"minicalendar.id\" _v-0879ddea=\"\">\n\t\t\t\t\t{{minicalendar.calendar}}\n\t\t\t\t</option>\n\t\t\t</select>\n\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-12 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<button v-on:click=\"submitForm\" type=\"submit\" class=\"button button-primary\" _v-0879ddea=\"\">Submit For Approval</button>\n\t\t\t</div>\n\t\t\t\t</div></div></form>\n\t\t<!-- /.medium-12 column -->\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form _v-53150522=\"\">\n\t<slot name=\"csrf\" _v-53150522=\"\"></slot>\n\t<!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n\t<div class=\"row\" _v-53150522=\"\">\n\t\t<div class=\"small-12 columns\" _v-53150522=\"\">\n\t\t\t<div class=\"form-group\" _v-53150522=\"\">\n\t\t\t\t\t<label _v-53150522=\"\">Title <i class=\"fi-star reqstar\" _v-53150522=\"\"></i></label>\n\t\t\t\t\t\t<p class=\"help-text\" id=\"title-helptext\" _v-53150522=\"\">Please enter a title ({{titleChars}} characters left)</p>\n\t\t\t\t\t\t<input v-model=\"record.title\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-53150522=\"\">\n\t\t\t\t\t\t<p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-53150522=\"\">\tPlease Include a Title!</p>\n    \t\t</div>\n\t\t\t\t<div class=\"form-group\" _v-53150522=\"\">\n\t\t\t\t\t<label _v-53150522=\"\">Announcement <i class=\"fi-star reqstar\" _v-53150522=\"\"></i> <p class=\"help-text\" id=\"announcement-helptext\" _v-53150522=\"\">({{descriptionChars}} characters left)</p>\n\n\t\t\t\t\t<textarea v-model=\"record.announcement\" v-bind:class=\"[formErrors.announcement ? 'invalid-input' : '']\" name=\"announcement\" type=\"textarea\" rows=\"6\" _v-53150522=\"\"></textarea>\n\t\t\t\t</label>\n\t\t\t\t<p v-if=\"formErrors.announcement\" class=\"help-text invalid\" _v-53150522=\"\">Need a Description!</p>\n\n\t\t\t\t</div>\n\t\t</div><!-- /.small-12 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-53150522=\"\">\n\t\t<div class=\"small-6 columns\" _v-53150522=\"\">\n\t\t\t\t<div class=\"form-group\" _v-53150522=\"\">\n\t\t\t\t\t<label for=\"start-date\" _v-53150522=\"\">Start Date: <i class=\"fi-star reqstar\" _v-53150522=\"\"></i></label>\n\t\t\t\t\t<input id=\"start-date\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.start_date\" aria-describedby=\"errorStartDate\" v-mydatedropper=\"\" _v-53150522=\"\">\n\t\t\t\t\t<p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-53150522=\"\">Need a Start Date</p>\n\t\t\t\t</div><!--form-group -->\n\t\t</div><!-- /.small-6 columns -->\n\t\t<div class=\"small-6 columns\" _v-53150522=\"\">\n\t\t\t\t<div class=\"form-group\" _v-53150522=\"\">\n\t\t\t\t\t\t<label for=\"end-date\" _v-53150522=\"\">End Date: <i class=\"fi-star reqstar\" _v-53150522=\"\"></i></label>\n\t\t\t\t\t\t<input id=\"end-date\" v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.end_date\" aria-describedby=\"errorEndDate\" v-mydatedropper=\"\" _v-53150522=\"\">\n\t\t\t\t\t\t<!-- <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\"></datepicker> -->\n\t\t\t\t\t\t<p v-if=\"formErrors.end_date\" class=\"help-text invalid\" _v-53150522=\"\">Need an End Date</p>\n\n\t\t\t\t\t</div><!--form-group -->\n\t\t</div><!-- /.small-6 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-53150522=\"\">\n\t\t<div class=\"medium-12 column\" _v-53150522=\"\">\n\t\t\t<div class=\"form-group\" _v-53150522=\"\">\n\t\t\t\t<button v-on:click=\"submitForm\" type=\"submit\" class=\"button button-primary\" _v-53150522=\"\">Submit For Approval</button>\n\t\t\t</div>\n\t</div></div></form>\n\t\t<!-- /.medium-12 column -->\n\t\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n p[_v-0879ddea] {\n\t margin:0;\n }\n      label[_v-0879ddea] {\n           display: block;\n           /*margin-bottom: 1.5em;*/\n       }\n\n       label > span[_v-0879ddea] {\n           display: inline-block;\n           width: 8em;\n           vertical-align: top;\n       }\n.valid-titleField[_v-0879ddea] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.no-input[_v-0879ddea] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.invalid-input[_v-0879ddea] {\n  background-color: rgba(236, 88, 64, 0.1);\n  border: 1px dotted red;\n}\n.invalid[_v-0879ddea] {\n  color: #ff0000;\n}\n\n\nfieldset label.radiobtns[_v-0879ddea]  {\n  display: inline;\n  margin: 4px;\n  padding: 2px;\n}\n\n[type='text'][_v-0879ddea], [type='password'][_v-0879ddea], [type='date'][_v-0879ddea], [type='datetime'][_v-0879ddea], [type='datetime-local'][_v-0879ddea], [type='month'][_v-0879ddea], [type='week'][_v-0879ddea], [type='email'][_v-0879ddea], [type='number'][_v-0879ddea], [type='search'][_v-0879ddea], [type='tel'][_v-0879ddea], [type='time'][_v-0879ddea], [type='url'][_v-0879ddea], [type='color'][_v-0879ddea],\ntextarea[_v-0879ddea] {\n\tmargin: 0;\n\tpadding: 0;\n\tpadding-left: 8px;\n}\n[type='file'][_v-0879ddea], [type='checkbox'][_v-0879ddea], [type='radio'][_v-0879ddea] {\n\tmargin: 0;\n\tmargin-left: 8px;\n\tpadding: 0;\n\tpadding-left: 2px;\n}\n.reqstar[_v-0879ddea] {\n    font-size: .5rem;\n    color: #E33100;\n\t\tvertical-align:text-top;\n}\nbutton.button-primary[_v-0879ddea] {\n\tmargin-top: 1rem;\n}\n"] = false
+    __vueify_insert__.cache["\n p[_v-53150522] {\n\t margin:0;\n }\n      label[_v-53150522] {\n           display: block;\n           /*margin-bottom: 1.5em;*/\n       }\n\n       label > span[_v-53150522] {\n           display: inline-block;\n           width: 8em;\n           vertical-align: top;\n       }\n.valid-titleField[_v-53150522] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.no-input[_v-53150522] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.invalid-input[_v-53150522] {\n  background-color: rgba(236, 88, 64, 0.1);\n  border: 1px dotted red;\n}\n.invalid[_v-53150522] {\n  color: #ff0000;\n}\n\n\nfieldset label.radiobtns[_v-53150522]  {\n  display: inline;\n  margin: 4px;\n  padding: 2px;\n}\n\n[type='text'][_v-53150522], [type='password'][_v-53150522], [type='date'][_v-53150522], [type='datetime'][_v-53150522], [type='datetime-local'][_v-53150522], [type='month'][_v-53150522], [type='week'][_v-53150522], [type='email'][_v-53150522], [type='number'][_v-53150522], [type='search'][_v-53150522], [type='tel'][_v-53150522], [type='time'][_v-53150522], [type='url'][_v-53150522], [type='color'][_v-53150522],\ntextarea[_v-53150522] {\n\tmargin: 0;\n\tpadding: 0;\n\tpadding-left: 8px;\n}\n[type='file'][_v-53150522], [type='checkbox'][_v-53150522], [type='radio'][_v-53150522] {\n\tmargin: 0;\n\tmargin-left: 8px;\n\tpadding: 0;\n\tpadding-left: 2px;\n}\n.reqstar[_v-53150522] {\n    font-size: .5rem;\n    color: #E33100;\n\t\tvertical-align:text-top;\n}\n\nbutton.button-primary[_v-53150522]{\n\tmargin-top: 1rem;\n}\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-0879ddea", module.exports)
+    hotAPI.createRecord("_v-53150522", module.exports)
   } else {
-    hotAPI.update("_v-0879ddea", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-53150522", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../directives/mydatedropper.js":7,"../directives/myselect.js":8,"../directives/mytimedropper.js":9,"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],7:[function(require,module,exports){
+},{"../directives/mydatedropper.js":7,"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -12121,104 +11979,6 @@ module.exports = {
 };
 
 },{}],8:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-	twoWay: true,
-	priority: 1000,
-
-	params: ['ajaxurl', 'resultvalue'],
-	paramWatchers: {
-		resultvalue: function resultvalue(val, oldVal) {
-			console.log('val=' + val + ' oldVal' + oldVal);
-
-			$(this.el).val([val]).trigger('change');
-		}
-	},
-	bind: function bind(value) {
-		this.handler = function () {
-			var svalues = $(this.el).select2('val');
-			console.log('this.handler= ' + svalues);
-			// var svalues3 = $(this).select2('val')
-			this.set(this.el.value = svalues);
-
-			// console.log('this.svalues3= '+ svalues3)
-			// this.set(svalues3)
-		}.bind(this);
-		$(this.el).on('select2:close', this.handler);
-		console.log('value=' + value);
-		var self = this;
-		$(this.el).select2({
-			ajax: {
-				url: this.params.ajaxurl,
-				dataType: 'json',
-				delay: 250,
-				data: function data(params) {
-					return {
-						q: params.term //, // search term
-						// page: params.page
-					};
-				},
-				processResults: function processResults(data) {
-					return {
-						results: $.map(data, function (item) {
-							return {
-								text: item.name || item.category,
-								id: item.name || item.id
-							};
-						})
-					};
-				}
-			}
-		}).on('change', function (ev) {
-			var mydom = this;
-			// console.log($(mydom).);
-			var selectedValues = $(this).select2('val');
-			console.log('selectedvalues= ' + selectedValues);
-			// console.log($(ev));
-			// self.params.items = selectedValues;
-			// self.params.resultvalue = selectedValues;
-			// console.log("this.el=" + $(this).text())
-			self.set($(this).val());
-		});
-		console.log('after init =' + this.params.resultvalue);
-		// self.set($(this).val())
-		// if(this.params.resultvalue){
-		// 		$(this.el).val(this.params.resultvalue).trigger('change')
-		// }
-	},
-	update: function update(value) {
-		$(this.el).val(value).trigger('change');
-		// $(this.el)
-		// 	.on("select2:close", function(e) {
-		// 		var svalues = $(this).select2('val');
-		// 		console.log('svalues='+ svalues);
-		//
-		// 	}).bind(this);
-	},
-	unbind: function unbind() {
-		$(this.el).off('select2:close', this.handler);
-		$(this.el).off().select2('destroy');
-	}
-};
-
-},{}],9:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-	twoWay: true,
-	priority: 1000,
-	params: ['options'],
-	bind: function bind() {
-		$(this.el).timeDropper();
-		console.log(this.params);
-	},
-	update: function update() {
-		// alert('update');
-	}
-};
-
-},{}],10:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
@@ -12244,14 +12004,14 @@ Vue.use(_vueResource2.default);
 new Vue({
   el: '#calendar-bar',
   components: {
-    EventForm: require('./components/EventForm.vue')
+    AnnouncementForm: require('./components/AnnouncementForm.vue')
 
   },
   ready: function ready() {
-    console.log('vue ready');
+    console.log('AnnouncementForm ready');
   }
 });
 
-},{"./components/EventForm.vue":6,"vue":4,"vue-resource":3}]},{},[10]);
+},{"./components/AnnouncementForm.vue":6,"vue":4,"vue-resource":3}]},{},[8]);
 
-//# sourceMappingURL=vue-event-form.js.map
+//# sourceMappingURL=vue-announcement-form.js.map

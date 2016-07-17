@@ -24,7 +24,7 @@ class Event extends Model
    * [$fillable description]
    * @var [type]
    */
-  protected $fillable = ['author_id', 'title', 'short_title', 'location', 'start_date', 'start_time', 'end_date', 'end_time' ,'all_day', 'no_end_time', 'description'];
+  protected $fillable = ['author_id', 'title', 'short_title', 'location', 'start_date', 'start_time', 'end_date', 'end_time' ,'all_day', 'no_end_time', 'description', 'building','room'];
 
 /**
  * [$dates description]
@@ -64,7 +64,7 @@ class Event extends Model
     return $this->minicalendars->lists('id')->all();
   }
 
-  public function categories()
+  public function eventcategories()
   {
     return $this->belongsToMany('emutoday\Category', 'cea_category_event', 'event_id', 'category_id');
   }

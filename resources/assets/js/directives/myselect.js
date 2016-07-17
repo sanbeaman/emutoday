@@ -2,17 +2,27 @@ module.exports = {
 	twoWay: true,
   priority: 1000,
 
-  params: ['options','ajaxurl','resultvalue'],
-	bind: function() {
+  params: ['ajaxurl','resultvalue'],
+	paramWatchers: {
+	resultvalue: function (val, oldVal) {
+		console.log('val=' + val + ' oldVal' + oldVal)
+
+		$(this.el).val([val]).trigger('change');
+
+	}
+},
+	bind: function(value) {
 		this.handler = function() {
 				var svalues = $(this.el).select2('val');
 			console.log('this.handler= '+ svalues)
 			// var svalues3 = $(this).select2('val')
 			this.set(this.el.value = svalues)
+
 			// console.log('this.svalues3= '+ svalues3)
 			// this.set(svalues3)
 		}.bind(this)
 		$(this.el).on('select2:close', this.handler)
+		console.log('value='+ value)
 		var self = this
 		$(this.el)
 			.select2({
@@ -47,8 +57,14 @@ module.exports = {
 						// self.params.items = selectedValues;
 						// self.params.resultvalue = selectedValues;
 						// console.log("this.el=" + $(this).text())
-			 	//	self.set(this.value)
+			 		self.set($(this).val())
 			})
+				console.log('after init =' + this.params.resultvalue)
+				// self.set($(this).val())
+			// if(this.params.resultvalue){
+			// 		$(this.el).val(this.params.resultvalue).trigger('change')
+			// }
+
   },
 	update: function(value) {
 		$(this.el).val(value).trigger('change');

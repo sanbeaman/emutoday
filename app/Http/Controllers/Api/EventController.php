@@ -16,7 +16,7 @@ use League\Fractal\Serializer\ArraySerializer;
 use League\Fractal\Serializer\JsonApiSerializer;
 
 use emutoday\Event;
-
+use emutoday\Category;
 use emutoday\Building;
 
 use Carbon\Carbon;
@@ -136,6 +136,7 @@ class EventController extends ApiController
 		$validation = \Validator::make( Input::all(), [
 																	'title'           => 'required',
 																	'location'        => 'required',
+																	'on_campus'				=> 'required',
 																	'start_date'      => 'required|date',
 																	'end_date'        => 'required|date',
 																	'categories'      => 'required',
@@ -171,6 +172,9 @@ class EventController extends ApiController
 	 	  $event->title           	= $request->get('title');
 	 	  $event->short_title     	= $request->get('short_title');
 			// $templocation = $request->get('location');serialize($templocation);
+			$event->on_campus					= $request->get('on_campus');
+			$event->building					= $request->get('building');
+			$event->room							= $request->get('room');
 	 	  $event->location        	= $request->get('location');
 	 	  $event->start_date      	= \Carbon\Carbon::parse($request->get('start_date'));
 	 	  $event->start_time     		= \Carbon\Carbon::parse($request->get('start_time'));
@@ -184,13 +188,13 @@ class EventController extends ApiController
 			$event->contact_fax				= $request->get('contact_fax');
 			$event->description     	= $request->get('description');
 
-			$event->related_link_1		= $request->get('related_link_1');
-			$event->related_link_2		= $request->get('related_link_2');
-			$event->related_link_3		= $request->get('related_link_3');
-			$event->reg_deadline			= $request->get('reg_deadline');
-			$event->free 							= $request->get('free');
-			$event->cost 							= $request->get('cost');
-
+			$event->related_link_1					= $request->get('related_link_1');
+			$event->related_link_2					= $request->get('related_link_2');
+			$event->related_link_3					= $request->get('related_link_3');
+			$event->reg_deadline						= $request->get('reg_deadline');
+			$event->free 										= $request->get('free');
+			$event->cost 										= $request->get('cost');
+			$event->participants						=$request->get('participants');
 			$event->tickets									=$request->get('tickets');
 			$event->ticket_details_phone		=$request->get('ticket_details_phone');
 			$event->ticket_details_online		=$request->get('ticket_details_online');
@@ -202,10 +206,47 @@ class EventController extends ApiController
 			$event->submission_date 				= \Carbon\Carbon::now();
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		  // mini_calendar
+		  // `ensemble` int(11) unsigned DEFAULT NULL,
+		  // `mba` int(11) unsigned DEFAULT NULL,
+		  // `mini_calendar_alt` int(11) unsigned DEFAULT NULL,
+
+
+		  // `created_at` timestamp NULL DEFAULT NULL,
+		  // `updated_at` timestamp NULL DEFAULT NULL,
+
+		  // `mediafile_id` int(10) unsigned NOT NULL,
+			// `feature_image` varchar(255) DEFAULT NULL,
+
+		  // `building_id` int(10) unsigned NOT NULL,
+			//
+			// `homepage` int(11) unsigned DEFAULT '0',
+			// `lbc_reviewed` int(11) unsigned DEFAULT '0',
+			// `approved_date` date DEFAULT NULL,
+			// `lbc_approved` int(11) unsigned DEFAULT NULL,
+			// `featured` int(11) unsigned DEFAULT '0',
+			// `approved` int(11) unsigned DEFAULT '0',
+			// `canceled` int(11) unsigned DEFAULT '0',
+			//
+			// `submitter` varchar(255) DEFAULT NULL,
 			// $categories_array =  $request->get('categories');
 			if($event->save()) {
 				$event->categories()->sync($request->get('categories'));
-
+				$event->save();
 					return $this->setStatusCode(201)
 												->respondCreated('Event successfully created.');
 						    //  return response()->json([
@@ -282,7 +323,9 @@ class EventController extends ApiController
      */
     public function edit($id)
     {
-        return Event::findorFail($id);
+			$event = Event::with('eventcategories')->findOrFail($id);
+			// $eventcategories = $event->eventcategories;
+        return $event;
     }
 
     /**
