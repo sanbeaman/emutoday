@@ -69,13 +69,11 @@
 					</div><!-- /.col-md-6 -->
 					<div class="col-md-6">
 						<div class="form-group">
-					{!! Form::label('is_promoted') !!}
+					{!! Form::label('priority') !!}
 					<div class="row">
-						<div class="col-md-4">
-							{!! Form::radio('is_promoted', 1, $announcement->is_promoted,['class' => 'form-control', 'id'=>'is-promoted-yes']) !!}  {!! Form::label('is_promoted', 'yes') !!}
-						</div><!-- /.col-md-6 -->
-						<div class="col-md-4">
-							{!! Form::radio('is_promoted', 0, $announcement->is_promoted,['class' => 'form-control', 'id'=>'is-promoted-no'] ) !!}  {!! Form::label('is_promoted', 'no') !!}
+						<div class="col-sm-12">
+							{!!  Form::selectRange('priority', 0, 10) !!}
+
 						</div><!-- /.col-md-6 -->
 					</div><!-- /.row -->
 				</div><!-- /.form-group -->
