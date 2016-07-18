@@ -44,7 +44,6 @@ class StoryController extends Controller
 							break;
 						}
 					}
-					// }
 					// dd($mainStoryImage);
 					//
           // $mainStoryImage = $story->storyImages()->where('image_type', 'imagemain')->first();
@@ -93,6 +92,7 @@ class StoryController extends Controller
 											foreach ($sideStudentStorys as $sideStudentStory) {
 											    $sideStudentBlurbs->push($sideStudentStory->storyImages()->where('image_type', 'small')->first());
 											}
+
 									// dd($sideStudentBlurbs);
 
 									// $sideStoryBlurbs = collect();
