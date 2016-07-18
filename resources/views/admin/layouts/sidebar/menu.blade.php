@@ -1,4 +1,5 @@
 
+@can('admin', $currentUser)
 <li class="treeview {{ set_active('admin/announcement*') }}">
 	<a href="#"><i class="fa fa-bullhorn"></i> <span>Announcements</span> <i class="fa fa-angle-left pull-right"></i></a>
 	<ul class="treeview-menu">
@@ -6,6 +7,7 @@
 		<li class="{{ set_active('admin/announcement*') }}"><a href="/admin/announcement/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
 	</ul>
 </li>
+@endcan
 @can('super', $currentUser)
 <li class="treeview {{ set_active('admin/event*') }}">
 	<a href="#"><i class="fa fa-calendar"></i> <span>Events</span> <i class="fa fa-angle-left pull-right"></i></a>
@@ -22,7 +24,7 @@
 		{{-- <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li> --}}
 	</ul>
 </li>
-@can('super', $currentUser)
+@can('admin', $currentUser)
 <li class="treeview {{ set_active('admin/page*') }}">
 	<a href="#"><i class="fa fa-newspaper-o"></i> <span>Pages</span> <i class="fa fa-angle-left pull-right"></i></a>
 	<ul class="treeview-menu">
@@ -37,6 +39,8 @@
 		<li class="{{ set_active('admin/emailblast*') }}"><a href="#"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
 	</ul>
 </li>
+@endcan
+@can('super', $currentUser)
 <li class="treeview {{ set_active('admin/magazine*') }}">
 	<a href="#"><i class="fa fa-book"></i> <span>Magazine</span> <i class="fa fa-angle-left pull-right"></i></a>
 	<ul class="treeview-menu">
