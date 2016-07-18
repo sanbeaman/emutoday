@@ -39,6 +39,10 @@
 	        {!! Form::label('announcement') !!}
 	        {!! Form::textarea('announcement', null, ['class' => 'form-control', 'rows'=>'4']) !!}
 	    </div>
+			<div class="form-group">
+					{!! Form::label('submission_date') !!}
+					{!! Form::text('submission_date', null, ['class' => 'form-control', 'readonly'=> 'readonly']) !!}
+			</div>
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
@@ -69,16 +73,25 @@
 					</div><!-- /.col-md-6 -->
 					<div class="col-md-6">
 						<div class="form-group">
-					{!! Form::label('priority') !!}
-					<div class="row">
-						<div class="col-sm-12">
-							{!!  Form::selectRange('priority', 0, 10) !!}
+							{!! Form::label('approved_date') !!}
+								{!! Form::text('approved_date', null, ['class' => 'form-control', 'id'=>'approved-date']) !!}
+						</div>
 
-						</div><!-- /.col-md-6 -->
-					</div><!-- /.row -->
-				</div><!-- /.form-group -->
+
 					</div><!-- /.col-md-6 -->
 
+
+				</div><!-- /.row -->
+
+				<div class="row">
+
+
+					<div class="col-sm-12">
+							{!! Form::label('priority') !!}
+						{!!  Form::selectRange('priority', 0, 10) !!}
+
+					</div><!-- /.ccol-sm-12 -->
+				</div><!-- /.row -->
 
 				</div><!-- /.row -->
 				<div class="row">

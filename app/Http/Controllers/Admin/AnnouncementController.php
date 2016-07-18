@@ -61,10 +61,11 @@ class AnnouncementController extends Controller
         'author_id' => auth()->user()->id,
         'title' => $request->title,
         'announcement' => $request->announcement,
+				'submission_date' => \Carbon\Carbon::now(),
         'start_date' => \Carbon\Carbon::parse($request->start_date),
         'end_date' => \Carbon\Carbon::parse($request->end_date),
         'is_approved' => $request->is_approved,
-        'is_promoted' => $request->is_promoted
+				'priority' => $request->priority
     ];
       $announcement = $this->announcement->create($data);
       flash()->success('Announcement has been created.');
@@ -100,6 +101,9 @@ class AnnouncementController extends Controller
     public function edit($id)
     {
       $announcement = $this->announcement->findOrFail($id);
+			if($announcement->submission_date == '0000-00-00' ){
+				$announcement->submission_date = \Carbon\Carbon::parse($announcement->created_at);
+			}
       return view('admin.announcement.form', compact('announcement'));
     }
 
@@ -113,12 +117,19 @@ class AnnouncementController extends Controller
     public function update(Request $request, $id)
     {
       $announcement = $this->announcement->findOrFail($id);
+
       $announcement->title = $request->title;
       $announcement->announcement = $request->announcement;
+
       $announcement->start_date = \Carbon\Carbon::parse($request->start_date);
       $announcement->end_date = \Carbon\Carbon::parse($request->end_date);
       $announcement->is_promoted = $request->is_promoted;
-      $announcement->is_approved = $request->is_approved;
+			$announcement->priority = $request->priority;
+			if ($announcement->is_approved == 0 && $request->is_approved == 1 ){
+				$announcement->is_approved  = $request->is_approved;
+				$announcement->approved_date = \Carbon\Carbon::now();
+			}
+  		$announcement->archieved = $request->archieved;
       $announcement->save();
 
       //$story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','story_type'))->save();
