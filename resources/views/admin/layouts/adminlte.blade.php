@@ -75,7 +75,28 @@ scratch. This page gets rid of all links and provides the needed markup only.
 				<!-- Navbar Right Menu -->
 				<div class="navbar-custom-menu">
 					<ul class="nav navbar-nav">
-						@can('super', $currentUser)
+
+							<li class="dropdown notifications-menu">
+								<!-- Menu toggle button -->
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+									<i class="fa fa-bug"></i>
+									<span class="label label-alert"></span>
+								</a>
+								<ul class="dropdown-menu">
+									{{-- <li class="header">You have tracked 4 bugz</li> --}}
+									<li>
+										<!-- inner menu: contains the messages -->
+										<ul class="menu">
+											@include('admin.bugz.subview.miniform')
+										</ul>
+										<!-- /.menu -->
+									</li>
+									<li class="footer"><a href="#" class="btn btn-info expanded btn-xs" data-toggle="collapse">close</a>
+</li>
+								</ul>
+							</li>
+							<!-- /.messages-menu -->
+	@can('super', $currentUser)
 						<!-- Messages: style can be found in dropdown.less-->
 						<li class="dropdown messages-menu">
 							<!-- Menu toggle button -->
@@ -508,6 +529,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	};
 </script> --}}
 	<script src="/themes/admin-lte/dist/js/app.js" type="text/javascript"></script>
+		<script src="/js/vue-ajax-form.js" ></script>
 	@show
 
 	@section('footer-script')

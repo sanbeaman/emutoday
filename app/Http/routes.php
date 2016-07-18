@@ -39,6 +39,8 @@ Route::group(['prefix' => 'api'], function() {
 	});
 
 
+	Route::resource('bugz', 'Api\BugzController');
+
 	Route::get('zevent-catgeories', function() {
 
 		// $cats = \emutoday\Category::lists('category', 'id');

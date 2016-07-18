@@ -204,7 +204,7 @@ require('laravel-elixir-vueify');
 		// mix.browserify('vue-admin.js', 'public/js/vue-admin.js');
 		//  mix.browserify('admintools.js', 'public/js/admintools.js');
 		//  mix.browserify('vue-drag.js', 'public/js/vue-drag.js');
-		// mix.browserify('main-form.js', 'public/js/main-form.js');
+		mix.browserify('vue-ajax-form.js', 'public/js/vue-ajax-form.js');
 
 	});
 	/*
