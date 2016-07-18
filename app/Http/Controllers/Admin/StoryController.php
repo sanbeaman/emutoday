@@ -288,7 +288,7 @@ class StoryController extends Controller
 
 
 				flash()->success('Story has been Promoted.');
-				return view('admin.story.form2', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages'));
+				return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages'));
 
 				// return redirect(route('admin.story.edit', $story->id));
 
