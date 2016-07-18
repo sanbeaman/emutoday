@@ -68,6 +68,8 @@ class StoryController extends Controller
 							// 		foreach ($sideFeaturedStorys as $sideFeaturedStory) {
 							// 				$sideStoryBlurbs->push($sideFeaturedStory->storyImages()->where('image_type', 'emutoday_small')->first());
 							// 		}
+
+
 							$sideFeaturedStorys = $this->storys->where([
 									['story_type', 'storypromoted'],
 									['id', '<>', $id],
@@ -79,7 +81,7 @@ class StoryController extends Controller
 									foreach ($sideFeaturedStorys as $sideFeaturedStory) {
 											$sideStoryBlurbs->push($sideFeaturedStory->storyImages()->where('image_type', 'small')->first());
 									}
-
+									dd($sideFeaturedStorys);
 						$sideStudentStorys = $this->storys->where([
 											['story_type', 'storystudent'],
 											['id', '<>', $id],
