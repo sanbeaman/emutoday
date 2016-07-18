@@ -35,13 +35,14 @@ class StoryController extends Controller
         } else {
           $story = $this->storys->findOrFail($id);
 					// $mainStoryImage = $story->storyImages()->ofType('imagemain')->first();
-					$mainStoryImage = $story->storyImages()->where('image_type','story')->first();
+					$mainStoryImage = null;
+					$mainStoryImages = $story->storyImages()->where('image_type','story')->get();
 					// dd($mainStoryImage);
-					// foreach($mainStoryImages as $mainimg){
-					// 	if($mainimg->imgtype->type == 'story') {
-					// 		$mainStoryImage = $mainimg;
-					// 		break;
-					// 	}
+					foreach($mainStoryImages as $mainimg){
+						if($mainimg->imgtype->type == 'story') {
+							$mainStoryImage = $mainimg;
+							break;
+						}
 					// }
 					// dd($mainStoryImage);
 					//
@@ -110,6 +111,13 @@ class StoryController extends Controller
           // }
           // dd($sideStoryBlurbs->first()->present()->mainImageURL);
 					// dd($sideFeaturedStorys);
+					//
+					JavaScript::put([
+							'jsis' => 'hi',
+							'mainStoryImage' => $mainStoryImage,
+							'sidestudentblurbs' => $sideStudentBlurbs,
+							'$sideStoryBlurbs' => $sideStoryBlurbs,
+							]);
           return view('public.story.main', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
         }
 
