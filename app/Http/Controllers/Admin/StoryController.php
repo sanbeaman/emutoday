@@ -269,6 +269,8 @@ class StoryController extends Controller
 				$story->story_type = $request->new_story_type;
 				$story->save();
 				$storyGroup = $story->storyType->group;
+
+
 				$requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
 				$otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
 				$stypelist = StoryType::where('level', 1)->lists('name','shortname');
@@ -285,12 +287,10 @@ class StoryController extends Controller
 				}
 
 
-
-
 				flash()->success('Story has been Promoted.');
-				return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages'));
+				// return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages'));
 
-				// return redirect(route('admin.story.edit', $story->id));
+				 return redirect(route('admin.story.edit', $story->id));
 
     }
     public function edit($id)

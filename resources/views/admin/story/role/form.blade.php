@@ -128,9 +128,6 @@
 
 		</div> 	<!-- /.box-header -->
 		<div class="box-body">
-
-
-		<div class="addthis"></div>
 					 <h3>{{ $story->title }}</h3>
 				<h5>{{ $story->subtitle }}</h5>
 				<div id="story-content">
