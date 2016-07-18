@@ -3,7 +3,7 @@
     {{-- {{  dd($sideitems->first()->present()->mainImageURL)}} --}}
     {{-- <a href="#"><img src="{{$sideitems->first()->present()->mainImageURL }}" /></a> --}}
 
-		<img src="/imagecache/original/{{$sideitems->first()->filename}}" alt="{{$sideitems->first()->filename}}">
+		{{-- <img src="/imagecache/original/{{$sideitems->first()->filename}}" alt="{{$sideitems->first()->filename}}"> --}}
 
 		{{-- <a href="#"><img src="{{$sideitems->first()->filename}}" /></a>
 		<h4>{{$sideitems->first()->filename}}</h4> --}}
