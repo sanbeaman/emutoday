@@ -43,6 +43,7 @@ class StoryController extends Controller
 							$mainStoryImage = $mainimg;
 							break;
 						}
+					}
 					// }
 					// dd($mainStoryImage);
 					//
@@ -116,7 +117,7 @@ class StoryController extends Controller
 							'jsis' => 'hi',
 							'mainStoryImage' => $mainStoryImage,
 							'sidestudentblurbs' => $sideStudentBlurbs,
-							'$sideStoryBlurbs' => $sideStoryBlurbs,
+							'sideStoryBlurbs' => $sideStoryBlurbs,
 							]);
           return view('public.story.main', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
         }
