@@ -120,13 +120,29 @@
 
 		</div><!-- /.box -->
 
-	</div><!-- /.col-sm-12 -->
-	</div> <!-- /.row -->
-	<div class="row">
-		<div class="col-md-6">
+	</div><!-- /.col-sm-6 -->
+	<div class="col-sm-6 column">
+		<div class="box">
+			<div class="box-header with-border">
+				<h3 class="box-title">Preview Story</h3>
 
-		</div><!-- /.col-md-6 -->
-	</div><!-- /.row -->
+		</div> 	<!-- /.box-header -->
+		<div class="box-body">
+
+
+		<div class="addthis"></div>
+					 <h3>{{ $story->title }}</h3>
+				<h5>{{ $story->subtitle }}</h5>
+				<div id="story-content">
+					{!! $story->content !!}
+				</div>
+				<div class="story-author">{{ $story->author->name }}</div>
+						<p class="news-contacts">Contact {{ $story->author->email }}</p>
+					</div><!-- /.box-body -->
+		</div><!-- /.col-sm-6 column -->
+	</div> <!-- /.row -->
+
+
 @endsection
 @section('footer-plugin')
     @parent

@@ -3,14 +3,14 @@
 @section('title', 'Users')
 
     @section('content')
-        <a href="{{ route('admin.users.create') }}" class="button">Create New User</a>
-				<section class="content">
-					<div class="row">
+  	<div class="row">
 						<div class="col-xs-12">
 							<div class="box">
 								<div class="box-header with-border">
 									<h3 class="box-title">User Table</h3>
+									@can('super', $currentUser)
 									@include('admin.layouts.components.boxtools', ['rte' => 'users', 'path' => 'admin/users'])
+								@endcan
 								</div>
 								<!-- /.box-header -->
 								<div class="box-body table-responsive no-padding">
@@ -61,8 +61,58 @@
 							<!-- /.box -->
 						</div>
 					</div>
-				</section>
-				<!-- /.content -->
-    {!! $users->render() !!}
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="box">
+								<div class="box-header with-border">
+									<h3 class="box-title">User Roles</h3>
+								</div><!-- /.box-header -->
+								<div class="box-body table-responsive no-padding">
+									<table class="table table-hover">
+										<tr>
+											<th>Id</th>
+											<th>Role</th>
+											<th>Label</th>
+
+										</tr>
+											@foreach($roles as $role)
+													<tr>
+														<td>{{$role->id}}</td>
+														<td>{{ $role->name }}</td>
+														<td>{{ $role->label }}</td>
+													</tr>
+											@endforeach
+						</table>
+							</div><!-- /.box-body -->
+						</div><!-- /.box -->
+						</div><!-- /.col-md-6 -->
+						<div class="col-md-6">
+							<div class="box">
+								<div class="box-header with-border">
+									<h3 class="box-title">User Permissions</h3>
+								</div><!-- /.box-header -->
+								<div class="box-body table-responsive no-padding">
+									<table class="table table-hover">
+										<tr>
+											<th>Id</th>
+											<th>Name</th>
+											<th>Label</th>
+
+										</tr>
+											@foreach($permissions as $permission)
+													<tr>
+														<td>{{$permission->id}}</td>
+														<td>{{ $permission->name }}</td>
+														<td>{{ $permission->label }}</td>
+													</tr>
+											@endforeach
+						</table>
+							</div><!-- /.box-body -->
+						</div><!-- /.box -->
+						</div><!-- /.col-md-6 -->
+					</div><!-- /.row -->
+
+  
 
     @endsection

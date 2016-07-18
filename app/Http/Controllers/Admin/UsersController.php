@@ -1,6 +1,8 @@
 <?php
 namespace emutoday\Http\Controllers\Admin;
 use emutoday\User;
+use emutoday\Role;
+use emutoday\Permission;
 use emutoday\Mediafile;
 
 use Illuminate\Http\Request;
@@ -9,16 +11,22 @@ use emutoday\Http\Requests;
 class UsersController extends Controller
 {
     protected $users;
-    public function __construct(User $users)
+    public function __construct(User $users, Role $role, Permission $permission)
     {
         $this->users = $users;
+				  $this->permission = $permission;
+					  $this->role = $role;
         parent::__construct();
     }
 
     public function index()
     {
         $users = $this->users->paginate(10);
-        return view('admin.users.index', compact('users'));
+				$permissions = $this->permission->get();
+				$roles = $this->role->get();
+
+
+        return view('admin.users.index', compact('users','permissions','roles'));
     }
 
     public function create(User $user, Mediafile $mediafile)
