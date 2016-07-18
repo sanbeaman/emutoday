@@ -35,13 +35,14 @@ class StoryController extends Controller
         } else {
           $story = $this->storys->findOrFail($id);
 					// $mainStoryImage = $story->storyImages()->ofType('imagemain')->first();
-					$mainStoryImages = $story->storyImages()->get();
-					foreach($mainStoryImages as $mainimg){
-						if($mainimg->imgtype->type == 'story') {
-							$mainStoryImage = $mainimg;
-							break;
-						}
-					}
+					$mainStoryImage = $story->storyImages()->where('image_type','story')->first();
+					// dd($mainStoryImage);
+					// foreach($mainStoryImages as $mainimg){
+					// 	if($mainimg->imgtype->type == 'story') {
+					// 		$mainStoryImage = $mainimg;
+					// 		break;
+					// 	}
+					// }
 					// dd($mainStoryImage);
 					//
           // $mainStoryImage = $story->storyImages()->where('image_type', 'imagemain')->first();
