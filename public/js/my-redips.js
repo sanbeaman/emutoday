@@ -180,6 +180,7 @@ reset = function () {
 getContent = function (id) {
 	var td = document.getElementById(id),
 		content = '',
+		imgname,imgtype,imgurl,
 		cn, i;
 	// TD can contain many DIV elements
 	for (i = 0; i < td.childNodes.length; i++) {
@@ -189,6 +190,10 @@ getContent = function (id) {
 		if (cn.nodeName === 'DIV' && cn.className.indexOf('drag') > -1) { // and yes, it should be uppercase
 			// append DIV id to the result string
 			content += cn.id + '_';
+			imgname = cn.dataset.imgname;
+			imgtype = 'dd' + cn.dataset.imgtype;
+			imgurl = 'url(/imagecache/'+ imgtype + '/' + imgname + ')';
+			console.log('fnameurl'+ imgurl);
 		}
 	}
 	// cut last '_' from string
@@ -201,9 +206,13 @@ getContent = function (id) {
 	if (content.length === 0){
 		content = 0;
 		td.style.backgroundColor = 'red';
+			td.style.backgroundImage = '';
 	} else {
 		content = content.replace('drag-','');
 		td.style.backgroundColor = 'blue';
+		td.style.backgroundImage = imgurl;
+		td.style.backgroundRepeat = 'no-repeat';
+		console.log('content='+ content);
 	}
 	//
 	//console.log('content.length' + content.length);

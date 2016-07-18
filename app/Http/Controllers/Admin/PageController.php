@@ -72,10 +72,13 @@ class PageController extends Controller
     public function edit($id)
     {
         $page = $this->page->findOrFail($id);
-        $storyImages = $this->storyImage->get();
+        // $storyImages = $this->storyImage->get();
         // $storysWithHero = $this->storys->whereHas('storyImages', function ($query) {
         //     $query->where('image_type', 'imagehero');
         // })->get();
+        $storyimgs = $this->storyImage->where('image_type','front')
+																						->orWhere('image_type', 'small')
+																						->orderBy('updated_at', 'desc')->get();
         $storys =  $this->story->where('story_type', '!=', 'storybasic')->orderBy('updated_at', 'desc')->get();
         $connectedStorys = $page->storys()->get();
 
@@ -83,7 +86,9 @@ class PageController extends Controller
             'jsis' => 'foobar',
             'storysonpage' => $connectedStorys->toArray()
         ]);
-        return view('admin.page.edit', compact('page', 'storys', 'storyImages', 'storysWithHero'));
+				return view('admin.page.edit', compact('page', 'storys', 'storyimgs'));
+
+        // return view('admin.page.edit', compact('page', 'storys', 'storyImages', 'storysWithHero','storyimgs'));
     }
 
     public function update(Requests\UpdatePageRequest $request, $id)

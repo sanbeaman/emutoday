@@ -5,7 +5,7 @@ namespace emutoday\Emutoday\Filters;
 use Intervention\Image\Image;
 use Intervention\Image\Filters\FilterInterface;
 
-class SmallThumb implements FilterInterface
+class DDSmall implements FilterInterface
 {
     public function applyFilter(Image $image)
     {

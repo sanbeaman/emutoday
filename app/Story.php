@@ -134,6 +134,11 @@ class Story extends Model
         return $this->belongsTo('emutoday\StoryType', 'story_type', 'shortname');
     }
 
+		public function storyGroup()
+		{
+				return $this->belongsTo('emutoday\StoryType', 'story_type', 'shortname');
+		}
+
     /**
      * Inverse Many-to-Many relationship for page layouts
      * @return [type] [description]
@@ -159,6 +164,12 @@ class Story extends Model
         return $query->where('story_type', $type);
     }
 
+		public function scopeOfStoryType($query, $group)
+		{
+				return $query->storyType->where('group', $group);
+
+				// where('story_type', $type);
+		}
 
 
 }

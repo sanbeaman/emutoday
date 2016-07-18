@@ -35,7 +35,7 @@
 						</div><!-- /.btn-group --> --}}
 
 
-	
+
 	@if(isset($announcements))
 
 		<div class="box-body table-responsive no-padding">
@@ -45,7 +45,7 @@
 					<th class="text-center">ID</th>
 					<th class="text-left">Title</th>
 					<th class="text-center">Aprroved</th>
-					<th class="text-center">Promoted</th>
+				
 					<th class="text-left">Start Date</th>
 					<th class="text-left">End Date</th>
 					<th class="text-center">Preview</th>

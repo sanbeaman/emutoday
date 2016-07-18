@@ -50,7 +50,10 @@ class StoryController extends Controller
 				if (!$stype || $stype == 'all') {
 					$stype = 'all';
 				} else {
-					$storys = $storys->where('story_type', $stype);
+					$storys = $this->story->ofStoryType($stype)->get();
+					dd($storys);
+					// $storys->storyTypes()->where('group', $stype);
+					// where('story_type', $stype);
 				}
 
 				if (!$order && !$dir) {
@@ -65,7 +68,7 @@ class StoryController extends Controller
 				];
         $storys = $storys->paginate(5);
 				// $stypes = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-				$stypes = \emutoday\StoryType::all()->pluck('name','shortname');
+				$stypes = \emutoday\StoryType::all()->pluck('group','group');
 				$stypes = $stypes->prepend('all', 'all');
 
 				$data['storys'] = $storys;

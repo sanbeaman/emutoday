@@ -12,7 +12,7 @@ class FractalStoryTransformer extends Fractal\TransformerAbstract
 	{
 	    return [
 	        'id'      => (int) $story->id,
-	        'type'   => $story->story_type,
+	        'type'   => $story->storyGroup->group,
 	        'title'    =>  $story->title,
 					'featured' =>  $story->is_featured,
 					'approved' => $story->is_approved,

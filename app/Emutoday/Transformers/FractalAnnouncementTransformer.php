@@ -13,8 +13,10 @@ class FractalAnnouncementTransformer extends Fractal\TransformerAbstract
 	    return [
 	        'id'      => (int) $announcement->id,
 	        'title'    =>  $announcement->title,
+					'submission_date' => $announcement->submission_date ? $announcement->submission_date->toDateString(): $announcement->created_at->toDateString(),
 					'approved' => $announcement->is_approved,
-					'promoted' =>  $announcement->is_promoted,
+					'approved_date' => $announcement->approved_date ? $announcement->approved_date->toDateString() : 'Needs Approval',
+					'priority' =>  $announcement->priority,
           'start_date'   => $announcement->start_date->toDateString(),
 					'end_date'   => $announcement->end_date ? $announcement->end_date->toDateString() : 'No End Date'
 	    ];

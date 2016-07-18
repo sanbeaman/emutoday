@@ -130,7 +130,7 @@
 				<h3 class="box-title">Page Info</h3>
 			</div>
 			<div class="box-body">
-		@include('admin.page.templates.homeemutoday')
+		@include('admin.page.templates.homeemutodayimg')
 	</div><!-- /.box-body -->
 	</div><!-- /.box -->
 

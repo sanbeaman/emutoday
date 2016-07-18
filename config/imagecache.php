@@ -57,7 +57,10 @@ return array(
         'small' => 'Intervention\Image\Templates\Small',
         'medium' => 'Intervention\Image\Templates\Medium',
         'large' => 'Intervention\Image\Templates\Large',
-				'betterthumb' => 'emutoday\Emutoday\Filters\BetterThumb'
+				'betterthumb' => 'emutoday\Emutoday\Filters\BetterThumb',
+				'smallthumb' => 'emutoday\Emutoday\Filters\SmallThumb',
+				'ddsmall' => 'emutoday\Emutoday\Filters\DDSmall',
+				'ddfront' => 'emutoday\Emutoday\Filters\DDFront'
 
     ),
 

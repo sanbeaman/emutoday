@@ -6830,6 +6830,12 @@ img.magazine-logo {
       color: #333;
       line-height: 1.4rem;
   }
+	.newshub-tab-front ul li a.bottom-tab-link{
+
+			color: #0f654a;
+			
+
+	}
   .newshub-tab-front ul li a:hover{
       background-color: #fefefe;
 

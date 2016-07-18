@@ -37,7 +37,7 @@ class MainController extends Controller
         // ])->first();
         $page = $this->page->where('is_active', 1)->first();
         $currentStorysBasic = $this->story->where('story_type', 'storybasic')->paginate(3);
-        $currentAnnouncements = $this->announcement->paginate(3);
+        $currentAnnouncements = $this->announcement->where('is_approved', 1)->orderBy('priority','desc')->paginate(3);
         $barImgs = collect();
         $storys = $page->storys()->get();
 
