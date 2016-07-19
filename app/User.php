@@ -42,6 +42,10 @@ class User extends Authenticatable
 			return $this->hasMany('emutoday\Announcement', 'author_id');
 		}
 
+
+		public function events() {
+      return $this->hasMany('emutoday\Event', 'author_id');
+    }
 		public function bugztracked(){
 			return $this->hasMany('emutoday\Bugz', 'user_id');
 		}

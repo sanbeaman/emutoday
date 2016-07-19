@@ -42,7 +42,35 @@ class EventController extends Controller
 			// $categories = $event->categories;
 			// dd($categories);
 					// $this->event = $event;
-			return view('public.event.form', compact('event'));
+					if (\Auth::check()) {
+				// The user is logged in...
+					$user = \Auth::user();
+				} else {
+					return redirect(route('auth.login'));
+				}
+				// $event = $this->event->findOrFail($id);
+				// $users = emutoday\Event::with(['posts' => function ($query) {
+				//     $query->where('title', 'like', '%first%');
+				//
+				// }])->get();
+
+				$approveditems = $this->event->where([
+					['author_id', $user->id],
+					['approved',1]
+					])->get();
+					$submitteditems = $this->event->where([
+						['author_id', $user->id],
+						['approved',0]
+						])->get();
+
+				return view('public.event.form', compact('event', 'approveditems','submitteditems'));
+
+				// return redirect(route('emutoday_event_edit'));
+				// $approveditems = $user->events->where('approved', '1');
+				// $submitteditems = $user->events->where('approved', '0');
+				//
+				// return view('public.event.form', compact('event', 'approveditems','submitteditems'));
+			// return view('public.event.form', compact('event'));
 
 
     }
@@ -75,15 +103,29 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id = null)
     {
-			$event = $this->event->findOrFail($id);
+			if (\Auth::check()) {
+		// The user is logged in...
 			$user = \Auth::user();
-			$approvedevents = $this->event->where([
+		} else {
+			return redirect(route('auth.login'));
+		}
+		if ($id){
+				$event = $this->event->findOrFail($id);
+
+			} else {
+				$event = new Event();
+
+			}
+
+
+
+			$approveditems = $this->event->where([
 				['author_id', $user->id],
 				['approved',1]
 				])->get();
-				$submittedevents = $this->event->where([
+				$submitteditems = $this->event->where([
 					['author_id', $user->id],
 					['approved',0]
 					])->get();
@@ -92,7 +134,7 @@ class EventController extends Controller
 					'jsis' => 'hi',
 
 				]);
-			return view('public.event.form', compact('event', 'approvedevents','submittedevents'));
+			return view('public.event.form', compact('event', 'approveditems','submitteditems'));
 
     }
 

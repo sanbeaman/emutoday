@@ -133,16 +133,19 @@ class AnnouncementController extends Controller
 		// The user is logged in...
 			$user = \Auth::user();
 		} else {
-			return 'Need to Connect to LDAP';
+
+			// return 'Need to Connect to LDAP';
+			return redirect(route('auth.login'));
+
 		}
 
 
 		$announcement = $this->announcement->findOrFail($id);
 		// $announcements = $user->announcements;//$this->announcement->where('is_approved', '0')->orderBy('start_date', 'dsc')->paginate(4);
-		$approved = $user->announcements->where('is_approved', '1');
-		$submitted = $user->announcements->where('is_approved', '0');
+		$approveditems = $user->announcements->where('is_approved', '1');
+		$submitteditems = $user->announcements->where('is_approved', '0');
 
-		return view('public.announcement.form', compact('announcement','approved','submitted'));
+		return view('public.announcement.form', compact('announcement','approveditems','submitteditems'));
 
 	}
 

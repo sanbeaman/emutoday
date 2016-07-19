@@ -39,7 +39,7 @@
 				    ]) !!}
 						<div class="box-header with-border">
 							<h3 class="box-title">Create {{$story->exists ? $story->storyType->group : 'New' }} Story</h3>
-								@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story/', 'cuser'=>$currentUser])
+								@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story/', 'cuser'=>$currentUser, 'id'=>$story->id ])
 						</div> 	<!-- /.box-header -->
 					<div class="box-body">
 						<div class="form-group @if ($errors->has('title')) has-error @endif">

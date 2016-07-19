@@ -205,22 +205,7 @@ class EventController extends ApiController
 			$event->lbc_reviewed						= $request->get('lbc_reviewed');
 			$event->submission_date 				= \Carbon\Carbon::now();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		  // mini_calendar
+			// mini_calendar
 		  // `ensemble` int(11) unsigned DEFAULT NULL,
 		  // `mba` int(11) unsigned DEFAULT NULL,
 		  // `mini_calendar_alt` int(11) unsigned DEFAULT NULL,
@@ -244,17 +229,23 @@ class EventController extends ApiController
 			//
 			// `submitter` varchar(255) DEFAULT NULL,
 			// $categories_array =  $request->get('categories');
-			if($event->save()) {
-				$event->categories()->sync($request->get('categories'));
-				$event->save();
-					return $this->setStatusCode(201)
-												->respondCreated('Event successfully created.');
-						    //  return response()->json([
-						    //          'success' => true,
-						    //          'message' => 'record updated'
-						    //      ], 201);
-						   }
-		 			 }
+					if($event->save()) {
+						$event->eventcategories()->sync($request->get('categories'));
+						$event->save();
+
+						// return redirect()->route('emutoday_event_edit',['id' => $event->id] );
+
+						// $url = route('profile', ['id' => 1]);
+
+
+							return $this->setStatusCode(201)
+														->respondCreated('Event successfully created.');
+								    //  return response()->json([
+								    //          'success' => true,
+								    //          'message' => 'record updated'
+								    //      ], 201);
+								   }
+				 			 }
 
 	 		 }
 		// if (! $request->input('title') or ! $request->input('location'))
@@ -323,9 +314,23 @@ class EventController extends ApiController
      */
     public function edit($id)
     {
-			$event = Event::with('eventcategories')->findOrFail($id);
+
+			if (\Auth::check()) {
+		// The user is logged in...
+			$user = \Auth::user();
+		} else {
+			return 'Need to Connect to LDAP';
+		}
+		$event = $this->event->findOrFail($id);
+
+		$approved = $user->events->where('approved', '1');
+		$submitted = $user->events->where('approved', '0');
+
+		return view('public.event.form', compact('event', 'approved','submitted'));
+
+			// $event = Event::with('eventcategories')->findOrFail($id);
 			// $eventcategories = $event->eventcategories;
-        return $event;
+        // return $event;
     }
 
     /**

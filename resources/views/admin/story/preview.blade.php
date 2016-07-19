@@ -6,7 +6,9 @@
     @endsection
 @section('scriptshead')
       @parent
-    <script src="{{ '/assets/vendor/ckeditor/ckeditor.js'}}"></script>
+			<script src="/themes/plugins/ckeditor/ckeditor.js"></script>
+
+    {{-- <script src="{{ '/assets/vendor/ckeditor/ckeditor.js'}}"></script> --}}
 @endsection
 @section('content')
   {!! Form::model($story, [
@@ -64,9 +66,23 @@
 
 
         </div>
-        {!! Form::submit($story->exists ? 'Save Story' : 'Create New Story', ['class' => 'button']) !!}
+				<div class="row">
+					<div class="medium-6 columns">
+						<div class="button-group">
+								{!! Form::submit($story->exists ? 'Save Story' : 'Create New Story', ['class' => 'button']) !!}
+								<a class="secondary button" href="{{URL::previous()}}">Cancel</a>
 
-        {!! Form::close() !!}
+						</div><!-- /.button-group -->
+
+
+						{!! Form::close() !!}
+					</div><!-- /.medium-6 columns -->
+					<div class="medium-6 columns">
+
+
+					</div><!-- /.medium-6 columns -->
+				</div><!-- /.row -->
+
       </div>
 
     </div>
@@ -80,14 +96,22 @@
   <script>
   var introduction = document.getElementById( 'story-content-edit' );
 		introduction.setAttribute( 'contenteditable', true );
-
 		CKEDITOR.inline( 'story-content-edit', {
-			// Allow some non-standard markup that we used in the introduction.
-			extraAllowedContent: 'a(documentation);abbr[title];code',
-			removePlugins: 'stylescombo',
-			// Show toolbar on startup (optional).
-			startupFocus: true
-		} );
+			// Define changes to default configuration here. For example:
+	filebrowserBrowseUrl : '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
+		filebrowserImageBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=images',
+		filebrowserUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=files',
+		filebrowserImageUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=images'
+
+
+					} );
+		// CKEDITOR.inline( 'story-content-edit', {
+		// 	// Allow some non-standard markup that we used in the introduction.
+		// 	extraAllowedContent: 'a(documentation);abbr[title];code',
+		// 	removePlugins: 'stylescombo',
+		// 	// Show toolbar on startup (optional).
+		// 	startupFocus: true
+		// } );
 
   	</script>
   @endsection

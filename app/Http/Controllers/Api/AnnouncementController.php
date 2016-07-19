@@ -100,7 +100,10 @@ class AnnouncementController extends ApiController
 
 			if($announcement->save()) {
 					return $this->setStatusCode(201)
-												->respondCreated('Announcement successfully created.');
+												->respondCreated('Announcement successfully created!!!!!!!!!!');
+					// flash()->success('Announcement has been updated and will be sent for approval');
+					// return redirect(route('emu-today.announcement.edit',$announcement->id ));
+
 								//  return response()->json([
 								//          'success' => true,
 								//          'message' => 'record updated'

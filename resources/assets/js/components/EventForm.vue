@@ -5,6 +5,9 @@
 					<!-- <slot name="author_id" v-model="newevent.author_id"></slot> -->
 					<div class="row">
 						<div class="small-12 columns">
+							<div v-show="formMessage.isOk"  class="callout success">
+								<h5>{{formMessage.msg}}</h5>
+									</div>
 							<!-- <div class="form-group">
 								<label>zBuilding</label>
 									<select id="select-zbuilding" style="width: 75%" v-myselect="zbuilding"  ajaxurl="/api/zbuildings" data-placeholder="zbuildings" data-tags="false" multiple="multiple" data-maximum-selection-length="1">
@@ -222,13 +225,13 @@
 												<div v-show="hasCost" class="form-group">
 															<div class="input-group">
 																<span class="input-group-label">$</span>
-																	<input v-model="newevent.cost" v-bind:class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost" value="{{realCost}}" type="text">
+																	<input v-model="newevent.cost" v-bind:class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="text">
 															</div><!-- /. input-group -->
 												</div>
 												<div v-else class="form-group">
 															<div class="input-group">
 																<span class="input-group-label">$</span>
-																	<input v-model="newevent.cost" v-bind:class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost" value="{{realCost}}" type="text" readonly="readonly">
+																	<input v-model="newevent.cost" v-bind:class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="text" readonly="readonly">
 															</div><!-- /. input-group -->
 												</div>
 											</div><!-- /.medium-8 columns -->
@@ -442,6 +445,10 @@ module.exports  = {
 						},
 			      formStatus: {},
 			      vModelLike: "",
+						formMessage: {
+							isOk: false,
+							msg: ''
+						},
 			      formInputs : {},
 			      formErrors : {}
 			    }
@@ -464,8 +471,9 @@ module.exports  = {
 
 			  computed: {
 					computedLocation: function() {
-						if (this.buildings) {
-							var buildingChoice = (this.buildings.length > 0)?this.buildings[0]:'';
+						if (this.zbuildings) {
+							this.newevent.building  = (this.zbuildings.length > 0)?this.zbuildings[0]:'';
+							buildingChoice = 	this.newevent.building
 						} else {
 							return
 						}
@@ -490,7 +498,7 @@ module.exports  = {
 							this.newevent.cost = '0.00';
 							return false;
 						} else {
-							this.newevent.cost = '';
+							// this.newevent.cost = '';
 							return true;
 						}
 						// return this.newevent.free == 1 ? false:true;
@@ -597,8 +605,9 @@ module.exports  = {
 									console.log('response.status=' + response.status);
 									console.log('response.ok=' + response.ok);
 									console.log('response.statusText=' + response.statusText);
-									// console.log('response.data=' + response.data.json());
-
+									console.log('response.data=' + response.data.message);
+									this.formMessage.msg = response.data.message;
+									this.formMessage.isOk = response.ok;
 								}, (response) => {
 									//error callback
 									// console.log("FORM ERRORS     "+ response.json() );

@@ -5,6 +5,9 @@
 					<!-- <slot name="author_id" v-model="newevent.author_id"></slot> -->
 					<div class="row">
 						<div class="small-12 columns">
+							<div v-show="formMessage.isOk"  class="callout success">
+  							<h5>{{formMessage.msg}}</h5>
+									</div>
 							<div class="form-group">
 									<label>Title <i class="fi-star reqstar"></i></label>
 										<p class="help-text" id="title-helptext">Please enter a title ({{titleChars}} characters left)</p>
@@ -134,6 +137,10 @@ module.exports  = {
 			      response: {
 
 						},
+						formMessage: {
+							isOk: false,
+							msg: ''
+						},
 			      formInputs : {},
 			      formErrors : {}
 			    }
@@ -207,7 +214,10 @@ module.exports  = {
 									console.log('response.status=' + response.status);
 									console.log('response.ok=' + response.ok);
 									console.log('response.statusText=' + response.statusText);
-									// console.log('response.data=' + response.data.json());
+								 console.log('response.data=' + response.data.message);
+
+								 this.formMessage.msg = response.data.message;
+								  this.formMessage.isOk = response.ok;
 								}, (response) => {
 									//error callback
 									this.formErrors =  response.data.error.message;

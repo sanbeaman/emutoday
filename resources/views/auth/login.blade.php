@@ -33,7 +33,7 @@
         <span class="glyphicon glyphicon-lock form-control-feedback"></span> --}}
       </div>
       <div class="form-group">
-				<input id="show-password" type="checkbox"><label for="show-password">Show password</label>
+				{{-- <input id="show-password" type="checkbox"><label for="show-password">Show password</label> --}}
 		 {!! Form::submit('Login', ['class' => 'btn btn-primary']) !!}
 		 <p class="text-center"><a href="{{ route('auth.password.email') }}">Forgot your password?</a></p>
 			</div>

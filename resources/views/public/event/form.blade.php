@@ -31,16 +31,19 @@
 																</tr>
 														</thead>
 														<tbody>
-																@foreach($approvedevents as $event)
+															@if(isset($approveditems))
+																@foreach($approveditems as $item)
 																		<tr>
-																			<td>{{ $event->id }}</td>
-																				<td>{{ $event->title }}</td>
-																			<td>{{ $event->submission_date }}</td>
+																			<td>{{ $item->id }}</td>
+																				<td>{{ $item->title }}</td>
+																			<td>{{ $item->submission_date }}</td>
 
-																			<td>{{ $event->approved_date }}</td>
-																			<td>{{ $event->start_date }}</td>
+																			<td>{{ $item->approved_date }}</td>
+																			<td>{{ $item->start_date }}</td>
 																		</tr>
 																@endforeach
+															@endif
+
 														</tbody>
 													</table>
 													{{-- {!! $storys->render() !!} --}}
@@ -62,16 +65,19 @@
 																</tr>
 														</thead>
 														<tbody>
-																@foreach($submittedevents as $event)
+															@if(isset($submitteditems))
+																@foreach($submitteditems as $item)
 																		<tr>
-																			<td>{{ $event->id }}</td>
-																				<td>{{ $event->title }}</td>
-																			<td>{{ $event->submission_date }}</td>
+																			<td>{{ $item->id }}</td>
+																				<td>{{ $item->title }}</td>
+																			<td>{{ $item->submission_date }}</td>
 
-																			<td>{{ $event->approved_date }}</td>
-																			<td>{{ $event->start_date }}</td>
+																			<td>{{ $item->approved_date }}</td>
+																			<td>{{ $item->start_date }}</td>
 																		</tr>
 																@endforeach
+															@endif
+
 														</tbody>
 													</table>
 													{{-- {!! $storys->render() !!} --}}
