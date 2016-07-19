@@ -121,7 +121,7 @@ Route::group(['middleware' => ['web']], function() {
 				return view('public.event.formvue');
 			});
 
-			Route::get('event/{id}/edit', ['as' => 'emutoday_event_edit', 'uses' => 'EmuToday\EventController@edit']);
+			Route::get('event/{event}/edit', ['as' => 'emutoday_event_edit', 'uses' => 'EmuToday\EventController@edit']);
 			// Route::get('event/create', ['as' => 'emutoday_event_create', 'uses' => 'EmuToday\EventController@create']);
 
 
