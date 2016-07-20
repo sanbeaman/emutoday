@@ -86,6 +86,7 @@ class EventController extends Controller
     {
       $event = $this->events->findOrFail($id);
       $categories = \emutoday\Category::lists('category', 'id');
+		
       return view('admin.event.form', compact('event', 'categories'));
     }
 

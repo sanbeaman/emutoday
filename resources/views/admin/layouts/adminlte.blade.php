@@ -529,7 +529,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	};
 </script> --}}
 	<script src="/themes/admin-lte/dist/js/app.js" type="text/javascript"></script>
-		<script src="/js/vue-ajax-form.js" ></script>
+		{{-- <script src="/js/vue-ajax-form.js" ></script> --}}
 	@show
 
 	@section('footer-script')

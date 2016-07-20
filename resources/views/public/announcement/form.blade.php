@@ -9,8 +9,8 @@
 				<div class="row">
 						<div class="medium-6 columns">
 							<h3 class="cal-caps toptitle">Announcements</h3>
-							<div id="vue-event-announcement">
-									<announcement-form authorid="{{$currentUser->id}}" recordexists="{{$announcement->exists ? true: false}}" editid="{{$announcement->exists ? $announcement->id : null }}">
+							<div id="vue-announcements">
+									<announcement-form framework="foundation" authorid="{{$currentUser->id}}" recordexists="{{$announcement->exists ? true: false}}" editid="{{$announcement->exists ? $announcement->id : null }}">
 										<input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
 									</announcement-form>
 							</div><!-- /#vue-event-form -->

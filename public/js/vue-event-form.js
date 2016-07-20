@@ -11948,7 +11948,7 @@ module.exports = {
 		fetchCurrentEvent: function fetchCurrentEvent() {
 			var _this = this;
 
-			this.$http.get('/api/event/' + this.editeventid + '/edit').then(function (response) {
+			this.$http.get('/api/event/' + this.editeventid).then(function (response) {
 				//response.status;
 				console.log('response.status=' + response.status);
 				console.log('response.ok=' + response.ok);
@@ -12078,6 +12078,7 @@ module.exports = {
 
 	},
 	components: {
+		datepicker: require('../vendor/datepicker.vue')
 		// listselect2: require('./ListSelect2.vue')
 		// autocomplete: require('./vue-autocomplete.vue'),
 		// 'datepicker': require('../vendor/datepicker.vue'),
@@ -12113,7 +12114,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-0879ddea", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../directives/mydatedropper.js":7,"../directives/myselect.js":8,"../directives/mytimedropper.js":9,"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],7:[function(require,module,exports){
+},{"../directives/mydatedropper.js":7,"../directives/myselect.js":8,"../directives/mytimedropper.js":9,"../vendor/datepicker.vue":10,"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -12226,6 +12227,154 @@ module.exports = {
 };
 
 },{}],10:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.datetime-picker[_v-e5327c24] {\n    position: relative;\n    display: inline-block;\n    font-family: \"Segoe UI\",\"Lucida Grande\",Helvetica,Arial,\"Microsoft YaHei\";\n    -webkit-font-smoothing: antialiased;\n    color: #333;\n}\n\n.datetime-picker *[_v-e5327c24] {\n    box-sizing: border-box;\n}\n\n.datetime-picker input[_v-e5327c24] {\n    width: 100%;\n    padding: 5px 10px;\n    height: 30px;\n    outline: 0 none;\n    border: 1px solid #ccc;\n    font-size: 13px;\n}\n\n.datetime-picker .picker-wrap[_v-e5327c24] {\n    position: absolute;\n    z-index: 1000;\n    width: 238px;\n    height: 280px;\n    margin-top: 2px;\n    background-color: #fff;\n    box-shadow: 0 0 6px #ccc;\n}\n\n.datetime-picker table[_v-e5327c24] {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    text-align: center;\n    font-size: 13px;\n}\n\n.datetime-picker tr[_v-e5327c24] {\n    height: 34px;\n    border: 0 none;\n}\n\n.datetime-picker th[_v-e5327c24], .datetime-picker td[_v-e5327c24] {\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    width: 34px;\n    height: 34px;\n    padding: 0;\n    border: 0 none;\n    line-height: 34px;\n    text-align: center;\n}\n\n.datetime-picker td[_v-e5327c24] {\n    cursor: pointer;\n}\n\n.datetime-picker td[_v-e5327c24]:hover {\n    background-color: #f0f0f0;\n}\n\n.datetime-picker td.date-pass[_v-e5327c24], .datetime-picker td.date-future[_v-e5327c24] {\n    color: #aaa;\n}\n\n.datetime-picker td.date-active[_v-e5327c24] {\n    background-color: #ececec;\n    color: #3bb4f2;\n}\n\n.datetime-picker .date-head[_v-e5327c24] {\n    background-color: #3bb4f2;\n    text-align: center;\n    color: #fff;\n    font-size: 14px;\n}\n\n.datetime-picker .date-days[_v-e5327c24] {\n    color: #3bb4f2;\n    font-size: 14px;\n}\n\n.datetime-picker .show-year[_v-e5327c24] {\n    display: inline-block;\n    min-width: 62px;\n    vertical-align: middle;\n}\n\n.datetime-picker .show-month[_v-e5327c24] {\n    display: inline-block;\n    min-width: 28px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24],\n.datetime-picker .btn-next[_v-e5327c24] {\n    cursor: pointer;\n    display: inline-block;\n    padding: 0 10px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24]:hover,\n.datetime-picker .btn-next[_v-e5327c24]:hover {\n    background: rgba(16, 160, 234, 0.5);\n}\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    props: {
+        width: { type: String, default: '238px' },
+        readonly: { type: Boolean, default: false },
+        value: { type: String, default: '' },
+        format: { type: String, default: 'YYYY-MM-DD' }
+    },
+    data: function data() {
+        return {
+            show: false,
+            days: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            date: [],
+            now: new Date()
+        };
+    },
+
+    watch: {
+        now: function now() {
+            this.update();
+        },
+        show: function show() {
+            this.update();
+        }
+    },
+    methods: {
+        close: function close() {
+            this.show = false;
+        },
+        update: function update() {
+            var arr = [];
+            var time = new Date(this.now);
+            time.setMonth(time.getMonth(), 1); // the first day
+            var curFirstDay = time.getDay();
+            curFirstDay === 0 && (curFirstDay = 7);
+            time.setDate(0); // the last day
+            var lastDayCount = time.getDate();
+            for (var i = curFirstDay; i > 0; i--) {
+                arr.push({
+                    text: lastDayCount - i + 1,
+                    time: new Date(time.getFullYear(), time.getMonth(), lastDayCount - i + 1),
+                    status: 'date-pass'
+                });
+            }
+
+            time.setMonth(time.getMonth() + 2, 0); // the last day of this month
+            var curDayCount = time.getDate();
+            time.setDate(1); // fix bug when month change
+            var value = this.value || this.stringify(new Date());
+            for (var _i = 0; _i < curDayCount; _i++) {
+                var tmpTime = new Date(time.getFullYear(), time.getMonth(), _i + 1);
+                var status = '';
+                this.stringify(tmpTime) === value && (status = 'date-active');
+                arr.push({
+                    text: _i + 1,
+                    time: tmpTime,
+                    status: status
+                });
+            }
+
+            var j = 1;
+            while (arr.length < 42) {
+                arr.push({
+                    text: j,
+                    time: new Date(time.getFullYear(), time.getMonth() + 1, j),
+                    status: 'date-future'
+                });
+                j++;
+            }
+            this.date = arr;
+        },
+        yearClick: function yearClick(flag) {
+            this.now.setFullYear(this.now.getFullYear() + flag);
+            this.now = new Date(this.now);
+        },
+        monthClick: function monthClick(flag) {
+            this.now.setMonth(this.now.getMonth() + flag);
+            this.now = new Date(this.now);
+        },
+        pickDate: function pickDate(index) {
+            this.show = false;
+            this.now = new Date(this.date[index].time);
+            this.value = this.stringify();
+        },
+        parse: function parse(str) {
+            var time = new Date(str);
+            return isNaN(time.getTime()) ? null : time;
+        },
+        stringify: function stringify() {
+            var time = arguments.length <= 0 || arguments[0] === undefined ? this.now : arguments[0];
+            var format = arguments.length <= 1 || arguments[1] === undefined ? this.format : arguments[1];
+
+            var year = time.getFullYear();
+            var month = time.getMonth() + 1;
+            var date = time.getDate();
+            var monthName = this.months[time.getMonth()];
+
+            var map = {
+                YYYY: year,
+                MMM: monthName,
+                MM: ('0' + month).slice(-2),
+                M: month,
+                DD: ('0' + date).slice(-2),
+                D: date
+            };
+            return format.replace(/Y+|M+|D+/g, function (str) {
+                return map[str];
+            });
+        }
+    },
+    ready: function ready() {
+        var _this = this;
+
+        this.now = this.parse(this.value) || new Date();
+        document.addEventListener('click', function (e) {
+            if (!_this.$el.contains(e.target)) {
+                _this.close();
+            }
+        }, false);
+    },
+    beforeDestroy: function beforeDestroy() {
+        document.removeEventListener('click', this.close, false);
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"datetime-picker\" :style=\"{ width: width }\" _v-e5327c24=\"\">\n    <input type=\"text\" :style=\"styleObj\" :readonly=\"readonly\" :value=\"value\" @click=\"show = !show\" _v-e5327c24=\"\">\n    <div class=\"picker-wrap\" v-show=\"show\" _v-e5327c24=\"\">\n        <table class=\"date-picker\" _v-e5327c24=\"\">\n            <thead _v-e5327c24=\"\">\n                <tr class=\"date-head\" _v-e5327c24=\"\">\n                    <th colspan=\"4\" _v-e5327c24=\"\">\n                        <span class=\"btn-prev\" @click=\"yearClick(-1)\" _v-e5327c24=\"\">&lt;</span>\n                        <span class=\"show-year\" _v-e5327c24=\"\">{{now.getFullYear()}}</span>\n                        <span class=\"btn-next\" @click=\"yearClick(1)\" _v-e5327c24=\"\">&gt;</span>\n                    </th>\n                    <th colspan=\"3\" _v-e5327c24=\"\">\n                        <span class=\"btn-prev\" @click=\"monthClick(-1)\" _v-e5327c24=\"\">&lt;</span>\n                        <span class=\"show-month\" _v-e5327c24=\"\">{{months[now.getMonth()]}}</span>\n                        <span class=\"btn-next\" @click=\"monthClick(1)\" _v-e5327c24=\"\">&gt;</span>\n                    </th>\n                </tr>\n                <tr class=\"date-days\" _v-e5327c24=\"\">\n                    <th v-for=\"day in days\" _v-e5327c24=\"\">{{day}}</th>\n                </tr>\n            </thead>\n            <tbody _v-e5327c24=\"\">\n                <tr v-for=\"i in 6\" _v-e5327c24=\"\">\n                    <td v-for=\"j in 7\" :class=\"date[i * 7 + j] &amp;&amp; date[i * 7 + j].status\" :date=\"date[i * 7 + j] &amp;&amp; date[i * 7 + j].date\" @click=\"pickDate(i * 7 + j)\" _v-e5327c24=\"\">{{date[i * 7 + j] &amp;&amp; date[i * 7 + j].text}}</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.datetime-picker[_v-e5327c24] {\n    position: relative;\n    display: inline-block;\n    font-family: \"Segoe UI\",\"Lucida Grande\",Helvetica,Arial,\"Microsoft YaHei\";\n    -webkit-font-smoothing: antialiased;\n    color: #333;\n}\n\n.datetime-picker *[_v-e5327c24] {\n    box-sizing: border-box;\n}\n\n.datetime-picker input[_v-e5327c24] {\n    width: 100%;\n    padding: 5px 10px;\n    height: 30px;\n    outline: 0 none;\n    border: 1px solid #ccc;\n    font-size: 13px;\n}\n\n.datetime-picker .picker-wrap[_v-e5327c24] {\n    position: absolute;\n    z-index: 1000;\n    width: 238px;\n    height: 280px;\n    margin-top: 2px;\n    background-color: #fff;\n    box-shadow: 0 0 6px #ccc;\n}\n\n.datetime-picker table[_v-e5327c24] {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    text-align: center;\n    font-size: 13px;\n}\n\n.datetime-picker tr[_v-e5327c24] {\n    height: 34px;\n    border: 0 none;\n}\n\n.datetime-picker th[_v-e5327c24], .datetime-picker td[_v-e5327c24] {\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    width: 34px;\n    height: 34px;\n    padding: 0;\n    border: 0 none;\n    line-height: 34px;\n    text-align: center;\n}\n\n.datetime-picker td[_v-e5327c24] {\n    cursor: pointer;\n}\n\n.datetime-picker td[_v-e5327c24]:hover {\n    background-color: #f0f0f0;\n}\n\n.datetime-picker td.date-pass[_v-e5327c24], .datetime-picker td.date-future[_v-e5327c24] {\n    color: #aaa;\n}\n\n.datetime-picker td.date-active[_v-e5327c24] {\n    background-color: #ececec;\n    color: #3bb4f2;\n}\n\n.datetime-picker .date-head[_v-e5327c24] {\n    background-color: #3bb4f2;\n    text-align: center;\n    color: #fff;\n    font-size: 14px;\n}\n\n.datetime-picker .date-days[_v-e5327c24] {\n    color: #3bb4f2;\n    font-size: 14px;\n}\n\n.datetime-picker .show-year[_v-e5327c24] {\n    display: inline-block;\n    min-width: 62px;\n    vertical-align: middle;\n}\n\n.datetime-picker .show-month[_v-e5327c24] {\n    display: inline-block;\n    min-width: 28px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24],\n.datetime-picker .btn-next[_v-e5327c24] {\n    cursor: pointer;\n    display: inline-block;\n    padding: 0 10px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24]:hover,\n.datetime-picker .btn-next[_v-e5327c24]:hover {\n    background: rgba(16, 160, 234, 0.5);\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-e5327c24", module.exports)
+  } else {
+    hotAPI.update("_v-e5327c24", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],11:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
@@ -12249,7 +12398,7 @@ Vue.use(_vueResource2.default);
 // Vue.component('autocomplete', autocomplete)
 
 new Vue({
-  el: '#calendar-bar',
+  el: '#vue-event-form',
   components: {
     EventForm: require('./components/EventForm.vue')
 
@@ -12259,6 +12408,6 @@ new Vue({
   }
 });
 
-},{"./components/EventForm.vue":6,"vue":4,"vue-resource":3}]},{},[10]);
+},{"./components/EventForm.vue":6,"vue":4,"vue-resource":3}]},{},[11]);
 
 //# sourceMappingURL=vue-event-form.js.map

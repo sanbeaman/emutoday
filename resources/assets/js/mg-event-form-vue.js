@@ -1,3 +1,5 @@
+
+
 var Vue = require('vue');
 
 import VueResource from 'vue-resource';
@@ -15,9 +17,9 @@ Vue.use(VueResource);
 // Vue.component('autocomplete', autocomplete)
 
 new Vue({
-    el: '#vue-event-form',
+    el: '#mg-event-form-vue',
     components: {
-      EventForm: require('./components/EventForm.vue')
+      mgEventForm: require('./components/mgEventForm.vue')
 
     },
     ready() {

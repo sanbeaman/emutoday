@@ -66,7 +66,9 @@ Route::group(['prefix' => 'api'], function() {
 
    Route::resource('story', 'Api\StoryController');
 
-	 Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
+	//  Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
+	//  Route::get('announcement/{announcement}', ['as' => 'api_announcement_get', 'uses' => 'Api\AnnouncementController@edit']);
+
 	 Route::resource('announcement', 'Api\AnnouncementController');
 
 	 Route::get('magazine', ['as' => 'api.magazine', 'uses' => 'Api\MagazineController@index']);

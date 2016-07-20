@@ -23,7 +23,7 @@ require('laravel-elixir-vueify');
 		mix.copy('node_modules/foundation-sites/js/*.js', 'resources/assets/js/foundation');
 
 		// mix.copy('node_modules/motion-ui/dist/motion-ui.js', 'resources/assets/js/foundation');
-		mix.copy('node_modules/foundation-datepicker/js/foundation-datepicker.js','resources/assets/js/plugins');
+		// mix.copy('node_modules/foundation-datepicker/js/foundation-datepicker.js','resources/assets/js/plugins');
 
 		mix.copy('node_modules/select2/dist/js/select2.js', 'resources/assets/js/select2.js');
 
@@ -185,6 +185,9 @@ require('laravel-elixir-vueify');
 		mix.styles([
 					 'admin-less.css',
 					'jquery.datetimepicker.css',
+					'resources/assets/css/vendor-public/select2.css',
+					'resources/assets/css/vendor-public/datedropper.css',
+					'resources/assets/css/vendor-public/timedropper.css',
 					'admin.css'
 				], 'public/css/admin-styles.css');
 
@@ -197,6 +200,9 @@ require('laravel-elixir-vueify');
 		mix.scripts([
 			'resources/assets/js/vendor-admin/jquery.min.js',
 			'resources/assets/js/vendor-admin/bootstrap.js',
+			'resources/assets/js/vendor-public/select2.js',
+			'resources/assets/js/vendor-public/datedropper.js',
+			'resources/assets/js/vendor-public/timedropper.js',
 			'resources/assets/js/moment.js',
 		], 'public/js/vendor-scripts.js');
 
@@ -204,7 +210,8 @@ require('laravel-elixir-vueify');
 		// mix.browserify('vue-admin.js', 'public/js/vue-admin.js');
 		//  mix.browserify('admintools.js', 'public/js/admintools.js');
 		//  mix.browserify('vue-drag.js', 'public/js/vue-drag.js');
-		mix.browserify('vue-ajax-form.js', 'public/js/vue-ajax-form.js');
+		// mix.browserify('vue-ajax-form.js', 'public/js/vue-ajax-form.js');
+		mix.browserify('mg-event-form-vue.js', 'public/js/mg-event-form-vue.js');
 
 	});
 	/*

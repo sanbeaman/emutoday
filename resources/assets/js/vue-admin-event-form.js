@@ -15,7 +15,7 @@ Vue.use(VueResource);
 // Vue.component('autocomplete', autocomplete)
 
 new Vue({
-    el: '#vue-event-form',
+    el: '#vue-admin-event-form',
     components: {
       EventForm: require('./components/EventForm.vue')
 

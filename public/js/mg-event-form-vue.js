@@ -1,4045 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-//! moment.js
-//! version : 2.13.0
-//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
-//! license : MIT
-//! momentjs.com
-
-;(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    global.moment = factory()
-}(this, function () { 'use strict';
-
-    var hookCallback;
-
-    function utils_hooks__hooks () {
-        return hookCallback.apply(null, arguments);
-    }
-
-    // This is done to register the method called with moment()
-    // without creating circular dependencies.
-    function setHookCallback (callback) {
-        hookCallback = callback;
-    }
-
-    function isArray(input) {
-        return input instanceof Array || Object.prototype.toString.call(input) === '[object Array]';
-    }
-
-    function isDate(input) {
-        return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
-    }
-
-    function map(arr, fn) {
-        var res = [], i;
-        for (i = 0; i < arr.length; ++i) {
-            res.push(fn(arr[i], i));
-        }
-        return res;
-    }
-
-    function hasOwnProp(a, b) {
-        return Object.prototype.hasOwnProperty.call(a, b);
-    }
-
-    function extend(a, b) {
-        for (var i in b) {
-            if (hasOwnProp(b, i)) {
-                a[i] = b[i];
-            }
-        }
-
-        if (hasOwnProp(b, 'toString')) {
-            a.toString = b.toString;
-        }
-
-        if (hasOwnProp(b, 'valueOf')) {
-            a.valueOf = b.valueOf;
-        }
-
-        return a;
-    }
-
-    function create_utc__createUTC (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, true).utc();
-    }
-
-    function defaultParsingFlags() {
-        // We need to deep clone this object.
-        return {
-            empty           : false,
-            unusedTokens    : [],
-            unusedInput     : [],
-            overflow        : -2,
-            charsLeftOver   : 0,
-            nullInput       : false,
-            invalidMonth    : null,
-            invalidFormat   : false,
-            userInvalidated : false,
-            iso             : false,
-            parsedDateParts : [],
-            meridiem        : null
-        };
-    }
-
-    function getParsingFlags(m) {
-        if (m._pf == null) {
-            m._pf = defaultParsingFlags();
-        }
-        return m._pf;
-    }
-
-    var some;
-    if (Array.prototype.some) {
-        some = Array.prototype.some;
-    } else {
-        some = function (fun) {
-            var t = Object(this);
-            var len = t.length >>> 0;
-
-            for (var i = 0; i < len; i++) {
-                if (i in t && fun.call(this, t[i], i, t)) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-    }
-
-    function valid__isValid(m) {
-        if (m._isValid == null) {
-            var flags = getParsingFlags(m);
-            var parsedParts = some.call(flags.parsedDateParts, function (i) {
-                return i != null;
-            });
-            m._isValid = !isNaN(m._d.getTime()) &&
-                flags.overflow < 0 &&
-                !flags.empty &&
-                !flags.invalidMonth &&
-                !flags.invalidWeekday &&
-                !flags.nullInput &&
-                !flags.invalidFormat &&
-                !flags.userInvalidated &&
-                (!flags.meridiem || (flags.meridiem && parsedParts));
-
-            if (m._strict) {
-                m._isValid = m._isValid &&
-                    flags.charsLeftOver === 0 &&
-                    flags.unusedTokens.length === 0 &&
-                    flags.bigHour === undefined;
-            }
-        }
-        return m._isValid;
-    }
-
-    function valid__createInvalid (flags) {
-        var m = create_utc__createUTC(NaN);
-        if (flags != null) {
-            extend(getParsingFlags(m), flags);
-        }
-        else {
-            getParsingFlags(m).userInvalidated = true;
-        }
-
-        return m;
-    }
-
-    function isUndefined(input) {
-        return input === void 0;
-    }
-
-    // Plugins that add properties should also add the key here (null value),
-    // so we can properly clone ourselves.
-    var momentProperties = utils_hooks__hooks.momentProperties = [];
-
-    function copyConfig(to, from) {
-        var i, prop, val;
-
-        if (!isUndefined(from._isAMomentObject)) {
-            to._isAMomentObject = from._isAMomentObject;
-        }
-        if (!isUndefined(from._i)) {
-            to._i = from._i;
-        }
-        if (!isUndefined(from._f)) {
-            to._f = from._f;
-        }
-        if (!isUndefined(from._l)) {
-            to._l = from._l;
-        }
-        if (!isUndefined(from._strict)) {
-            to._strict = from._strict;
-        }
-        if (!isUndefined(from._tzm)) {
-            to._tzm = from._tzm;
-        }
-        if (!isUndefined(from._isUTC)) {
-            to._isUTC = from._isUTC;
-        }
-        if (!isUndefined(from._offset)) {
-            to._offset = from._offset;
-        }
-        if (!isUndefined(from._pf)) {
-            to._pf = getParsingFlags(from);
-        }
-        if (!isUndefined(from._locale)) {
-            to._locale = from._locale;
-        }
-
-        if (momentProperties.length > 0) {
-            for (i in momentProperties) {
-                prop = momentProperties[i];
-                val = from[prop];
-                if (!isUndefined(val)) {
-                    to[prop] = val;
-                }
-            }
-        }
-
-        return to;
-    }
-
-    var updateInProgress = false;
-
-    // Moment prototype object
-    function Moment(config) {
-        copyConfig(this, config);
-        this._d = new Date(config._d != null ? config._d.getTime() : NaN);
-        // Prevent infinite loop in case updateOffset creates new moment
-        // objects.
-        if (updateInProgress === false) {
-            updateInProgress = true;
-            utils_hooks__hooks.updateOffset(this);
-            updateInProgress = false;
-        }
-    }
-
-    function isMoment (obj) {
-        return obj instanceof Moment || (obj != null && obj._isAMomentObject != null);
-    }
-
-    function absFloor (number) {
-        if (number < 0) {
-            return Math.ceil(number);
-        } else {
-            return Math.floor(number);
-        }
-    }
-
-    function toInt(argumentForCoercion) {
-        var coercedNumber = +argumentForCoercion,
-            value = 0;
-
-        if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-            value = absFloor(coercedNumber);
-        }
-
-        return value;
-    }
-
-    // compare two arrays, return the number of differences
-    function compareArrays(array1, array2, dontConvert) {
-        var len = Math.min(array1.length, array2.length),
-            lengthDiff = Math.abs(array1.length - array2.length),
-            diffs = 0,
-            i;
-        for (i = 0; i < len; i++) {
-            if ((dontConvert && array1[i] !== array2[i]) ||
-                (!dontConvert && toInt(array1[i]) !== toInt(array2[i]))) {
-                diffs++;
-            }
-        }
-        return diffs + lengthDiff;
-    }
-
-    function warn(msg) {
-        if (utils_hooks__hooks.suppressDeprecationWarnings === false &&
-                (typeof console !==  'undefined') && console.warn) {
-            console.warn('Deprecation warning: ' + msg);
-        }
-    }
-
-    function deprecate(msg, fn) {
-        var firstTime = true;
-
-        return extend(function () {
-            if (utils_hooks__hooks.deprecationHandler != null) {
-                utils_hooks__hooks.deprecationHandler(null, msg);
-            }
-            if (firstTime) {
-                warn(msg + '\nArguments: ' + Array.prototype.slice.call(arguments).join(', ') + '\n' + (new Error()).stack);
-                firstTime = false;
-            }
-            return fn.apply(this, arguments);
-        }, fn);
-    }
-
-    var deprecations = {};
-
-    function deprecateSimple(name, msg) {
-        if (utils_hooks__hooks.deprecationHandler != null) {
-            utils_hooks__hooks.deprecationHandler(name, msg);
-        }
-        if (!deprecations[name]) {
-            warn(msg);
-            deprecations[name] = true;
-        }
-    }
-
-    utils_hooks__hooks.suppressDeprecationWarnings = false;
-    utils_hooks__hooks.deprecationHandler = null;
-
-    function isFunction(input) {
-        return input instanceof Function || Object.prototype.toString.call(input) === '[object Function]';
-    }
-
-    function isObject(input) {
-        return Object.prototype.toString.call(input) === '[object Object]';
-    }
-
-    function locale_set__set (config) {
-        var prop, i;
-        for (i in config) {
-            prop = config[i];
-            if (isFunction(prop)) {
-                this[i] = prop;
-            } else {
-                this['_' + i] = prop;
-            }
-        }
-        this._config = config;
-        // Lenient ordinal parsing accepts just a number in addition to
-        // number + (possibly) stuff coming from _ordinalParseLenient.
-        this._ordinalParseLenient = new RegExp(this._ordinalParse.source + '|' + (/\d{1,2}/).source);
-    }
-
-    function mergeConfigs(parentConfig, childConfig) {
-        var res = extend({}, parentConfig), prop;
-        for (prop in childConfig) {
-            if (hasOwnProp(childConfig, prop)) {
-                if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
-                    res[prop] = {};
-                    extend(res[prop], parentConfig[prop]);
-                    extend(res[prop], childConfig[prop]);
-                } else if (childConfig[prop] != null) {
-                    res[prop] = childConfig[prop];
-                } else {
-                    delete res[prop];
-                }
-            }
-        }
-        return res;
-    }
-
-    function Locale(config) {
-        if (config != null) {
-            this.set(config);
-        }
-    }
-
-    var keys;
-
-    if (Object.keys) {
-        keys = Object.keys;
-    } else {
-        keys = function (obj) {
-            var i, res = [];
-            for (i in obj) {
-                if (hasOwnProp(obj, i)) {
-                    res.push(i);
-                }
-            }
-            return res;
-        };
-    }
-
-    // internal storage for locale config files
-    var locales = {};
-    var globalLocale;
-
-    function normalizeLocale(key) {
-        return key ? key.toLowerCase().replace('_', '-') : key;
-    }
-
-    // pick the locale from the array
-    // try ['en-au', 'en-gb'] as 'en-au', 'en-gb', 'en', as in move through the list trying each
-    // substring from most specific to least, but move to the next array item if it's a more specific variant than the current root
-    function chooseLocale(names) {
-        var i = 0, j, next, locale, split;
-
-        while (i < names.length) {
-            split = normalizeLocale(names[i]).split('-');
-            j = split.length;
-            next = normalizeLocale(names[i + 1]);
-            next = next ? next.split('-') : null;
-            while (j > 0) {
-                locale = loadLocale(split.slice(0, j).join('-'));
-                if (locale) {
-                    return locale;
-                }
-                if (next && next.length >= j && compareArrays(split, next, true) >= j - 1) {
-                    //the next array item is better than a shallower substring of this one
-                    break;
-                }
-                j--;
-            }
-            i++;
-        }
-        return null;
-    }
-
-    function loadLocale(name) {
-        var oldLocale = null;
-        // TODO: Find a better way to register and load all the locales in Node
-        if (!locales[name] && (typeof module !== 'undefined') &&
-                module && module.exports) {
-            try {
-                oldLocale = globalLocale._abbr;
-                require('./locale/' + name);
-                // because defineLocale currently also sets the global locale, we
-                // want to undo that for lazy loaded locales
-                locale_locales__getSetGlobalLocale(oldLocale);
-            } catch (e) { }
-        }
-        return locales[name];
-    }
-
-    // This function will load locale and then set the global locale.  If
-    // no arguments are passed in, it will simply return the current global
-    // locale key.
-    function locale_locales__getSetGlobalLocale (key, values) {
-        var data;
-        if (key) {
-            if (isUndefined(values)) {
-                data = locale_locales__getLocale(key);
-            }
-            else {
-                data = defineLocale(key, values);
-            }
-
-            if (data) {
-                // moment.duration._locale = moment._locale = data;
-                globalLocale = data;
-            }
-        }
-
-        return globalLocale._abbr;
-    }
-
-    function defineLocale (name, config) {
-        if (config !== null) {
-            config.abbr = name;
-            if (locales[name] != null) {
-                deprecateSimple('defineLocaleOverride',
-                        'use moment.updateLocale(localeName, config) to change ' +
-                        'an existing locale. moment.defineLocale(localeName, ' +
-                        'config) should only be used for creating a new locale');
-                config = mergeConfigs(locales[name]._config, config);
-            } else if (config.parentLocale != null) {
-                if (locales[config.parentLocale] != null) {
-                    config = mergeConfigs(locales[config.parentLocale]._config, config);
-                } else {
-                    // treat as if there is no base config
-                    deprecateSimple('parentLocaleUndefined',
-                            'specified parentLocale is not defined yet');
-                }
-            }
-            locales[name] = new Locale(config);
-
-            // backwards compat for now: also set the locale
-            locale_locales__getSetGlobalLocale(name);
-
-            return locales[name];
-        } else {
-            // useful for testing
-            delete locales[name];
-            return null;
-        }
-    }
-
-    function updateLocale(name, config) {
-        if (config != null) {
-            var locale;
-            if (locales[name] != null) {
-                config = mergeConfigs(locales[name]._config, config);
-            }
-            locale = new Locale(config);
-            locale.parentLocale = locales[name];
-            locales[name] = locale;
-
-            // backwards compat for now: also set the locale
-            locale_locales__getSetGlobalLocale(name);
-        } else {
-            // pass null for config to unupdate, useful for tests
-            if (locales[name] != null) {
-                if (locales[name].parentLocale != null) {
-                    locales[name] = locales[name].parentLocale;
-                } else if (locales[name] != null) {
-                    delete locales[name];
-                }
-            }
-        }
-        return locales[name];
-    }
-
-    // returns locale data
-    function locale_locales__getLocale (key) {
-        var locale;
-
-        if (key && key._locale && key._locale._abbr) {
-            key = key._locale._abbr;
-        }
-
-        if (!key) {
-            return globalLocale;
-        }
-
-        if (!isArray(key)) {
-            //short-circuit everything else
-            locale = loadLocale(key);
-            if (locale) {
-                return locale;
-            }
-            key = [key];
-        }
-
-        return chooseLocale(key);
-    }
-
-    function locale_locales__listLocales() {
-        return keys(locales);
-    }
-
-    var aliases = {};
-
-    function addUnitAlias (unit, shorthand) {
-        var lowerCase = unit.toLowerCase();
-        aliases[lowerCase] = aliases[lowerCase + 's'] = aliases[shorthand] = unit;
-    }
-
-    function normalizeUnits(units) {
-        return typeof units === 'string' ? aliases[units] || aliases[units.toLowerCase()] : undefined;
-    }
-
-    function normalizeObjectUnits(inputObject) {
-        var normalizedInput = {},
-            normalizedProp,
-            prop;
-
-        for (prop in inputObject) {
-            if (hasOwnProp(inputObject, prop)) {
-                normalizedProp = normalizeUnits(prop);
-                if (normalizedProp) {
-                    normalizedInput[normalizedProp] = inputObject[prop];
-                }
-            }
-        }
-
-        return normalizedInput;
-    }
-
-    function makeGetSet (unit, keepTime) {
-        return function (value) {
-            if (value != null) {
-                get_set__set(this, unit, value);
-                utils_hooks__hooks.updateOffset(this, keepTime);
-                return this;
-            } else {
-                return get_set__get(this, unit);
-            }
-        };
-    }
-
-    function get_set__get (mom, unit) {
-        return mom.isValid() ?
-            mom._d['get' + (mom._isUTC ? 'UTC' : '') + unit]() : NaN;
-    }
-
-    function get_set__set (mom, unit, value) {
-        if (mom.isValid()) {
-            mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value);
-        }
-    }
-
-    // MOMENTS
-
-    function getSet (units, value) {
-        var unit;
-        if (typeof units === 'object') {
-            for (unit in units) {
-                this.set(unit, units[unit]);
-            }
-        } else {
-            units = normalizeUnits(units);
-            if (isFunction(this[units])) {
-                return this[units](value);
-            }
-        }
-        return this;
-    }
-
-    function zeroFill(number, targetLength, forceSign) {
-        var absNumber = '' + Math.abs(number),
-            zerosToFill = targetLength - absNumber.length,
-            sign = number >= 0;
-        return (sign ? (forceSign ? '+' : '') : '-') +
-            Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
-    }
-
-    var formattingTokens = /(\[[^\[]*\])|(\\)?([Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|YYYYYY|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g;
-
-    var localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g;
-
-    var formatFunctions = {};
-
-    var formatTokenFunctions = {};
-
-    // token:    'M'
-    // padded:   ['MM', 2]
-    // ordinal:  'Mo'
-    // callback: function () { this.month() + 1 }
-    function addFormatToken (token, padded, ordinal, callback) {
-        var func = callback;
-        if (typeof callback === 'string') {
-            func = function () {
-                return this[callback]();
-            };
-        }
-        if (token) {
-            formatTokenFunctions[token] = func;
-        }
-        if (padded) {
-            formatTokenFunctions[padded[0]] = function () {
-                return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
-            };
-        }
-        if (ordinal) {
-            formatTokenFunctions[ordinal] = function () {
-                return this.localeData().ordinal(func.apply(this, arguments), token);
-            };
-        }
-    }
-
-    function removeFormattingTokens(input) {
-        if (input.match(/\[[\s\S]/)) {
-            return input.replace(/^\[|\]$/g, '');
-        }
-        return input.replace(/\\/g, '');
-    }
-
-    function makeFormatFunction(format) {
-        var array = format.match(formattingTokens), i, length;
-
-        for (i = 0, length = array.length; i < length; i++) {
-            if (formatTokenFunctions[array[i]]) {
-                array[i] = formatTokenFunctions[array[i]];
-            } else {
-                array[i] = removeFormattingTokens(array[i]);
-            }
-        }
-
-        return function (mom) {
-            var output = '', i;
-            for (i = 0; i < length; i++) {
-                output += array[i] instanceof Function ? array[i].call(mom, format) : array[i];
-            }
-            return output;
-        };
-    }
-
-    // format date using native date object
-    function formatMoment(m, format) {
-        if (!m.isValid()) {
-            return m.localeData().invalidDate();
-        }
-
-        format = expandFormat(format, m.localeData());
-        formatFunctions[format] = formatFunctions[format] || makeFormatFunction(format);
-
-        return formatFunctions[format](m);
-    }
-
-    function expandFormat(format, locale) {
-        var i = 5;
-
-        function replaceLongDateFormatTokens(input) {
-            return locale.longDateFormat(input) || input;
-        }
-
-        localFormattingTokens.lastIndex = 0;
-        while (i >= 0 && localFormattingTokens.test(format)) {
-            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
-            localFormattingTokens.lastIndex = 0;
-            i -= 1;
-        }
-
-        return format;
-    }
-
-    var match1         = /\d/;            //       0 - 9
-    var match2         = /\d\d/;          //      00 - 99
-    var match3         = /\d{3}/;         //     000 - 999
-    var match4         = /\d{4}/;         //    0000 - 9999
-    var match6         = /[+-]?\d{6}/;    // -999999 - 999999
-    var match1to2      = /\d\d?/;         //       0 - 99
-    var match3to4      = /\d\d\d\d?/;     //     999 - 9999
-    var match5to6      = /\d\d\d\d\d\d?/; //   99999 - 999999
-    var match1to3      = /\d{1,3}/;       //       0 - 999
-    var match1to4      = /\d{1,4}/;       //       0 - 9999
-    var match1to6      = /[+-]?\d{1,6}/;  // -999999 - 999999
-
-    var matchUnsigned  = /\d+/;           //       0 - inf
-    var matchSigned    = /[+-]?\d+/;      //    -inf - inf
-
-    var matchOffset    = /Z|[+-]\d\d:?\d\d/gi; // +00:00 -00:00 +0000 -0000 or Z
-    var matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi; // +00 -00 +00:00 -00:00 +0000 -0000 or Z
-
-    var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
-
-    // any word (or two) characters or numbers including two/three word month in arabic.
-    // includes scottish gaelic two word and hyphenated months
-    var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
-
-
-    var regexes = {};
-
-    function addRegexToken (token, regex, strictRegex) {
-        regexes[token] = isFunction(regex) ? regex : function (isStrict, localeData) {
-            return (isStrict && strictRegex) ? strictRegex : regex;
-        };
-    }
-
-    function getParseRegexForToken (token, config) {
-        if (!hasOwnProp(regexes, token)) {
-            return new RegExp(unescapeFormat(token));
-        }
-
-        return regexes[token](config._strict, config._locale);
-    }
-
-    // Code from http://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript
-    function unescapeFormat(s) {
-        return regexEscape(s.replace('\\', '').replace(/\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g, function (matched, p1, p2, p3, p4) {
-            return p1 || p2 || p3 || p4;
-        }));
-    }
-
-    function regexEscape(s) {
-        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    }
-
-    var tokens = {};
-
-    function addParseToken (token, callback) {
-        var i, func = callback;
-        if (typeof token === 'string') {
-            token = [token];
-        }
-        if (typeof callback === 'number') {
-            func = function (input, array) {
-                array[callback] = toInt(input);
-            };
-        }
-        for (i = 0; i < token.length; i++) {
-            tokens[token[i]] = func;
-        }
-    }
-
-    function addWeekParseToken (token, callback) {
-        addParseToken(token, function (input, array, config, token) {
-            config._w = config._w || {};
-            callback(input, config._w, config, token);
-        });
-    }
-
-    function addTimeToArrayFromToken(token, input, config) {
-        if (input != null && hasOwnProp(tokens, token)) {
-            tokens[token](input, config._a, config, token);
-        }
-    }
-
-    var YEAR = 0;
-    var MONTH = 1;
-    var DATE = 2;
-    var HOUR = 3;
-    var MINUTE = 4;
-    var SECOND = 5;
-    var MILLISECOND = 6;
-    var WEEK = 7;
-    var WEEKDAY = 8;
-
-    var indexOf;
-
-    if (Array.prototype.indexOf) {
-        indexOf = Array.prototype.indexOf;
-    } else {
-        indexOf = function (o) {
-            // I know
-            var i;
-            for (i = 0; i < this.length; ++i) {
-                if (this[i] === o) {
-                    return i;
-                }
-            }
-            return -1;
-        };
-    }
-
-    function daysInMonth(year, month) {
-        return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
-    }
-
-    // FORMATTING
-
-    addFormatToken('M', ['MM', 2], 'Mo', function () {
-        return this.month() + 1;
-    });
-
-    addFormatToken('MMM', 0, 0, function (format) {
-        return this.localeData().monthsShort(this, format);
-    });
-
-    addFormatToken('MMMM', 0, 0, function (format) {
-        return this.localeData().months(this, format);
-    });
-
-    // ALIASES
-
-    addUnitAlias('month', 'M');
-
-    // PARSING
-
-    addRegexToken('M',    match1to2);
-    addRegexToken('MM',   match1to2, match2);
-    addRegexToken('MMM',  function (isStrict, locale) {
-        return locale.monthsShortRegex(isStrict);
-    });
-    addRegexToken('MMMM', function (isStrict, locale) {
-        return locale.monthsRegex(isStrict);
-    });
-
-    addParseToken(['M', 'MM'], function (input, array) {
-        array[MONTH] = toInt(input) - 1;
-    });
-
-    addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
-        var month = config._locale.monthsParse(input, token, config._strict);
-        // if we didn't find a month name, mark the date as invalid.
-        if (month != null) {
-            array[MONTH] = month;
-        } else {
-            getParsingFlags(config).invalidMonth = input;
-        }
-    });
-
-    // LOCALES
-
-    var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/;
-    var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
-    function localeMonths (m, format) {
-        return isArray(this._months) ? this._months[m.month()] :
-            this._months[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
-    }
-
-    var defaultLocaleMonthsShort = 'Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec'.split('_');
-    function localeMonthsShort (m, format) {
-        return isArray(this._monthsShort) ? this._monthsShort[m.month()] :
-            this._monthsShort[MONTHS_IN_FORMAT.test(format) ? 'format' : 'standalone'][m.month()];
-    }
-
-    function units_month__handleStrictParse(monthName, format, strict) {
-        var i, ii, mom, llc = monthName.toLocaleLowerCase();
-        if (!this._monthsParse) {
-            // this is not used
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-            for (i = 0; i < 12; ++i) {
-                mom = create_utc__createUTC([2000, i]);
-                this._shortMonthsParse[i] = this.monthsShort(mom, '').toLocaleLowerCase();
-                this._longMonthsParse[i] = this.months(mom, '').toLocaleLowerCase();
-            }
-        }
-
-        if (strict) {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        } else {
-            if (format === 'MMM') {
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._longMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._longMonthsParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortMonthsParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        }
-    }
-
-    function localeMonthsParse (monthName, format, strict) {
-        var i, mom, regex;
-
-        if (this._monthsParseExact) {
-            return units_month__handleStrictParse.call(this, monthName, format, strict);
-        }
-
-        if (!this._monthsParse) {
-            this._monthsParse = [];
-            this._longMonthsParse = [];
-            this._shortMonthsParse = [];
-        }
-
-        // TODO: add sorting
-        // Sorting makes sure if one month (or abbr) is a prefix of another
-        // see sorting in computeMonthsParse
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, i]);
-            if (strict && !this._longMonthsParse[i]) {
-                this._longMonthsParse[i] = new RegExp('^' + this.months(mom, '').replace('.', '') + '$', 'i');
-                this._shortMonthsParse[i] = new RegExp('^' + this.monthsShort(mom, '').replace('.', '') + '$', 'i');
-            }
-            if (!strict && !this._monthsParse[i]) {
-                regex = '^' + this.months(mom, '') + '|^' + this.monthsShort(mom, '');
-                this._monthsParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'MMMM' && this._longMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (strict && format === 'MMM' && this._shortMonthsParse[i].test(monthName)) {
-                return i;
-            } else if (!strict && this._monthsParse[i].test(monthName)) {
-                return i;
-            }
-        }
-    }
-
-    // MOMENTS
-
-    function setMonth (mom, value) {
-        var dayOfMonth;
-
-        if (!mom.isValid()) {
-            // No op
-            return mom;
-        }
-
-        if (typeof value === 'string') {
-            if (/^\d+$/.test(value)) {
-                value = toInt(value);
-            } else {
-                value = mom.localeData().monthsParse(value);
-                // TODO: Another silent failure?
-                if (typeof value !== 'number') {
-                    return mom;
-                }
-            }
-        }
-
-        dayOfMonth = Math.min(mom.date(), daysInMonth(mom.year(), value));
-        mom._d['set' + (mom._isUTC ? 'UTC' : '') + 'Month'](value, dayOfMonth);
-        return mom;
-    }
-
-    function getSetMonth (value) {
-        if (value != null) {
-            setMonth(this, value);
-            utils_hooks__hooks.updateOffset(this, true);
-            return this;
-        } else {
-            return get_set__get(this, 'Month');
-        }
-    }
-
-    function getDaysInMonth () {
-        return daysInMonth(this.year(), this.month());
-    }
-
-    var defaultMonthsShortRegex = matchWord;
-    function monthsShortRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsShortStrictRegex;
-            } else {
-                return this._monthsShortRegex;
-            }
-        } else {
-            return this._monthsShortStrictRegex && isStrict ?
-                this._monthsShortStrictRegex : this._monthsShortRegex;
-        }
-    }
-
-    var defaultMonthsRegex = matchWord;
-    function monthsRegex (isStrict) {
-        if (this._monthsParseExact) {
-            if (!hasOwnProp(this, '_monthsRegex')) {
-                computeMonthsParse.call(this);
-            }
-            if (isStrict) {
-                return this._monthsStrictRegex;
-            } else {
-                return this._monthsRegex;
-            }
-        } else {
-            return this._monthsStrictRegex && isStrict ?
-                this._monthsStrictRegex : this._monthsRegex;
-        }
-    }
-
-    function computeMonthsParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-
-        var shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom;
-        for (i = 0; i < 12; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, i]);
-            shortPieces.push(this.monthsShort(mom, ''));
-            longPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.months(mom, ''));
-            mixedPieces.push(this.monthsShort(mom, ''));
-        }
-        // Sorting makes sure if one month (or abbr) is a prefix of another it
-        // will match the longer piece.
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 12; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
-
-        this._monthsRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._monthsShortRegex = this._monthsRegex;
-        this._monthsStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._monthsShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
-    }
-
-    function checkOverflow (m) {
-        var overflow;
-        var a = m._a;
-
-        if (a && getParsingFlags(m).overflow === -2) {
-            overflow =
-                a[MONTH]       < 0 || a[MONTH]       > 11  ? MONTH :
-                a[DATE]        < 1 || a[DATE]        > daysInMonth(a[YEAR], a[MONTH]) ? DATE :
-                a[HOUR]        < 0 || a[HOUR]        > 24 || (a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0)) ? HOUR :
-                a[MINUTE]      < 0 || a[MINUTE]      > 59  ? MINUTE :
-                a[SECOND]      < 0 || a[SECOND]      > 59  ? SECOND :
-                a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND :
-                -1;
-
-            if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
-                overflow = DATE;
-            }
-            if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
-                overflow = WEEK;
-            }
-            if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
-                overflow = WEEKDAY;
-            }
-
-            getParsingFlags(m).overflow = overflow;
-        }
-
-        return m;
-    }
-
-    // iso 8601 regex
-    // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
-    var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
-    var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
-
-    var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
-
-    var isoDates = [
-        ['YYYYYY-MM-DD', /[+-]\d{6}-\d\d-\d\d/],
-        ['YYYY-MM-DD', /\d{4}-\d\d-\d\d/],
-        ['GGGG-[W]WW-E', /\d{4}-W\d\d-\d/],
-        ['GGGG-[W]WW', /\d{4}-W\d\d/, false],
-        ['YYYY-DDD', /\d{4}-\d{3}/],
-        ['YYYY-MM', /\d{4}-\d\d/, false],
-        ['YYYYYYMMDD', /[+-]\d{10}/],
-        ['YYYYMMDD', /\d{8}/],
-        // YYYYMM is NOT allowed by the standard
-        ['GGGG[W]WWE', /\d{4}W\d{3}/],
-        ['GGGG[W]WW', /\d{4}W\d{2}/, false],
-        ['YYYYDDD', /\d{7}/]
-    ];
-
-    // iso time formats and regexes
-    var isoTimes = [
-        ['HH:mm:ss.SSSS', /\d\d:\d\d:\d\d\.\d+/],
-        ['HH:mm:ss,SSSS', /\d\d:\d\d:\d\d,\d+/],
-        ['HH:mm:ss', /\d\d:\d\d:\d\d/],
-        ['HH:mm', /\d\d:\d\d/],
-        ['HHmmss.SSSS', /\d\d\d\d\d\d\.\d+/],
-        ['HHmmss,SSSS', /\d\d\d\d\d\d,\d+/],
-        ['HHmmss', /\d\d\d\d\d\d/],
-        ['HHmm', /\d\d\d\d/],
-        ['HH', /\d\d/]
-    ];
-
-    var aspNetJsonRegex = /^\/?Date\((\-?\d+)/i;
-
-    // date from iso format
-    function configFromISO(config) {
-        var i, l,
-            string = config._i,
-            match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string),
-            allowTime, dateFormat, timeFormat, tzFormat;
-
-        if (match) {
-            getParsingFlags(config).iso = true;
-
-            for (i = 0, l = isoDates.length; i < l; i++) {
-                if (isoDates[i][1].exec(match[1])) {
-                    dateFormat = isoDates[i][0];
-                    allowTime = isoDates[i][2] !== false;
-                    break;
-                }
-            }
-            if (dateFormat == null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[3]) {
-                for (i = 0, l = isoTimes.length; i < l; i++) {
-                    if (isoTimes[i][1].exec(match[3])) {
-                        // match[2] should be 'T' or space
-                        timeFormat = (match[2] || ' ') + isoTimes[i][0];
-                        break;
-                    }
-                }
-                if (timeFormat == null) {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            if (!allowTime && timeFormat != null) {
-                config._isValid = false;
-                return;
-            }
-            if (match[4]) {
-                if (tzRegex.exec(match[4])) {
-                    tzFormat = 'Z';
-                } else {
-                    config._isValid = false;
-                    return;
-                }
-            }
-            config._f = dateFormat + (timeFormat || '') + (tzFormat || '');
-            configFromStringAndFormat(config);
-        } else {
-            config._isValid = false;
-        }
-    }
-
-    // date from iso format or fallback
-    function configFromString(config) {
-        var matched = aspNetJsonRegex.exec(config._i);
-
-        if (matched !== null) {
-            config._d = new Date(+matched[1]);
-            return;
-        }
-
-        configFromISO(config);
-        if (config._isValid === false) {
-            delete config._isValid;
-            utils_hooks__hooks.createFromInputFallback(config);
-        }
-    }
-
-    utils_hooks__hooks.createFromInputFallback = deprecate(
-        'moment construction falls back to js Date. This is ' +
-        'discouraged and will be removed in upcoming major ' +
-        'release. Please refer to ' +
-        'https://github.com/moment/moment/issues/1407 for more info.',
-        function (config) {
-            config._d = new Date(config._i + (config._useUTC ? ' UTC' : ''));
-        }
-    );
-
-    function createDate (y, m, d, h, M, s, ms) {
-        //can't just apply() to create a date:
-        //http://stackoverflow.com/questions/181348/instantiating-a-javascript-object-by-calling-prototype-constructor-apply
-        var date = new Date(y, m, d, h, M, s, ms);
-
-        //the date constructor remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getFullYear())) {
-            date.setFullYear(y);
-        }
-        return date;
-    }
-
-    function createUTCDate (y) {
-        var date = new Date(Date.UTC.apply(null, arguments));
-
-        //the Date.UTC function remaps years 0-99 to 1900-1999
-        if (y < 100 && y >= 0 && isFinite(date.getUTCFullYear())) {
-            date.setUTCFullYear(y);
-        }
-        return date;
-    }
-
-    // FORMATTING
-
-    addFormatToken('Y', 0, 0, function () {
-        var y = this.year();
-        return y <= 9999 ? '' + y : '+' + y;
-    });
-
-    addFormatToken(0, ['YY', 2], 0, function () {
-        return this.year() % 100;
-    });
-
-    addFormatToken(0, ['YYYY',   4],       0, 'year');
-    addFormatToken(0, ['YYYYY',  5],       0, 'year');
-    addFormatToken(0, ['YYYYYY', 6, true], 0, 'year');
-
-    // ALIASES
-
-    addUnitAlias('year', 'y');
-
-    // PARSING
-
-    addRegexToken('Y',      matchSigned);
-    addRegexToken('YY',     match1to2, match2);
-    addRegexToken('YYYY',   match1to4, match4);
-    addRegexToken('YYYYY',  match1to6, match6);
-    addRegexToken('YYYYYY', match1to6, match6);
-
-    addParseToken(['YYYYY', 'YYYYYY'], YEAR);
-    addParseToken('YYYY', function (input, array) {
-        array[YEAR] = input.length === 2 ? utils_hooks__hooks.parseTwoDigitYear(input) : toInt(input);
-    });
-    addParseToken('YY', function (input, array) {
-        array[YEAR] = utils_hooks__hooks.parseTwoDigitYear(input);
-    });
-    addParseToken('Y', function (input, array) {
-        array[YEAR] = parseInt(input, 10);
-    });
-
-    // HELPERS
-
-    function daysInYear(year) {
-        return isLeapYear(year) ? 366 : 365;
-    }
-
-    function isLeapYear(year) {
-        return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-    }
-
-    // HOOKS
-
-    utils_hooks__hooks.parseTwoDigitYear = function (input) {
-        return toInt(input) + (toInt(input) > 68 ? 1900 : 2000);
-    };
-
-    // MOMENTS
-
-    var getSetYear = makeGetSet('FullYear', true);
-
-    function getIsLeapYear () {
-        return isLeapYear(this.year());
-    }
-
-    // start-of-first-week - start-of-year
-    function firstWeekOffset(year, dow, doy) {
-        var // first-week day -- which january is always in the first week (4 for iso, 1 for other)
-            fwd = 7 + dow - doy,
-            // first-week day local weekday -- which local weekday is fwd
-            fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
-
-        return -fwdlw + fwd - 1;
-    }
-
-    //http://en.wikipedia.org/wiki/ISO_week_date#Calculating_a_date_given_the_year.2C_week_number_and_weekday
-    function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
-        var localWeekday = (7 + weekday - dow) % 7,
-            weekOffset = firstWeekOffset(year, dow, doy),
-            dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset,
-            resYear, resDayOfYear;
-
-        if (dayOfYear <= 0) {
-            resYear = year - 1;
-            resDayOfYear = daysInYear(resYear) + dayOfYear;
-        } else if (dayOfYear > daysInYear(year)) {
-            resYear = year + 1;
-            resDayOfYear = dayOfYear - daysInYear(year);
-        } else {
-            resYear = year;
-            resDayOfYear = dayOfYear;
-        }
-
-        return {
-            year: resYear,
-            dayOfYear: resDayOfYear
-        };
-    }
-
-    function weekOfYear(mom, dow, doy) {
-        var weekOffset = firstWeekOffset(mom.year(), dow, doy),
-            week = Math.floor((mom.dayOfYear() - weekOffset - 1) / 7) + 1,
-            resWeek, resYear;
-
-        if (week < 1) {
-            resYear = mom.year() - 1;
-            resWeek = week + weeksInYear(resYear, dow, doy);
-        } else if (week > weeksInYear(mom.year(), dow, doy)) {
-            resWeek = week - weeksInYear(mom.year(), dow, doy);
-            resYear = mom.year() + 1;
-        } else {
-            resYear = mom.year();
-            resWeek = week;
-        }
-
-        return {
-            week: resWeek,
-            year: resYear
-        };
-    }
-
-    function weeksInYear(year, dow, doy) {
-        var weekOffset = firstWeekOffset(year, dow, doy),
-            weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
-        return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
-    }
-
-    // Pick the first defined of two or three arguments.
-    function defaults(a, b, c) {
-        if (a != null) {
-            return a;
-        }
-        if (b != null) {
-            return b;
-        }
-        return c;
-    }
-
-    function currentDateArray(config) {
-        // hooks is actually the exported moment object
-        var nowValue = new Date(utils_hooks__hooks.now());
-        if (config._useUTC) {
-            return [nowValue.getUTCFullYear(), nowValue.getUTCMonth(), nowValue.getUTCDate()];
-        }
-        return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
-    }
-
-    // convert an array to a date.
-    // the array should mirror the parameters below
-    // note: all values past the year are optional and will default to the lowest possible value.
-    // [year, month, day , hour, minute, second, millisecond]
-    function configFromArray (config) {
-        var i, date, input = [], currentDate, yearToUse;
-
-        if (config._d) {
-            return;
-        }
-
-        currentDate = currentDateArray(config);
-
-        //compute day of the year from weeks and weekdays
-        if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
-            dayOfYearFromWeekInfo(config);
-        }
-
-        //if the day of the year is set, figure out what it is
-        if (config._dayOfYear) {
-            yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
-
-            if (config._dayOfYear > daysInYear(yearToUse)) {
-                getParsingFlags(config)._overflowDayOfYear = true;
-            }
-
-            date = createUTCDate(yearToUse, 0, config._dayOfYear);
-            config._a[MONTH] = date.getUTCMonth();
-            config._a[DATE] = date.getUTCDate();
-        }
-
-        // Default to current date.
-        // * if no year, month, day of month are given, default to today
-        // * if day of month is given, default month and year
-        // * if month is given, default only year
-        // * if year is given, don't default anything
-        for (i = 0; i < 3 && config._a[i] == null; ++i) {
-            config._a[i] = input[i] = currentDate[i];
-        }
-
-        // Zero out whatever was not defaulted, including time
-        for (; i < 7; i++) {
-            config._a[i] = input[i] = (config._a[i] == null) ? (i === 2 ? 1 : 0) : config._a[i];
-        }
-
-        // Check for 24:00:00.000
-        if (config._a[HOUR] === 24 &&
-                config._a[MINUTE] === 0 &&
-                config._a[SECOND] === 0 &&
-                config._a[MILLISECOND] === 0) {
-            config._nextDay = true;
-            config._a[HOUR] = 0;
-        }
-
-        config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
-        // Apply timezone offset from input. The actual utcOffset can be changed
-        // with parseZone.
-        if (config._tzm != null) {
-            config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-        }
-
-        if (config._nextDay) {
-            config._a[HOUR] = 24;
-        }
-    }
-
-    function dayOfYearFromWeekInfo(config) {
-        var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow;
-
-        w = config._w;
-        if (w.GG != null || w.W != null || w.E != null) {
-            dow = 1;
-            doy = 4;
-
-            // TODO: We need to take the current isoWeekYear, but that depends on
-            // how we interpret now (local, utc, fixed offset). So create
-            // a now version of current config (take local/utc/offset flags, and
-            // create now).
-            weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(local__createLocal(), 1, 4).year);
-            week = defaults(w.W, 1);
-            weekday = defaults(w.E, 1);
-            if (weekday < 1 || weekday > 7) {
-                weekdayOverflow = true;
-            }
-        } else {
-            dow = config._locale._week.dow;
-            doy = config._locale._week.doy;
-
-            weekYear = defaults(w.gg, config._a[YEAR], weekOfYear(local__createLocal(), dow, doy).year);
-            week = defaults(w.w, 1);
-
-            if (w.d != null) {
-                // weekday -- low day numbers are considered next week
-                weekday = w.d;
-                if (weekday < 0 || weekday > 6) {
-                    weekdayOverflow = true;
-                }
-            } else if (w.e != null) {
-                // local weekday -- counting starts from begining of week
-                weekday = w.e + dow;
-                if (w.e < 0 || w.e > 6) {
-                    weekdayOverflow = true;
-                }
-            } else {
-                // default to begining of week
-                weekday = dow;
-            }
-        }
-        if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
-            getParsingFlags(config)._overflowWeeks = true;
-        } else if (weekdayOverflow != null) {
-            getParsingFlags(config)._overflowWeekday = true;
-        } else {
-            temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
-            config._a[YEAR] = temp.year;
-            config._dayOfYear = temp.dayOfYear;
-        }
-    }
-
-    // constant that refers to the ISO standard
-    utils_hooks__hooks.ISO_8601 = function () {};
-
-    // date from string and format string
-    function configFromStringAndFormat(config) {
-        // TODO: Move this to another part of the creation flow to prevent circular deps
-        if (config._f === utils_hooks__hooks.ISO_8601) {
-            configFromISO(config);
-            return;
-        }
-
-        config._a = [];
-        getParsingFlags(config).empty = true;
-
-        // This array is used to make a Date, either with `new Date` or `Date.UTC`
-        var string = '' + config._i,
-            i, parsedInput, tokens, token, skipped,
-            stringLength = string.length,
-            totalParsedInputLength = 0;
-
-        tokens = expandFormat(config._f, config._locale).match(formattingTokens) || [];
-
-        for (i = 0; i < tokens.length; i++) {
-            token = tokens[i];
-            parsedInput = (string.match(getParseRegexForToken(token, config)) || [])[0];
-            // console.log('token', token, 'parsedInput', parsedInput,
-            //         'regex', getParseRegexForToken(token, config));
-            if (parsedInput) {
-                skipped = string.substr(0, string.indexOf(parsedInput));
-                if (skipped.length > 0) {
-                    getParsingFlags(config).unusedInput.push(skipped);
-                }
-                string = string.slice(string.indexOf(parsedInput) + parsedInput.length);
-                totalParsedInputLength += parsedInput.length;
-            }
-            // don't parse if it's not a known token
-            if (formatTokenFunctions[token]) {
-                if (parsedInput) {
-                    getParsingFlags(config).empty = false;
-                }
-                else {
-                    getParsingFlags(config).unusedTokens.push(token);
-                }
-                addTimeToArrayFromToken(token, parsedInput, config);
-            }
-            else if (config._strict && !parsedInput) {
-                getParsingFlags(config).unusedTokens.push(token);
-            }
-        }
-
-        // add remaining unparsed input length to the string
-        getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
-        if (string.length > 0) {
-            getParsingFlags(config).unusedInput.push(string);
-        }
-
-        // clear _12h flag if hour is <= 12
-        if (getParsingFlags(config).bigHour === true &&
-                config._a[HOUR] <= 12 &&
-                config._a[HOUR] > 0) {
-            getParsingFlags(config).bigHour = undefined;
-        }
-
-        getParsingFlags(config).parsedDateParts = config._a.slice(0);
-        getParsingFlags(config).meridiem = config._meridiem;
-        // handle meridiem
-        config._a[HOUR] = meridiemFixWrap(config._locale, config._a[HOUR], config._meridiem);
-
-        configFromArray(config);
-        checkOverflow(config);
-    }
-
-
-    function meridiemFixWrap (locale, hour, meridiem) {
-        var isPm;
-
-        if (meridiem == null) {
-            // nothing to do
-            return hour;
-        }
-        if (locale.meridiemHour != null) {
-            return locale.meridiemHour(hour, meridiem);
-        } else if (locale.isPM != null) {
-            // Fallback
-            isPm = locale.isPM(meridiem);
-            if (isPm && hour < 12) {
-                hour += 12;
-            }
-            if (!isPm && hour === 12) {
-                hour = 0;
-            }
-            return hour;
-        } else {
-            // this is not supposed to happen
-            return hour;
-        }
-    }
-
-    // date from string and array of format strings
-    function configFromStringAndArray(config) {
-        var tempConfig,
-            bestMoment,
-
-            scoreToBeat,
-            i,
-            currentScore;
-
-        if (config._f.length === 0) {
-            getParsingFlags(config).invalidFormat = true;
-            config._d = new Date(NaN);
-            return;
-        }
-
-        for (i = 0; i < config._f.length; i++) {
-            currentScore = 0;
-            tempConfig = copyConfig({}, config);
-            if (config._useUTC != null) {
-                tempConfig._useUTC = config._useUTC;
-            }
-            tempConfig._f = config._f[i];
-            configFromStringAndFormat(tempConfig);
-
-            if (!valid__isValid(tempConfig)) {
-                continue;
-            }
-
-            // if there is any input that was not parsed add a penalty for that format
-            currentScore += getParsingFlags(tempConfig).charsLeftOver;
-
-            //or tokens
-            currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
-
-            getParsingFlags(tempConfig).score = currentScore;
-
-            if (scoreToBeat == null || currentScore < scoreToBeat) {
-                scoreToBeat = currentScore;
-                bestMoment = tempConfig;
-            }
-        }
-
-        extend(config, bestMoment || tempConfig);
-    }
-
-    function configFromObject(config) {
-        if (config._d) {
-            return;
-        }
-
-        var i = normalizeObjectUnits(config._i);
-        config._a = map([i.year, i.month, i.day || i.date, i.hour, i.minute, i.second, i.millisecond], function (obj) {
-            return obj && parseInt(obj, 10);
-        });
-
-        configFromArray(config);
-    }
-
-    function createFromConfig (config) {
-        var res = new Moment(checkOverflow(prepareConfig(config)));
-        if (res._nextDay) {
-            // Adding is smart enough around DST
-            res.add(1, 'd');
-            res._nextDay = undefined;
-        }
-
-        return res;
-    }
-
-    function prepareConfig (config) {
-        var input = config._i,
-            format = config._f;
-
-        config._locale = config._locale || locale_locales__getLocale(config._l);
-
-        if (input === null || (format === undefined && input === '')) {
-            return valid__createInvalid({nullInput: true});
-        }
-
-        if (typeof input === 'string') {
-            config._i = input = config._locale.preparse(input);
-        }
-
-        if (isMoment(input)) {
-            return new Moment(checkOverflow(input));
-        } else if (isArray(format)) {
-            configFromStringAndArray(config);
-        } else if (format) {
-            configFromStringAndFormat(config);
-        } else if (isDate(input)) {
-            config._d = input;
-        } else {
-            configFromInput(config);
-        }
-
-        if (!valid__isValid(config)) {
-            config._d = null;
-        }
-
-        return config;
-    }
-
-    function configFromInput(config) {
-        var input = config._i;
-        if (input === undefined) {
-            config._d = new Date(utils_hooks__hooks.now());
-        } else if (isDate(input)) {
-            config._d = new Date(input.valueOf());
-        } else if (typeof input === 'string') {
-            configFromString(config);
-        } else if (isArray(input)) {
-            config._a = map(input.slice(0), function (obj) {
-                return parseInt(obj, 10);
-            });
-            configFromArray(config);
-        } else if (typeof(input) === 'object') {
-            configFromObject(config);
-        } else if (typeof(input) === 'number') {
-            // from milliseconds
-            config._d = new Date(input);
-        } else {
-            utils_hooks__hooks.createFromInputFallback(config);
-        }
-    }
-
-    function createLocalOrUTC (input, format, locale, strict, isUTC) {
-        var c = {};
-
-        if (typeof(locale) === 'boolean') {
-            strict = locale;
-            locale = undefined;
-        }
-        // object construction must be done this way.
-        // https://github.com/moment/moment/issues/1423
-        c._isAMomentObject = true;
-        c._useUTC = c._isUTC = isUTC;
-        c._l = locale;
-        c._i = input;
-        c._f = format;
-        c._strict = strict;
-
-        return createFromConfig(c);
-    }
-
-    function local__createLocal (input, format, locale, strict) {
-        return createLocalOrUTC(input, format, locale, strict, false);
-    }
-
-    var prototypeMin = deprecate(
-         'moment().min is deprecated, use moment.max instead. https://github.com/moment/moment/issues/1548',
-         function () {
-             var other = local__createLocal.apply(null, arguments);
-             if (this.isValid() && other.isValid()) {
-                 return other < this ? this : other;
-             } else {
-                 return valid__createInvalid();
-             }
-         }
-     );
-
-    var prototypeMax = deprecate(
-        'moment().max is deprecated, use moment.min instead. https://github.com/moment/moment/issues/1548',
-        function () {
-            var other = local__createLocal.apply(null, arguments);
-            if (this.isValid() && other.isValid()) {
-                return other > this ? this : other;
-            } else {
-                return valid__createInvalid();
-            }
-        }
-    );
-
-    // Pick a moment m from moments so that m[fn](other) is true for all
-    // other. This relies on the function fn to be transitive.
-    //
-    // moments should either be an array of moment objects or an array, whose
-    // first element is an array of moment objects.
-    function pickBy(fn, moments) {
-        var res, i;
-        if (moments.length === 1 && isArray(moments[0])) {
-            moments = moments[0];
-        }
-        if (!moments.length) {
-            return local__createLocal();
-        }
-        res = moments[0];
-        for (i = 1; i < moments.length; ++i) {
-            if (!moments[i].isValid() || moments[i][fn](res)) {
-                res = moments[i];
-            }
-        }
-        return res;
-    }
-
-    // TODO: Use [].sort instead?
-    function min () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isBefore', args);
-    }
-
-    function max () {
-        var args = [].slice.call(arguments, 0);
-
-        return pickBy('isAfter', args);
-    }
-
-    var now = function () {
-        return Date.now ? Date.now() : +(new Date());
-    };
-
-    function Duration (duration) {
-        var normalizedInput = normalizeObjectUnits(duration),
-            years = normalizedInput.year || 0,
-            quarters = normalizedInput.quarter || 0,
-            months = normalizedInput.month || 0,
-            weeks = normalizedInput.week || 0,
-            days = normalizedInput.day || 0,
-            hours = normalizedInput.hour || 0,
-            minutes = normalizedInput.minute || 0,
-            seconds = normalizedInput.second || 0,
-            milliseconds = normalizedInput.millisecond || 0;
-
-        // representation for dateAddRemove
-        this._milliseconds = +milliseconds +
-            seconds * 1e3 + // 1000
-            minutes * 6e4 + // 1000 * 60
-            hours * 1000 * 60 * 60; //using 1000 * 60 * 60 instead of 36e5 to avoid floating point rounding errors https://github.com/moment/moment/issues/2978
-        // Because of dateAddRemove treats 24 hours as different from a
-        // day when working around DST, we need to store them separately
-        this._days = +days +
-            weeks * 7;
-        // It is impossible translate months into days without knowing
-        // which months you are are talking about, so we have to store
-        // it separately.
-        this._months = +months +
-            quarters * 3 +
-            years * 12;
-
-        this._data = {};
-
-        this._locale = locale_locales__getLocale();
-
-        this._bubble();
-    }
-
-    function isDuration (obj) {
-        return obj instanceof Duration;
-    }
-
-    // FORMATTING
-
-    function offset (token, separator) {
-        addFormatToken(token, 0, 0, function () {
-            var offset = this.utcOffset();
-            var sign = '+';
-            if (offset < 0) {
-                offset = -offset;
-                sign = '-';
-            }
-            return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~(offset) % 60, 2);
-        });
-    }
-
-    offset('Z', ':');
-    offset('ZZ', '');
-
-    // PARSING
-
-    addRegexToken('Z',  matchShortOffset);
-    addRegexToken('ZZ', matchShortOffset);
-    addParseToken(['Z', 'ZZ'], function (input, array, config) {
-        config._useUTC = true;
-        config._tzm = offsetFromString(matchShortOffset, input);
-    });
-
-    // HELPERS
-
-    // timezone chunker
-    // '+10:00' > ['10',  '00']
-    // '-1530'  > ['-15', '30']
-    var chunkOffset = /([\+\-]|\d\d)/gi;
-
-    function offsetFromString(matcher, string) {
-        var matches = ((string || '').match(matcher) || []);
-        var chunk   = matches[matches.length - 1] || [];
-        var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
-        var minutes = +(parts[1] * 60) + toInt(parts[2]);
-
-        return parts[0] === '+' ? minutes : -minutes;
-    }
-
-    // Return a moment from input, that is local/utc/zone equivalent to model.
-    function cloneWithOffset(input, model) {
-        var res, diff;
-        if (model._isUTC) {
-            res = model.clone();
-            diff = (isMoment(input) || isDate(input) ? input.valueOf() : local__createLocal(input).valueOf()) - res.valueOf();
-            // Use low-level api, because this fn is low-level api.
-            res._d.setTime(res._d.valueOf() + diff);
-            utils_hooks__hooks.updateOffset(res, false);
-            return res;
-        } else {
-            return local__createLocal(input).local();
-        }
-    }
-
-    function getDateOffset (m) {
-        // On Firefox.24 Date#getTimezoneOffset returns a floating point.
-        // https://github.com/moment/moment/pull/1871
-        return -Math.round(m._d.getTimezoneOffset() / 15) * 15;
-    }
-
-    // HOOKS
-
-    // This function will be called whenever a moment is mutated.
-    // It is intended to keep the offset in sync with the timezone.
-    utils_hooks__hooks.updateOffset = function () {};
-
-    // MOMENTS
-
-    // keepLocalTime = true means only change the timezone, without
-    // affecting the local hour. So 5:31:26 +0300 --[utcOffset(2, true)]-->
-    // 5:31:26 +0200 It is possible that 5:31:26 doesn't exist with offset
-    // +0200, so we adjust the time as needed, to be valid.
-    //
-    // Keeping the time actually adds/subtracts (one hour)
-    // from the actual represented time. That is why we call updateOffset
-    // a second time. In case it wants us to change the offset again
-    // _changeInProgress == true case, then we have to adjust, because
-    // there is no such time in the given timezone.
-    function getSetOffset (input, keepLocalTime) {
-        var offset = this._offset || 0,
-            localAdjust;
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        if (input != null) {
-            if (typeof input === 'string') {
-                input = offsetFromString(matchShortOffset, input);
-            } else if (Math.abs(input) < 16) {
-                input = input * 60;
-            }
-            if (!this._isUTC && keepLocalTime) {
-                localAdjust = getDateOffset(this);
-            }
-            this._offset = input;
-            this._isUTC = true;
-            if (localAdjust != null) {
-                this.add(localAdjust, 'm');
-            }
-            if (offset !== input) {
-                if (!keepLocalTime || this._changeInProgress) {
-                    add_subtract__addSubtract(this, create__createDuration(input - offset, 'm'), 1, false);
-                } else if (!this._changeInProgress) {
-                    this._changeInProgress = true;
-                    utils_hooks__hooks.updateOffset(this, true);
-                    this._changeInProgress = null;
-                }
-            }
-            return this;
-        } else {
-            return this._isUTC ? offset : getDateOffset(this);
-        }
-    }
-
-    function getSetZone (input, keepLocalTime) {
-        if (input != null) {
-            if (typeof input !== 'string') {
-                input = -input;
-            }
-
-            this.utcOffset(input, keepLocalTime);
-
-            return this;
-        } else {
-            return -this.utcOffset();
-        }
-    }
-
-    function setOffsetToUTC (keepLocalTime) {
-        return this.utcOffset(0, keepLocalTime);
-    }
-
-    function setOffsetToLocal (keepLocalTime) {
-        if (this._isUTC) {
-            this.utcOffset(0, keepLocalTime);
-            this._isUTC = false;
-
-            if (keepLocalTime) {
-                this.subtract(getDateOffset(this), 'm');
-            }
-        }
-        return this;
-    }
-
-    function setOffsetToParsedOffset () {
-        if (this._tzm) {
-            this.utcOffset(this._tzm);
-        } else if (typeof this._i === 'string') {
-            this.utcOffset(offsetFromString(matchOffset, this._i));
-        }
-        return this;
-    }
-
-    function hasAlignedHourOffset (input) {
-        if (!this.isValid()) {
-            return false;
-        }
-        input = input ? local__createLocal(input).utcOffset() : 0;
-
-        return (this.utcOffset() - input) % 60 === 0;
-    }
-
-    function isDaylightSavingTime () {
-        return (
-            this.utcOffset() > this.clone().month(0).utcOffset() ||
-            this.utcOffset() > this.clone().month(5).utcOffset()
-        );
-    }
-
-    function isDaylightSavingTimeShifted () {
-        if (!isUndefined(this._isDSTShifted)) {
-            return this._isDSTShifted;
-        }
-
-        var c = {};
-
-        copyConfig(c, this);
-        c = prepareConfig(c);
-
-        if (c._a) {
-            var other = c._isUTC ? create_utc__createUTC(c._a) : local__createLocal(c._a);
-            this._isDSTShifted = this.isValid() &&
-                compareArrays(c._a, other.toArray()) > 0;
-        } else {
-            this._isDSTShifted = false;
-        }
-
-        return this._isDSTShifted;
-    }
-
-    function isLocal () {
-        return this.isValid() ? !this._isUTC : false;
-    }
-
-    function isUtcOffset () {
-        return this.isValid() ? this._isUTC : false;
-    }
-
-    function isUtc () {
-        return this.isValid() ? this._isUTC && this._offset === 0 : false;
-    }
-
-    // ASP.NET json date format regex
-    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?\d*)?$/;
-
-    // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
-    // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
-    // and further modified to allow for strings containing both week and day
-    var isoRegex = /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/;
-
-    function create__createDuration (input, key) {
-        var duration = input,
-            // matching against regexp is expensive, do it on demand
-            match = null,
-            sign,
-            ret,
-            diffRes;
-
-        if (isDuration(input)) {
-            duration = {
-                ms : input._milliseconds,
-                d  : input._days,
-                M  : input._months
-            };
-        } else if (typeof input === 'number') {
-            duration = {};
-            if (key) {
-                duration[key] = input;
-            } else {
-                duration.milliseconds = input;
-            }
-        } else if (!!(match = aspNetRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y  : 0,
-                d  : toInt(match[DATE])        * sign,
-                h  : toInt(match[HOUR])        * sign,
-                m  : toInt(match[MINUTE])      * sign,
-                s  : toInt(match[SECOND])      * sign,
-                ms : toInt(match[MILLISECOND]) * sign
-            };
-        } else if (!!(match = isoRegex.exec(input))) {
-            sign = (match[1] === '-') ? -1 : 1;
-            duration = {
-                y : parseIso(match[2], sign),
-                M : parseIso(match[3], sign),
-                w : parseIso(match[4], sign),
-                d : parseIso(match[5], sign),
-                h : parseIso(match[6], sign),
-                m : parseIso(match[7], sign),
-                s : parseIso(match[8], sign)
-            };
-        } else if (duration == null) {// checks for null or undefined
-            duration = {};
-        } else if (typeof duration === 'object' && ('from' in duration || 'to' in duration)) {
-            diffRes = momentsDifference(local__createLocal(duration.from), local__createLocal(duration.to));
-
-            duration = {};
-            duration.ms = diffRes.milliseconds;
-            duration.M = diffRes.months;
-        }
-
-        ret = new Duration(duration);
-
-        if (isDuration(input) && hasOwnProp(input, '_locale')) {
-            ret._locale = input._locale;
-        }
-
-        return ret;
-    }
-
-    create__createDuration.fn = Duration.prototype;
-
-    function parseIso (inp, sign) {
-        // We'd normally use ~~inp for this, but unfortunately it also
-        // converts floats to ints.
-        // inp may be undefined, so careful calling replace on it.
-        var res = inp && parseFloat(inp.replace(',', '.'));
-        // apply sign while we're at it
-        return (isNaN(res) ? 0 : res) * sign;
-    }
-
-    function positiveMomentsDifference(base, other) {
-        var res = {milliseconds: 0, months: 0};
-
-        res.months = other.month() - base.month() +
-            (other.year() - base.year()) * 12;
-        if (base.clone().add(res.months, 'M').isAfter(other)) {
-            --res.months;
-        }
-
-        res.milliseconds = +other - +(base.clone().add(res.months, 'M'));
-
-        return res;
-    }
-
-    function momentsDifference(base, other) {
-        var res;
-        if (!(base.isValid() && other.isValid())) {
-            return {milliseconds: 0, months: 0};
-        }
-
-        other = cloneWithOffset(other, base);
-        if (base.isBefore(other)) {
-            res = positiveMomentsDifference(base, other);
-        } else {
-            res = positiveMomentsDifference(other, base);
-            res.milliseconds = -res.milliseconds;
-            res.months = -res.months;
-        }
-
-        return res;
-    }
-
-    function absRound (number) {
-        if (number < 0) {
-            return Math.round(-1 * number) * -1;
-        } else {
-            return Math.round(number);
-        }
-    }
-
-    // TODO: remove 'name' arg after deprecation is removed
-    function createAdder(direction, name) {
-        return function (val, period) {
-            var dur, tmp;
-            //invert the arguments, but complain about it
-            if (period !== null && !isNaN(+period)) {
-                deprecateSimple(name, 'moment().' + name  + '(period, number) is deprecated. Please use moment().' + name + '(number, period).');
-                tmp = val; val = period; period = tmp;
-            }
-
-            val = typeof val === 'string' ? +val : val;
-            dur = create__createDuration(val, period);
-            add_subtract__addSubtract(this, dur, direction);
-            return this;
-        };
-    }
-
-    function add_subtract__addSubtract (mom, duration, isAdding, updateOffset) {
-        var milliseconds = duration._milliseconds,
-            days = absRound(duration._days),
-            months = absRound(duration._months);
-
-        if (!mom.isValid()) {
-            // No op
-            return;
-        }
-
-        updateOffset = updateOffset == null ? true : updateOffset;
-
-        if (milliseconds) {
-            mom._d.setTime(mom._d.valueOf() + milliseconds * isAdding);
-        }
-        if (days) {
-            get_set__set(mom, 'Date', get_set__get(mom, 'Date') + days * isAdding);
-        }
-        if (months) {
-            setMonth(mom, get_set__get(mom, 'Month') + months * isAdding);
-        }
-        if (updateOffset) {
-            utils_hooks__hooks.updateOffset(mom, days || months);
-        }
-    }
-
-    var add_subtract__add      = createAdder(1, 'add');
-    var add_subtract__subtract = createAdder(-1, 'subtract');
-
-    function moment_calendar__calendar (time, formats) {
-        // We want to compare the start of today, vs this.
-        // Getting start-of-today depends on whether we're local/utc/offset or not.
-        var now = time || local__createLocal(),
-            sod = cloneWithOffset(now, this).startOf('day'),
-            diff = this.diff(sod, 'days', true),
-            format = diff < -6 ? 'sameElse' :
-                diff < -1 ? 'lastWeek' :
-                diff < 0 ? 'lastDay' :
-                diff < 1 ? 'sameDay' :
-                diff < 2 ? 'nextDay' :
-                diff < 7 ? 'nextWeek' : 'sameElse';
-
-        var output = formats && (isFunction(formats[format]) ? formats[format]() : formats[format]);
-
-        return this.format(output || this.localeData().calendar(format, this, local__createLocal(now)));
-    }
-
-    function clone () {
-        return new Moment(this);
-    }
-
-    function isAfter (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() > localInput.valueOf();
-        } else {
-            return localInput.valueOf() < this.clone().startOf(units).valueOf();
-        }
-    }
-
-    function isBefore (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input);
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(!isUndefined(units) ? units : 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() < localInput.valueOf();
-        } else {
-            return this.clone().endOf(units).valueOf() < localInput.valueOf();
-        }
-    }
-
-    function isBetween (from, to, units, inclusivity) {
-        inclusivity = inclusivity || '()';
-        return (inclusivity[0] === '(' ? this.isAfter(from, units) : !this.isBefore(from, units)) &&
-            (inclusivity[1] === ')' ? this.isBefore(to, units) : !this.isAfter(to, units));
-    }
-
-    function isSame (input, units) {
-        var localInput = isMoment(input) ? input : local__createLocal(input),
-            inputMs;
-        if (!(this.isValid() && localInput.isValid())) {
-            return false;
-        }
-        units = normalizeUnits(units || 'millisecond');
-        if (units === 'millisecond') {
-            return this.valueOf() === localInput.valueOf();
-        } else {
-            inputMs = localInput.valueOf();
-            return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
-        }
-    }
-
-    function isSameOrAfter (input, units) {
-        return this.isSame(input, units) || this.isAfter(input,units);
-    }
-
-    function isSameOrBefore (input, units) {
-        return this.isSame(input, units) || this.isBefore(input,units);
-    }
-
-    function diff (input, units, asFloat) {
-        var that,
-            zoneDelta,
-            delta, output;
-
-        if (!this.isValid()) {
-            return NaN;
-        }
-
-        that = cloneWithOffset(input, this);
-
-        if (!that.isValid()) {
-            return NaN;
-        }
-
-        zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
-
-        units = normalizeUnits(units);
-
-        if (units === 'year' || units === 'month' || units === 'quarter') {
-            output = monthDiff(this, that);
-            if (units === 'quarter') {
-                output = output / 3;
-            } else if (units === 'year') {
-                output = output / 12;
-            }
-        } else {
-            delta = this - that;
-            output = units === 'second' ? delta / 1e3 : // 1000
-                units === 'minute' ? delta / 6e4 : // 1000 * 60
-                units === 'hour' ? delta / 36e5 : // 1000 * 60 * 60
-                units === 'day' ? (delta - zoneDelta) / 864e5 : // 1000 * 60 * 60 * 24, negate dst
-                units === 'week' ? (delta - zoneDelta) / 6048e5 : // 1000 * 60 * 60 * 24 * 7, negate dst
-                delta;
-        }
-        return asFloat ? output : absFloor(output);
-    }
-
-    function monthDiff (a, b) {
-        // difference in months
-        var wholeMonthDiff = ((b.year() - a.year()) * 12) + (b.month() - a.month()),
-            // b is in (anchor - 1 month, anchor + 1 month)
-            anchor = a.clone().add(wholeMonthDiff, 'months'),
-            anchor2, adjust;
-
-        if (b - anchor < 0) {
-            anchor2 = a.clone().add(wholeMonthDiff - 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor - anchor2);
-        } else {
-            anchor2 = a.clone().add(wholeMonthDiff + 1, 'months');
-            // linear across the month
-            adjust = (b - anchor) / (anchor2 - anchor);
-        }
-
-        //check for negative zero, return zero if negative zero
-        return -(wholeMonthDiff + adjust) || 0;
-    }
-
-    utils_hooks__hooks.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
-    utils_hooks__hooks.defaultFormatUtc = 'YYYY-MM-DDTHH:mm:ss[Z]';
-
-    function toString () {
-        return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
-    }
-
-    function moment_format__toISOString () {
-        var m = this.clone().utc();
-        if (0 < m.year() && m.year() <= 9999) {
-            if (isFunction(Date.prototype.toISOString)) {
-                // native implementation is ~50x faster, use it when we can
-                return this.toDate().toISOString();
-            } else {
-                return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-            }
-        } else {
-            return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
-        }
-    }
-
-    function format (inputString) {
-        if (!inputString) {
-            inputString = this.isUtc() ? utils_hooks__hooks.defaultFormatUtc : utils_hooks__hooks.defaultFormat;
-        }
-        var output = formatMoment(this, inputString);
-        return this.localeData().postformat(output);
-    }
-
-    function from (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 local__createLocal(time).isValid())) {
-            return create__createDuration({to: this, from: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
-            return this.localeData().invalidDate();
-        }
-    }
-
-    function fromNow (withoutSuffix) {
-        return this.from(local__createLocal(), withoutSuffix);
-    }
-
-    function to (time, withoutSuffix) {
-        if (this.isValid() &&
-                ((isMoment(time) && time.isValid()) ||
-                 local__createLocal(time).isValid())) {
-            return create__createDuration({from: this, to: time}).locale(this.locale()).humanize(!withoutSuffix);
-        } else {
-            return this.localeData().invalidDate();
-        }
-    }
-
-    function toNow (withoutSuffix) {
-        return this.to(local__createLocal(), withoutSuffix);
-    }
-
-    // If passed a locale key, it will set the locale for this
-    // instance.  Otherwise, it will return the locale configuration
-    // variables for this instance.
-    function locale (key) {
-        var newLocaleData;
-
-        if (key === undefined) {
-            return this._locale._abbr;
-        } else {
-            newLocaleData = locale_locales__getLocale(key);
-            if (newLocaleData != null) {
-                this._locale = newLocaleData;
-            }
-            return this;
-        }
-    }
-
-    var lang = deprecate(
-        'moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.',
-        function (key) {
-            if (key === undefined) {
-                return this.localeData();
-            } else {
-                return this.locale(key);
-            }
-        }
-    );
-
-    function localeData () {
-        return this._locale;
-    }
-
-    function startOf (units) {
-        units = normalizeUnits(units);
-        // the following switch intentionally omits break keywords
-        // to utilize falling through the cases.
-        switch (units) {
-        case 'year':
-            this.month(0);
-            /* falls through */
-        case 'quarter':
-        case 'month':
-            this.date(1);
-            /* falls through */
-        case 'week':
-        case 'isoWeek':
-        case 'day':
-        case 'date':
-            this.hours(0);
-            /* falls through */
-        case 'hour':
-            this.minutes(0);
-            /* falls through */
-        case 'minute':
-            this.seconds(0);
-            /* falls through */
-        case 'second':
-            this.milliseconds(0);
-        }
-
-        // weeks are a special case
-        if (units === 'week') {
-            this.weekday(0);
-        }
-        if (units === 'isoWeek') {
-            this.isoWeekday(1);
-        }
-
-        // quarters are also special
-        if (units === 'quarter') {
-            this.month(Math.floor(this.month() / 3) * 3);
-        }
-
-        return this;
-    }
-
-    function endOf (units) {
-        units = normalizeUnits(units);
-        if (units === undefined || units === 'millisecond') {
-            return this;
-        }
-
-        // 'date' is an alias for 'day', so it should be considered as such.
-        if (units === 'date') {
-            units = 'day';
-        }
-
-        return this.startOf(units).add(1, (units === 'isoWeek' ? 'week' : units)).subtract(1, 'ms');
-    }
-
-    function to_type__valueOf () {
-        return this._d.valueOf() - ((this._offset || 0) * 60000);
-    }
-
-    function unix () {
-        return Math.floor(this.valueOf() / 1000);
-    }
-
-    function toDate () {
-        return this._offset ? new Date(this.valueOf()) : this._d;
-    }
-
-    function toArray () {
-        var m = this;
-        return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
-    }
-
-    function toObject () {
-        var m = this;
-        return {
-            years: m.year(),
-            months: m.month(),
-            date: m.date(),
-            hours: m.hours(),
-            minutes: m.minutes(),
-            seconds: m.seconds(),
-            milliseconds: m.milliseconds()
-        };
-    }
-
-    function toJSON () {
-        // new Date(NaN).toJSON() === null
-        return this.isValid() ? this.toISOString() : null;
-    }
-
-    function moment_valid__isValid () {
-        return valid__isValid(this);
-    }
-
-    function parsingFlags () {
-        return extend({}, getParsingFlags(this));
-    }
-
-    function invalidAt () {
-        return getParsingFlags(this).overflow;
-    }
-
-    function creationData() {
-        return {
-            input: this._i,
-            format: this._f,
-            locale: this._locale,
-            isUTC: this._isUTC,
-            strict: this._strict
-        };
-    }
-
-    // FORMATTING
-
-    addFormatToken(0, ['gg', 2], 0, function () {
-        return this.weekYear() % 100;
-    });
-
-    addFormatToken(0, ['GG', 2], 0, function () {
-        return this.isoWeekYear() % 100;
-    });
-
-    function addWeekYearFormatToken (token, getter) {
-        addFormatToken(0, [token, token.length], 0, getter);
-    }
-
-    addWeekYearFormatToken('gggg',     'weekYear');
-    addWeekYearFormatToken('ggggg',    'weekYear');
-    addWeekYearFormatToken('GGGG',  'isoWeekYear');
-    addWeekYearFormatToken('GGGGG', 'isoWeekYear');
-
-    // ALIASES
-
-    addUnitAlias('weekYear', 'gg');
-    addUnitAlias('isoWeekYear', 'GG');
-
-    // PARSING
-
-    addRegexToken('G',      matchSigned);
-    addRegexToken('g',      matchSigned);
-    addRegexToken('GG',     match1to2, match2);
-    addRegexToken('gg',     match1to2, match2);
-    addRegexToken('GGGG',   match1to4, match4);
-    addRegexToken('gggg',   match1to4, match4);
-    addRegexToken('GGGGG',  match1to6, match6);
-    addRegexToken('ggggg',  match1to6, match6);
-
-    addWeekParseToken(['gggg', 'ggggg', 'GGGG', 'GGGGG'], function (input, week, config, token) {
-        week[token.substr(0, 2)] = toInt(input);
-    });
-
-    addWeekParseToken(['gg', 'GG'], function (input, week, config, token) {
-        week[token] = utils_hooks__hooks.parseTwoDigitYear(input);
-    });
-
-    // MOMENTS
-
-    function getSetWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input,
-                this.week(),
-                this.weekday(),
-                this.localeData()._week.dow,
-                this.localeData()._week.doy);
-    }
-
-    function getSetISOWeekYear (input) {
-        return getSetWeekYearHelper.call(this,
-                input, this.isoWeek(), this.isoWeekday(), 1, 4);
-    }
-
-    function getISOWeeksInYear () {
-        return weeksInYear(this.year(), 1, 4);
-    }
-
-    function getWeeksInYear () {
-        var weekInfo = this.localeData()._week;
-        return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
-    }
-
-    function getSetWeekYearHelper(input, week, weekday, dow, doy) {
-        var weeksTarget;
-        if (input == null) {
-            return weekOfYear(this, dow, doy).year;
-        } else {
-            weeksTarget = weeksInYear(input, dow, doy);
-            if (week > weeksTarget) {
-                week = weeksTarget;
-            }
-            return setWeekAll.call(this, input, week, weekday, dow, doy);
-        }
-    }
-
-    function setWeekAll(weekYear, week, weekday, dow, doy) {
-        var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy),
-            date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
-
-        this.year(date.getUTCFullYear());
-        this.month(date.getUTCMonth());
-        this.date(date.getUTCDate());
-        return this;
-    }
-
-    // FORMATTING
-
-    addFormatToken('Q', 0, 'Qo', 'quarter');
-
-    // ALIASES
-
-    addUnitAlias('quarter', 'Q');
-
-    // PARSING
-
-    addRegexToken('Q', match1);
-    addParseToken('Q', function (input, array) {
-        array[MONTH] = (toInt(input) - 1) * 3;
-    });
-
-    // MOMENTS
-
-    function getSetQuarter (input) {
-        return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
-    }
-
-    // FORMATTING
-
-    addFormatToken('w', ['ww', 2], 'wo', 'week');
-    addFormatToken('W', ['WW', 2], 'Wo', 'isoWeek');
-
-    // ALIASES
-
-    addUnitAlias('week', 'w');
-    addUnitAlias('isoWeek', 'W');
-
-    // PARSING
-
-    addRegexToken('w',  match1to2);
-    addRegexToken('ww', match1to2, match2);
-    addRegexToken('W',  match1to2);
-    addRegexToken('WW', match1to2, match2);
-
-    addWeekParseToken(['w', 'ww', 'W', 'WW'], function (input, week, config, token) {
-        week[token.substr(0, 1)] = toInt(input);
-    });
-
-    // HELPERS
-
-    // LOCALES
-
-    function localeWeek (mom) {
-        return weekOfYear(mom, this._week.dow, this._week.doy).week;
-    }
-
-    var defaultLocaleWeek = {
-        dow : 0, // Sunday is the first day of the week.
-        doy : 6  // The week that contains Jan 1st is the first week of the year.
-    };
-
-    function localeFirstDayOfWeek () {
-        return this._week.dow;
-    }
-
-    function localeFirstDayOfYear () {
-        return this._week.doy;
-    }
-
-    // MOMENTS
-
-    function getSetWeek (input) {
-        var week = this.localeData().week(this);
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    function getSetISOWeek (input) {
-        var week = weekOfYear(this, 1, 4).week;
-        return input == null ? week : this.add((input - week) * 7, 'd');
-    }
-
-    // FORMATTING
-
-    addFormatToken('D', ['DD', 2], 'Do', 'date');
-
-    // ALIASES
-
-    addUnitAlias('date', 'D');
-
-    // PARSING
-
-    addRegexToken('D',  match1to2);
-    addRegexToken('DD', match1to2, match2);
-    addRegexToken('Do', function (isStrict, locale) {
-        return isStrict ? locale._ordinalParse : locale._ordinalParseLenient;
-    });
-
-    addParseToken(['D', 'DD'], DATE);
-    addParseToken('Do', function (input, array) {
-        array[DATE] = toInt(input.match(match1to2)[0], 10);
-    });
-
-    // MOMENTS
-
-    var getSetDayOfMonth = makeGetSet('Date', true);
-
-    // FORMATTING
-
-    addFormatToken('d', 0, 'do', 'day');
-
-    addFormatToken('dd', 0, 0, function (format) {
-        return this.localeData().weekdaysMin(this, format);
-    });
-
-    addFormatToken('ddd', 0, 0, function (format) {
-        return this.localeData().weekdaysShort(this, format);
-    });
-
-    addFormatToken('dddd', 0, 0, function (format) {
-        return this.localeData().weekdays(this, format);
-    });
-
-    addFormatToken('e', 0, 0, 'weekday');
-    addFormatToken('E', 0, 0, 'isoWeekday');
-
-    // ALIASES
-
-    addUnitAlias('day', 'd');
-    addUnitAlias('weekday', 'e');
-    addUnitAlias('isoWeekday', 'E');
-
-    // PARSING
-
-    addRegexToken('d',    match1to2);
-    addRegexToken('e',    match1to2);
-    addRegexToken('E',    match1to2);
-    addRegexToken('dd',   function (isStrict, locale) {
-        return locale.weekdaysMinRegex(isStrict);
-    });
-    addRegexToken('ddd',   function (isStrict, locale) {
-        return locale.weekdaysShortRegex(isStrict);
-    });
-    addRegexToken('dddd',   function (isStrict, locale) {
-        return locale.weekdaysRegex(isStrict);
-    });
-
-    addWeekParseToken(['dd', 'ddd', 'dddd'], function (input, week, config, token) {
-        var weekday = config._locale.weekdaysParse(input, token, config._strict);
-        // if we didn't get a weekday name, mark the date as invalid
-        if (weekday != null) {
-            week.d = weekday;
-        } else {
-            getParsingFlags(config).invalidWeekday = input;
-        }
-    });
-
-    addWeekParseToken(['d', 'e', 'E'], function (input, week, config, token) {
-        week[token] = toInt(input);
-    });
-
-    // HELPERS
-
-    function parseWeekday(input, locale) {
-        if (typeof input !== 'string') {
-            return input;
-        }
-
-        if (!isNaN(input)) {
-            return parseInt(input, 10);
-        }
-
-        input = locale.weekdaysParse(input);
-        if (typeof input === 'number') {
-            return input;
-        }
-
-        return null;
-    }
-
-    // LOCALES
-
-    var defaultLocaleWeekdays = 'Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday'.split('_');
-    function localeWeekdays (m, format) {
-        return isArray(this._weekdays) ? this._weekdays[m.day()] :
-            this._weekdays[this._weekdays.isFormat.test(format) ? 'format' : 'standalone'][m.day()];
-    }
-
-    var defaultLocaleWeekdaysShort = 'Sun_Mon_Tue_Wed_Thu_Fri_Sat'.split('_');
-    function localeWeekdaysShort (m) {
-        return this._weekdaysShort[m.day()];
-    }
-
-    var defaultLocaleWeekdaysMin = 'Su_Mo_Tu_We_Th_Fr_Sa'.split('_');
-    function localeWeekdaysMin (m) {
-        return this._weekdaysMin[m.day()];
-    }
-
-    function day_of_week__handleStrictParse(weekdayName, format, strict) {
-        var i, ii, mom, llc = weekdayName.toLocaleLowerCase();
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._minWeekdaysParse = [];
-
-            for (i = 0; i < 7; ++i) {
-                mom = create_utc__createUTC([2000, 1]).day(i);
-                this._minWeekdaysParse[i] = this.weekdaysMin(mom, '').toLocaleLowerCase();
-                this._shortWeekdaysParse[i] = this.weekdaysShort(mom, '').toLocaleLowerCase();
-                this._weekdaysParse[i] = this.weekdays(mom, '').toLocaleLowerCase();
-            }
-        }
-
-        if (strict) {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        } else {
-            if (format === 'dddd') {
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else if (format === 'ddd') {
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            } else {
-                ii = indexOf.call(this._minWeekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._weekdaysParse, llc);
-                if (ii !== -1) {
-                    return ii;
-                }
-                ii = indexOf.call(this._shortWeekdaysParse, llc);
-                return ii !== -1 ? ii : null;
-            }
-        }
-    }
-
-    function localeWeekdaysParse (weekdayName, format, strict) {
-        var i, mom, regex;
-
-        if (this._weekdaysParseExact) {
-            return day_of_week__handleStrictParse.call(this, weekdayName, format, strict);
-        }
-
-        if (!this._weekdaysParse) {
-            this._weekdaysParse = [];
-            this._minWeekdaysParse = [];
-            this._shortWeekdaysParse = [];
-            this._fullWeekdaysParse = [];
-        }
-
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-
-            mom = create_utc__createUTC([2000, 1]).day(i);
-            if (strict && !this._fullWeekdaysParse[i]) {
-                this._fullWeekdaysParse[i] = new RegExp('^' + this.weekdays(mom, '').replace('.', '\.?') + '$', 'i');
-                this._shortWeekdaysParse[i] = new RegExp('^' + this.weekdaysShort(mom, '').replace('.', '\.?') + '$', 'i');
-                this._minWeekdaysParse[i] = new RegExp('^' + this.weekdaysMin(mom, '').replace('.', '\.?') + '$', 'i');
-            }
-            if (!this._weekdaysParse[i]) {
-                regex = '^' + this.weekdays(mom, '') + '|^' + this.weekdaysShort(mom, '') + '|^' + this.weekdaysMin(mom, '');
-                this._weekdaysParse[i] = new RegExp(regex.replace('.', ''), 'i');
-            }
-            // test the regex
-            if (strict && format === 'dddd' && this._fullWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'ddd' && this._shortWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (strict && format === 'dd' && this._minWeekdaysParse[i].test(weekdayName)) {
-                return i;
-            } else if (!strict && this._weekdaysParse[i].test(weekdayName)) {
-                return i;
-            }
-        }
-    }
-
-    // MOMENTS
-
-    function getSetDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        var day = this._isUTC ? this._d.getUTCDay() : this._d.getDay();
-        if (input != null) {
-            input = parseWeekday(input, this.localeData());
-            return this.add(input - day, 'd');
-        } else {
-            return day;
-        }
-    }
-
-    function getSetLocaleDayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
-        return input == null ? weekday : this.add(input - weekday, 'd');
-    }
-
-    function getSetISODayOfWeek (input) {
-        if (!this.isValid()) {
-            return input != null ? this : NaN;
-        }
-        // behaves the same as moment#day except
-        // as a getter, returns 7 instead of 0 (1-7 range instead of 0-6)
-        // as a setter, sunday should belong to the previous week.
-        return input == null ? this.day() || 7 : this.day(this.day() % 7 ? input : input - 7);
-    }
-
-    var defaultWeekdaysRegex = matchWord;
-    function weekdaysRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysStrictRegex;
-            } else {
-                return this._weekdaysRegex;
-            }
-        } else {
-            return this._weekdaysStrictRegex && isStrict ?
-                this._weekdaysStrictRegex : this._weekdaysRegex;
-        }
-    }
-
-    var defaultWeekdaysShortRegex = matchWord;
-    function weekdaysShortRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysShortStrictRegex;
-            } else {
-                return this._weekdaysShortRegex;
-            }
-        } else {
-            return this._weekdaysShortStrictRegex && isStrict ?
-                this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
-        }
-    }
-
-    var defaultWeekdaysMinRegex = matchWord;
-    function weekdaysMinRegex (isStrict) {
-        if (this._weekdaysParseExact) {
-            if (!hasOwnProp(this, '_weekdaysRegex')) {
-                computeWeekdaysParse.call(this);
-            }
-            if (isStrict) {
-                return this._weekdaysMinStrictRegex;
-            } else {
-                return this._weekdaysMinRegex;
-            }
-        } else {
-            return this._weekdaysMinStrictRegex && isStrict ?
-                this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
-        }
-    }
-
-
-    function computeWeekdaysParse () {
-        function cmpLenRev(a, b) {
-            return b.length - a.length;
-        }
-
-        var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [],
-            i, mom, minp, shortp, longp;
-        for (i = 0; i < 7; i++) {
-            // make the regex if we don't have it already
-            mom = create_utc__createUTC([2000, 1]).day(i);
-            minp = this.weekdaysMin(mom, '');
-            shortp = this.weekdaysShort(mom, '');
-            longp = this.weekdays(mom, '');
-            minPieces.push(minp);
-            shortPieces.push(shortp);
-            longPieces.push(longp);
-            mixedPieces.push(minp);
-            mixedPieces.push(shortp);
-            mixedPieces.push(longp);
-        }
-        // Sorting makes sure if one weekday (or abbr) is a prefix of another it
-        // will match the longer piece.
-        minPieces.sort(cmpLenRev);
-        shortPieces.sort(cmpLenRev);
-        longPieces.sort(cmpLenRev);
-        mixedPieces.sort(cmpLenRev);
-        for (i = 0; i < 7; i++) {
-            shortPieces[i] = regexEscape(shortPieces[i]);
-            longPieces[i] = regexEscape(longPieces[i]);
-            mixedPieces[i] = regexEscape(mixedPieces[i]);
-        }
-
-        this._weekdaysRegex = new RegExp('^(' + mixedPieces.join('|') + ')', 'i');
-        this._weekdaysShortRegex = this._weekdaysRegex;
-        this._weekdaysMinRegex = this._weekdaysRegex;
-
-        this._weekdaysStrictRegex = new RegExp('^(' + longPieces.join('|') + ')', 'i');
-        this._weekdaysShortStrictRegex = new RegExp('^(' + shortPieces.join('|') + ')', 'i');
-        this._weekdaysMinStrictRegex = new RegExp('^(' + minPieces.join('|') + ')', 'i');
-    }
-
-    // FORMATTING
-
-    addFormatToken('DDD', ['DDDD', 3], 'DDDo', 'dayOfYear');
-
-    // ALIASES
-
-    addUnitAlias('dayOfYear', 'DDD');
-
-    // PARSING
-
-    addRegexToken('DDD',  match1to3);
-    addRegexToken('DDDD', match3);
-    addParseToken(['DDD', 'DDDD'], function (input, array, config) {
-        config._dayOfYear = toInt(input);
-    });
-
-    // HELPERS
-
-    // MOMENTS
-
-    function getSetDayOfYear (input) {
-        var dayOfYear = Math.round((this.clone().startOf('day') - this.clone().startOf('year')) / 864e5) + 1;
-        return input == null ? dayOfYear : this.add((input - dayOfYear), 'd');
-    }
-
-    // FORMATTING
-
-    function hFormat() {
-        return this.hours() % 12 || 12;
-    }
-
-    function kFormat() {
-        return this.hours() || 24;
-    }
-
-    addFormatToken('H', ['HH', 2], 0, 'hour');
-    addFormatToken('h', ['hh', 2], 0, hFormat);
-    addFormatToken('k', ['kk', 2], 0, kFormat);
-
-    addFormatToken('hmm', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2);
-    });
-
-    addFormatToken('hmmss', 0, 0, function () {
-        return '' + hFormat.apply(this) + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
-
-    addFormatToken('Hmm', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2);
-    });
-
-    addFormatToken('Hmmss', 0, 0, function () {
-        return '' + this.hours() + zeroFill(this.minutes(), 2) +
-            zeroFill(this.seconds(), 2);
-    });
-
-    function meridiem (token, lowercase) {
-        addFormatToken(token, 0, 0, function () {
-            return this.localeData().meridiem(this.hours(), this.minutes(), lowercase);
-        });
-    }
-
-    meridiem('a', true);
-    meridiem('A', false);
-
-    // ALIASES
-
-    addUnitAlias('hour', 'h');
-
-    // PARSING
-
-    function matchMeridiem (isStrict, locale) {
-        return locale._meridiemParse;
-    }
-
-    addRegexToken('a',  matchMeridiem);
-    addRegexToken('A',  matchMeridiem);
-    addRegexToken('H',  match1to2);
-    addRegexToken('h',  match1to2);
-    addRegexToken('HH', match1to2, match2);
-    addRegexToken('hh', match1to2, match2);
-
-    addRegexToken('hmm', match3to4);
-    addRegexToken('hmmss', match5to6);
-    addRegexToken('Hmm', match3to4);
-    addRegexToken('Hmmss', match5to6);
-
-    addParseToken(['H', 'HH'], HOUR);
-    addParseToken(['a', 'A'], function (input, array, config) {
-        config._isPm = config._locale.isPM(input);
-        config._meridiem = input;
-    });
-    addParseToken(['h', 'hh'], function (input, array, config) {
-        array[HOUR] = toInt(input);
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-        getParsingFlags(config).bigHour = true;
-    });
-    addParseToken('Hmm', function (input, array, config) {
-        var pos = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos));
-        array[MINUTE] = toInt(input.substr(pos));
-    });
-    addParseToken('Hmmss', function (input, array, config) {
-        var pos1 = input.length - 4;
-        var pos2 = input.length - 2;
-        array[HOUR] = toInt(input.substr(0, pos1));
-        array[MINUTE] = toInt(input.substr(pos1, 2));
-        array[SECOND] = toInt(input.substr(pos2));
-    });
-
-    // LOCALES
-
-    function localeIsPM (input) {
-        // IE8 Quirks Mode & IE7 Standards Mode do not allow accessing strings like arrays
-        // Using charAt should be more compatible.
-        return ((input + '').toLowerCase().charAt(0) === 'p');
-    }
-
-    var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i;
-    function localeMeridiem (hours, minutes, isLower) {
-        if (hours > 11) {
-            return isLower ? 'pm' : 'PM';
-        } else {
-            return isLower ? 'am' : 'AM';
-        }
-    }
-
-
-    // MOMENTS
-
-    // Setting the hour should keep the time, because the user explicitly
-    // specified which hour he wants. So trying to maintain the same hour (in
-    // a new timezone) makes sense. Adding/subtracting hours does not follow
-    // this rule.
-    var getSetHour = makeGetSet('Hours', true);
-
-    // FORMATTING
-
-    addFormatToken('m', ['mm', 2], 0, 'minute');
-
-    // ALIASES
-
-    addUnitAlias('minute', 'm');
-
-    // PARSING
-
-    addRegexToken('m',  match1to2);
-    addRegexToken('mm', match1to2, match2);
-    addParseToken(['m', 'mm'], MINUTE);
-
-    // MOMENTS
-
-    var getSetMinute = makeGetSet('Minutes', false);
-
-    // FORMATTING
-
-    addFormatToken('s', ['ss', 2], 0, 'second');
-
-    // ALIASES
-
-    addUnitAlias('second', 's');
-
-    // PARSING
-
-    addRegexToken('s',  match1to2);
-    addRegexToken('ss', match1to2, match2);
-    addParseToken(['s', 'ss'], SECOND);
-
-    // MOMENTS
-
-    var getSetSecond = makeGetSet('Seconds', false);
-
-    // FORMATTING
-
-    addFormatToken('S', 0, 0, function () {
-        return ~~(this.millisecond() / 100);
-    });
-
-    addFormatToken(0, ['SS', 2], 0, function () {
-        return ~~(this.millisecond() / 10);
-    });
-
-    addFormatToken(0, ['SSS', 3], 0, 'millisecond');
-    addFormatToken(0, ['SSSS', 4], 0, function () {
-        return this.millisecond() * 10;
-    });
-    addFormatToken(0, ['SSSSS', 5], 0, function () {
-        return this.millisecond() * 100;
-    });
-    addFormatToken(0, ['SSSSSS', 6], 0, function () {
-        return this.millisecond() * 1000;
-    });
-    addFormatToken(0, ['SSSSSSS', 7], 0, function () {
-        return this.millisecond() * 10000;
-    });
-    addFormatToken(0, ['SSSSSSSS', 8], 0, function () {
-        return this.millisecond() * 100000;
-    });
-    addFormatToken(0, ['SSSSSSSSS', 9], 0, function () {
-        return this.millisecond() * 1000000;
-    });
-
-
-    // ALIASES
-
-    addUnitAlias('millisecond', 'ms');
-
-    // PARSING
-
-    addRegexToken('S',    match1to3, match1);
-    addRegexToken('SS',   match1to3, match2);
-    addRegexToken('SSS',  match1to3, match3);
-
-    var token;
-    for (token = 'SSSS'; token.length <= 9; token += 'S') {
-        addRegexToken(token, matchUnsigned);
-    }
-
-    function parseMs(input, array) {
-        array[MILLISECOND] = toInt(('0.' + input) * 1000);
-    }
-
-    for (token = 'S'; token.length <= 9; token += 'S') {
-        addParseToken(token, parseMs);
-    }
-    // MOMENTS
-
-    var getSetMillisecond = makeGetSet('Milliseconds', false);
-
-    // FORMATTING
-
-    addFormatToken('z',  0, 0, 'zoneAbbr');
-    addFormatToken('zz', 0, 0, 'zoneName');
-
-    // MOMENTS
-
-    function getZoneAbbr () {
-        return this._isUTC ? 'UTC' : '';
-    }
-
-    function getZoneName () {
-        return this._isUTC ? 'Coordinated Universal Time' : '';
-    }
-
-    var momentPrototype__proto = Moment.prototype;
-
-    momentPrototype__proto.add               = add_subtract__add;
-    momentPrototype__proto.calendar          = moment_calendar__calendar;
-    momentPrototype__proto.clone             = clone;
-    momentPrototype__proto.diff              = diff;
-    momentPrototype__proto.endOf             = endOf;
-    momentPrototype__proto.format            = format;
-    momentPrototype__proto.from              = from;
-    momentPrototype__proto.fromNow           = fromNow;
-    momentPrototype__proto.to                = to;
-    momentPrototype__proto.toNow             = toNow;
-    momentPrototype__proto.get               = getSet;
-    momentPrototype__proto.invalidAt         = invalidAt;
-    momentPrototype__proto.isAfter           = isAfter;
-    momentPrototype__proto.isBefore          = isBefore;
-    momentPrototype__proto.isBetween         = isBetween;
-    momentPrototype__proto.isSame            = isSame;
-    momentPrototype__proto.isSameOrAfter     = isSameOrAfter;
-    momentPrototype__proto.isSameOrBefore    = isSameOrBefore;
-    momentPrototype__proto.isValid           = moment_valid__isValid;
-    momentPrototype__proto.lang              = lang;
-    momentPrototype__proto.locale            = locale;
-    momentPrototype__proto.localeData        = localeData;
-    momentPrototype__proto.max               = prototypeMax;
-    momentPrototype__proto.min               = prototypeMin;
-    momentPrototype__proto.parsingFlags      = parsingFlags;
-    momentPrototype__proto.set               = getSet;
-    momentPrototype__proto.startOf           = startOf;
-    momentPrototype__proto.subtract          = add_subtract__subtract;
-    momentPrototype__proto.toArray           = toArray;
-    momentPrototype__proto.toObject          = toObject;
-    momentPrototype__proto.toDate            = toDate;
-    momentPrototype__proto.toISOString       = moment_format__toISOString;
-    momentPrototype__proto.toJSON            = toJSON;
-    momentPrototype__proto.toString          = toString;
-    momentPrototype__proto.unix              = unix;
-    momentPrototype__proto.valueOf           = to_type__valueOf;
-    momentPrototype__proto.creationData      = creationData;
-
-    // Year
-    momentPrototype__proto.year       = getSetYear;
-    momentPrototype__proto.isLeapYear = getIsLeapYear;
-
-    // Week Year
-    momentPrototype__proto.weekYear    = getSetWeekYear;
-    momentPrototype__proto.isoWeekYear = getSetISOWeekYear;
-
-    // Quarter
-    momentPrototype__proto.quarter = momentPrototype__proto.quarters = getSetQuarter;
-
-    // Month
-    momentPrototype__proto.month       = getSetMonth;
-    momentPrototype__proto.daysInMonth = getDaysInMonth;
-
-    // Week
-    momentPrototype__proto.week           = momentPrototype__proto.weeks        = getSetWeek;
-    momentPrototype__proto.isoWeek        = momentPrototype__proto.isoWeeks     = getSetISOWeek;
-    momentPrototype__proto.weeksInYear    = getWeeksInYear;
-    momentPrototype__proto.isoWeeksInYear = getISOWeeksInYear;
-
-    // Day
-    momentPrototype__proto.date       = getSetDayOfMonth;
-    momentPrototype__proto.day        = momentPrototype__proto.days             = getSetDayOfWeek;
-    momentPrototype__proto.weekday    = getSetLocaleDayOfWeek;
-    momentPrototype__proto.isoWeekday = getSetISODayOfWeek;
-    momentPrototype__proto.dayOfYear  = getSetDayOfYear;
-
-    // Hour
-    momentPrototype__proto.hour = momentPrototype__proto.hours = getSetHour;
-
-    // Minute
-    momentPrototype__proto.minute = momentPrototype__proto.minutes = getSetMinute;
-
-    // Second
-    momentPrototype__proto.second = momentPrototype__proto.seconds = getSetSecond;
-
-    // Millisecond
-    momentPrototype__proto.millisecond = momentPrototype__proto.milliseconds = getSetMillisecond;
-
-    // Offset
-    momentPrototype__proto.utcOffset            = getSetOffset;
-    momentPrototype__proto.utc                  = setOffsetToUTC;
-    momentPrototype__proto.local                = setOffsetToLocal;
-    momentPrototype__proto.parseZone            = setOffsetToParsedOffset;
-    momentPrototype__proto.hasAlignedHourOffset = hasAlignedHourOffset;
-    momentPrototype__proto.isDST                = isDaylightSavingTime;
-    momentPrototype__proto.isDSTShifted         = isDaylightSavingTimeShifted;
-    momentPrototype__proto.isLocal              = isLocal;
-    momentPrototype__proto.isUtcOffset          = isUtcOffset;
-    momentPrototype__proto.isUtc                = isUtc;
-    momentPrototype__proto.isUTC                = isUtc;
-
-    // Timezone
-    momentPrototype__proto.zoneAbbr = getZoneAbbr;
-    momentPrototype__proto.zoneName = getZoneName;
-
-    // Deprecations
-    momentPrototype__proto.dates  = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
-    momentPrototype__proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
-    momentPrototype__proto.years  = deprecate('years accessor is deprecated. Use year instead', getSetYear);
-    momentPrototype__proto.zone   = deprecate('moment().zone is deprecated, use moment().utcOffset instead. https://github.com/moment/moment/issues/1779', getSetZone);
-
-    var momentPrototype = momentPrototype__proto;
-
-    function moment__createUnix (input) {
-        return local__createLocal(input * 1000);
-    }
-
-    function moment__createInZone () {
-        return local__createLocal.apply(null, arguments).parseZone();
-    }
-
-    var defaultCalendar = {
-        sameDay : '[Today at] LT',
-        nextDay : '[Tomorrow at] LT',
-        nextWeek : 'dddd [at] LT',
-        lastDay : '[Yesterday at] LT',
-        lastWeek : '[Last] dddd [at] LT',
-        sameElse : 'L'
-    };
-
-    function locale_calendar__calendar (key, mom, now) {
-        var output = this._calendar[key];
-        return isFunction(output) ? output.call(mom, now) : output;
-    }
-
-    var defaultLongDateFormat = {
-        LTS  : 'h:mm:ss A',
-        LT   : 'h:mm A',
-        L    : 'MM/DD/YYYY',
-        LL   : 'MMMM D, YYYY',
-        LLL  : 'MMMM D, YYYY h:mm A',
-        LLLL : 'dddd, MMMM D, YYYY h:mm A'
-    };
-
-    function longDateFormat (key) {
-        var format = this._longDateFormat[key],
-            formatUpper = this._longDateFormat[key.toUpperCase()];
-
-        if (format || !formatUpper) {
-            return format;
-        }
-
-        this._longDateFormat[key] = formatUpper.replace(/MMMM|MM|DD|dddd/g, function (val) {
-            return val.slice(1);
-        });
-
-        return this._longDateFormat[key];
-    }
-
-    var defaultInvalidDate = 'Invalid date';
-
-    function invalidDate () {
-        return this._invalidDate;
-    }
-
-    var defaultOrdinal = '%d';
-    var defaultOrdinalParse = /\d{1,2}/;
-
-    function ordinal (number) {
-        return this._ordinal.replace('%d', number);
-    }
-
-    function preParsePostFormat (string) {
-        return string;
-    }
-
-    var defaultRelativeTime = {
-        future : 'in %s',
-        past   : '%s ago',
-        s  : 'a few seconds',
-        m  : 'a minute',
-        mm : '%d minutes',
-        h  : 'an hour',
-        hh : '%d hours',
-        d  : 'a day',
-        dd : '%d days',
-        M  : 'a month',
-        MM : '%d months',
-        y  : 'a year',
-        yy : '%d years'
-    };
-
-    function relative__relativeTime (number, withoutSuffix, string, isFuture) {
-        var output = this._relativeTime[string];
-        return (isFunction(output)) ?
-            output(number, withoutSuffix, string, isFuture) :
-            output.replace(/%d/i, number);
-    }
-
-    function pastFuture (diff, output) {
-        var format = this._relativeTime[diff > 0 ? 'future' : 'past'];
-        return isFunction(format) ? format(output) : format.replace(/%s/i, output);
-    }
-
-    var prototype__proto = Locale.prototype;
-
-    prototype__proto._calendar       = defaultCalendar;
-    prototype__proto.calendar        = locale_calendar__calendar;
-    prototype__proto._longDateFormat = defaultLongDateFormat;
-    prototype__proto.longDateFormat  = longDateFormat;
-    prototype__proto._invalidDate    = defaultInvalidDate;
-    prototype__proto.invalidDate     = invalidDate;
-    prototype__proto._ordinal        = defaultOrdinal;
-    prototype__proto.ordinal         = ordinal;
-    prototype__proto._ordinalParse   = defaultOrdinalParse;
-    prototype__proto.preparse        = preParsePostFormat;
-    prototype__proto.postformat      = preParsePostFormat;
-    prototype__proto._relativeTime   = defaultRelativeTime;
-    prototype__proto.relativeTime    = relative__relativeTime;
-    prototype__proto.pastFuture      = pastFuture;
-    prototype__proto.set             = locale_set__set;
-
-    // Month
-    prototype__proto.months            =        localeMonths;
-    prototype__proto._months           = defaultLocaleMonths;
-    prototype__proto.monthsShort       =        localeMonthsShort;
-    prototype__proto._monthsShort      = defaultLocaleMonthsShort;
-    prototype__proto.monthsParse       =        localeMonthsParse;
-    prototype__proto._monthsRegex      = defaultMonthsRegex;
-    prototype__proto.monthsRegex       = monthsRegex;
-    prototype__proto._monthsShortRegex = defaultMonthsShortRegex;
-    prototype__proto.monthsShortRegex  = monthsShortRegex;
-
-    // Week
-    prototype__proto.week = localeWeek;
-    prototype__proto._week = defaultLocaleWeek;
-    prototype__proto.firstDayOfYear = localeFirstDayOfYear;
-    prototype__proto.firstDayOfWeek = localeFirstDayOfWeek;
-
-    // Day of Week
-    prototype__proto.weekdays       =        localeWeekdays;
-    prototype__proto._weekdays      = defaultLocaleWeekdays;
-    prototype__proto.weekdaysMin    =        localeWeekdaysMin;
-    prototype__proto._weekdaysMin   = defaultLocaleWeekdaysMin;
-    prototype__proto.weekdaysShort  =        localeWeekdaysShort;
-    prototype__proto._weekdaysShort = defaultLocaleWeekdaysShort;
-    prototype__proto.weekdaysParse  =        localeWeekdaysParse;
-
-    prototype__proto._weekdaysRegex      = defaultWeekdaysRegex;
-    prototype__proto.weekdaysRegex       =        weekdaysRegex;
-    prototype__proto._weekdaysShortRegex = defaultWeekdaysShortRegex;
-    prototype__proto.weekdaysShortRegex  =        weekdaysShortRegex;
-    prototype__proto._weekdaysMinRegex   = defaultWeekdaysMinRegex;
-    prototype__proto.weekdaysMinRegex    =        weekdaysMinRegex;
-
-    // Hours
-    prototype__proto.isPM = localeIsPM;
-    prototype__proto._meridiemParse = defaultLocaleMeridiemParse;
-    prototype__proto.meridiem = localeMeridiem;
-
-    function lists__get (format, index, field, setter) {
-        var locale = locale_locales__getLocale();
-        var utc = create_utc__createUTC().set(setter, index);
-        return locale[field](utc, format);
-    }
-
-    function listMonthsImpl (format, index, field) {
-        if (typeof format === 'number') {
-            index = format;
-            format = undefined;
-        }
-
-        format = format || '';
-
-        if (index != null) {
-            return lists__get(format, index, field, 'month');
-        }
-
-        var i;
-        var out = [];
-        for (i = 0; i < 12; i++) {
-            out[i] = lists__get(format, i, field, 'month');
-        }
-        return out;
-    }
-
-    // ()
-    // (5)
-    // (fmt, 5)
-    // (fmt)
-    // (true)
-    // (true, 5)
-    // (true, fmt, 5)
-    // (true, fmt)
-    function listWeekdaysImpl (localeSorted, format, index, field) {
-        if (typeof localeSorted === 'boolean') {
-            if (typeof format === 'number') {
-                index = format;
-                format = undefined;
-            }
-
-            format = format || '';
-        } else {
-            format = localeSorted;
-            index = format;
-            localeSorted = false;
-
-            if (typeof format === 'number') {
-                index = format;
-                format = undefined;
-            }
-
-            format = format || '';
-        }
-
-        var locale = locale_locales__getLocale(),
-            shift = localeSorted ? locale._week.dow : 0;
-
-        if (index != null) {
-            return lists__get(format, (index + shift) % 7, field, 'day');
-        }
-
-        var i;
-        var out = [];
-        for (i = 0; i < 7; i++) {
-            out[i] = lists__get(format, (i + shift) % 7, field, 'day');
-        }
-        return out;
-    }
-
-    function lists__listMonths (format, index) {
-        return listMonthsImpl(format, index, 'months');
-    }
-
-    function lists__listMonthsShort (format, index) {
-        return listMonthsImpl(format, index, 'monthsShort');
-    }
-
-    function lists__listWeekdays (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdays');
-    }
-
-    function lists__listWeekdaysShort (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysShort');
-    }
-
-    function lists__listWeekdaysMin (localeSorted, format, index) {
-        return listWeekdaysImpl(localeSorted, format, index, 'weekdaysMin');
-    }
-
-    locale_locales__getSetGlobalLocale('en', {
-        ordinalParse: /\d{1,2}(th|st|nd|rd)/,
-        ordinal : function (number) {
-            var b = number % 10,
-                output = (toInt(number % 100 / 10) === 1) ? 'th' :
-                (b === 1) ? 'st' :
-                (b === 2) ? 'nd' :
-                (b === 3) ? 'rd' : 'th';
-            return number + output;
-        }
-    });
-
-    // Side effect imports
-    utils_hooks__hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', locale_locales__getSetGlobalLocale);
-    utils_hooks__hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', locale_locales__getLocale);
-
-    var mathAbs = Math.abs;
-
-    function duration_abs__abs () {
-        var data           = this._data;
-
-        this._milliseconds = mathAbs(this._milliseconds);
-        this._days         = mathAbs(this._days);
-        this._months       = mathAbs(this._months);
-
-        data.milliseconds  = mathAbs(data.milliseconds);
-        data.seconds       = mathAbs(data.seconds);
-        data.minutes       = mathAbs(data.minutes);
-        data.hours         = mathAbs(data.hours);
-        data.months        = mathAbs(data.months);
-        data.years         = mathAbs(data.years);
-
-        return this;
-    }
-
-    function duration_add_subtract__addSubtract (duration, input, value, direction) {
-        var other = create__createDuration(input, value);
-
-        duration._milliseconds += direction * other._milliseconds;
-        duration._days         += direction * other._days;
-        duration._months       += direction * other._months;
-
-        return duration._bubble();
-    }
-
-    // supports only 2.0-style add(1, 's') or add(duration)
-    function duration_add_subtract__add (input, value) {
-        return duration_add_subtract__addSubtract(this, input, value, 1);
-    }
-
-    // supports only 2.0-style subtract(1, 's') or subtract(duration)
-    function duration_add_subtract__subtract (input, value) {
-        return duration_add_subtract__addSubtract(this, input, value, -1);
-    }
-
-    function absCeil (number) {
-        if (number < 0) {
-            return Math.floor(number);
-        } else {
-            return Math.ceil(number);
-        }
-    }
-
-    function bubble () {
-        var milliseconds = this._milliseconds;
-        var days         = this._days;
-        var months       = this._months;
-        var data         = this._data;
-        var seconds, minutes, hours, years, monthsFromDays;
-
-        // if we have a mix of positive and negative values, bubble down first
-        // check: https://github.com/moment/moment/issues/2166
-        if (!((milliseconds >= 0 && days >= 0 && months >= 0) ||
-                (milliseconds <= 0 && days <= 0 && months <= 0))) {
-            milliseconds += absCeil(monthsToDays(months) + days) * 864e5;
-            days = 0;
-            months = 0;
-        }
-
-        // The following code bubbles up values, see the tests for
-        // examples of what that means.
-        data.milliseconds = milliseconds % 1000;
-
-        seconds           = absFloor(milliseconds / 1000);
-        data.seconds      = seconds % 60;
-
-        minutes           = absFloor(seconds / 60);
-        data.minutes      = minutes % 60;
-
-        hours             = absFloor(minutes / 60);
-        data.hours        = hours % 24;
-
-        days += absFloor(hours / 24);
-
-        // convert days to months
-        monthsFromDays = absFloor(daysToMonths(days));
-        months += monthsFromDays;
-        days -= absCeil(monthsToDays(monthsFromDays));
-
-        // 12 months -> 1 year
-        years = absFloor(months / 12);
-        months %= 12;
-
-        data.days   = days;
-        data.months = months;
-        data.years  = years;
-
-        return this;
-    }
-
-    function daysToMonths (days) {
-        // 400 years have 146097 days (taking into account leap year rules)
-        // 400 years have 12 months === 4800
-        return days * 4800 / 146097;
-    }
-
-    function monthsToDays (months) {
-        // the reverse of daysToMonths
-        return months * 146097 / 4800;
-    }
-
-    function as (units) {
-        var days;
-        var months;
-        var milliseconds = this._milliseconds;
-
-        units = normalizeUnits(units);
-
-        if (units === 'month' || units === 'year') {
-            days   = this._days   + milliseconds / 864e5;
-            months = this._months + daysToMonths(days);
-            return units === 'month' ? months : months / 12;
-        } else {
-            // handle milliseconds separately because of floating point math errors (issue #1867)
-            days = this._days + Math.round(monthsToDays(this._months));
-            switch (units) {
-                case 'week'   : return days / 7     + milliseconds / 6048e5;
-                case 'day'    : return days         + milliseconds / 864e5;
-                case 'hour'   : return days * 24    + milliseconds / 36e5;
-                case 'minute' : return days * 1440  + milliseconds / 6e4;
-                case 'second' : return days * 86400 + milliseconds / 1000;
-                // Math.floor prevents floating point math errors here
-                case 'millisecond': return Math.floor(days * 864e5) + milliseconds;
-                default: throw new Error('Unknown unit ' + units);
-            }
-        }
-    }
-
-    // TODO: Use this.as('ms')?
-    function duration_as__valueOf () {
-        return (
-            this._milliseconds +
-            this._days * 864e5 +
-            (this._months % 12) * 2592e6 +
-            toInt(this._months / 12) * 31536e6
-        );
-    }
-
-    function makeAs (alias) {
-        return function () {
-            return this.as(alias);
-        };
-    }
-
-    var asMilliseconds = makeAs('ms');
-    var asSeconds      = makeAs('s');
-    var asMinutes      = makeAs('m');
-    var asHours        = makeAs('h');
-    var asDays         = makeAs('d');
-    var asWeeks        = makeAs('w');
-    var asMonths       = makeAs('M');
-    var asYears        = makeAs('y');
-
-    function duration_get__get (units) {
-        units = normalizeUnits(units);
-        return this[units + 's']();
-    }
-
-    function makeGetter(name) {
-        return function () {
-            return this._data[name];
-        };
-    }
-
-    var milliseconds = makeGetter('milliseconds');
-    var seconds      = makeGetter('seconds');
-    var minutes      = makeGetter('minutes');
-    var hours        = makeGetter('hours');
-    var days         = makeGetter('days');
-    var months       = makeGetter('months');
-    var years        = makeGetter('years');
-
-    function weeks () {
-        return absFloor(this.days() / 7);
-    }
-
-    var round = Math.round;
-    var thresholds = {
-        s: 45,  // seconds to minute
-        m: 45,  // minutes to hour
-        h: 22,  // hours to day
-        d: 26,  // days to month
-        M: 11   // months to year
-    };
-
-    // helper function for moment.fn.from, moment.fn.fromNow, and moment.duration.fn.humanize
-    function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale) {
-        return locale.relativeTime(number || 1, !!withoutSuffix, string, isFuture);
-    }
-
-    function duration_humanize__relativeTime (posNegDuration, withoutSuffix, locale) {
-        var duration = create__createDuration(posNegDuration).abs();
-        var seconds  = round(duration.as('s'));
-        var minutes  = round(duration.as('m'));
-        var hours    = round(duration.as('h'));
-        var days     = round(duration.as('d'));
-        var months   = round(duration.as('M'));
-        var years    = round(duration.as('y'));
-
-        var a = seconds < thresholds.s && ['s', seconds]  ||
-                minutes <= 1           && ['m']           ||
-                minutes < thresholds.m && ['mm', minutes] ||
-                hours   <= 1           && ['h']           ||
-                hours   < thresholds.h && ['hh', hours]   ||
-                days    <= 1           && ['d']           ||
-                days    < thresholds.d && ['dd', days]    ||
-                months  <= 1           && ['M']           ||
-                months  < thresholds.M && ['MM', months]  ||
-                years   <= 1           && ['y']           || ['yy', years];
-
-        a[2] = withoutSuffix;
-        a[3] = +posNegDuration > 0;
-        a[4] = locale;
-        return substituteTimeAgo.apply(null, a);
-    }
-
-    // This function allows you to set a threshold for relative time strings
-    function duration_humanize__getSetRelativeTimeThreshold (threshold, limit) {
-        if (thresholds[threshold] === undefined) {
-            return false;
-        }
-        if (limit === undefined) {
-            return thresholds[threshold];
-        }
-        thresholds[threshold] = limit;
-        return true;
-    }
-
-    function humanize (withSuffix) {
-        var locale = this.localeData();
-        var output = duration_humanize__relativeTime(this, !withSuffix, locale);
-
-        if (withSuffix) {
-            output = locale.pastFuture(+this, output);
-        }
-
-        return locale.postformat(output);
-    }
-
-    var iso_string__abs = Math.abs;
-
-    function iso_string__toISOString() {
-        // for ISO strings we do not use the normal bubbling rules:
-        //  * milliseconds bubble up until they become hours
-        //  * days do not bubble at all
-        //  * months bubble up until they become years
-        // This is because there is no context-free conversion between hours and days
-        // (think of clock changes)
-        // and also not between days and months (28-31 days per month)
-        var seconds = iso_string__abs(this._milliseconds) / 1000;
-        var days         = iso_string__abs(this._days);
-        var months       = iso_string__abs(this._months);
-        var minutes, hours, years;
-
-        // 3600 seconds -> 60 minutes -> 1 hour
-        minutes           = absFloor(seconds / 60);
-        hours             = absFloor(minutes / 60);
-        seconds %= 60;
-        minutes %= 60;
-
-        // 12 months -> 1 year
-        years  = absFloor(months / 12);
-        months %= 12;
-
-
-        // inspired by https://github.com/dordille/moment-isoduration/blob/master/moment.isoduration.js
-        var Y = years;
-        var M = months;
-        var D = days;
-        var h = hours;
-        var m = minutes;
-        var s = seconds;
-        var total = this.asSeconds();
-
-        if (!total) {
-            // this is the same as C#'s (Noda) and python (isodate)...
-            // but not other JS (goog.date)
-            return 'P0D';
-        }
-
-        return (total < 0 ? '-' : '') +
-            'P' +
-            (Y ? Y + 'Y' : '') +
-            (M ? M + 'M' : '') +
-            (D ? D + 'D' : '') +
-            ((h || m || s) ? 'T' : '') +
-            (h ? h + 'H' : '') +
-            (m ? m + 'M' : '') +
-            (s ? s + 'S' : '');
-    }
-
-    var duration_prototype__proto = Duration.prototype;
-
-    duration_prototype__proto.abs            = duration_abs__abs;
-    duration_prototype__proto.add            = duration_add_subtract__add;
-    duration_prototype__proto.subtract       = duration_add_subtract__subtract;
-    duration_prototype__proto.as             = as;
-    duration_prototype__proto.asMilliseconds = asMilliseconds;
-    duration_prototype__proto.asSeconds      = asSeconds;
-    duration_prototype__proto.asMinutes      = asMinutes;
-    duration_prototype__proto.asHours        = asHours;
-    duration_prototype__proto.asDays         = asDays;
-    duration_prototype__proto.asWeeks        = asWeeks;
-    duration_prototype__proto.asMonths       = asMonths;
-    duration_prototype__proto.asYears        = asYears;
-    duration_prototype__proto.valueOf        = duration_as__valueOf;
-    duration_prototype__proto._bubble        = bubble;
-    duration_prototype__proto.get            = duration_get__get;
-    duration_prototype__proto.milliseconds   = milliseconds;
-    duration_prototype__proto.seconds        = seconds;
-    duration_prototype__proto.minutes        = minutes;
-    duration_prototype__proto.hours          = hours;
-    duration_prototype__proto.days           = days;
-    duration_prototype__proto.weeks          = weeks;
-    duration_prototype__proto.months         = months;
-    duration_prototype__proto.years          = years;
-    duration_prototype__proto.humanize       = humanize;
-    duration_prototype__proto.toISOString    = iso_string__toISOString;
-    duration_prototype__proto.toString       = iso_string__toISOString;
-    duration_prototype__proto.toJSON         = iso_string__toISOString;
-    duration_prototype__proto.locale         = locale;
-    duration_prototype__proto.localeData     = localeData;
-
-    // Deprecations
-    duration_prototype__proto.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', iso_string__toISOString);
-    duration_prototype__proto.lang = lang;
-
-    // Side effect imports
-
-    // FORMATTING
-
-    addFormatToken('X', 0, 0, 'unix');
-    addFormatToken('x', 0, 0, 'valueOf');
-
-    // PARSING
-
-    addRegexToken('x', matchSigned);
-    addRegexToken('X', matchTimestamp);
-    addParseToken('X', function (input, array, config) {
-        config._d = new Date(parseFloat(input, 10) * 1000);
-    });
-    addParseToken('x', function (input, array, config) {
-        config._d = new Date(toInt(input));
-    });
-
-    // Side effect imports
-
-
-    utils_hooks__hooks.version = '2.13.0';
-
-    setHookCallback(local__createLocal);
-
-    utils_hooks__hooks.fn                    = momentPrototype;
-    utils_hooks__hooks.min                   = min;
-    utils_hooks__hooks.max                   = max;
-    utils_hooks__hooks.now                   = now;
-    utils_hooks__hooks.utc                   = create_utc__createUTC;
-    utils_hooks__hooks.unix                  = moment__createUnix;
-    utils_hooks__hooks.months                = lists__listMonths;
-    utils_hooks__hooks.isDate                = isDate;
-    utils_hooks__hooks.locale                = locale_locales__getSetGlobalLocale;
-    utils_hooks__hooks.invalid               = valid__createInvalid;
-    utils_hooks__hooks.duration              = create__createDuration;
-    utils_hooks__hooks.isMoment              = isMoment;
-    utils_hooks__hooks.weekdays              = lists__listWeekdays;
-    utils_hooks__hooks.parseZone             = moment__createInZone;
-    utils_hooks__hooks.localeData            = locale_locales__getLocale;
-    utils_hooks__hooks.isDuration            = isDuration;
-    utils_hooks__hooks.monthsShort           = lists__listMonthsShort;
-    utils_hooks__hooks.weekdaysMin           = lists__listWeekdaysMin;
-    utils_hooks__hooks.defineLocale          = defineLocale;
-    utils_hooks__hooks.updateLocale          = updateLocale;
-    utils_hooks__hooks.locales               = locale_locales__listLocales;
-    utils_hooks__hooks.weekdaysShort         = lists__listWeekdaysShort;
-    utils_hooks__hooks.normalizeUnits        = normalizeUnits;
-    utils_hooks__hooks.relativeTimeThreshold = duration_humanize__getSetRelativeTimeThreshold;
-    utils_hooks__hooks.prototype             = momentPrototype;
-
-    var _moment = utils_hooks__hooks;
-
-    return _moment;
-
-}));
-},{}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4160,7 +119,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -4461,7 +420,7 @@ function format (id) {
   return match ? match[0] : id
 }
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 /*!
  * vue-resource v0.9.1
  * https://github.com/vuejs/vue-resource
@@ -5774,7 +1733,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = plugin;
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 (function (process,global){
 /*!
  * Vue.js v1.0.25
@@ -15845,7 +11804,7 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":2}],6:[function(require,module,exports){
+},{"_process":1}],5:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 exports.insert = function (css) {
@@ -15865,35 +11824,48 @@ exports.insert = function (css) {
   return elem
 }
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n p[_v-53150522] {\n\t margin:0;\n }\n      label[_v-53150522] {\n           display: block;\n           /*margin-bottom: 1.5em;*/\n       }\n\n       label > span[_v-53150522] {\n           display: inline-block;\n           width: 8em;\n           vertical-align: top;\n       }\n.valid-titleField[_v-53150522] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.no-input[_v-53150522] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.invalid-input[_v-53150522] {\n  background-color: rgba(236, 88, 64, 0.1);\n  border: 1px dotted red;\n}\n.invalid[_v-53150522] {\n  color: #ff0000;\n}\n\n\nfieldset label.radiobtns[_v-53150522]  {\n  display: inline;\n  margin: 4px;\n  padding: 2px;\n}\n\n[type='text'][_v-53150522], [type='password'][_v-53150522], [type='date'][_v-53150522], [type='datetime'][_v-53150522], [type='datetime-local'][_v-53150522], [type='month'][_v-53150522], [type='week'][_v-53150522], [type='email'][_v-53150522], [type='number'][_v-53150522], [type='search'][_v-53150522], [type='tel'][_v-53150522], [type='time'][_v-53150522], [type='url'][_v-53150522], [type='color'][_v-53150522],\ntextarea[_v-53150522] {\n\tmargin: 0;\n\tpadding: 0;\n\tpadding-left: 8px;\n\twidth: 100%;\n}\n[type='file'][_v-53150522], [type='checkbox'][_v-53150522], [type='radio'][_v-53150522] {\n\tmargin: 0;\n\tmargin-left: 8px;\n\tpadding: 0;\n\tpadding-left: 2px;\n}\n.reqstar[_v-53150522] {\n    font-size: .5rem;\n    color: #E33100;\n\t\tvertical-align:text-top;\n}\n\nbutton.button-primary[_v-53150522]{\n\tmargin-top: 1rem;\n}\n\ninput[type='email'][_v-53150522],\ninput[type='number'][_v-53150522],\ninput[type='password'][_v-53150522],\ninput[type='search'][_v-53150522],\ninput[type='tel'][_v-53150522],\ninput[type='text'][_v-53150522],\ninput[type='url'][_v-53150522],\ntextarea[_v-53150522],\nselect[_v-53150522] {\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none;\n  background-color: transparent;\n  border: 0.1rem solid #d1d1d1;\n  border-radius: 0.4rem;\n  box-shadow: none;\n  height: 3.8rem;\n  padding: 0.6rem 1rem;\n  width: 100%;\n}\ninput[type='email'][_v-53150522]:focus,\ninput[type='number'][_v-53150522]:focus,\ninput[type='password'][_v-53150522]:focus,\ninput[type='search'][_v-53150522]:focus,\ninput[type='tel'][_v-53150522]:focus,\ninput[type='text'][_v-53150522]:focus,\ninput[type='url'][_v-53150522]:focus,\ntextarea[_v-53150522]:focus,\nselect[_v-53150522]:focus {\n  border: 0.1rem solid #9b4dca;\n  outline: 0;\n}\n\nselect[_v-53150522] {\n  padding: 0.6rem 3rem 0.6rem 1rem;\n  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjkgMTQiICAgaGVpZ2h0PSIxNHB4IiAgIGlkPSJMYXllcl8xIiAgIHZlcnNpb249IjEuMSIgICB2aWV3Qm94PSIwIDAgMjkgMTQiICAgd2lkdGg9IjI5cHgiICAgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjQ4LjQgcjk5MzkiICAgc29kaXBvZGk6ZG9jbmFtZT0iY2FyZXQtZ3JheS5zdmciPjxtZXRhZGF0YSAgICAgaWQ9Im1ldGFkYXRhMzAzOSI+PHJkZjpSREY+PGNjOldvcmsgICAgICAgICByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgICAgICAgICAgIHJkZjpyZXNvdXJjZT0iaHR0cDovL3B1cmwub3JnL2RjL2RjbWl0eXBlL1N0aWxsSW1hZ2UiIC8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxkZWZzICAgICBpZD0iZGVmczMwMzciIC8+PHNvZGlwb2RpOm5hbWVkdmlldyAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiICAgICBib3JkZXJvcGFjaXR5PSIxIiAgICAgb2JqZWN0dG9sZXJhbmNlPSIxMCIgICAgIGdyaWR0b2xlcmFuY2U9IjEwIiAgICAgZ3VpZGV0b2xlcmFuY2U9IjEwIiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAiICAgICBpbmtzY2FwZTpwYWdlc2hhZG93PSIyIiAgICAgaW5rc2NhcGU6d2luZG93LXdpZHRoPSI5MDMiICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSI1OTQiICAgICBpZD0ibmFtZWR2aWV3MzAzNSIgICAgIHNob3dncmlkPSJ0cnVlIiAgICAgaW5rc2NhcGU6em9vbT0iMTIuMTM3OTMxIiAgICAgaW5rc2NhcGU6Y3g9Ii00LjExOTMxODJlLTA4IiAgICAgaW5rc2NhcGU6Y3k9IjciICAgICBpbmtzY2FwZTp3aW5kb3cteD0iNTAyIiAgICAgaW5rc2NhcGU6d2luZG93LXk9IjMwMiIgICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjAiICAgICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJMYXllcl8xIj48aW5rc2NhcGU6Z3JpZCAgICAgICB0eXBlPSJ4eWdyaWQiICAgICAgIGlkPSJncmlkMzA0MSIgLz48L3NvZGlwb2RpOm5hbWVkdmlldz48cG9seWdvbiAgICAgcG9pbnRzPSIwLjE1LDAgMTQuNSwxNC4zNSAyOC44NSwwICIgICAgIGlkPSJwb2x5Z29uMzAzMyIgICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuMzU0MTEzODcsMCwwLDAuNDgzMjkxMSw5LjMyNDE1NDUsMy42MjQ5OTkyKSIgICAgIHN0eWxlPSJmaWxsOiNkMWQxZDE7ZmlsbC1vcGFjaXR5OjEiIC8+PC9zdmc+) center right no-repeat;\n}\nselect[_v-53150522]:focus {\n  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjkgMTQiICAgaGVpZ2h0PSIxNHB4IiAgIGlkPSJMYXllcl8xIiAgIHZlcnNpb249IjEuMSIgICB2aWV3Qm94PSIwIDAgMjkgMTQiICAgd2lkdGg9IjI5cHgiICAgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjQ4LjQgcjk5MzkiICAgc29kaXBvZGk6ZG9jbmFtZT0iY2FyZXQuc3ZnIj48bWV0YWRhdGEgICAgIGlkPSJtZXRhZGF0YTMwMzkiPjxyZGY6UkRGPjxjYzpXb3JrICAgICAgICAgcmRmOmFib3V0PSIiPjxkYzpmb3JtYXQ+aW1hZ2Uvc3ZnK3htbDwvZGM6Zm9ybWF0PjxkYzp0eXBlICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPjwvY2M6V29yaz48L3JkZjpSREY+PC9tZXRhZGF0YT48ZGVmcyAgICAgaWQ9ImRlZnMzMDM3IiAvPjxzb2RpcG9kaTpuYW1lZHZpZXcgICAgIHBhZ2Vjb2xvcj0iI2ZmZmZmZiIgICAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IiAgICAgYm9yZGVyb3BhY2l0eT0iMSIgICAgIG9iamVjdHRvbGVyYW5jZT0iMTAiICAgICBncmlkdG9sZXJhbmNlPSIxMCIgICAgIGd1aWRldG9sZXJhbmNlPSIxMCIgICAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwIiAgICAgaW5rc2NhcGU6cGFnZXNoYWRvdz0iMiIgICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iOTAzIiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iNTk0IiAgICAgaWQ9Im5hbWVkdmlldzMwMzUiICAgICBzaG93Z3JpZD0idHJ1ZSIgICAgIGlua3NjYXBlOnpvb209IjEyLjEzNzkzMSIgICAgIGlua3NjYXBlOmN4PSItNC4xMTkzMTgyZS0wOCIgICAgIGlua3NjYXBlOmN5PSI3IiAgICAgaW5rc2NhcGU6d2luZG93LXg9IjUwMiIgICAgIGlua3NjYXBlOndpbmRvdy15PSIzMDIiICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIwIiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0iTGF5ZXJfMSI+PGlua3NjYXBlOmdyaWQgICAgICAgdHlwZT0ieHlncmlkIiAgICAgICBpZD0iZ3JpZDMwNDEiIC8+PC9zb2RpcG9kaTpuYW1lZHZpZXc+PHBvbHlnb24gICAgIHBvaW50cz0iMjguODUsMCAwLjE1LDAgMTQuNSwxNC4zNSAiICAgICBpZD0icG9seWdvbjMwMzMiICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLjM1NDExMzg3LDAsMCwwLjQ4MzI5MTEsOS4zMjQxNTUzLDMuNjI1KSIgICAgIHN0eWxlPSJmaWxsOiM5YjRkY2Y7ZmlsbC1vcGFjaXR5OjEiIC8+PC9zdmc+);\n}\n\ntextarea[_v-53150522] {\n  padding-bottom: 0.6rem;\n  padding-top: 0.6rem;\n  min-height: 8rem;\n}\n\nlabel[_v-53150522],\nlegend[_v-53150522] {\n  font-size: 1.6rem;\n  font-weight: 700;\n  display: block;\n  margin-bottom: 0.5rem;\n}\n\nfieldset[_v-53150522] {\n  border-width: 0;\n  padding: 0;\n}\n\ninput[type='checkbox'][_v-53150522],\ninput[type='radio'][_v-53150522] {\n  display: inline;\n}\n\n.label-inline[_v-53150522] {\n  font-weight: normal;\n  display: inline-block;\n  margin-left: 0.5rem;\n}\n\n.container[_v-53150522] {\n  margin: 0 auto;\n  max-width: 112rem;\n  padding: 0 2rem;\n  position: relative;\n  width: 100%;\n}\n\n")
+var __vueify_style__ = __vueify_insert__.insert("\n/*!\n * Milligram v1.1.0\n * http://milligram.github.io\n *\n * Copyright (c) 2016 CJ Patoilo\n * Licensed under the MIT license\n*/\n\n\nhtml[_v-66dd0d90] {\n  box-sizing: border-box;\n  font-size: 62.5%;\n}\n\nbody[_v-66dd0d90] {\n  color: #606c76;\n  font-family: \"Roboto\", \"Helvetica Neue\", \"Helvetica\", \"Arial\", sans-serif;\n  font-size: 1.6em;\n  font-weight: 300;\n  letter-spacing: 0.01em;\n  line-height: 1.6;\n}\n\n*[_v-66dd0d90],\n*[_v-66dd0d90]:after,\n*[_v-66dd0d90]:before {\n  box-sizing: inherit;\n}\n\nblockquote[_v-66dd0d90] {\n  border-left: 0.3rem solid #d1d1d1;\n  margin-left: 0;\n  margin-right: 0;\n  padding: 1rem 1.5rem;\n}\nblockquote *[_v-66dd0d90]:last-child {\n  margin: 0;\n}\n\n.button[_v-66dd0d90],\nbutton[_v-66dd0d90],\ninput[type='button'][_v-66dd0d90],\ninput[type='reset'][_v-66dd0d90],\ninput[type='submit'][_v-66dd0d90] {\n  background-color: #9b4dca;\n  border: 0.1rem solid #9b4dca;\n  border-radius: 0.4rem;\n  color: #fff;\n  cursor: pointer;\n  display: inline-block;\n  font-size: 1.1rem;\n  font-weight: 700;\n  height: 3.8rem;\n  letter-spacing: 0.1rem;\n  line-height: 3.8rem;\n  padding: 0 3rem;\n  text-align: center;\n  text-decoration: none;\n  text-transform: uppercase;\n  white-space: nowrap;\n}\n.button[_v-66dd0d90]:hover, .button[_v-66dd0d90]:focus,\nbutton[_v-66dd0d90]:hover,\nbutton[_v-66dd0d90]:focus,\ninput[type='button'][_v-66dd0d90]:hover,\ninput[type='button'][_v-66dd0d90]:focus,\ninput[type='reset'][_v-66dd0d90]:hover,\ninput[type='reset'][_v-66dd0d90]:focus,\ninput[type='submit'][_v-66dd0d90]:hover,\ninput[type='submit'][_v-66dd0d90]:focus {\n  background-color: #606c76;\n  border-color: #606c76;\n  color: #fff;\n  outline: 0;\n}\n.button.button-disabled[_v-66dd0d90], .button[disabled][_v-66dd0d90],\nbutton.button-disabled[_v-66dd0d90],\nbutton[disabled][_v-66dd0d90],\ninput[type='button'].button-disabled[_v-66dd0d90],\ninput[type='button'][disabled][_v-66dd0d90],\ninput[type='reset'].button-disabled[_v-66dd0d90],\ninput[type='reset'][disabled][_v-66dd0d90],\ninput[type='submit'].button-disabled[_v-66dd0d90],\ninput[type='submit'][disabled][_v-66dd0d90] {\n  opacity: 0.5;\n  cursor: default;\n}\n.button.button-disabled[_v-66dd0d90]:hover, .button.button-disabled[_v-66dd0d90]:focus, .button[disabled][_v-66dd0d90]:hover, .button[disabled][_v-66dd0d90]:focus,\nbutton.button-disabled[_v-66dd0d90]:hover,\nbutton.button-disabled[_v-66dd0d90]:focus,\nbutton[disabled][_v-66dd0d90]:hover,\nbutton[disabled][_v-66dd0d90]:focus,\ninput[type='button'].button-disabled[_v-66dd0d90]:hover,\ninput[type='button'].button-disabled[_v-66dd0d90]:focus,\ninput[type='button'][disabled][_v-66dd0d90]:hover,\ninput[type='button'][disabled][_v-66dd0d90]:focus,\ninput[type='reset'].button-disabled[_v-66dd0d90]:hover,\ninput[type='reset'].button-disabled[_v-66dd0d90]:focus,\ninput[type='reset'][disabled][_v-66dd0d90]:hover,\ninput[type='reset'][disabled][_v-66dd0d90]:focus,\ninput[type='submit'].button-disabled[_v-66dd0d90]:hover,\ninput[type='submit'].button-disabled[_v-66dd0d90]:focus,\ninput[type='submit'][disabled][_v-66dd0d90]:hover,\ninput[type='submit'][disabled][_v-66dd0d90]:focus {\n  background-color: #9b4dca;\n  border-color: #9b4dca;\n}\n.button.button-outline[_v-66dd0d90],\nbutton.button-outline[_v-66dd0d90],\ninput[type='button'].button-outline[_v-66dd0d90],\ninput[type='reset'].button-outline[_v-66dd0d90],\ninput[type='submit'].button-outline[_v-66dd0d90] {\n  color: #9b4dca;\n  background-color: transparent;\n}\n.button.button-outline[_v-66dd0d90]:hover, .button.button-outline[_v-66dd0d90]:focus,\nbutton.button-outline[_v-66dd0d90]:hover,\nbutton.button-outline[_v-66dd0d90]:focus,\ninput[type='button'].button-outline[_v-66dd0d90]:hover,\ninput[type='button'].button-outline[_v-66dd0d90]:focus,\ninput[type='reset'].button-outline[_v-66dd0d90]:hover,\ninput[type='reset'].button-outline[_v-66dd0d90]:focus,\ninput[type='submit'].button-outline[_v-66dd0d90]:hover,\ninput[type='submit'].button-outline[_v-66dd0d90]:focus {\n  color: #606c76;\n  background-color: transparent;\n  border-color: #606c76;\n}\n.button.button-outline.button-disabled[_v-66dd0d90]:hover, .button.button-outline.button-disabled[_v-66dd0d90]:focus, .button.button-outline[disabled][_v-66dd0d90]:hover, .button.button-outline[disabled][_v-66dd0d90]:focus,\nbutton.button-outline.button-disabled[_v-66dd0d90]:hover,\nbutton.button-outline.button-disabled[_v-66dd0d90]:focus,\nbutton.button-outline[disabled][_v-66dd0d90]:hover,\nbutton.button-outline[disabled][_v-66dd0d90]:focus,\ninput[type='button'].button-outline.button-disabled[_v-66dd0d90]:hover,\ninput[type='button'].button-outline.button-disabled[_v-66dd0d90]:focus,\ninput[type='button'].button-outline[disabled][_v-66dd0d90]:hover,\ninput[type='button'].button-outline[disabled][_v-66dd0d90]:focus,\ninput[type='reset'].button-outline.button-disabled[_v-66dd0d90]:hover,\ninput[type='reset'].button-outline.button-disabled[_v-66dd0d90]:focus,\ninput[type='reset'].button-outline[disabled][_v-66dd0d90]:hover,\ninput[type='reset'].button-outline[disabled][_v-66dd0d90]:focus,\ninput[type='submit'].button-outline.button-disabled[_v-66dd0d90]:hover,\ninput[type='submit'].button-outline.button-disabled[_v-66dd0d90]:focus,\ninput[type='submit'].button-outline[disabled][_v-66dd0d90]:hover,\ninput[type='submit'].button-outline[disabled][_v-66dd0d90]:focus {\n  color: #9b4dca;\n  border-color: inherit;\n}\n.button.button-clear[_v-66dd0d90],\nbutton.button-clear[_v-66dd0d90],\ninput[type='button'].button-clear[_v-66dd0d90],\ninput[type='reset'].button-clear[_v-66dd0d90],\ninput[type='submit'].button-clear[_v-66dd0d90] {\n  color: #9b4dca;\n  background-color: transparent;\n  border-color: transparent;\n}\n.button.button-clear[_v-66dd0d90]:hover, .button.button-clear[_v-66dd0d90]:focus,\nbutton.button-clear[_v-66dd0d90]:hover,\nbutton.button-clear[_v-66dd0d90]:focus,\ninput[type='button'].button-clear[_v-66dd0d90]:hover,\ninput[type='button'].button-clear[_v-66dd0d90]:focus,\ninput[type='reset'].button-clear[_v-66dd0d90]:hover,\ninput[type='reset'].button-clear[_v-66dd0d90]:focus,\ninput[type='submit'].button-clear[_v-66dd0d90]:hover,\ninput[type='submit'].button-clear[_v-66dd0d90]:focus {\n  color: #606c76;\n  background-color: transparent;\n  border-color: transparent;\n}\n.button.button-clear.button-disabled[_v-66dd0d90]:hover, .button.button-clear.button-disabled[_v-66dd0d90]:focus, .button.button-clear[disabled][_v-66dd0d90]:hover, .button.button-clear[disabled][_v-66dd0d90]:focus,\nbutton.button-clear.button-disabled[_v-66dd0d90]:hover,\nbutton.button-clear.button-disabled[_v-66dd0d90]:focus,\nbutton.button-clear[disabled][_v-66dd0d90]:hover,\nbutton.button-clear[disabled][_v-66dd0d90]:focus,\ninput[type='button'].button-clear.button-disabled[_v-66dd0d90]:hover,\ninput[type='button'].button-clear.button-disabled[_v-66dd0d90]:focus,\ninput[type='button'].button-clear[disabled][_v-66dd0d90]:hover,\ninput[type='button'].button-clear[disabled][_v-66dd0d90]:focus,\ninput[type='reset'].button-clear.button-disabled[_v-66dd0d90]:hover,\ninput[type='reset'].button-clear.button-disabled[_v-66dd0d90]:focus,\ninput[type='reset'].button-clear[disabled][_v-66dd0d90]:hover,\ninput[type='reset'].button-clear[disabled][_v-66dd0d90]:focus,\ninput[type='submit'].button-clear.button-disabled[_v-66dd0d90]:hover,\ninput[type='submit'].button-clear.button-disabled[_v-66dd0d90]:focus,\ninput[type='submit'].button-clear[disabled][_v-66dd0d90]:hover,\ninput[type='submit'].button-clear[disabled][_v-66dd0d90]:focus {\n  color: #9b4dca;\n}\n\ncode[_v-66dd0d90] {\n  background: #f4f5f6;\n  border-radius: 0.4rem;\n  font-size: 86%;\n  padding: 0.2rem 0.5rem;\n  margin: 0 0.2rem;\n  white-space: nowrap;\n}\n\npre[_v-66dd0d90] {\n  background: #f4f5f6;\n  border-left: 0.3rem solid #9b4dca;\n  font-family: \"Menlo\", \"Consolas\", \"Bitstream Vera Sans Mono\", \"DejaVu Sans Mono\", \"Monaco\", monospace;\n}\npre > code[_v-66dd0d90] {\n  background: transparent;\n  border-radius: 0;\n  display: block;\n  padding: 1rem 1.5rem;\n  white-space: pre;\n}\n\nhr[_v-66dd0d90] {\n  border: 0;\n  border-top: 0.1rem solid #f4f5f6;\n  margin-bottom: 3.5rem;\n  margin-top: 3rem;\n}\n\ninput[type='email'][_v-66dd0d90],\ninput[type='number'][_v-66dd0d90],\ninput[type='password'][_v-66dd0d90],\ninput[type='search'][_v-66dd0d90],\ninput[type='tel'][_v-66dd0d90],\ninput[type='text'][_v-66dd0d90],\ninput[type='url'][_v-66dd0d90],\ntextarea[_v-66dd0d90],\nselect[_v-66dd0d90] {\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none;\n  background-color: transparent;\n  border: 0.1rem solid #d1d1d1;\n  border-radius: 0.4rem;\n  box-shadow: none;\n  height: 3.8rem;\n  padding: 0.6rem 1rem;\n  width: 100%;\n}\ninput[type='email'][_v-66dd0d90]:focus,\ninput[type='number'][_v-66dd0d90]:focus,\ninput[type='password'][_v-66dd0d90]:focus,\ninput[type='search'][_v-66dd0d90]:focus,\ninput[type='tel'][_v-66dd0d90]:focus,\ninput[type='text'][_v-66dd0d90]:focus,\ninput[type='url'][_v-66dd0d90]:focus,\ntextarea[_v-66dd0d90]:focus,\nselect[_v-66dd0d90]:focus {\n  border: 0.1rem solid #9b4dca;\n  outline: 0;\n}\n\nselect[_v-66dd0d90] {\n  padding: 0.6rem 3rem 0.6rem 1rem;\n  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjkgMTQiICAgaGVpZ2h0PSIxNHB4IiAgIGlkPSJMYXllcl8xIiAgIHZlcnNpb249IjEuMSIgICB2aWV3Qm94PSIwIDAgMjkgMTQiICAgd2lkdGg9IjI5cHgiICAgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjQ4LjQgcjk5MzkiICAgc29kaXBvZGk6ZG9jbmFtZT0iY2FyZXQtZ3JheS5zdmciPjxtZXRhZGF0YSAgICAgaWQ9Im1ldGFkYXRhMzAzOSI+PHJkZjpSREY+PGNjOldvcmsgICAgICAgICByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgICAgICAgICAgIHJkZjpyZXNvdXJjZT0iaHR0cDovL3B1cmwub3JnL2RjL2RjbWl0eXBlL1N0aWxsSW1hZ2UiIC8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxkZWZzICAgICBpZD0iZGVmczMwMzciIC8+PHNvZGlwb2RpOm5hbWVkdmlldyAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiICAgICBib3JkZXJvcGFjaXR5PSIxIiAgICAgb2JqZWN0dG9sZXJhbmNlPSIxMCIgICAgIGdyaWR0b2xlcmFuY2U9IjEwIiAgICAgZ3VpZGV0b2xlcmFuY2U9IjEwIiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAiICAgICBpbmtzY2FwZTpwYWdlc2hhZG93PSIyIiAgICAgaW5rc2NhcGU6d2luZG93LXdpZHRoPSI5MDMiICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSI1OTQiICAgICBpZD0ibmFtZWR2aWV3MzAzNSIgICAgIHNob3dncmlkPSJ0cnVlIiAgICAgaW5rc2NhcGU6em9vbT0iMTIuMTM3OTMxIiAgICAgaW5rc2NhcGU6Y3g9Ii00LjExOTMxODJlLTA4IiAgICAgaW5rc2NhcGU6Y3k9IjciICAgICBpbmtzY2FwZTp3aW5kb3cteD0iNTAyIiAgICAgaW5rc2NhcGU6d2luZG93LXk9IjMwMiIgICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjAiICAgICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJMYXllcl8xIj48aW5rc2NhcGU6Z3JpZCAgICAgICB0eXBlPSJ4eWdyaWQiICAgICAgIGlkPSJncmlkMzA0MSIgLz48L3NvZGlwb2RpOm5hbWVkdmlldz48cG9seWdvbiAgICAgcG9pbnRzPSIwLjE1LDAgMTQuNSwxNC4zNSAyOC44NSwwICIgICAgIGlkPSJwb2x5Z29uMzAzMyIgICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuMzU0MTEzODcsMCwwLDAuNDgzMjkxMSw5LjMyNDE1NDUsMy42MjQ5OTkyKSIgICAgIHN0eWxlPSJmaWxsOiNkMWQxZDE7ZmlsbC1vcGFjaXR5OjEiIC8+PC9zdmc+) center right no-repeat;\n}\nselect[_v-66dd0d90]:focus {\n  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjkgMTQiICAgaGVpZ2h0PSIxNHB4IiAgIGlkPSJMYXllcl8xIiAgIHZlcnNpb249IjEuMSIgICB2aWV3Qm94PSIwIDAgMjkgMTQiICAgd2lkdGg9IjI5cHgiICAgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjQ4LjQgcjk5MzkiICAgc29kaXBvZGk6ZG9jbmFtZT0iY2FyZXQuc3ZnIj48bWV0YWRhdGEgICAgIGlkPSJtZXRhZGF0YTMwMzkiPjxyZGY6UkRGPjxjYzpXb3JrICAgICAgICAgcmRmOmFib3V0PSIiPjxkYzpmb3JtYXQ+aW1hZ2Uvc3ZnK3htbDwvZGM6Zm9ybWF0PjxkYzp0eXBlICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPjwvY2M6V29yaz48L3JkZjpSREY+PC9tZXRhZGF0YT48ZGVmcyAgICAgaWQ9ImRlZnMzMDM3IiAvPjxzb2RpcG9kaTpuYW1lZHZpZXcgICAgIHBhZ2Vjb2xvcj0iI2ZmZmZmZiIgICAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IiAgICAgYm9yZGVyb3BhY2l0eT0iMSIgICAgIG9iamVjdHRvbGVyYW5jZT0iMTAiICAgICBncmlkdG9sZXJhbmNlPSIxMCIgICAgIGd1aWRldG9sZXJhbmNlPSIxMCIgICAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwIiAgICAgaW5rc2NhcGU6cGFnZXNoYWRvdz0iMiIgICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iOTAzIiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iNTk0IiAgICAgaWQ9Im5hbWVkdmlldzMwMzUiICAgICBzaG93Z3JpZD0idHJ1ZSIgICAgIGlua3NjYXBlOnpvb209IjEyLjEzNzkzMSIgICAgIGlua3NjYXBlOmN4PSItNC4xMTkzMTgyZS0wOCIgICAgIGlua3NjYXBlOmN5PSI3IiAgICAgaW5rc2NhcGU6d2luZG93LXg9IjUwMiIgICAgIGlua3NjYXBlOndpbmRvdy15PSIzMDIiICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIwIiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0iTGF5ZXJfMSI+PGlua3NjYXBlOmdyaWQgICAgICAgdHlwZT0ieHlncmlkIiAgICAgICBpZD0iZ3JpZDMwNDEiIC8+PC9zb2RpcG9kaTpuYW1lZHZpZXc+PHBvbHlnb24gICAgIHBvaW50cz0iMjguODUsMCAwLjE1LDAgMTQuNSwxNC4zNSAiICAgICBpZD0icG9seWdvbjMwMzMiICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLjM1NDExMzg3LDAsMCwwLjQ4MzI5MTEsOS4zMjQxNTUzLDMuNjI1KSIgICAgIHN0eWxlPSJmaWxsOiM5YjRkY2Y7ZmlsbC1vcGFjaXR5OjEiIC8+PC9zdmc+);\n}\n\ntextarea[_v-66dd0d90] {\n  padding-bottom: 0.6rem;\n  padding-top: 0.6rem;\n  min-height: 6.5rem;\n}\n\nlabel[_v-66dd0d90],\nlegend[_v-66dd0d90] {\n  font-size: 1.6rem;\n  font-weight: 700;\n  display: block;\n  margin-bottom: 0.5rem;\n}\n\nfieldset[_v-66dd0d90] {\n  border-width: 0;\n  padding: 0;\n}\n\ninput[type='checkbox'][_v-66dd0d90],\ninput[type='radio'][_v-66dd0d90] {\n  display: inline;\n}\n\n.label-inline[_v-66dd0d90] {\n  font-weight: normal;\n  display: inline-block;\n  margin-left: 0.5rem;\n}\n\n.container[_v-66dd0d90] {\n  margin: 0 auto;\n  max-width: 112rem;\n  padding: 0 2rem;\n  position: relative;\n  width: 100%;\n}\n\n.row[_v-66dd0d90] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  padding: 0;\n  width: 100%;\n}\n.row .row-wrap[_v-66dd0d90] {\n  -ms-flex-wrap: wrap;\n      flex-wrap: wrap;\n}\n.row .row-no-padding[_v-66dd0d90] {\n  padding: 0;\n}\n.row .row-no-padding > .column[_v-66dd0d90] {\n  padding: 0;\n}\n.row .row-top[_v-66dd0d90] {\n  -webkit-box-align: start;\n      -ms-flex-align: start;\n              -ms-grid-row-align: flex-start;\n          align-items: flex-start;\n}\n.row .row-bottom[_v-66dd0d90] {\n  -webkit-box-align: end;\n      -ms-flex-align: end;\n              -ms-grid-row-align: flex-end;\n          align-items: flex-end;\n}\n.row .row-center[_v-66dd0d90] {\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n              -ms-grid-row-align: center;\n          align-items: center;\n}\n.row .row-stretch[_v-66dd0d90] {\n  -webkit-box-align: stretch;\n      -ms-flex-align: stretch;\n              -ms-grid-row-align: stretch;\n          align-items: stretch;\n}\n.row .row-baseline[_v-66dd0d90] {\n  -webkit-box-align: baseline;\n      -ms-flex-align: baseline;\n              -ms-grid-row-align: baseline;\n          align-items: baseline;\n}\n.row .column[_v-66dd0d90] {\n  display: block;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n  margin-left: 0;\n  max-width: 100%;\n  width: 100%;\n}\n.row .column .col-top[_v-66dd0d90] {\n  -ms-flex-item-align: start;\n      align-self: flex-start;\n}\n.row .column .col-bottom[_v-66dd0d90] {\n  -ms-flex-item-align: end;\n      align-self: flex-end;\n}\n.row .column .col-center[_v-66dd0d90] {\n  -ms-flex-item-align: center;\n      align-self: center;\n}\n.row .column.column-offset-10[_v-66dd0d90] {\n  margin-left: 10%;\n}\n.row .column.column-offset-20[_v-66dd0d90] {\n  margin-left: 20%;\n}\n.row .column.column-offset-25[_v-66dd0d90] {\n  margin-left: 25%;\n}\n.row .column.column-offset-33[_v-66dd0d90], .row .column.column-offset-34[_v-66dd0d90] {\n  margin-left: 33.3333%;\n}\n.row .column.column-offset-50[_v-66dd0d90] {\n  margin-left: 50%;\n}\n.row .column.column-offset-66[_v-66dd0d90], .row .column.column-offset-67[_v-66dd0d90] {\n  margin-left: 66.6666%;\n}\n.row .column.column-offset-75[_v-66dd0d90] {\n  margin-left: 75%;\n}\n.row .column.column-offset-80[_v-66dd0d90] {\n  margin-left: 80%;\n}\n.row .column.column-offset-90[_v-66dd0d90] {\n  margin-left: 90%;\n}\n.row .column.column-10[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 10%;\n          flex: 0 0 10%;\n  max-width: 10%;\n}\n.row .column.column-20[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 20%;\n          flex: 0 0 20%;\n  max-width: 20%;\n}\n.row .column.column-25[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 25%;\n          flex: 0 0 25%;\n  max-width: 25%;\n}\n.row .column.column-33[_v-66dd0d90], .row .column.column-34[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 33.3333%;\n          flex: 0 0 33.3333%;\n  max-width: 33.3333%;\n}\n.row .column.column-40[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 40%;\n          flex: 0 0 40%;\n  max-width: 40%;\n}\n.row .column.column-50[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 50%;\n          flex: 0 0 50%;\n  max-width: 50%;\n}\n.row .column.column-60[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 60%;\n          flex: 0 0 60%;\n  max-width: 60%;\n}\n.row .column.column-66[_v-66dd0d90], .row .column.column-67[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 66.6666%;\n          flex: 0 0 66.6666%;\n  max-width: 66.6666%;\n}\n.row .column.column-75[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 75%;\n          flex: 0 0 75%;\n  max-width: 75%;\n}\n.row .column.column-80[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 80%;\n          flex: 0 0 80%;\n  max-width: 80%;\n}\n.row .column.column-90[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 90%;\n          flex: 0 0 90%;\n  max-width: 90%;\n}\n\n@media (min-width: 40rem) {\n  .row[_v-66dd0d90] {\n    -webkit-box-orient: horizontal;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: row;\n            flex-direction: row;\n    margin-left: -1rem;\n    width: calc(100% + 2.0rem);\n  }\n  .row .column[_v-66dd0d90] {\n    margin-bottom: inherit;\n    padding: 0 1rem;\n  }\n}\na[_v-66dd0d90] {\n  color: #9b4dca;\n  text-decoration: none;\n}\na[_v-66dd0d90]:hover {\n  color: #606c76;\n}\n\ndl[_v-66dd0d90],\nol[_v-66dd0d90],\nul[_v-66dd0d90] {\n  margin-top: 0;\n  padding-left: 0;\n}\ndl ul[_v-66dd0d90],\ndl ol[_v-66dd0d90],\nol ul[_v-66dd0d90],\nol ol[_v-66dd0d90],\nul ul[_v-66dd0d90],\nul ol[_v-66dd0d90] {\n  font-size: 90%;\n  margin: 1.5rem 0 1.5rem 3rem;\n}\n\ndl[_v-66dd0d90] {\n  list-style: none;\n}\n\nul[_v-66dd0d90] {\n  list-style: circle inside;\n}\n\nol[_v-66dd0d90] {\n  list-style: decimal inside;\n}\n\ndt[_v-66dd0d90],\ndd[_v-66dd0d90],\nli[_v-66dd0d90] {\n  margin-bottom: 1rem;\n}\n\n.button[_v-66dd0d90],\nbutton[_v-66dd0d90] {\n  margin-bottom: 1rem;\n}\n\ninput[_v-66dd0d90],\ntextarea[_v-66dd0d90],\nselect[_v-66dd0d90],\nfieldset[_v-66dd0d90] {\n  margin-bottom: 1.5rem;\n}\n\npre[_v-66dd0d90],\nblockquote[_v-66dd0d90],\ndl[_v-66dd0d90],\nfigure[_v-66dd0d90],\ntable[_v-66dd0d90],\np[_v-66dd0d90],\nul[_v-66dd0d90],\nol[_v-66dd0d90],\nform[_v-66dd0d90] {\n  margin-bottom: 2.5rem;\n}\n\ntable[_v-66dd0d90] {\n  width: 100%;\n}\n\nth[_v-66dd0d90],\ntd[_v-66dd0d90] {\n  border-bottom: 0.1rem solid #e1e1e1;\n  padding: 1.2rem 1.5rem;\n  text-align: left;\n}\nth[_v-66dd0d90]:first-child,\ntd[_v-66dd0d90]:first-child {\n  padding-left: 0;\n}\nth[_v-66dd0d90]:last-child,\ntd[_v-66dd0d90]:last-child {\n  padding-right: 0;\n}\n\np[_v-66dd0d90] {\n  margin-top: 0;\n}\n\nh1[_v-66dd0d90],\nh2[_v-66dd0d90],\nh3[_v-66dd0d90],\nh4[_v-66dd0d90],\nh5[_v-66dd0d90],\nh6[_v-66dd0d90] {\n  font-weight: 300;\n  margin-bottom: 2rem;\n  margin-top: 0;\n}\n\nh1[_v-66dd0d90] {\n  font-size: 4rem;\n  letter-spacing: -0.1rem;\n  line-height: 1.2;\n}\n\nh2[_v-66dd0d90] {\n  font-size: 3.6rem;\n  letter-spacing: -0.1rem;\n  line-height: 1.25;\n}\n\nh3[_v-66dd0d90] {\n  font-size: 3rem;\n  letter-spacing: -0.1rem;\n  line-height: 1.3;\n}\n\nh4[_v-66dd0d90] {\n  font-size: 2.4rem;\n  letter-spacing: -0.08rem;\n  line-height: 1.35;\n}\n\nh5[_v-66dd0d90] {\n  font-size: 1.8rem;\n  letter-spacing: -0.05rem;\n  line-height: 1.5;\n}\n\nh6[_v-66dd0d90] {\n  font-size: 1.6rem;\n  letter-spacing: 0;\n  line-height: 1.4;\n}\n\n@media (min-width: 40rem) {\n  h1[_v-66dd0d90] {\n    font-size: 5rem;\n  }\n\n  h2[_v-66dd0d90] {\n    font-size: 4.2rem;\n  }\n\n  h3[_v-66dd0d90] {\n    font-size: 3.6rem;\n  }\n\n  h4[_v-66dd0d90] {\n    font-size: 3rem;\n  }\n\n  h5[_v-66dd0d90] {\n    font-size: 2.4rem;\n  }\n\n  h6[_v-66dd0d90] {\n    font-size: 1.5rem;\n  }\n}\n.float-right[_v-66dd0d90] {\n  float: right;\n}\n\n.float-left[_v-66dd0d90] {\n  float: left;\n}\n\n.clearfix[_v-66dd0d90] {\n  *zoom: 1;\n}\n.clearfix[_v-66dd0d90]:after, .clearfix[_v-66dd0d90]:before {\n  content: \"\";\n  display: table;\n}\n.clearfix[_v-66dd0d90]:after {\n  clear: both;\n}\n\n")
 'use strict';
-
-var moment = require('moment');
 
 module.exports = {
 	props: {
 		authorid: { default: '0' },
-		recordexists: { default: false },
-		editid: { default: '' },
-		framework: { default: 'foundation' }
+		eventexists: { default: false },
+		editeventid: { default: '' }
 	},
 	data: function data() {
 		return {
-			currentDate: {},
-			record: {
-				title: '',
-				announcement: '',
-				start_date: '',
-				end_date: ''
-			},
+			sdate: '',
+			edate: '',
+			stime: '',
+			rdate: '',
+			ticketoptions: [{ text: 'Online', value: 'online' }, { text: 'Phone', value: 'phone' }, { text: 'Ticket Office', value: 'office' }, { text: 'Online, Phone and Ticket Office', value: 'all' }, { text: 'Other', value: 'other' }],
+			participants: [{ text: 'Campus Only', value: 'campus' }, { text: 'Open to Public', value: 'public' }, { text: 'Students Only', value: 'students' }, { text: 'Invitation Only', value: 'invite' }, { text: 'Tickets Required', value: 'tickets' }],
 			totalChars: {
 				start: 0,
 				title: 100,
-				announcement: 255
+				description: 255
+			},
+			newbuilding: '',
+			zcategories: [],
+			zbuildings: [],
+			buildings: [],
+			zcats: [],
+			categories: {},
+			minicalendars: {},
+			newevent: {
+				on_campus: 1,
+				all_day: 0,
+				no_end_time: 0,
+				free: 0,
+				title: '',
+				description: ''
 			},
 			response: {},
+			formStatus: {},
+			vModelLike: "",
 			formMessage: {
 				isOk: false,
 				msg: ''
@@ -15902,40 +11874,55 @@ module.exports = {
 			formErrors: {}
 		};
 	},
-	created: function created() {
-		this.currentDate = moment();
-		console.log('this.currentDate=' + this.currentDate);
-	},
 	ready: function ready() {
+		//  this.fetchCategoryList();
+		// console.log('editevent='+ this.editevent)
+		console.log('eventexists' + this.eventexists);
 
-		if (this.recordexists) {
-			console.log('editeventid' + this.editid);
-			this.fetchCurrentRecord(this.editid);
+		if (this.eventexists) {
+			console.log('editeventid' + this.editeventid);
+			this.fetchCurrentEvent(this.editeventid);
 		}
+
+		this.fetchMiniCalendarList();
 	},
 
 	computed: {
-		md6col: function md6col() {
-			return this.framework == 'foundation' ? 'medium-6 columns' : 'col-md-6';
+		computedLocation: function computedLocation() {
+			if (this.zbuildings) {
+				this.newevent.building = this.zbuildings.length > 0 ? this.zbuildings[0] : '';
+				buildingChoice = this.newevent.building;
+			} else {
+				return;
+			}
+			var room = this.newevent.room ? ' - Room:' + this.newevent.room : '';
+			return buildingChoice + room;
+			// return this.zbuilding[0] + room
 		},
-		md12col: function md12col() {
-			return this.framework == 'foundation' ? 'medium-12 columns' : 'col-md-12';
+		isOnCampus: function isOnCampus() {
+			return this.newevent.on_campus == 1 ? true : false;
 		},
-		btnPrimary: function btnPrimary() {
-			return this.framework == 'foundation' ? 'button button-primary' : 'btn btn-primary';
+		realCost: function realCost() {
+			if (this.newevent.free == 1) {
+				return '0.00';
+			} else {
+				// this.newevent.cost = '';
+				return '';
+			}
+			// return this.newevent.free == 1 ? false:true;
 		},
-		formGroup: function formGroup() {
-			return this.framework == 'foundation' ? '' : 'form-group';
-		},
-		hasStartDate: function hasStartDate() {
-			if (this.record.start_date === undefined || this.record.start_date == '') {
+		hasCost: function hasCost() {
+			if (this.newevent.free == 1) {
+				this.newevent.cost = '0.00';
 				return false;
 			} else {
+				// this.newevent.cost = '';
 				return true;
 			}
+			// return this.newevent.free == 1 ? false:true;
 		},
 		titleChars: function titleChars() {
-			var str = this.record.title;
+			var str = this.newevent.title;
 
 			console.log(str.length);
 			var cclength = str.length;
@@ -15943,40 +11930,71 @@ module.exports = {
 			// this.totalChars.title - (this.newevent.title).length
 		},
 		descriptionChars: function descriptionChars() {
-			var str = this.record.announcement;
+			var str = this.newevent.description;
 			console.log(str.length);
 			var cclength = str.length;
-			return this.totalChars.announcement - cclength;
+			return this.totalChars.description - cclength;
 			// this.totalChars.title - (this.newevent.title).length
+		},
+		hasStartTime: function hasStartTime() {
+			return this.newevent.all_day == 1 ? false : true;
+		},
+		hasEndTime: function hasEndTime() {
+			return this.newevent.all_day == 1 || this.newevent.no_end_time == 1 ? false : true;
 		}
 
 	},
 	methods: {
-		fetchCurrentRecord: function fetchCurrentRecord() {
+		fetchCurrentEvent: function fetchCurrentEvent() {
 			var _this = this;
 
-			this.$http.get('/api/announcement/' + this.editid + '/edit').then(function (response) {
+			this.$http.get('/api/event/' + this.editeventid + '/edit').then(function (response) {
 				//response.status;
 				console.log('response.status=' + response.status);
 				console.log('response.ok=' + response.ok);
 				console.log('response.statusText=' + response.statusText);
-				console.log('response.data=' + response.data);
-				// data = response.data;
-
-				_this.record = response.data.data;
-				console.log('this.record= ' + _this.record);
+				// console.log('response.data=' + response.data.json());
+				_this.newevent = response.data;
 
 				_this.checkOverData();
 			}, function (response) {
 				//error callback
 				console.log("ERRORS");
 
-				_this.formErrors = response.data.error.message;
+				// this.formErrors =  response.data.error.message;
 			}).bind(this);
 		},
 		checkOverData: function checkOverData() {
-			console.log('this.record' + this.record.id);
+
+			if (this.newevent.building) {
+				this.buildings.push(this.newevent.building);
+			}
+			if (this.newevent.room) {
+				this.newevent.room = this.newevent.room;
+			}
+
+			if (this.newevent.eventcategories) {
+				for (var i = 0; i < this.newevent.eventcategories.length; i++) {
+					var reduceobj = this.newevent.eventcategories[i].id;
+					this.zcats.push(reduceobj);
+				}
+
+				console.log('this.zcats' + this.zcats.length);
+			}
+
+			// this.newbuilding = this.newevent.building;
+			// this.zbuilding.push(this.newevent.building);
 		},
+		fetchMiniCalendarList: function fetchMiniCalendarList() {
+			this.$http.get('/api/minicalendars').then(function (response) {
+				// console.log('response->minicalendars=' + JSON.stringify(response.data));
+				this.minicalendars = response.data.data;
+			}, function (response) {
+				//  this.$set(this.formErrors, response.data);
+				console.log(response);
+			});
+		},
+
 		submitForm: function submitForm(e) {
 			var _this2 = this;
 
@@ -15985,59 +12003,46 @@ module.exports = {
 			// this.newevent.start_date = this.sdate;
 			// this.newevent.end_date = this.edate;
 			// this.newevent.reg_deadline = this.rdate;
-			this.record.author_id = this.authorid;
-
-			this.$http.post('/api/announcement', this.record).then(function (response) {
+			this.newevent.author_id = this.authorid;
+			if (this.newevent.on_campus == true) {
+				this.newevent.location = this.computedLocation;
+			} else {
+				this.newevent.location = this.newevent.locationoffcampus;
+			}
+			// this.newevent.location = (this.on_campus)?this.computedLocation: this.newevent.location;
+			this.newevent.categories = this.zcategories;
+			console.log("cats=" + this.newevent.categories);
+			this.$http.post('/api/event', this.newevent).then(function (response) {
 				//response.status;
 				console.log('response.status=' + response.status);
 				console.log('response.ok=' + response.ok);
 				console.log('response.statusText=' + response.statusText);
 				console.log('response.data=' + response.data.message);
-
 				_this2.formMessage.msg = response.data.message;
 				_this2.formMessage.isOk = response.ok;
 			}, function (response) {
 				//error callback
+				// console.log("FORM ERRORS     "+ response.json() );
+
 				_this2.formErrors = response.data.error.message;
 			}).bind(this);
 		}
 	},
+
 	watch: {},
+
 	directives: {
-		mydatedropper: require('../directives/mydatedropper.js')
-		// dtpicker: require('../directives/dtpicker.js')
+		mydatedropper: require('../directives/mydatedropper.js'),
+		mytimedropper: require('../directives/mytimedropper.js'),
+		myselect: require('../directives/myselect.js')
+
 	},
 	components: {
-
+		datepicker: require('../vendor/datepicker.vue')
 		// listselect2: require('./ListSelect2.vue')
 		// autocomplete: require('./vue-autocomplete.vue'),
 		// 'datepicker': require('../vendor/datepicker.vue'),
 
-	},
-	filters: {
-		momentstart: {
-			read: function read(val) {
-				console.log('read-val' + val);
-
-				return val ? val : '';
-			},
-			write: function write(val, oldVal) {
-				console.log('write-val' + val + '--' + oldVal);
-				return moment(val).format('MM-DD-YYYY');
-			}
-		},
-		momentfilter: {
-			read: function read(val) {
-				console.log('read-val' + val);
-
-				return val ? moment(val).format('MM-DD-YYYY') : '';
-			},
-			write: function write(val, oldVal) {
-				console.log('write-val' + val + '--' + oldVal);
-
-				return moment(val).format('YYYY-MM-DD');
-			}
-		}
 	},
 	events: {
 
@@ -16054,22 +12059,22 @@ module.exports = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\t\t\t\t<form _v-53150522=\"\">\n\t\t\t\t\t<slot name=\"csrf\" _v-53150522=\"\"></slot>\n\t\t\t\t\t<!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n\t\t\t\t\t<div class=\"row\" _v-53150522=\"\">\n\t\t\t\t\t\t<div v-bind:class=\"md12col\" _v-53150522=\"\">\n\t\t\t\t\t\t\t<div v-show=\"formMessage.isOk\" class=\"callout success\" _v-53150522=\"\">\n  \t\t\t\t\t\t\t<h5 _v-53150522=\"\">{{formMessage.msg}}</h5>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div><!-- /.small-12 columns -->\n\t\t\t\t\t\t</div><!-- /.row -->\n\t\t\t\t\t\t<div class=\"row\" _v-53150522=\"\">\n\t\t\t\t\t\t\t<div v-bind:class=\"md12col\" _v-53150522=\"\">\n\t\t\t\t\t\t\t\t<div v-bind:class=\"formGroup\" _v-53150522=\"\">\n\t\t\t\t\t\t\t\t\t<label _v-53150522=\"\">Title <i class=\"fi-star reqstar\" _v-53150522=\"\"></i></label>\n\t\t\t\t\t\t\t\t\t\t<p class=\"help-text\" id=\"title-helptext\" _v-53150522=\"\">Please enter a title ({{titleChars}} characters left)</p>\n\t\t\t\t\t\t\t\t\t\t<input v-model=\"record.title\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-53150522=\"\">\n\t\t\t\t\t\t\t\t\t\t<p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-53150522=\"\">\tPlease Include a Title!</p>\n\t\t\t\t    \t\t</div>\n\t\t\t\t\t\t\t\t<div v-bind:class=\"formGroup\" _v-53150522=\"\">\n\t\t\t\t\t\t\t\t\t<label _v-53150522=\"\">Announcement <i class=\"fi-star reqstar\" _v-53150522=\"\"></i> <p class=\"help-text\" id=\"announcement-helptext\" _v-53150522=\"\">({{descriptionChars}} characters left)</p>\n\n\t\t\t\t\t\t\t\t\t<textarea v-model=\"record.announcement\" v-bind:class=\"[formErrors.announcement ? 'invalid-input' : '']\" name=\"announcement\" type=\"textarea\" rows=\"12\" _v-53150522=\"\"></textarea>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t<p v-if=\"formErrors.announcement\" class=\"help-text invalid\" _v-53150522=\"\">Need a Description!</p>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div><!-- /.small-12 columns -->\n\t\t\t\t\t</div><!-- /.row -->\n\t\t\t\t\t<div class=\"row\" _v-53150522=\"\">\n\t\t\t\t\t\t<div v-bind:class=\"md6col\" _v-53150522=\"\">\n\t\t\t\t\t\t\t\t<div v-bind:class=\"formGroup\" _v-53150522=\"\">\n\t\t\t\t\t\t\t\t\t<label for=\"start-date\" _v-53150522=\"\">Start Date: <i class=\"fi-star reqstar\" _v-53150522=\"\"></i></label>\n\t\t\t\t\t\t\t\t\t<input id=\"start-date\" class=\"formControl\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.start_date | momentfilter\" v-mydatedropper=\"\" _v-53150522=\"\">\n\t\t\t\t\t\t\t\t\t<p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-53150522=\"\">Need a Start Date</p>\n\t\t\t\t\t\t\t\t</div><!--form-group -->\n\t\t\t\t\t\t</div><!-- /.small-6 columns -->\n\t\t\t\t\t\t<div v-bind:class=\"md6col\" _v-53150522=\"\">\n\t\t\t\t\t\t\t\t<div v-bind:class=\"formGroup\" _v-53150522=\"\">\n\t\t\t\t\t\t\t\t\t\t<!-- <input id=\"my-end-date\" v-dtpicker ddate=\"currentDate\" /> -->\n\t\t\t\t\t\t\t\t\t\t<label for=\"end-date\" _v-53150522=\"\">End Date: <i class=\"fi-star reqstar\" _v-53150522=\"\"></i></label>\n\t\t\t\t\t\t\t\t\t\t<template v-if=\"hasStartDate\">\n\t\t\t\t\t\t\t\t\t\t\t<input v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.end_date  | momentfilter\" v-mydatedropper=\"\" _v-53150522=\"\">\n\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<input v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.end_date  | momentfilter\" v-mydatedropper=\"\" disabled=\"disabled\" _v-53150522=\"\">\n\n\t\t\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t\t\t<!-- <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\"></datepicker> -->\n\t\t\t\t\t\t\t\t\t\t<p v-if=\"formErrors.end_date\" class=\"help-text invalid\" _v-53150522=\"\">Need an End Date</p>\n\n\t\t\t\t\t\t\t\t\t</div><!--form-group -->\n\t\t\t\t\t\t</div><!-- /.small-6 columns -->\n\t\t\t\t\t</div><!-- /.row -->\n\t\t\t\t\t<div class=\"row\" _v-53150522=\"\">\n\t\t\t\t\t\t<div v-bind:class=\"md12col\" _v-53150522=\"\">\n\t\t\t\t\t\t\t<div v-bind:class=\"formGroup\" _v-53150522=\"\">\n\t\t\t\t\t\t\t\t<button v-on:click=\"submitForm\" type=\"submit\" v-bind:class=\"btnPrimary\" _v-53150522=\"\">Submit For Approval</button>\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t</div></div></form>\n\t\t\t\t\t\t<!-- /.medium-12 column -->\n\t\t\t\t\t\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\t\t\t<form _v-66dd0d90=\"\">\n\t\t\t\t<slot name=\"csrf\" _v-66dd0d90=\"\"></slot>\n\t\t\t\t<!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<div v-show=\"formMessage.isOk\" class=\"callout success\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t<h5 _v-66dd0d90=\"\">{{formMessage.msg}}</h5>\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div><!-- /.column -->\n\t\t\t\t</div><!-- /.row -->\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<label _v-66dd0d90=\"\">Title <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i></label>\n\t\t\t\t\t\t\t<p class=\"help-text\" id=\"title-helptext\" _v-66dd0d90=\"\">Please enter a title ({{titleChars}} characters left)</p>\n\t\t\t\t\t\t\t<input v-model=\"newevent.title\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t<p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-66dd0d90=\"\">\tPlease Include a Title!</p>\n\n\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Short Title\t</label>\n\t\t\t\t\t\t\t\t<input v-model=\"newevent.short_title\" type=\"text\" placeholder=\"Short Title\" name=\"short-title\" _v-66dd0d90=\"\">\n\n\n\t\t\t\t\t</div><!-- /.column -->\n\t\t\t\t</div><!-- /.row -->\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<label _v-66dd0d90=\"\">Is Event on Campus?\n\t\t\t\t\t\t\t<input id=\"on-campus-yes\" name=\"on_campus\" type=\"checkbox\" value=\"1\" v-model=\"newevent.on_campus\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</div><!-- /.column -->\n\t\t\t\t</div><!-- /.row -->\n\t\t\t\t<template v-if=\"isOnCampus\">\n\t\t\t\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Building</label>\n\t\t\t\t\t\t\t\t\t<select id=\"select-zbuilding\" class=\"js-example-basic-multiple\" style=\"width: 100%\" v-myselect=\"zbuildings\" ajaxurl=\"/api/zbuildings\" v-bind:resultvalue=\"buildings\" data-tags=\"false\" multiple=\"multiple\" data-maximum-selection-length=\"1\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t<!-- <option value=\"0\">default</option> -->\n\t\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</div><!-- /.medium-8 columns -->\n\t\t\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Room</label>\n\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.room\" v-bind:class=\"[formErrors.room ? 'invalid-input' : '']\" name=\"room\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t</div><!-- /.medium-4 columns -->\n\t\t\t\t\t\t\t</div> <!-- /.row -->\n\t\t\t\t\t\t</template>\n\t\t\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<template v-if=\"isOnCampus\">\n\n\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Location <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i></label>\n\t\t\t\t\t\t\t\t<input v-model=\"computedLocation\" v-bind:class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" readonly=\"readonly\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Location <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i></label>\n\t\t\t\t\t\t\t\t<input v-model=\"newevent.locationoffcampus\" v-bind:class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t</div><!-- /. column -->\n\t\t\t\t\t\t</div><!-- /.row -->\n\t\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n \t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<label for=\"start-date\" _v-66dd0d90=\"\">Start Date: <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i></label>\n\t\t\t\t\t\t<input id=\"start-date\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"newevent.start_date\" aria-describedby=\"errorStartDate\" v-mydatedropper=\"\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-66dd0d90=\"\">Need a Start Date</p>\n\t\t\t\t</div>\n \t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\t<label for=\"end-date\" _v-66dd0d90=\"\">End Date: <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i></label>\n\t\t\t\t\t\t<input id=\"end-date\" v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"newevent.end_date\" aria-describedby=\"errorEndDate\" v-mydatedropper=\"\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<!-- <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\"></datepicker> -->\n\t\t\t\t\t\t<p v-if=\"formErrors.end_date\" class=\"help-text invalid\" _v-66dd0d90=\"\">Need an End Date</p>\n\t\t\t\t\t</div>\n\t\t\t\t</div><!-- /.row -->\n\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<label for=\"all-day\" _v-66dd0d90=\"\">All Day Event:\n\t\t\t\t\t\t<input id=\"all-day\" name=\"all_day\" type=\"checkbox\" value=\"1\" v-model=\"newevent.all_day\" _v-66dd0d90=\"\">\n\t\t\t\t\t</label>\n\t\t\t\t\t</div><!-- /.column -->\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<div v-show=\"hasEndTime\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t<label for=\"no-end-time\" _v-66dd0d90=\"\">No End Time:\n\t\t\t\t\t\t\t\t<input id=\"no-end-time\" name=\"no_end_time\" type=\"checkbox\" value=\"1\" v-model=\"newevent.no_end_time\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t<!-- <label for=\"no-end-time-no\" class=\"radiobtns\">no</label><input id=\"no-end-time-no\"  name=\"no_end_time\" type=\"radio\" value=\"0\" v-model=\"newevent.no_end_time\"/> -->\n\t\t\t\t\t\t\t\t</label></div>\n\t\t\t\t\t</div><!-- /.column -->\n\t\t\t\t</div><!-- /.row -->\n\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<div v-show=\"hasStartTime\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t<label for=\"start-time\" _v-66dd0d90=\"\">Start Time: <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i></label>\n\t\t\t\t\t\t\t<input id=\"start-time\" type=\"text\" v-model=\"newevent.start_time\" v-mytimedropper=\"\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t\t</div><!-- /.column -->\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<div v-show=\"hasEndTime\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<label for=\"end-time\" _v-66dd0d90=\"\">End Time: <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i></label>\n\t\t\t\t\t\t<input id=\"end-time\" type=\"text\" v-model=\"newevent.end_time\" v-mytimedropper=\"\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t\t</div><!-- /.column -->\n\t\t\t\t</div><!-- /.row -->\n\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<label _v-66dd0d90=\"\">Categories: <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i></label>\n\t\t\t\t\t\t<select v-bind:class=\"[formErrors.categories ? 'invalid-input' : '']\" id=\"select-zcats\" style=\"width: 100%\" v-myselect=\"zcategories\" v-bind:resultvalue=\"zcats\" ajaxurl=\"/api/zcats\" data-close-on-select=\"false\" data-placeholder=\"zcats\" data-tags=\"false\" multiple=\"multiple\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t<option value=\"0\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\tdefault\n\t\t\t\t\t\t\t</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</div><!-- /.column -->\n\t\t\t\t</div><!-- /.row -->\n\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Contact Person <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i>\n\t\t\t\t\t\t\t\t<input v-model=\"newevent.contact_person\" v-bind:class=\"[formErrors.contact_person ? 'invalid-input' : '']\" name=\"contact-person\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t<p v-if=\"formErrors.contact_person\" class=\"help-text invalid\" _v-66dd0d90=\"\">Need a Contact Person!</p>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t</div><!-- / columns -->\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Contact Email: <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i> <em _v-66dd0d90=\"\">(ex. janedoe@emich.edu)</em>\n\t\t\t\t\t\t\t\t<input v-model=\"newevent.contact_email\" v-bind:class=\"[formErrors.contact_email ? 'invalid-input' : '']\" name=\"contact-email\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t<p v-if=\"formErrors.contact_email\" class=\"help-text invalid\" _v-66dd0d90=\"\">Need a Contact Email!</p>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t</div><!-- /.row -->\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\n\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Contact Phone <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i> <em _v-66dd0d90=\"\">(ex. 734.487.1849)</em>\n\t\t\t\t\t\t\t\t<input v-model=\"newevent.contact_phone\" v-bind:class=\"[formErrors.contact_phone ? 'invalid-input' : '']\" name=\"contact-phone\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t<p v-if=\"formErrors.contact_phone\" class=\"help-text invalid\" _v-66dd0d90=\"\">Need a Contact Phone!</p>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t</div><!-- /columns -->\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Contact Fax: <em _v-66dd0d90=\"\">(ex. 734.487.1849)</em>\n\t\t\t\t\t\t\t\t<input v-model=\"newevent.contact_fax\" v-bind:class=\"[formErrors.contact_fax ? 'invalid-input' : '']\" name=\"contact-fax\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t</label>\n\n\t\t\t\t\t</div><!-- / columns -->\n\t\t\t\t</div><!-- /.row -->\n\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Related Link: <em _v-66dd0d90=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.related_link_1\" v-bind:class=\"[formErrors.related_link_1 ? 'invalid-input' : '']\" name=\"related-link-1\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Related Link: <em _v-66dd0d90=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.related_link_2\" v-bind:class=\"[formErrors.related_link_2 ? 'invalid-input' : '']\" name=\"related-link-2\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Related Link: <em _v-66dd0d90=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.related_link_1\" v-bind:class=\"[formErrors.related_link_1 ? 'invalid-input' : '']\" name=\"related-link-1\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div><!-- / column -->\n\t\t\t\t</div><!-- /.row -->\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t\t<label for=\"reg-deadline\" _v-66dd0d90=\"\">Registration Deadline</label>\n\t\t\t\t\t\t\t\t<input id=\"reg-deadline\" type=\"text\" v-model=\"newevent.reg_deadline\" :value.sync=\"rdate\" aria-describedby=\"errorRegDeadline\" v-mydatedropper=\"\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t</div><!-- /. columns-->\n\t\t\t\t\t</div><!-- /.row -->\n\n\t\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Free</label>\n\n\t\t\t\t\t\t\t\t\t\t\t\t<input id=\"free\" name=\"free\" type=\"checkbox\" value=\"1\" v-model=\"newevent.free\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t\t\t\t</div><!-- /.medium-4 columns -->\n\t\t\t\t\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Event Cost <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i></label>\n\t\t\t\t\t\t\t\t\t\t\t<div v-show=\"hasCost\" class=\"form-group\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"input-group-label\" _v-66dd0d90=\"\">$</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.cost\" v-bind:class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div><!-- /. input-group -->\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t<div v-else=\"\" class=\"form-group\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"input-group-label\" _v-66dd0d90=\"\">$</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.cost\" v-bind:class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"text\" readonly=\"readonly\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div><!-- /. input-group -->\n\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t</div><!-- /columns -->\n\t\t\t\t\t\t\t\t\t</div><!-- /.row -->\n\t\t\t\t\t\t</div><!-- /.column -->\n\t\t\t\t</div><!-- /.row -->\n\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Tickets Available\n\t\t\t\t\t\t\t\t\t<select v-model=\"newevent.tickets\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t<option v-for=\"ticketoption in ticketoptions\" v-bind:value=\"ticketoption.value\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t\t {{ ticketoption.text }}\n\t\t\t\t\t\t\t\t\t </option>\n\t\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t<template v-if=\"newevent.tickets == 'online' || newevent.tickets == 'all'\">\n\t\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Link: <em _v-66dd0d90=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_online\" v-bind:class=\"[formErrors.ticket_details_online ? 'invalid-input' : '']\" name=\"ticket-details-online\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t<template v-if=\"newevent.tickets == 'phone' || newevent.tickets == 'all'\">\n\t\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Tickets by Phone <em _v-66dd0d90=\"\">(ex. 734.487.1849)</em>\n\t\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_phone\" v-bind:class=\"[formErrors.ticket_details_phone ? 'invalid-input' : '']\" name=\"ticket-details-phone\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t<template v-if=\"newevent.tickets == 'office' || newevent.tickets == 'all'\">\n\t\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Address\n\t\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_office\" v-bind:class=\"[formErrors.ticket_details_office ? 'invalid-input' : '']\" name=\"ticket-details-office\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t\t<template v-if=\"newevent.tickets == 'other'\">\n\t\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Other\n\t\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_other\" v-bind:class=\"[formErrors.ticket_details_other ? 'invalid-input' : '']\" name=\"ticket-details-other\" type=\"text\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t\t\t</div><!-- /column -->\n\t\t\t\t<!-- /.row -->\n\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t<div class=\"medium-12 column\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<div class=\"form-group\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Participants\n\t\t\t\t\t\t\t\t<select v-model=\"newevent.participants\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t\t<option v-for=\"participant in participants\" v-bind:value=\"participant.value\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t {{ participant.text }}\n\t\t\t\t\t\t\t\t</option>\n\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div><!--/.medium-12 column -->\n\t\t\t\t</div><!-- /.row -->\n\t\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t\t<label for=\"lbc-reviewed\" _v-66dd0d90=\"\">LBC Approved: <em _v-66dd0d90=\"\">(pre-approval required)</em>\n\t\t\t\t\t\t\t\t<input id=\"lbc-reviewed\" name=\"lbc-reviewed\" type=\"checkbox\" value=\"1\" v-model=\"newevent.lbc_reviewed\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t</label>\n\n\t\t\t\t\t\t</div><!-- / columns -->\n\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t</div><!-- /.medium-6 columns -->\n\t\t\t\t\t</div><!-- /.row -->\n\t\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t\t<label _v-66dd0d90=\"\">Description <i class=\"fi-star reqstar\" _v-66dd0d90=\"\"></i> <p class=\"help-text\" id=\"description-helptext\" _v-66dd0d90=\"\">({{descriptionChars}} characters left)</p>\n\n\t\t\t\t\t\t\t\t<textarea v-model=\"newevent.description\" v-bind:class=\"[formErrors.description ? 'invalid-input' : '']\" name=\"description\" type=\"textarea\" rows=\"6\" _v-66dd0d90=\"\"></textarea>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t\t<p v-if=\"formErrors.description\" class=\"help-text invalid\" _v-66dd0d90=\"\">Need a Description!</p>\n\n\n\t\t\t\t\t\t</div><!-- /column -->\n\t\t\t\t\t</div><!-- /.row -->\n\n\t\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t<label _v-66dd0d90=\"\">Group Website Calendar <p class=\"help-text\" id=\"minicalendar-helptext\" _v-66dd0d90=\"\">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>\n\t\t\t\t\t\t\t\t<select v-model=\"newevent.mini_calendar\" id=\"mini_calendar\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t<option v-for=\"minicalendar in minicalendars\" :value=\"minicalendar.id\" _v-66dd0d90=\"\">\n\t\t\t\t\t\t\t\t{{minicalendar.calendar}}\n\t\t\t\t\t\t\t</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</div><!-- / column -->\n\t\t\t\t</div><!-- /.row -->\n\n\n\t\t\t\t<div class=\"row\" _v-66dd0d90=\"\">\n\t\t\t\t\t<div class=\"column\" _v-66dd0d90=\"\">\n\n\t\t\t\t\t\t\t<button v-on:click=\"submitForm\" type=\"submit\" class=\"button button-primary\" _v-66dd0d90=\"\">Submit For Approval</button>\n\n\t\t\t\t\t\t\t</div></div></form>\n\t\t\t\t\t<!-- /.medium-12 column -->\n\t\t\t\n\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n p[_v-53150522] {\n\t margin:0;\n }\n      label[_v-53150522] {\n           display: block;\n           /*margin-bottom: 1.5em;*/\n       }\n\n       label > span[_v-53150522] {\n           display: inline-block;\n           width: 8em;\n           vertical-align: top;\n       }\n.valid-titleField[_v-53150522] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.no-input[_v-53150522] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.invalid-input[_v-53150522] {\n  background-color: rgba(236, 88, 64, 0.1);\n  border: 1px dotted red;\n}\n.invalid[_v-53150522] {\n  color: #ff0000;\n}\n\n\nfieldset label.radiobtns[_v-53150522]  {\n  display: inline;\n  margin: 4px;\n  padding: 2px;\n}\n\n[type='text'][_v-53150522], [type='password'][_v-53150522], [type='date'][_v-53150522], [type='datetime'][_v-53150522], [type='datetime-local'][_v-53150522], [type='month'][_v-53150522], [type='week'][_v-53150522], [type='email'][_v-53150522], [type='number'][_v-53150522], [type='search'][_v-53150522], [type='tel'][_v-53150522], [type='time'][_v-53150522], [type='url'][_v-53150522], [type='color'][_v-53150522],\ntextarea[_v-53150522] {\n\tmargin: 0;\n\tpadding: 0;\n\tpadding-left: 8px;\n\twidth: 100%;\n}\n[type='file'][_v-53150522], [type='checkbox'][_v-53150522], [type='radio'][_v-53150522] {\n\tmargin: 0;\n\tmargin-left: 8px;\n\tpadding: 0;\n\tpadding-left: 2px;\n}\n.reqstar[_v-53150522] {\n    font-size: .5rem;\n    color: #E33100;\n\t\tvertical-align:text-top;\n}\n\nbutton.button-primary[_v-53150522]{\n\tmargin-top: 1rem;\n}\n\ninput[type='email'][_v-53150522],\ninput[type='number'][_v-53150522],\ninput[type='password'][_v-53150522],\ninput[type='search'][_v-53150522],\ninput[type='tel'][_v-53150522],\ninput[type='text'][_v-53150522],\ninput[type='url'][_v-53150522],\ntextarea[_v-53150522],\nselect[_v-53150522] {\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none;\n  background-color: transparent;\n  border: 0.1rem solid #d1d1d1;\n  border-radius: 0.4rem;\n  box-shadow: none;\n  height: 3.8rem;\n  padding: 0.6rem 1rem;\n  width: 100%;\n}\ninput[type='email'][_v-53150522]:focus,\ninput[type='number'][_v-53150522]:focus,\ninput[type='password'][_v-53150522]:focus,\ninput[type='search'][_v-53150522]:focus,\ninput[type='tel'][_v-53150522]:focus,\ninput[type='text'][_v-53150522]:focus,\ninput[type='url'][_v-53150522]:focus,\ntextarea[_v-53150522]:focus,\nselect[_v-53150522]:focus {\n  border: 0.1rem solid #9b4dca;\n  outline: 0;\n}\n\nselect[_v-53150522] {\n  padding: 0.6rem 3rem 0.6rem 1rem;\n  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjkgMTQiICAgaGVpZ2h0PSIxNHB4IiAgIGlkPSJMYXllcl8xIiAgIHZlcnNpb249IjEuMSIgICB2aWV3Qm94PSIwIDAgMjkgMTQiICAgd2lkdGg9IjI5cHgiICAgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjQ4LjQgcjk5MzkiICAgc29kaXBvZGk6ZG9jbmFtZT0iY2FyZXQtZ3JheS5zdmciPjxtZXRhZGF0YSAgICAgaWQ9Im1ldGFkYXRhMzAzOSI+PHJkZjpSREY+PGNjOldvcmsgICAgICAgICByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgICAgICAgICAgIHJkZjpyZXNvdXJjZT0iaHR0cDovL3B1cmwub3JnL2RjL2RjbWl0eXBlL1N0aWxsSW1hZ2UiIC8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxkZWZzICAgICBpZD0iZGVmczMwMzciIC8+PHNvZGlwb2RpOm5hbWVkdmlldyAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiICAgICBib3JkZXJvcGFjaXR5PSIxIiAgICAgb2JqZWN0dG9sZXJhbmNlPSIxMCIgICAgIGdyaWR0b2xlcmFuY2U9IjEwIiAgICAgZ3VpZGV0b2xlcmFuY2U9IjEwIiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAiICAgICBpbmtzY2FwZTpwYWdlc2hhZG93PSIyIiAgICAgaW5rc2NhcGU6d2luZG93LXdpZHRoPSI5MDMiICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSI1OTQiICAgICBpZD0ibmFtZWR2aWV3MzAzNSIgICAgIHNob3dncmlkPSJ0cnVlIiAgICAgaW5rc2NhcGU6em9vbT0iMTIuMTM3OTMxIiAgICAgaW5rc2NhcGU6Y3g9Ii00LjExOTMxODJlLTA4IiAgICAgaW5rc2NhcGU6Y3k9IjciICAgICBpbmtzY2FwZTp3aW5kb3cteD0iNTAyIiAgICAgaW5rc2NhcGU6d2luZG93LXk9IjMwMiIgICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjAiICAgICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJMYXllcl8xIj48aW5rc2NhcGU6Z3JpZCAgICAgICB0eXBlPSJ4eWdyaWQiICAgICAgIGlkPSJncmlkMzA0MSIgLz48L3NvZGlwb2RpOm5hbWVkdmlldz48cG9seWdvbiAgICAgcG9pbnRzPSIwLjE1LDAgMTQuNSwxNC4zNSAyOC44NSwwICIgICAgIGlkPSJwb2x5Z29uMzAzMyIgICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuMzU0MTEzODcsMCwwLDAuNDgzMjkxMSw5LjMyNDE1NDUsMy42MjQ5OTkyKSIgICAgIHN0eWxlPSJmaWxsOiNkMWQxZDE7ZmlsbC1vcGFjaXR5OjEiIC8+PC9zdmc+) center right no-repeat;\n}\nselect[_v-53150522]:focus {\n  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjkgMTQiICAgaGVpZ2h0PSIxNHB4IiAgIGlkPSJMYXllcl8xIiAgIHZlcnNpb249IjEuMSIgICB2aWV3Qm94PSIwIDAgMjkgMTQiICAgd2lkdGg9IjI5cHgiICAgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjQ4LjQgcjk5MzkiICAgc29kaXBvZGk6ZG9jbmFtZT0iY2FyZXQuc3ZnIj48bWV0YWRhdGEgICAgIGlkPSJtZXRhZGF0YTMwMzkiPjxyZGY6UkRGPjxjYzpXb3JrICAgICAgICAgcmRmOmFib3V0PSIiPjxkYzpmb3JtYXQ+aW1hZ2Uvc3ZnK3htbDwvZGM6Zm9ybWF0PjxkYzp0eXBlICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPjwvY2M6V29yaz48L3JkZjpSREY+PC9tZXRhZGF0YT48ZGVmcyAgICAgaWQ9ImRlZnMzMDM3IiAvPjxzb2RpcG9kaTpuYW1lZHZpZXcgICAgIHBhZ2Vjb2xvcj0iI2ZmZmZmZiIgICAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IiAgICAgYm9yZGVyb3BhY2l0eT0iMSIgICAgIG9iamVjdHRvbGVyYW5jZT0iMTAiICAgICBncmlkdG9sZXJhbmNlPSIxMCIgICAgIGd1aWRldG9sZXJhbmNlPSIxMCIgICAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwIiAgICAgaW5rc2NhcGU6cGFnZXNoYWRvdz0iMiIgICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iOTAzIiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iNTk0IiAgICAgaWQ9Im5hbWVkdmlldzMwMzUiICAgICBzaG93Z3JpZD0idHJ1ZSIgICAgIGlua3NjYXBlOnpvb209IjEyLjEzNzkzMSIgICAgIGlua3NjYXBlOmN4PSItNC4xMTkzMTgyZS0wOCIgICAgIGlua3NjYXBlOmN5PSI3IiAgICAgaW5rc2NhcGU6d2luZG93LXg9IjUwMiIgICAgIGlua3NjYXBlOndpbmRvdy15PSIzMDIiICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIwIiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0iTGF5ZXJfMSI+PGlua3NjYXBlOmdyaWQgICAgICAgdHlwZT0ieHlncmlkIiAgICAgICBpZD0iZ3JpZDMwNDEiIC8+PC9zb2RpcG9kaTpuYW1lZHZpZXc+PHBvbHlnb24gICAgIHBvaW50cz0iMjguODUsMCAwLjE1LDAgMTQuNSwxNC4zNSAiICAgICBpZD0icG9seWdvbjMwMzMiICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLjM1NDExMzg3LDAsMCwwLjQ4MzI5MTEsOS4zMjQxNTUzLDMuNjI1KSIgICAgIHN0eWxlPSJmaWxsOiM5YjRkY2Y7ZmlsbC1vcGFjaXR5OjEiIC8+PC9zdmc+);\n}\n\ntextarea[_v-53150522] {\n  padding-bottom: 0.6rem;\n  padding-top: 0.6rem;\n  min-height: 8rem;\n}\n\nlabel[_v-53150522],\nlegend[_v-53150522] {\n  font-size: 1.6rem;\n  font-weight: 700;\n  display: block;\n  margin-bottom: 0.5rem;\n}\n\nfieldset[_v-53150522] {\n  border-width: 0;\n  padding: 0;\n}\n\ninput[type='checkbox'][_v-53150522],\ninput[type='radio'][_v-53150522] {\n  display: inline;\n}\n\n.label-inline[_v-53150522] {\n  font-weight: normal;\n  display: inline-block;\n  margin-left: 0.5rem;\n}\n\n.container[_v-53150522] {\n  margin: 0 auto;\n  max-width: 112rem;\n  padding: 0 2rem;\n  position: relative;\n  width: 100%;\n}\n\n"] = false
+    __vueify_insert__.cache["\n/*!\n * Milligram v1.1.0\n * http://milligram.github.io\n *\n * Copyright (c) 2016 CJ Patoilo\n * Licensed under the MIT license\n*/\n\n\nhtml[_v-66dd0d90] {\n  box-sizing: border-box;\n  font-size: 62.5%;\n}\n\nbody[_v-66dd0d90] {\n  color: #606c76;\n  font-family: \"Roboto\", \"Helvetica Neue\", \"Helvetica\", \"Arial\", sans-serif;\n  font-size: 1.6em;\n  font-weight: 300;\n  letter-spacing: 0.01em;\n  line-height: 1.6;\n}\n\n*[_v-66dd0d90],\n*[_v-66dd0d90]:after,\n*[_v-66dd0d90]:before {\n  box-sizing: inherit;\n}\n\nblockquote[_v-66dd0d90] {\n  border-left: 0.3rem solid #d1d1d1;\n  margin-left: 0;\n  margin-right: 0;\n  padding: 1rem 1.5rem;\n}\nblockquote *[_v-66dd0d90]:last-child {\n  margin: 0;\n}\n\n.button[_v-66dd0d90],\nbutton[_v-66dd0d90],\ninput[type='button'][_v-66dd0d90],\ninput[type='reset'][_v-66dd0d90],\ninput[type='submit'][_v-66dd0d90] {\n  background-color: #9b4dca;\n  border: 0.1rem solid #9b4dca;\n  border-radius: 0.4rem;\n  color: #fff;\n  cursor: pointer;\n  display: inline-block;\n  font-size: 1.1rem;\n  font-weight: 700;\n  height: 3.8rem;\n  letter-spacing: 0.1rem;\n  line-height: 3.8rem;\n  padding: 0 3rem;\n  text-align: center;\n  text-decoration: none;\n  text-transform: uppercase;\n  white-space: nowrap;\n}\n.button[_v-66dd0d90]:hover, .button[_v-66dd0d90]:focus,\nbutton[_v-66dd0d90]:hover,\nbutton[_v-66dd0d90]:focus,\ninput[type='button'][_v-66dd0d90]:hover,\ninput[type='button'][_v-66dd0d90]:focus,\ninput[type='reset'][_v-66dd0d90]:hover,\ninput[type='reset'][_v-66dd0d90]:focus,\ninput[type='submit'][_v-66dd0d90]:hover,\ninput[type='submit'][_v-66dd0d90]:focus {\n  background-color: #606c76;\n  border-color: #606c76;\n  color: #fff;\n  outline: 0;\n}\n.button.button-disabled[_v-66dd0d90], .button[disabled][_v-66dd0d90],\nbutton.button-disabled[_v-66dd0d90],\nbutton[disabled][_v-66dd0d90],\ninput[type='button'].button-disabled[_v-66dd0d90],\ninput[type='button'][disabled][_v-66dd0d90],\ninput[type='reset'].button-disabled[_v-66dd0d90],\ninput[type='reset'][disabled][_v-66dd0d90],\ninput[type='submit'].button-disabled[_v-66dd0d90],\ninput[type='submit'][disabled][_v-66dd0d90] {\n  opacity: 0.5;\n  cursor: default;\n}\n.button.button-disabled[_v-66dd0d90]:hover, .button.button-disabled[_v-66dd0d90]:focus, .button[disabled][_v-66dd0d90]:hover, .button[disabled][_v-66dd0d90]:focus,\nbutton.button-disabled[_v-66dd0d90]:hover,\nbutton.button-disabled[_v-66dd0d90]:focus,\nbutton[disabled][_v-66dd0d90]:hover,\nbutton[disabled][_v-66dd0d90]:focus,\ninput[type='button'].button-disabled[_v-66dd0d90]:hover,\ninput[type='button'].button-disabled[_v-66dd0d90]:focus,\ninput[type='button'][disabled][_v-66dd0d90]:hover,\ninput[type='button'][disabled][_v-66dd0d90]:focus,\ninput[type='reset'].button-disabled[_v-66dd0d90]:hover,\ninput[type='reset'].button-disabled[_v-66dd0d90]:focus,\ninput[type='reset'][disabled][_v-66dd0d90]:hover,\ninput[type='reset'][disabled][_v-66dd0d90]:focus,\ninput[type='submit'].button-disabled[_v-66dd0d90]:hover,\ninput[type='submit'].button-disabled[_v-66dd0d90]:focus,\ninput[type='submit'][disabled][_v-66dd0d90]:hover,\ninput[type='submit'][disabled][_v-66dd0d90]:focus {\n  background-color: #9b4dca;\n  border-color: #9b4dca;\n}\n.button.button-outline[_v-66dd0d90],\nbutton.button-outline[_v-66dd0d90],\ninput[type='button'].button-outline[_v-66dd0d90],\ninput[type='reset'].button-outline[_v-66dd0d90],\ninput[type='submit'].button-outline[_v-66dd0d90] {\n  color: #9b4dca;\n  background-color: transparent;\n}\n.button.button-outline[_v-66dd0d90]:hover, .button.button-outline[_v-66dd0d90]:focus,\nbutton.button-outline[_v-66dd0d90]:hover,\nbutton.button-outline[_v-66dd0d90]:focus,\ninput[type='button'].button-outline[_v-66dd0d90]:hover,\ninput[type='button'].button-outline[_v-66dd0d90]:focus,\ninput[type='reset'].button-outline[_v-66dd0d90]:hover,\ninput[type='reset'].button-outline[_v-66dd0d90]:focus,\ninput[type='submit'].button-outline[_v-66dd0d90]:hover,\ninput[type='submit'].button-outline[_v-66dd0d90]:focus {\n  color: #606c76;\n  background-color: transparent;\n  border-color: #606c76;\n}\n.button.button-outline.button-disabled[_v-66dd0d90]:hover, .button.button-outline.button-disabled[_v-66dd0d90]:focus, .button.button-outline[disabled][_v-66dd0d90]:hover, .button.button-outline[disabled][_v-66dd0d90]:focus,\nbutton.button-outline.button-disabled[_v-66dd0d90]:hover,\nbutton.button-outline.button-disabled[_v-66dd0d90]:focus,\nbutton.button-outline[disabled][_v-66dd0d90]:hover,\nbutton.button-outline[disabled][_v-66dd0d90]:focus,\ninput[type='button'].button-outline.button-disabled[_v-66dd0d90]:hover,\ninput[type='button'].button-outline.button-disabled[_v-66dd0d90]:focus,\ninput[type='button'].button-outline[disabled][_v-66dd0d90]:hover,\ninput[type='button'].button-outline[disabled][_v-66dd0d90]:focus,\ninput[type='reset'].button-outline.button-disabled[_v-66dd0d90]:hover,\ninput[type='reset'].button-outline.button-disabled[_v-66dd0d90]:focus,\ninput[type='reset'].button-outline[disabled][_v-66dd0d90]:hover,\ninput[type='reset'].button-outline[disabled][_v-66dd0d90]:focus,\ninput[type='submit'].button-outline.button-disabled[_v-66dd0d90]:hover,\ninput[type='submit'].button-outline.button-disabled[_v-66dd0d90]:focus,\ninput[type='submit'].button-outline[disabled][_v-66dd0d90]:hover,\ninput[type='submit'].button-outline[disabled][_v-66dd0d90]:focus {\n  color: #9b4dca;\n  border-color: inherit;\n}\n.button.button-clear[_v-66dd0d90],\nbutton.button-clear[_v-66dd0d90],\ninput[type='button'].button-clear[_v-66dd0d90],\ninput[type='reset'].button-clear[_v-66dd0d90],\ninput[type='submit'].button-clear[_v-66dd0d90] {\n  color: #9b4dca;\n  background-color: transparent;\n  border-color: transparent;\n}\n.button.button-clear[_v-66dd0d90]:hover, .button.button-clear[_v-66dd0d90]:focus,\nbutton.button-clear[_v-66dd0d90]:hover,\nbutton.button-clear[_v-66dd0d90]:focus,\ninput[type='button'].button-clear[_v-66dd0d90]:hover,\ninput[type='button'].button-clear[_v-66dd0d90]:focus,\ninput[type='reset'].button-clear[_v-66dd0d90]:hover,\ninput[type='reset'].button-clear[_v-66dd0d90]:focus,\ninput[type='submit'].button-clear[_v-66dd0d90]:hover,\ninput[type='submit'].button-clear[_v-66dd0d90]:focus {\n  color: #606c76;\n  background-color: transparent;\n  border-color: transparent;\n}\n.button.button-clear.button-disabled[_v-66dd0d90]:hover, .button.button-clear.button-disabled[_v-66dd0d90]:focus, .button.button-clear[disabled][_v-66dd0d90]:hover, .button.button-clear[disabled][_v-66dd0d90]:focus,\nbutton.button-clear.button-disabled[_v-66dd0d90]:hover,\nbutton.button-clear.button-disabled[_v-66dd0d90]:focus,\nbutton.button-clear[disabled][_v-66dd0d90]:hover,\nbutton.button-clear[disabled][_v-66dd0d90]:focus,\ninput[type='button'].button-clear.button-disabled[_v-66dd0d90]:hover,\ninput[type='button'].button-clear.button-disabled[_v-66dd0d90]:focus,\ninput[type='button'].button-clear[disabled][_v-66dd0d90]:hover,\ninput[type='button'].button-clear[disabled][_v-66dd0d90]:focus,\ninput[type='reset'].button-clear.button-disabled[_v-66dd0d90]:hover,\ninput[type='reset'].button-clear.button-disabled[_v-66dd0d90]:focus,\ninput[type='reset'].button-clear[disabled][_v-66dd0d90]:hover,\ninput[type='reset'].button-clear[disabled][_v-66dd0d90]:focus,\ninput[type='submit'].button-clear.button-disabled[_v-66dd0d90]:hover,\ninput[type='submit'].button-clear.button-disabled[_v-66dd0d90]:focus,\ninput[type='submit'].button-clear[disabled][_v-66dd0d90]:hover,\ninput[type='submit'].button-clear[disabled][_v-66dd0d90]:focus {\n  color: #9b4dca;\n}\n\ncode[_v-66dd0d90] {\n  background: #f4f5f6;\n  border-radius: 0.4rem;\n  font-size: 86%;\n  padding: 0.2rem 0.5rem;\n  margin: 0 0.2rem;\n  white-space: nowrap;\n}\n\npre[_v-66dd0d90] {\n  background: #f4f5f6;\n  border-left: 0.3rem solid #9b4dca;\n  font-family: \"Menlo\", \"Consolas\", \"Bitstream Vera Sans Mono\", \"DejaVu Sans Mono\", \"Monaco\", monospace;\n}\npre > code[_v-66dd0d90] {\n  background: transparent;\n  border-radius: 0;\n  display: block;\n  padding: 1rem 1.5rem;\n  white-space: pre;\n}\n\nhr[_v-66dd0d90] {\n  border: 0;\n  border-top: 0.1rem solid #f4f5f6;\n  margin-bottom: 3.5rem;\n  margin-top: 3rem;\n}\n\ninput[type='email'][_v-66dd0d90],\ninput[type='number'][_v-66dd0d90],\ninput[type='password'][_v-66dd0d90],\ninput[type='search'][_v-66dd0d90],\ninput[type='tel'][_v-66dd0d90],\ninput[type='text'][_v-66dd0d90],\ninput[type='url'][_v-66dd0d90],\ntextarea[_v-66dd0d90],\nselect[_v-66dd0d90] {\n  -webkit-appearance: none;\n     -moz-appearance: none;\n          appearance: none;\n  background-color: transparent;\n  border: 0.1rem solid #d1d1d1;\n  border-radius: 0.4rem;\n  box-shadow: none;\n  height: 3.8rem;\n  padding: 0.6rem 1rem;\n  width: 100%;\n}\ninput[type='email'][_v-66dd0d90]:focus,\ninput[type='number'][_v-66dd0d90]:focus,\ninput[type='password'][_v-66dd0d90]:focus,\ninput[type='search'][_v-66dd0d90]:focus,\ninput[type='tel'][_v-66dd0d90]:focus,\ninput[type='text'][_v-66dd0d90]:focus,\ninput[type='url'][_v-66dd0d90]:focus,\ntextarea[_v-66dd0d90]:focus,\nselect[_v-66dd0d90]:focus {\n  border: 0.1rem solid #9b4dca;\n  outline: 0;\n}\n\nselect[_v-66dd0d90] {\n  padding: 0.6rem 3rem 0.6rem 1rem;\n  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjkgMTQiICAgaGVpZ2h0PSIxNHB4IiAgIGlkPSJMYXllcl8xIiAgIHZlcnNpb249IjEuMSIgICB2aWV3Qm94PSIwIDAgMjkgMTQiICAgd2lkdGg9IjI5cHgiICAgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjQ4LjQgcjk5MzkiICAgc29kaXBvZGk6ZG9jbmFtZT0iY2FyZXQtZ3JheS5zdmciPjxtZXRhZGF0YSAgICAgaWQ9Im1ldGFkYXRhMzAzOSI+PHJkZjpSREY+PGNjOldvcmsgICAgICAgICByZGY6YWJvdXQ9IiI+PGRjOmZvcm1hdD5pbWFnZS9zdmcreG1sPC9kYzpmb3JtYXQ+PGRjOnR5cGUgICAgICAgICAgIHJkZjpyZXNvdXJjZT0iaHR0cDovL3B1cmwub3JnL2RjL2RjbWl0eXBlL1N0aWxsSW1hZ2UiIC8+PC9jYzpXb3JrPjwvcmRmOlJERj48L21ldGFkYXRhPjxkZWZzICAgICBpZD0iZGVmczMwMzciIC8+PHNvZGlwb2RpOm5hbWVkdmlldyAgICAgcGFnZWNvbG9yPSIjZmZmZmZmIiAgICAgYm9yZGVyY29sb3I9IiM2NjY2NjYiICAgICBib3JkZXJvcGFjaXR5PSIxIiAgICAgb2JqZWN0dG9sZXJhbmNlPSIxMCIgICAgIGdyaWR0b2xlcmFuY2U9IjEwIiAgICAgZ3VpZGV0b2xlcmFuY2U9IjEwIiAgICAgaW5rc2NhcGU6cGFnZW9wYWNpdHk9IjAiICAgICBpbmtzY2FwZTpwYWdlc2hhZG93PSIyIiAgICAgaW5rc2NhcGU6d2luZG93LXdpZHRoPSI5MDMiICAgICBpbmtzY2FwZTp3aW5kb3ctaGVpZ2h0PSI1OTQiICAgICBpZD0ibmFtZWR2aWV3MzAzNSIgICAgIHNob3dncmlkPSJ0cnVlIiAgICAgaW5rc2NhcGU6em9vbT0iMTIuMTM3OTMxIiAgICAgaW5rc2NhcGU6Y3g9Ii00LjExOTMxODJlLTA4IiAgICAgaW5rc2NhcGU6Y3k9IjciICAgICBpbmtzY2FwZTp3aW5kb3cteD0iNTAyIiAgICAgaW5rc2NhcGU6d2luZG93LXk9IjMwMiIgICAgIGlua3NjYXBlOndpbmRvdy1tYXhpbWl6ZWQ9IjAiICAgICBpbmtzY2FwZTpjdXJyZW50LWxheWVyPSJMYXllcl8xIj48aW5rc2NhcGU6Z3JpZCAgICAgICB0eXBlPSJ4eWdyaWQiICAgICAgIGlkPSJncmlkMzA0MSIgLz48L3NvZGlwb2RpOm5hbWVkdmlldz48cG9seWdvbiAgICAgcG9pbnRzPSIwLjE1LDAgMTQuNSwxNC4zNSAyOC44NSwwICIgICAgIGlkPSJwb2x5Z29uMzAzMyIgICAgIHRyYW5zZm9ybT0ibWF0cml4KDAuMzU0MTEzODcsMCwwLDAuNDgzMjkxMSw5LjMyNDE1NDUsMy42MjQ5OTkyKSIgICAgIHN0eWxlPSJmaWxsOiNkMWQxZDE7ZmlsbC1vcGFjaXR5OjEiIC8+PC9zdmc+) center right no-repeat;\n}\nselect[_v-66dd0d90]:focus {\n  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIiAgIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyIgICB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgICB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiICAgeG1sbnM6aW5rc2NhcGU9Imh0dHA6Ly93d3cuaW5rc2NhcGUub3JnL25hbWVzcGFjZXMvaW5rc2NhcGUiICAgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjkgMTQiICAgaGVpZ2h0PSIxNHB4IiAgIGlkPSJMYXllcl8xIiAgIHZlcnNpb249IjEuMSIgICB2aWV3Qm94PSIwIDAgMjkgMTQiICAgd2lkdGg9IjI5cHgiICAgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgICBpbmtzY2FwZTp2ZXJzaW9uPSIwLjQ4LjQgcjk5MzkiICAgc29kaXBvZGk6ZG9jbmFtZT0iY2FyZXQuc3ZnIj48bWV0YWRhdGEgICAgIGlkPSJtZXRhZGF0YTMwMzkiPjxyZGY6UkRGPjxjYzpXb3JrICAgICAgICAgcmRmOmFib3V0PSIiPjxkYzpmb3JtYXQ+aW1hZ2Uvc3ZnK3htbDwvZGM6Zm9ybWF0PjxkYzp0eXBlICAgICAgICAgICByZGY6cmVzb3VyY2U9Imh0dHA6Ly9wdXJsLm9yZy9kYy9kY21pdHlwZS9TdGlsbEltYWdlIiAvPjwvY2M6V29yaz48L3JkZjpSREY+PC9tZXRhZGF0YT48ZGVmcyAgICAgaWQ9ImRlZnMzMDM3IiAvPjxzb2RpcG9kaTpuYW1lZHZpZXcgICAgIHBhZ2Vjb2xvcj0iI2ZmZmZmZiIgICAgIGJvcmRlcmNvbG9yPSIjNjY2NjY2IiAgICAgYm9yZGVyb3BhY2l0eT0iMSIgICAgIG9iamVjdHRvbGVyYW5jZT0iMTAiICAgICBncmlkdG9sZXJhbmNlPSIxMCIgICAgIGd1aWRldG9sZXJhbmNlPSIxMCIgICAgIGlua3NjYXBlOnBhZ2VvcGFjaXR5PSIwIiAgICAgaW5rc2NhcGU6cGFnZXNoYWRvdz0iMiIgICAgIGlua3NjYXBlOndpbmRvdy13aWR0aD0iOTAzIiAgICAgaW5rc2NhcGU6d2luZG93LWhlaWdodD0iNTk0IiAgICAgaWQ9Im5hbWVkdmlldzMwMzUiICAgICBzaG93Z3JpZD0idHJ1ZSIgICAgIGlua3NjYXBlOnpvb209IjEyLjEzNzkzMSIgICAgIGlua3NjYXBlOmN4PSItNC4xMTkzMTgyZS0wOCIgICAgIGlua3NjYXBlOmN5PSI3IiAgICAgaW5rc2NhcGU6d2luZG93LXg9IjUwMiIgICAgIGlua3NjYXBlOndpbmRvdy15PSIzMDIiICAgICBpbmtzY2FwZTp3aW5kb3ctbWF4aW1pemVkPSIwIiAgICAgaW5rc2NhcGU6Y3VycmVudC1sYXllcj0iTGF5ZXJfMSI+PGlua3NjYXBlOmdyaWQgICAgICAgdHlwZT0ieHlncmlkIiAgICAgICBpZD0iZ3JpZDMwNDEiIC8+PC9zb2RpcG9kaTpuYW1lZHZpZXc+PHBvbHlnb24gICAgIHBvaW50cz0iMjguODUsMCAwLjE1LDAgMTQuNSwxNC4zNSAiICAgICBpZD0icG9seWdvbjMwMzMiICAgICB0cmFuc2Zvcm09Im1hdHJpeCgwLjM1NDExMzg3LDAsMCwwLjQ4MzI5MTEsOS4zMjQxNTUzLDMuNjI1KSIgICAgIHN0eWxlPSJmaWxsOiM5YjRkY2Y7ZmlsbC1vcGFjaXR5OjEiIC8+PC9zdmc+);\n}\n\ntextarea[_v-66dd0d90] {\n  padding-bottom: 0.6rem;\n  padding-top: 0.6rem;\n  min-height: 6.5rem;\n}\n\nlabel[_v-66dd0d90],\nlegend[_v-66dd0d90] {\n  font-size: 1.6rem;\n  font-weight: 700;\n  display: block;\n  margin-bottom: 0.5rem;\n}\n\nfieldset[_v-66dd0d90] {\n  border-width: 0;\n  padding: 0;\n}\n\ninput[type='checkbox'][_v-66dd0d90],\ninput[type='radio'][_v-66dd0d90] {\n  display: inline;\n}\n\n.label-inline[_v-66dd0d90] {\n  font-weight: normal;\n  display: inline-block;\n  margin-left: 0.5rem;\n}\n\n.container[_v-66dd0d90] {\n  margin: 0 auto;\n  max-width: 112rem;\n  padding: 0 2rem;\n  position: relative;\n  width: 100%;\n}\n\n.row[_v-66dd0d90] {\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n      -ms-flex-direction: column;\n          flex-direction: column;\n  padding: 0;\n  width: 100%;\n}\n.row .row-wrap[_v-66dd0d90] {\n  -ms-flex-wrap: wrap;\n      flex-wrap: wrap;\n}\n.row .row-no-padding[_v-66dd0d90] {\n  padding: 0;\n}\n.row .row-no-padding > .column[_v-66dd0d90] {\n  padding: 0;\n}\n.row .row-top[_v-66dd0d90] {\n  -webkit-box-align: start;\n      -ms-flex-align: start;\n              -ms-grid-row-align: flex-start;\n          align-items: flex-start;\n}\n.row .row-bottom[_v-66dd0d90] {\n  -webkit-box-align: end;\n      -ms-flex-align: end;\n              -ms-grid-row-align: flex-end;\n          align-items: flex-end;\n}\n.row .row-center[_v-66dd0d90] {\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n              -ms-grid-row-align: center;\n          align-items: center;\n}\n.row .row-stretch[_v-66dd0d90] {\n  -webkit-box-align: stretch;\n      -ms-flex-align: stretch;\n              -ms-grid-row-align: stretch;\n          align-items: stretch;\n}\n.row .row-baseline[_v-66dd0d90] {\n  -webkit-box-align: baseline;\n      -ms-flex-align: baseline;\n              -ms-grid-row-align: baseline;\n          align-items: baseline;\n}\n.row .column[_v-66dd0d90] {\n  display: block;\n  -webkit-box-flex: 1;\n      -ms-flex: 1;\n          flex: 1;\n  margin-left: 0;\n  max-width: 100%;\n  width: 100%;\n}\n.row .column .col-top[_v-66dd0d90] {\n  -ms-flex-item-align: start;\n      align-self: flex-start;\n}\n.row .column .col-bottom[_v-66dd0d90] {\n  -ms-flex-item-align: end;\n      align-self: flex-end;\n}\n.row .column .col-center[_v-66dd0d90] {\n  -ms-flex-item-align: center;\n      align-self: center;\n}\n.row .column.column-offset-10[_v-66dd0d90] {\n  margin-left: 10%;\n}\n.row .column.column-offset-20[_v-66dd0d90] {\n  margin-left: 20%;\n}\n.row .column.column-offset-25[_v-66dd0d90] {\n  margin-left: 25%;\n}\n.row .column.column-offset-33[_v-66dd0d90], .row .column.column-offset-34[_v-66dd0d90] {\n  margin-left: 33.3333%;\n}\n.row .column.column-offset-50[_v-66dd0d90] {\n  margin-left: 50%;\n}\n.row .column.column-offset-66[_v-66dd0d90], .row .column.column-offset-67[_v-66dd0d90] {\n  margin-left: 66.6666%;\n}\n.row .column.column-offset-75[_v-66dd0d90] {\n  margin-left: 75%;\n}\n.row .column.column-offset-80[_v-66dd0d90] {\n  margin-left: 80%;\n}\n.row .column.column-offset-90[_v-66dd0d90] {\n  margin-left: 90%;\n}\n.row .column.column-10[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 10%;\n          flex: 0 0 10%;\n  max-width: 10%;\n}\n.row .column.column-20[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 20%;\n          flex: 0 0 20%;\n  max-width: 20%;\n}\n.row .column.column-25[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 25%;\n          flex: 0 0 25%;\n  max-width: 25%;\n}\n.row .column.column-33[_v-66dd0d90], .row .column.column-34[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 33.3333%;\n          flex: 0 0 33.3333%;\n  max-width: 33.3333%;\n}\n.row .column.column-40[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 40%;\n          flex: 0 0 40%;\n  max-width: 40%;\n}\n.row .column.column-50[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 50%;\n          flex: 0 0 50%;\n  max-width: 50%;\n}\n.row .column.column-60[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 60%;\n          flex: 0 0 60%;\n  max-width: 60%;\n}\n.row .column.column-66[_v-66dd0d90], .row .column.column-67[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 66.6666%;\n          flex: 0 0 66.6666%;\n  max-width: 66.6666%;\n}\n.row .column.column-75[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 75%;\n          flex: 0 0 75%;\n  max-width: 75%;\n}\n.row .column.column-80[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 80%;\n          flex: 0 0 80%;\n  max-width: 80%;\n}\n.row .column.column-90[_v-66dd0d90] {\n  -webkit-box-flex: 0;\n      -ms-flex: 0 0 90%;\n          flex: 0 0 90%;\n  max-width: 90%;\n}\n\n@media (min-width: 40rem) {\n  .row[_v-66dd0d90] {\n    -webkit-box-orient: horizontal;\n    -webkit-box-direction: normal;\n        -ms-flex-direction: row;\n            flex-direction: row;\n    margin-left: -1rem;\n    width: calc(100% + 2.0rem);\n  }\n  .row .column[_v-66dd0d90] {\n    margin-bottom: inherit;\n    padding: 0 1rem;\n  }\n}\na[_v-66dd0d90] {\n  color: #9b4dca;\n  text-decoration: none;\n}\na[_v-66dd0d90]:hover {\n  color: #606c76;\n}\n\ndl[_v-66dd0d90],\nol[_v-66dd0d90],\nul[_v-66dd0d90] {\n  margin-top: 0;\n  padding-left: 0;\n}\ndl ul[_v-66dd0d90],\ndl ol[_v-66dd0d90],\nol ul[_v-66dd0d90],\nol ol[_v-66dd0d90],\nul ul[_v-66dd0d90],\nul ol[_v-66dd0d90] {\n  font-size: 90%;\n  margin: 1.5rem 0 1.5rem 3rem;\n}\n\ndl[_v-66dd0d90] {\n  list-style: none;\n}\n\nul[_v-66dd0d90] {\n  list-style: circle inside;\n}\n\nol[_v-66dd0d90] {\n  list-style: decimal inside;\n}\n\ndt[_v-66dd0d90],\ndd[_v-66dd0d90],\nli[_v-66dd0d90] {\n  margin-bottom: 1rem;\n}\n\n.button[_v-66dd0d90],\nbutton[_v-66dd0d90] {\n  margin-bottom: 1rem;\n}\n\ninput[_v-66dd0d90],\ntextarea[_v-66dd0d90],\nselect[_v-66dd0d90],\nfieldset[_v-66dd0d90] {\n  margin-bottom: 1.5rem;\n}\n\npre[_v-66dd0d90],\nblockquote[_v-66dd0d90],\ndl[_v-66dd0d90],\nfigure[_v-66dd0d90],\ntable[_v-66dd0d90],\np[_v-66dd0d90],\nul[_v-66dd0d90],\nol[_v-66dd0d90],\nform[_v-66dd0d90] {\n  margin-bottom: 2.5rem;\n}\n\ntable[_v-66dd0d90] {\n  width: 100%;\n}\n\nth[_v-66dd0d90],\ntd[_v-66dd0d90] {\n  border-bottom: 0.1rem solid #e1e1e1;\n  padding: 1.2rem 1.5rem;\n  text-align: left;\n}\nth[_v-66dd0d90]:first-child,\ntd[_v-66dd0d90]:first-child {\n  padding-left: 0;\n}\nth[_v-66dd0d90]:last-child,\ntd[_v-66dd0d90]:last-child {\n  padding-right: 0;\n}\n\np[_v-66dd0d90] {\n  margin-top: 0;\n}\n\nh1[_v-66dd0d90],\nh2[_v-66dd0d90],\nh3[_v-66dd0d90],\nh4[_v-66dd0d90],\nh5[_v-66dd0d90],\nh6[_v-66dd0d90] {\n  font-weight: 300;\n  margin-bottom: 2rem;\n  margin-top: 0;\n}\n\nh1[_v-66dd0d90] {\n  font-size: 4rem;\n  letter-spacing: -0.1rem;\n  line-height: 1.2;\n}\n\nh2[_v-66dd0d90] {\n  font-size: 3.6rem;\n  letter-spacing: -0.1rem;\n  line-height: 1.25;\n}\n\nh3[_v-66dd0d90] {\n  font-size: 3rem;\n  letter-spacing: -0.1rem;\n  line-height: 1.3;\n}\n\nh4[_v-66dd0d90] {\n  font-size: 2.4rem;\n  letter-spacing: -0.08rem;\n  line-height: 1.35;\n}\n\nh5[_v-66dd0d90] {\n  font-size: 1.8rem;\n  letter-spacing: -0.05rem;\n  line-height: 1.5;\n}\n\nh6[_v-66dd0d90] {\n  font-size: 1.6rem;\n  letter-spacing: 0;\n  line-height: 1.4;\n}\n\n@media (min-width: 40rem) {\n  h1[_v-66dd0d90] {\n    font-size: 5rem;\n  }\n\n  h2[_v-66dd0d90] {\n    font-size: 4.2rem;\n  }\n\n  h3[_v-66dd0d90] {\n    font-size: 3.6rem;\n  }\n\n  h4[_v-66dd0d90] {\n    font-size: 3rem;\n  }\n\n  h5[_v-66dd0d90] {\n    font-size: 2.4rem;\n  }\n\n  h6[_v-66dd0d90] {\n    font-size: 1.5rem;\n  }\n}\n.float-right[_v-66dd0d90] {\n  float: right;\n}\n\n.float-left[_v-66dd0d90] {\n  float: left;\n}\n\n.clearfix[_v-66dd0d90] {\n  *zoom: 1;\n}\n.clearfix[_v-66dd0d90]:after, .clearfix[_v-66dd0d90]:before {\n  content: \"\";\n  display: table;\n}\n.clearfix[_v-66dd0d90]:after {\n  clear: both;\n}\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-53150522", module.exports)
+    hotAPI.createRecord("_v-66dd0d90", module.exports)
   } else {
-    hotAPI.update("_v-53150522", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-66dd0d90", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../directives/mydatedropper.js":8,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
+},{"../directives/mydatedropper.js":7,"../directives/myselect.js":8,"../directives/mytimedropper.js":9,"../vendor/datepicker.vue":11,"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -16083,7 +12088,105 @@ module.exports = {
 	update: function update() {}
 };
 
+},{}],8:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+	twoWay: true,
+	priority: 1000,
+
+	params: ['ajaxurl', 'resultvalue'],
+	paramWatchers: {
+		resultvalue: function resultvalue(val, oldVal) {
+			console.log('val=' + val + ' oldVal' + oldVal);
+
+			$(this.el).val([val]).trigger('change');
+		}
+	},
+	bind: function bind(value) {
+		this.handler = function () {
+			var svalues = $(this.el).select2('val');
+			console.log('this.handler= ' + svalues);
+			// var svalues3 = $(this).select2('val')
+			this.set(this.el.value = svalues);
+
+			// console.log('this.svalues3= '+ svalues3)
+			// this.set(svalues3)
+		}.bind(this);
+		$(this.el).on('select2:close', this.handler);
+		console.log('value=' + value);
+		var self = this;
+		$(this.el).select2({
+			ajax: {
+				url: this.params.ajaxurl,
+				dataType: 'json',
+				delay: 250,
+				data: function data(params) {
+					return {
+						q: params.term //, // search term
+						// page: params.page
+					};
+				},
+				processResults: function processResults(data) {
+					return {
+						results: $.map(data, function (item) {
+							return {
+								text: item.name || item.category,
+								id: item.name || item.id
+							};
+						})
+					};
+				}
+			}
+		}).on('change', function (ev) {
+			var mydom = this;
+			// console.log($(mydom).);
+			var selectedValues = $(this).select2('val');
+			console.log('selectedvalues= ' + selectedValues);
+			// console.log($(ev));
+			// self.params.items = selectedValues;
+			// self.params.resultvalue = selectedValues;
+			// console.log("this.el=" + $(this).text())
+			self.set($(this).val());
+		});
+		console.log('after init =' + this.params.resultvalue);
+		// self.set($(this).val())
+		// if(this.params.resultvalue){
+		// 		$(this.el).val(this.params.resultvalue).trigger('change')
+		// }
+	},
+	update: function update(value) {
+		$(this.el).val(value).trigger('change');
+		// $(this.el)
+		// 	.on("select2:close", function(e) {
+		// 		var svalues = $(this).select2('val');
+		// 		console.log('svalues='+ svalues);
+		//
+		// 	}).bind(this);
+	},
+	unbind: function unbind() {
+		$(this.el).off('select2:close', this.handler);
+		$(this.el).off().select2('destroy');
+	}
+};
+
 },{}],9:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+	twoWay: true,
+	priority: 1000,
+	params: ['options'],
+	bind: function bind() {
+		$(this.el).timeDropper();
+		console.log(this.params);
+	},
+	update: function update() {
+		// alert('update');
+	}
+};
+
+},{}],10:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
@@ -16096,7 +12199,6 @@ var Vue = require('vue');
 
 Vue.use(_vueResource2.default);
 
-var moment = require('moment');
 // import Validator from 'easiest-js-validator';
 // Vue.http.headers.common['X_CSRF-TOKEN'] = document.querySelector('input[name="_token"]').value;
 // var vueForm = require('vue-form');
@@ -16108,16 +12210,164 @@ var moment = require('moment');
 // Vue.component('autocomplete', autocomplete)
 
 new Vue({
-  el: '#vue-announcements',
+  el: '#mg-event-form-vue',
   components: {
-    AnnouncementForm: require('./components/AnnouncementForm.vue')
+    mgEventForm: require('./components/mgEventForm.vue')
 
   },
   ready: function ready() {
-    console.log('AnnouncementForm ready');
+    console.log('vue ready');
   }
 });
 
-},{"./components/AnnouncementForm.vue":7,"moment":1,"vue":5,"vue-resource":4}]},{},[9]);
+},{"./components/mgEventForm.vue":6,"vue":4,"vue-resource":3}],11:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.datetime-picker[_v-e5327c24] {\n    position: relative;\n    display: inline-block;\n    font-family: \"Segoe UI\",\"Lucida Grande\",Helvetica,Arial,\"Microsoft YaHei\";\n    -webkit-font-smoothing: antialiased;\n    color: #333;\n}\n\n.datetime-picker *[_v-e5327c24] {\n    box-sizing: border-box;\n}\n\n.datetime-picker input[_v-e5327c24] {\n    width: 100%;\n    padding: 5px 10px;\n    height: 30px;\n    outline: 0 none;\n    border: 1px solid #ccc;\n    font-size: 13px;\n}\n\n.datetime-picker .picker-wrap[_v-e5327c24] {\n    position: absolute;\n    z-index: 1000;\n    width: 238px;\n    height: 280px;\n    margin-top: 2px;\n    background-color: #fff;\n    box-shadow: 0 0 6px #ccc;\n}\n\n.datetime-picker table[_v-e5327c24] {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    text-align: center;\n    font-size: 13px;\n}\n\n.datetime-picker tr[_v-e5327c24] {\n    height: 34px;\n    border: 0 none;\n}\n\n.datetime-picker th[_v-e5327c24], .datetime-picker td[_v-e5327c24] {\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    width: 34px;\n    height: 34px;\n    padding: 0;\n    border: 0 none;\n    line-height: 34px;\n    text-align: center;\n}\n\n.datetime-picker td[_v-e5327c24] {\n    cursor: pointer;\n}\n\n.datetime-picker td[_v-e5327c24]:hover {\n    background-color: #f0f0f0;\n}\n\n.datetime-picker td.date-pass[_v-e5327c24], .datetime-picker td.date-future[_v-e5327c24] {\n    color: #aaa;\n}\n\n.datetime-picker td.date-active[_v-e5327c24] {\n    background-color: #ececec;\n    color: #3bb4f2;\n}\n\n.datetime-picker .date-head[_v-e5327c24] {\n    background-color: #3bb4f2;\n    text-align: center;\n    color: #fff;\n    font-size: 14px;\n}\n\n.datetime-picker .date-days[_v-e5327c24] {\n    color: #3bb4f2;\n    font-size: 14px;\n}\n\n.datetime-picker .show-year[_v-e5327c24] {\n    display: inline-block;\n    min-width: 62px;\n    vertical-align: middle;\n}\n\n.datetime-picker .show-month[_v-e5327c24] {\n    display: inline-block;\n    min-width: 28px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24],\n.datetime-picker .btn-next[_v-e5327c24] {\n    cursor: pointer;\n    display: inline-block;\n    padding: 0 10px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24]:hover,\n.datetime-picker .btn-next[_v-e5327c24]:hover {\n    background: rgba(16, 160, 234, 0.5);\n}\n")
+'use strict';
 
-//# sourceMappingURL=vue-announcement-form.js.map
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    props: {
+        width: { type: String, default: '238px' },
+        readonly: { type: Boolean, default: false },
+        value: { type: String, default: '' },
+        format: { type: String, default: 'YYYY-MM-DD' }
+    },
+    data: function data() {
+        return {
+            show: false,
+            days: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+            months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            date: [],
+            now: new Date()
+        };
+    },
+
+    watch: {
+        now: function now() {
+            this.update();
+        },
+        show: function show() {
+            this.update();
+        }
+    },
+    methods: {
+        close: function close() {
+            this.show = false;
+        },
+        update: function update() {
+            var arr = [];
+            var time = new Date(this.now);
+            time.setMonth(time.getMonth(), 1); // the first day
+            var curFirstDay = time.getDay();
+            curFirstDay === 0 && (curFirstDay = 7);
+            time.setDate(0); // the last day
+            var lastDayCount = time.getDate();
+            for (var i = curFirstDay; i > 0; i--) {
+                arr.push({
+                    text: lastDayCount - i + 1,
+                    time: new Date(time.getFullYear(), time.getMonth(), lastDayCount - i + 1),
+                    status: 'date-pass'
+                });
+            }
+
+            time.setMonth(time.getMonth() + 2, 0); // the last day of this month
+            var curDayCount = time.getDate();
+            time.setDate(1); // fix bug when month change
+            var value = this.value || this.stringify(new Date());
+            for (var _i = 0; _i < curDayCount; _i++) {
+                var tmpTime = new Date(time.getFullYear(), time.getMonth(), _i + 1);
+                var status = '';
+                this.stringify(tmpTime) === value && (status = 'date-active');
+                arr.push({
+                    text: _i + 1,
+                    time: tmpTime,
+                    status: status
+                });
+            }
+
+            var j = 1;
+            while (arr.length < 42) {
+                arr.push({
+                    text: j,
+                    time: new Date(time.getFullYear(), time.getMonth() + 1, j),
+                    status: 'date-future'
+                });
+                j++;
+            }
+            this.date = arr;
+        },
+        yearClick: function yearClick(flag) {
+            this.now.setFullYear(this.now.getFullYear() + flag);
+            this.now = new Date(this.now);
+        },
+        monthClick: function monthClick(flag) {
+            this.now.setMonth(this.now.getMonth() + flag);
+            this.now = new Date(this.now);
+        },
+        pickDate: function pickDate(index) {
+            this.show = false;
+            this.now = new Date(this.date[index].time);
+            this.value = this.stringify();
+        },
+        parse: function parse(str) {
+            var time = new Date(str);
+            return isNaN(time.getTime()) ? null : time;
+        },
+        stringify: function stringify() {
+            var time = arguments.length <= 0 || arguments[0] === undefined ? this.now : arguments[0];
+            var format = arguments.length <= 1 || arguments[1] === undefined ? this.format : arguments[1];
+
+            var year = time.getFullYear();
+            var month = time.getMonth() + 1;
+            var date = time.getDate();
+            var monthName = this.months[time.getMonth()];
+
+            var map = {
+                YYYY: year,
+                MMM: monthName,
+                MM: ('0' + month).slice(-2),
+                M: month,
+                DD: ('0' + date).slice(-2),
+                D: date
+            };
+            return format.replace(/Y+|M+|D+/g, function (str) {
+                return map[str];
+            });
+        }
+    },
+    ready: function ready() {
+        var _this = this;
+
+        this.now = this.parse(this.value) || new Date();
+        document.addEventListener('click', function (e) {
+            if (!_this.$el.contains(e.target)) {
+                _this.close();
+            }
+        }, false);
+    },
+    beforeDestroy: function beforeDestroy() {
+        document.removeEventListener('click', this.close, false);
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"datetime-picker\" :style=\"{ width: width }\" _v-e5327c24=\"\">\n    <input type=\"text\" :style=\"styleObj\" :readonly=\"readonly\" :value=\"value\" @click=\"show = !show\" _v-e5327c24=\"\">\n    <div class=\"picker-wrap\" v-show=\"show\" _v-e5327c24=\"\">\n        <table class=\"date-picker\" _v-e5327c24=\"\">\n            <thead _v-e5327c24=\"\">\n                <tr class=\"date-head\" _v-e5327c24=\"\">\n                    <th colspan=\"4\" _v-e5327c24=\"\">\n                        <span class=\"btn-prev\" @click=\"yearClick(-1)\" _v-e5327c24=\"\">&lt;</span>\n                        <span class=\"show-year\" _v-e5327c24=\"\">{{now.getFullYear()}}</span>\n                        <span class=\"btn-next\" @click=\"yearClick(1)\" _v-e5327c24=\"\">&gt;</span>\n                    </th>\n                    <th colspan=\"3\" _v-e5327c24=\"\">\n                        <span class=\"btn-prev\" @click=\"monthClick(-1)\" _v-e5327c24=\"\">&lt;</span>\n                        <span class=\"show-month\" _v-e5327c24=\"\">{{months[now.getMonth()]}}</span>\n                        <span class=\"btn-next\" @click=\"monthClick(1)\" _v-e5327c24=\"\">&gt;</span>\n                    </th>\n                </tr>\n                <tr class=\"date-days\" _v-e5327c24=\"\">\n                    <th v-for=\"day in days\" _v-e5327c24=\"\">{{day}}</th>\n                </tr>\n            </thead>\n            <tbody _v-e5327c24=\"\">\n                <tr v-for=\"i in 6\" _v-e5327c24=\"\">\n                    <td v-for=\"j in 7\" :class=\"date[i * 7 + j] &amp;&amp; date[i * 7 + j].status\" :date=\"date[i * 7 + j] &amp;&amp; date[i * 7 + j].date\" @click=\"pickDate(i * 7 + j)\" _v-e5327c24=\"\">{{date[i * 7 + j] &amp;&amp; date[i * 7 + j].text}}</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.datetime-picker[_v-e5327c24] {\n    position: relative;\n    display: inline-block;\n    font-family: \"Segoe UI\",\"Lucida Grande\",Helvetica,Arial,\"Microsoft YaHei\";\n    -webkit-font-smoothing: antialiased;\n    color: #333;\n}\n\n.datetime-picker *[_v-e5327c24] {\n    box-sizing: border-box;\n}\n\n.datetime-picker input[_v-e5327c24] {\n    width: 100%;\n    padding: 5px 10px;\n    height: 30px;\n    outline: 0 none;\n    border: 1px solid #ccc;\n    font-size: 13px;\n}\n\n.datetime-picker .picker-wrap[_v-e5327c24] {\n    position: absolute;\n    z-index: 1000;\n    width: 238px;\n    height: 280px;\n    margin-top: 2px;\n    background-color: #fff;\n    box-shadow: 0 0 6px #ccc;\n}\n\n.datetime-picker table[_v-e5327c24] {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    text-align: center;\n    font-size: 13px;\n}\n\n.datetime-picker tr[_v-e5327c24] {\n    height: 34px;\n    border: 0 none;\n}\n\n.datetime-picker th[_v-e5327c24], .datetime-picker td[_v-e5327c24] {\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    width: 34px;\n    height: 34px;\n    padding: 0;\n    border: 0 none;\n    line-height: 34px;\n    text-align: center;\n}\n\n.datetime-picker td[_v-e5327c24] {\n    cursor: pointer;\n}\n\n.datetime-picker td[_v-e5327c24]:hover {\n    background-color: #f0f0f0;\n}\n\n.datetime-picker td.date-pass[_v-e5327c24], .datetime-picker td.date-future[_v-e5327c24] {\n    color: #aaa;\n}\n\n.datetime-picker td.date-active[_v-e5327c24] {\n    background-color: #ececec;\n    color: #3bb4f2;\n}\n\n.datetime-picker .date-head[_v-e5327c24] {\n    background-color: #3bb4f2;\n    text-align: center;\n    color: #fff;\n    font-size: 14px;\n}\n\n.datetime-picker .date-days[_v-e5327c24] {\n    color: #3bb4f2;\n    font-size: 14px;\n}\n\n.datetime-picker .show-year[_v-e5327c24] {\n    display: inline-block;\n    min-width: 62px;\n    vertical-align: middle;\n}\n\n.datetime-picker .show-month[_v-e5327c24] {\n    display: inline-block;\n    min-width: 28px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24],\n.datetime-picker .btn-next[_v-e5327c24] {\n    cursor: pointer;\n    display: inline-block;\n    padding: 0 10px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24]:hover,\n.datetime-picker .btn-next[_v-e5327c24]:hover {\n    background: rgba(16, 160, 234, 0.5);\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-e5327c24", module.exports)
+  } else {
+    hotAPI.update("_v-e5327c24", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}]},{},[10]);
+
+//# sourceMappingURL=mg-event-form-vue.js.map

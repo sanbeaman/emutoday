@@ -530,7 +530,7 @@ module.exports  = {
 			  },
 			  methods: {
 					fetchCurrentEvent: function() {
-						this.$http.get('/api/event/'+ this.editeventid +'/edit')
+						this.$http.get('/api/event/'+ this.editeventid)
 
 							.then((response) =>{
 									//response.status;
@@ -672,6 +672,7 @@ module.exports  = {
 
 				},
 				components: {
+					datepicker: require('../vendor/datepicker.vue')
 						// listselect2: require('./ListSelect2.vue')
 						// autocomplete: require('./vue-autocomplete.vue'),
 				    // 'datepicker': require('../vendor/datepicker.vue'),

@@ -10,9 +10,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input as Input;
 use Carbon\Carbon;
 use emutoday\Emutoday\Transformers\FractalAnnouncementTransformer;
+use emutoday\Emutoday\Transformers\FractalAnnouncementTransformerModel;
+use emutoday\Emutoday\Transformers\AnnouncementTransformer;
 use League\Fractal\Manager;
 use League\Fractal;
-
+use League\Fractal\Serializer\ArraySerializer;
+use League\Fractal\Serializer\DataArraySerializer;
 
 class AnnouncementController extends ApiController
 {
@@ -21,10 +24,11 @@ class AnnouncementController extends ApiController
      */
     // protected $storyTransformer;
 
-    function __construct()
+    function __construct(AnnouncementTransformer $announcementTransformer, FractalAnnouncementTransformerModel $fractalAnnouncementTransformerModel )
     {
         // $this->storyTransformer = $storyTransformer;
-
+					$this->announcementTransformer = $announcementTransformer;
+					$this->fractalAnnouncementTransformerModel = $fractalAnnouncementTransformerModel;
         //$this->beforeFilter('auth.basic', ['on' => 'post']);
     }
 
@@ -154,10 +158,61 @@ class AnnouncementController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
-        //
-    }
+    // public function edit($id)
+    // {
+		//
+		// 	$announcement = Announcement::find($id);
+		//
+		// 	if (! $announcement)
+		// 	{
+		// 	    return $this->respondNotFound('Announcement Does Not Exist!');
+		// 	}
+		//
+		// 	return $this->setStatusCode(201)
+		// 	->respond([
+		// 	    'data' => $this->announcementTransformer->transform($announcement)
+		//
+		// 	]);
+		// // $announcement = $this->announcement->findOrFail($id);
+		// //
+		// // $approved = $user->events->where('approved', '1');
+		// // $submitted = $user->events->where('approved', '0');
+		// //
+		// // return view('public.event.form', compact('event', 'approved','submitted'));
+		//
+    // }
+		public function edit($id)
+		{
+			$fractal = new Manager();
+			// $fractal->setSerializer(new ArraySerializer());
+			// $fractal->setSerializer(new DataArraySerializer());
+			$announcement = Announcement::findOrFail($id);
+
+			$resource = new Fractal\Resource\Item($announcement, new FractalAnnouncementTransformerModel);
+				// Turn all of that into a JSON string
+				return $fractal->createData($resource)->toArray();
+			// $announcement = Announcement::find($id);
+			//
+			// if (! $announcement)
+			// {
+			// 		return $this->respondNotFound('Announcement Does Not Exist!');
+			// }
+			//
+			// return $this->setStatusCode(201)
+			// ->respond([
+			// 		'data' => $this->announcementTransformer->transform($announcement)
+			//
+			// ]);
+		// $announcement = $this->announcement->findOrFail($id);
+		//
+		// $approved = $user->events->where('approved', '1');
+		// $submitted = $user->events->where('approved', '0');
+		//
+		// return view('public.event.form', compact('event', 'approved','submitted'));
+
+		}
+
+
 
     /**
      * Update the specified resource in storage.

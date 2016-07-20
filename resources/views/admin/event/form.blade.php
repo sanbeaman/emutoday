@@ -1,97 +1,73 @@
-@extends('admin.layouts.master')
-
+@extends('admin.layouts.adminlte')
 @section('title', $event->exists ? 'Editing '.$event->title : 'Create New Event')
+	@section('style-vendor')
+		@parent
+	@endsection
+
+	@section('style-plugin')
+		@parent
+		<!-- DataTables -->
+		<link rel="stylesheet" href="/themes/adminlte/plugins/datatables/dataTables.bootstrap.css">
+	@endsection
+
+	@section('style-app')
+		@parent
+	@endsection
+
+
   @section('scripthead')
+		@parent
   @endsection
 @section('content')
+	<!-- Main content -->
+	<section class="content">
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">Event</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div id="mg-event-form-vue">
+									<mg-event-form authorid="{{$currentUser->id}}" eventexists="{{$event->exists ? true: false}}" editeventid="{{$event->exists ? $event->id : null }}">
+										{{-- <input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}"> --}}
+									</mg-event-form>
+							</div><!-- /#vue-event-form -->
 
+					</div><!-- /.box-body -->
+				</div><!-- /.box -->
+	</section>
 
-
-    <div id="vueapp">
-
-
-    {!! Form::model($event, [
-        'method' => $event->exists ? 'put' : 'post',
-        'route' => $event->exists ? ['admin.event.update', $event->id] : ['admin.event.store']
-    ]) !!}
-
-      <div class="form-group row">
-        {!! Form::label('title') !!}
-        {!! Form::text('title', null, ['class' => 'form-control']) !!}
-      </div>
-      <div class="form-group row">
-        {!! Form::label('short_title') !!}
-        {!! Form::text('short_title', null, ['class' => 'form-control']) !!}
-      </div>
-       <event-form></event-form>
-      <div class="form-group row">
-        {!! Form::label('location') !!}
-        {!! Form::text('location', null, ['class' => 'form-control']) !!}
-      </div>
-      <div class="form-group row">
-        {!! Form::label('description') !!}
-        {!! Form::text('description', null, ['class' => 'form-control']) !!}
-      </div>
-      <div class="input-group">
-          {!! Form::label('category_list', 'Tags:') !!}
-          {!! Form::select('category_list[]',$categories, $event->categories->lists('id')->toArray() , ['class' => 'form-control', 'multiple']) !!}
-      </div>
-    <div class="row">
-      <div class="small-12 medium-3 columns">
-        {!! Form::label('start_date') !!}
-        {!! Form::text('start_date', null, ['class' => 'form-control']) !!}
-      </div>
-      <div class="small-12 medium-3 columns">
-        {!! Form::label('end_date') !!}
-        {!! Form::text('end_date', null, ['class' => 'form-control']) !!}
-      </div>
-      <fieldset class="small-12 medium-3 columns">
-          <legend>{!! Form::label('all_day') !!}</legend>
-            {{ Form::radio('all_day', 1) }}{!! Form::label('all_day', 'yes') !!}
-            {{ Form::radio('all_day', 0) }}{!! Form::label('all_day', 'no') !!}
-          </fieldset>
-        <fieldset class="small-12 medium-3 columns">
-        <legend>  {!! Form::label('no_end_time') !!}</legend>
-          {!! Form::radio('no_end_time', 1) !!}{!! Form::label('no_end_time', 'yes') !!}
-          {!! Form::radio('no_end_time', 0) !!}{!! Form::label('no_end_time', 'no') !!}
-      </fieldset>
-    </div>
-    <div class="row">
-
-        {!! Form::submit($event->exists ? 'Save Event' : 'Create New Event', ['class' => 'button']) !!}
-    </div>
-
-
-
-    {!! Form::close() !!}
-
-    </div>
 @endsection
-@section('footer')
-  @parent
 
-  <script>
+@section('footer-vendor')
+	{{-- <script src="{{ elixir('js/vendor-scripts.js') }}"></script> --}}
+	@parent
+@endsection
+
+@section('footer-plugin')
+	@parent
+@endsection
+
+@section('footer-app')
+	{{-- <script>
+var AdminLTEOptions = {
+	//Enable sidebar expand on hover effect for sidebar mini
+	//This option is forced to true if both the fixed layout and sidebar mini
+	//are used together
+	sidebarExpandOnHover: false,
+	//BoxRefresh Plugin
+	enableBoxRefresh: true,
+	//Bootstrap.js tooltip
+	enableBSToppltip: true
+};
+</script> --}}
+{{-- <script src="/themes/admin-lte/dist/js/app.js" type="text/javascript"></script>
+	<script src="/js/vue-ajax-form.js" ></script> --}}
+@parent
+@endsection
 
 
-
-  $(function(){
-    $('#start_date').fdatepicker({
-      format: 'yyyy-mm-dd hh:ii',
-      disableDblClickSelection: true,
-      language: 'en',
-      pickTime: true
-    });
-    $('#end_date').fdatepicker({
-      format: 'yyyy-mm-dd hh:ii',
-      disableDblClickSelection: true,
-      language: 'en',
-      pickTime: true
-    });
-
-
-  });
-  </script>
-                <!-- add additional script to bottom of body like js/main.js
-                or add Jquery or similiar calls from inside script tags
-                //$('#flash-overlay-modal').foundation('open'); //will open a Reveal modal with id `reveal`.
+@section('footer-script')
+@parent
+  <script src="/js/mg-event-form-vue.js"></script>
 @endsection
