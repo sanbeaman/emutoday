@@ -37,6 +37,7 @@
 
 					<th class="text-left">notes</th>
 						<th class="text-center">priority</th>
+							<th class="text-center">response</th>
 					<th class="text-center">completed</th>
 					<th class="text-center">confirmed</th>
 						<th class="text-center">created on</th>
@@ -56,6 +57,7 @@
 									<td>{{ $item->screen }}</td>
 									<td>{{ $item->notes }}</td>
 									<td>{{ $item->priority }}</td>
+										<td>{{ $item->note_reply }}</td>
 									<td><i class='fa {{$item->complete == 1 ? 'fa-check-square-o' :'fa-square-o'}}'></i></td>
 									<td><i class='fa {{$item->confirmed == 1 ? 'fa-check-square-o' :'fa-square-o'}}'></i></td>
 									<td>{{ $item->created_at }}</td>

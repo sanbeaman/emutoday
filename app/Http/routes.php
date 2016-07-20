@@ -180,6 +180,11 @@ Route::group(['middleware' => ['web']], function() {
 					'uses' => 'Admin\StoryController@imageBrowse'
 				]);
       Route::resource('story', 'Admin\StoryController');
+			// Route::get('announcement/app', function () {
+			// 	return view('admin.announcement.app');
+			// });
+
+			Route::get('announcement/app', ['as' => 'admin.announcement.app', 'uses' => 'Admin\AnnouncementController@appload']);
 
       Route::get('announcement/{announcement}/confirm', ['as' => 'admin.announcement.confirm', 'uses' => 'Admin\AnnouncementController@confirm']);
 			Route::post('announcement/delete', ['as' => 'admin_announcement_delete', 'uses' => 'Admin\AnnouncementController@delete'] );
@@ -213,6 +218,7 @@ Route::group(['middleware' => ['web']], function() {
 					return view('admin.queue');
 				});
 
+			Route::resource('bugz', 'Admin\BugzController');
       Route::get('twitter', 'Admin\TwitterController@index');
       Route::post('approve-tweets', 'Admin\TwitterController@store');
 

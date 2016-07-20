@@ -6,9 +6,16 @@ use Illuminate\Http\Request;
 
 use emutoday\Http\Requests;
 use emutoday\Http\Controllers\Controller;
+use emutoday\Bugz;
 
 class BugzController extends Controller
 {
+	public function __construct(Bugz $bugz)
+	{
+			$this->bugz = $bugz;
+
+	}
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +23,11 @@ class BugzController extends Controller
      */
     public function index()
     {
-        //
+			$user = auth()->user();
+			$bugzs = $this->bugz->get();
+
+			return view('admin.bugz.index', compact('bugzs'));
+
     }
 
     /**
@@ -35,10 +46,16 @@ class BugzController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
-    }
+
+		 public function store(Request $request)
+		 {
+				 $bugz = $this->bugz->create(
+				 [ 'user_id' => auth()->user()->id ] + $request->all()//('template', 'uri', 'start_date', 'end_date')
+ 		 			);
+				 flash()->success('Bugz has been created.');
+				 return redirect(route('admin.bugz.edit', $bugz->id));//->with('status', 'Story has been created.');
+		 }
+
 
     /**
      * Display the specified resource.
@@ -59,7 +76,10 @@ class BugzController extends Controller
      */
     public function edit($id)
     {
-        //
+        $bugz = $this->bugz->findOrFail($id);
+				$bugzs = $this->bugz->where('confirmed', 0)->get();
+
+				return view('admin.bugz.form', compact('bugz', 'bugzs'));
     }
 
     /**
@@ -71,7 +91,10 @@ class BugzController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+          $bugz = $this->bugz->findOrFail($id);
+					$bugz->fill($request->only('type', 'screen', 'notes', 'priority', 'note_reply','complete','confirmed'))->save();
+					flash()->success('Bugz has been updated.');
+					return redirect(route('admin.bugz.edit', $bugz->id));//
     }
 
     /**

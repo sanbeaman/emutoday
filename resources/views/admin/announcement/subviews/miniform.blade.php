@@ -1,11 +1,12 @@
 <div class="panel panel-default">
   <div class="panel-body row">
-		<div class="col-md-2">
-			{{$item->submission_date}}
-		</div><!-- /.col-md-2 -->
-		<div class="col-md-5">
-			<p>{{$item-title}}</p>
-			<p>{{$item-announcement}}</p>
+		<div class="col-md-6">
+
+			<a href="#" class="accordion-title">{{$item->title}}</a>
+			<div class="accordion-content">
+				{!! $item->announcement !!}
+				<p>posted {{$item->present()->prettyDate}}</p>
+			</div>
 		</div><!-- /.col-md-6 -->
   <div class="col-md-2">
   <p>from :{{$item->start_date}} - {{$item->end_date}}</p>

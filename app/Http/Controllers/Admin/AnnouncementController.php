@@ -39,6 +39,10 @@ class AnnouncementController extends Controller
 			}
     }
 
+			public function appload() {
+				  $announcements = $this->announcement->get();
+					return view('admin.announcement.app', compact('announcements'));
+			}
     /**
      * Show the form for creating a new resource.
      *

@@ -6,7 +6,7 @@
             <!-- form start -->
 						<form method="POST"
 	      			action="/api/bugz"
-	      			v-myajax complete="Okay, Bug Added" userid="{{$currentUser->id}}"
+	      			  userid="{{$currentUser->id}}"
 	  					>
 
             {{-- <form role="form"> --}}
