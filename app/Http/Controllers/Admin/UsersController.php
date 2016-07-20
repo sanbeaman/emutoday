@@ -48,8 +48,10 @@ class UsersController extends Controller
     {
         $user = $this->users->findOrFail($id);
 				$userRoles = \emutoday\Role::lists('name', 'id');
+				$avatar = $user->mediaFiles->where('type', 'avatar')->first();
+			
 				$mediafiles = $user->mediaFiles;
-        return view('admin.users.form', compact('user', 'userRoles','mediafiles'));
+        return view('admin.users.form', compact('user', 'userRoles','mediafiles', 'avatar'));
     }
 
     public function update(Requests\UpdateUserRequest $request, $id)

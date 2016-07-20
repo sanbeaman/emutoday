@@ -5,8 +5,11 @@
 			<!-- Profile Image -->
 <div class="box box-primary">
 	<div class="box-body box-profile">
-		<img class="profile-user-img img-responsive img-circle" src="/assets/imgs/user/user2-160x160.jpg" alt="User profile picture">
-
+		@if($user->avatar)
+		<img class="profile-user-img img-responsive img-circle" src="/imagecache/avatar160/{{$user->mediaFiles->first()->filename}}" alt="User profile picture">
+	@else
+		<img class="profile-user-img img-responsive img-circle" src="/imagecache/avatar160/avatar160.jpg" alt="default profile picture">
+@endif
 		<h3 class="profile-username text-center">{{$user->first_name}} {{$user->last_name}}</h3>
 
 		<p class="text-muted text-center"></p>

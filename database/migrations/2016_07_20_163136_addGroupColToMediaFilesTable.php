@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddTimeStampToCeEventsTable extends Migration
+class AddGroupColToMediaFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class AddTimeStampToCeEventsTable extends Migration
      */
     public function up()
     {
-        Schema::table('cea_events', function (Blueprint $table) {
-          $table->timestamps();
+        Schema::table('mediafiles', function (Blueprint $table) {
+            $table->string('group')->after('type');
         });
     }
 
@@ -24,8 +24,8 @@ class AddTimeStampToCeEventsTable extends Migration
      */
     public function down()
     {
-        Schema::table('cea_events', function (Blueprint $table) {
-            //
+        Schema::table('mediafiles', function (Blueprint $table) {
+            $table->dropColumn('group');
         });
     }
 }

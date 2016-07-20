@@ -269,7 +269,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 								<!-- The user image in the navbar-->
 
 									@if(count($currentUser->mediaFiles) > 0)
-										<img src="{{$currentUser->mediaFiles->first()->filename}}" class="user-image" alt="User Image">
+										<img src="/imagecache/avatar160/{{$currentUser->mediaFiles->first()->filename}}" class="user-image" alt="User Image">
 									@else
 										<img src="/assets/imgs/user/user2-160x160.jpg" class="user-image" alt="User Image">
 									@endif
@@ -284,7 +284,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 								<!-- The user image in the menu -->
 								<li class="user-header">
 									@if(count($currentUser->mediaFiles) > 0)
-										<img src="{{$currentUser->mediaFiles->first()->filename}}" class="img-circle" alt="User Image">
+										<img src="/imagecache/avatar160/{{$currentUser->mediaFiles->first()->filename}}" class="img-circle" alt="User Image">
 									@else
 										<img src="/assets/imgs/user/user2-160x160.jpg" class="img-circle" alt="User Image">
 									@endif
@@ -340,7 +340,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	      <div class="user-panel">
 	        <div class="pull-left image">
 						@if(count($currentUser->mediaFiles) > 0)
-							<img src="{{$currentUser->mediaFiles->first()->filename}}" class="user-image img-circle" alt="User Image">
+							<img src="/imagecache/avatar160/{{$currentUser->mediaFiles->first()->filename}}" class="user-image img-circle" alt="User Image">
 						@else
 							<img src="/assets/imgs/user/user2-160x160.jpg" class="user-image" alt="User Image">
 						@endif

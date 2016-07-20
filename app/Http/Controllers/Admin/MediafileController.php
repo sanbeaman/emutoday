@@ -21,12 +21,18 @@ class MediafileController extends Controller
 					$this->user = $user;
 					parent::__construct();
 			}
+			public function index()
+		{
+				$mediafiles = $this->mediafile->paginate(10);
+				return view('admin.mediafile.index', compact('mediafiles'));
+		}
+
 
 
 			public function addMediafileUser($id, Request $request)
 			{
 
-
+					$group = 'user';
 					$user = $this->user->findOrFail($id);
 					//define the image paths
 					$destinationFolder = '/imgs/user/';
@@ -58,16 +64,19 @@ class MediafileController extends Controller
 						 $imgFileName = $mediafile->name . '.' . $mediafile->ext;
 
 
+
 					$image = Image::make($imgFilePath)
-					 ->save(public_path() . $destinationFolder . $imgFileName)
-					 ->fit(100)
-					 ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
+					 ->save(public_path() . $destinationFolder . $imgFileName);
+					//  ->fit(100)
+					//  ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
 
 				// 	}
 				//
-					$mediafile->filename = $destinationFolder . $imgFileName;
-					$mediafile->caption = $request->input('caption');
-					$mediafile->note = $request->input('note');
+					$mediafile->filename = $imgFileName;
+					$mediafile->type = 'avatar';
+					$mediafile->group = $group;
+					// $mediafile->caption = $request->input('caption');
+					// $mediafile->note = $request->input('note');
 					$mediafile->save();
 					$user->mediaFiles()->save($mediafile);
 					flash()->success('User Image has been added');
@@ -76,11 +85,17 @@ class MediafileController extends Controller
 
 			}
 
-			public function updateMediafileUser($id, Request $request)
+			public function update($id, Request $request)
 			{
+
 					$mediafile = $this->mediafile->findOrFail($id);
-					$mediafile->caption = $request->get('caption');
-					$mediafile->note = $request->get('note');
+					$path_old = $mediafile->path;
+					$type_old = $mediafile->type;
+					$group_old = $mediafile->group;
+					$name_old = $mediafile->name;
+
+					// $mediafile->caption = $request->get('caption');
+					// $mediafile->note = $request->get('note');
 					$user = $mediafile->users->first();
 					if ($request->hasFile('photo'))
 					{
@@ -98,20 +113,23 @@ class MediafileController extends Controller
 									 default:
 									 $imgFileExtension = $imgFileOriginalExtension;
 								 }
-					 $mediafile->name = 'user'. '-' . $user->id;
+
+					 $mediafile->name = $name_old;
 					 $mediafile->ext = $imgFileExtension;
 
 					 $imgFileName = $mediafile->name . '.' . $mediafile->ext;
 					 $image = Image::make($imgFilePath)
-										 ->save(public_path() . $mediafile->path . $imgFileName)
-										 ->fit(100)
-										 ->save(public_path() . $mediafile->path  . 'thumbnails/' . 'thumb-' . $imgFileName);
+										 ->save(public_path() . $mediafile->path . $imgFileName);
+										//  ->fit(100)
+										//  ->save(public_path() . $mediafile->path  . 'thumbnails/' . 'thumb-' . $imgFileName);
 
 				}
-				$mediafile->filename = $mediafile->path . $mediafile->name . '.' . $mediafile->ext;
+				$mediafile->filename = $mediafile->name . '.' . $mediafile->ext;
 				$user->mediaFiles()->save($mediafile);
-				flash()->success('User Image has been updated');
-				return redirect()->back();//->with('status', 'Story has been created.');
+				flash()->success('Mediafile has been updated');
+				// return redirect()->back();//->with('status', 'Story has been created.');
+				return redirect()->back();
+				// return redirect(route('admin.users.edit', $user->id));//->with('status', 'Story has been created.');
 
 			}
 			public function removeMediafileUser($id)
@@ -121,8 +139,8 @@ class MediafileController extends Controller
 	        $pathToImageForDelete = public_path() . $mediafile->path . $mediafile->name . '.' . $mediafile->ext;
 	        \File::delete($pathToImageForDelete);
 
-	        $pathToImageThumbForDelete = public_path() . $mediafile->path . 'thumbnails/' . 'thumb-' . $mediafile->name . '.' . $mediafile->ext;
-	        \File::delete($pathToImageThumbForDelete);
+	        // $pathToImageThumbForDelete = public_path() . $mediafile->path . 'thumbnails/' . 'thumb-' . $mediafile->name . '.' . $mediafile->ext;
+	        // \File::delete($pathToImageThumbForDelete);
 
 	        $mediafile->delete();
 	        flash()->warning('Record has been deleted');
@@ -131,11 +149,7 @@ class MediafileController extends Controller
 	    }
 
 
-			public function index()
-    {
-        $mediafiles = $this->mediafile->paginate(10);
-        return view('admin.mediafile.index', compact('mediafiles'));
-    }
+
 
     public function create(Mediafile $mediafile)
     {
@@ -149,81 +163,70 @@ class MediafileController extends Controller
     }
 
 
-    public function update($id, Request $request)
-    {
-       //create new instance of model to save from form
-       $mediafile = $this->mediafile->findOrFail($id);
-       $mediafile->is_active = $request->get('is_active');
-       $this->formatCheckboxValue($mediafile);
-       $mediafile->caption = $request->get('caption');
-       $mediafile->teaser = $request->get('teaser');
-       $mediafile->moretext = $request->get('moretext');
-       $mediafile->image_type = $request->get('image_type');
+    // public function update($id, Request $request)
+    // {
 
-/*
-       $mediafile = new generalImage([
-           'image_name'        => $request->get('image_name'),
-           'image_extension'   => $request->file('image')->getClientOriginalExtension(),
-           'is_active'         => $request->get('is_active'),
-           'is_featured'       => $request->get('is_featured'),
-           'caption'           => $request->get('caption'),
-           'teaser'            => $request->get('teaser'),
-           'moretext'          => $request->get('moretext')
-
-       ]);
-*/
-       //define the image paths
-
-       $destinationFolder = '/imgs/story/';
-
-
-       //assign the image paths to new model, so we can save them to DB
-
-       $mediafile->image_path = $destinationFolder;
-
-
-       // format checkbox values and save model
-
-       $this->formatCheckboxValue($mediafile);
-
-
-       //parts of the image we will need
-       if ( ! empty(Input::file('image'))){
-
-       $imgFile = Input::file('image');
-       $imgFilePath = $imgFile->getRealPath();
-       $imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
-
-
-       switch ($imgFileOriginalExtension) {
-           case 'jpg':
-           case 'jpeg':
-            $imgFileExtension = 'jpg';
-            break;
-            default:
-            $imgFileExtension = $imgFileOriginalExtension;
-
-       }
-       $mediafile->image_extension = $imgFileExtension;
-
-
-       $imgFileName = $mediafile->image_name . '.' . $mediafile->image_extension;
-
-
-       $image = Image::make($imgFilePath)
-        ->save(public_path() . $destinationFolder . $imgFileName)
-        ->fit(100)
-        ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
-
-    }
-     $mediafile->is_active = 1;
-        $mediafile->save();
-
-      $story = $mediafile->story;
-     flash()->success('Story Image has been created.');
-      return redirect(route('admin.story.edit', $story->id ));//->with('status', 'Story Image has been created.');
+    //    $mediafile = $this->mediafile->findOrFail($id);
+    //    $mediafile->is_active = $request->get('is_active');
+    //    $this->formatCheckboxValue($mediafile);
+    //    $mediafile->caption = $request->get('caption');
+    //    $mediafile->teaser = $request->get('note');
+		//
+    //    $mediafile->type = $request->get('type');
+		//
+		//
+    //    //define the image paths
+		//
+    //    $destinationFolder = '/imgs/user/';
+		//
+		//
+    //    //assign the image paths to new model, so we can save them to DB
+		//
+    //    $mediafile->path = $destinationFolder;
+		//
+		//
+    //    // format checkbox values and save model
+		//
+    //    $this->formatCheckboxValue($mediafile);
+		//
+		//
+    //    //parts of the image we will need
+    //    if ( ! empty(Input::file('image'))){
+		//
+    //    $imgFile = Input::file('image');
+    //    $imgFilePath = $imgFile->getRealPath();
+    //    $imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
+		//
+		//
+    //    switch ($imgFileOriginalExtension) {
+    //        case 'jpg':
+    //        case 'jpeg':
+    //         $imgFileExtension = 'jpg';
+    //         break;
+    //         default:
+    //         $imgFileExtension = $imgFileOriginalExtension;
+		//
+    //    }
+    //    $mediafile->ext = $imgFileExtension;
+		//
+		//
+    //    $imgFileName = $mediafile->image_name . '.' . $mediafile->ext;
+		//
+		//
+    //    $image = Image::make($imgFilePath)
+    //     ->save(public_path() . $destinationFolder . $imgFileName)
+    //     // ->fit(100)
+    //     // ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
+		//
+    // }
+    //  $mediafile->is_active = 1;
+    // $mediafile->save();
+		//
+    //   $story = $mediafile->story;
+    //  flash()->success('Story Image has been created.');
+    //   return redirect(route('admin.story.edit', $story->id ));//->with('status', 'Story Image has been created.');
       // return redirect()->route('backend/generalImages.show', [$mediafile]);
-    }
+    // }
 
     public function edit($id)
     {

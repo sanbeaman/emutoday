@@ -1,5 +1,4 @@
 <template>
-
 				<form>
 					<slot name="csrf"></slot>
 					<!-- <slot name="author_id" v-model="newevent.author_id"></slot> -->

@@ -32,6 +32,8 @@ class User extends Authenticatable
         $this->attributes['password'] = bcrypt($value);
     }
 
+
+
 		public function mediaFiles()
 		{
 			return $this->belongsToMany('emutoday\Mediafile');

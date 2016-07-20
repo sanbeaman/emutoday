@@ -109,56 +109,50 @@
 					</div><!-- /.box -->
 			</div><!--	/.col-sm-12 -->
 			<div class="col-sm-6">
-				@if(count($mediafiles) > 0 )
-					@foreach ($mediafiles as $mediafile)
-								<div class="box box-info">
-									{{-- @if(count($magazine->mediafiles) > 0)
-										<h4>{{$magazine->mediafiles()->first()}}</h4>
-										@else --}}
-									<div class="box-header with-border">
-										<h3 class="box-title">User Image</h3>
-									</div><!-- /.box-header -->
-									<div class="box-body">
-										{!! Form::model($mediafile, [
-											'method' => 'put',
-											'route' => ['update_mediafile_user', $mediafile->id]
-											]) !!}
-											<div class="media-left">
+				@if(isset($avatar))
+					<div class="box box-info">
+						{{-- @if(count($magazine->mediafiles) > 0)
+							<h4>{{$magazine->mediafiles()->first()}}</h4>
+							@else --}}
+						<div class="box-header with-border">
+							<h3 class="box-title">User Image</h3>
+						</div><!-- /.box-header -->
+						<div class="box-body">
+							{!! Form::model($avatar,[
+								'method' => 'patch',
+								'route' => ['admin.mediafile.update', $avatar->id],
+								'files' => true
+							]) !!}
 
-												<img class="media-object" src="/imgs/user/thumbnails/{{ 'thumb-' . $mediafile->name . '.' .
-													$mediafile->ext . '?'. 'time='. time() }}" alt="{{$mediafile->name}}">
-												</div>
-												<div class="form-group">
-													{!! Form::file('photo', null, array('required','id' => 'photo', 'class'=>'form-control input-sm')) !!}
-												</div>
-												<div class="form-group">
-													{!! Form::label('caption') !!}
-													{!! Form::text('caption', null, ['class' => 'form-control']) !!}
-												</div>
-												<div class="form-group">
-													{!! Form::label('note') !!}
-													{!! Form::text('note', null, ['class' => 'form-control']) !!}
-												</div>
-												<div class="form-group">
-													{!! Form::submit('Update Image', array('class'=>'btn btn-primary')) !!}
-												</div>
-												{{ csrf_field() }}
-												{!! Form::close() !!}
-											</div> <!-- /.box-body -->
-											<div class="box-footer">
-												<div class="form-group">
-				 				       {!! Form::model($mediafile, ['route' => ['remove_mediafile_user', $mediafile->id],
-				 				       'method' => 'DELETE',
-				 				       'class' => 'form',
-				 				       'files' => true]
-				 				       ) !!}
-				 							 {!! Form::submit('Delete Image', array('class'=>'btn btn-warning', 'Onclick' => 'return ConfirmDelete();')) !!}
-				 				       {!! Form::close() !!}
-				 							  </div>
-											</div><!-- /.box-footer -->
-									</div> <!-- /.box -->
-						@endforeach
-						@else
+
+								<div class="media-left">
+
+									<img class="media-object" src="/imagecache/avatar160/{{$avatar->filename}}" alt="{{$avatar->name}}">
+									</div>
+									<div class="form-group">
+										{!! Form::file('photo', null, array('required','id' => 'photo', 'class'=>'form-control input-sm')) !!}
+									</div>
+									<p class="help-text">You may need to refresh page to see updated avatar	</p>
+									<div class="form-group">
+										{!! Form::submit('Update Image', array('class'=>'btn btn-primary')) !!}
+									</div>
+									{{ csrf_field() }}
+									{!! Form::close() !!}
+								</div> <!-- /.box-body -->
+								<div class="box-footer">
+									<div class="form-group">
+								 {!! Form::model($avatar, ['route' => ['remove_mediafile_user', $avatar->id],
+								 'method' => 'DELETE',
+								 'class' => 'form',
+								 'files' => true]
+								 ) !!}
+								 {!! Form::submit('Delete Image', array('class'=>'btn btn-warning', 'Onclick' => 'return ConfirmDelete();')) !!}
+								 {!! Form::close() !!}
+									</div>
+								</div><!-- /.box-footer -->
+						</div> <!-- /.box -->
+				@else
+
 						<div class="box box-info">
 									<div class="box-header with-border">
 										<h3 class="box-title">Add User Image</h3>

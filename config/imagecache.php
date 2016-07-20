@@ -60,7 +60,8 @@ return array(
 				'betterthumb' => 'emutoday\Emutoday\Filters\BetterThumb',
 				'smallthumb' => 'emutoday\Emutoday\Filters\SmallThumb',
 				'ddsmall' => 'emutoday\Emutoday\Filters\DDSmall',
-				'ddfront' => 'emutoday\Emutoday\Filters\DDFront'
+				'ddfront' => 'emutoday\Emutoday\Filters\DDFront',
+				'avatar160' => 'emutoday\Emutoday\Filters\Avatar160'
 
     ),
 
