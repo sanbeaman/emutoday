@@ -1,19 +1,40 @@
 <template>
 
 	<div class="box box-default box-solid collapsed-box">
-	            <div type="button" class="box-header with-border" data-widget="collapse">
-						<i class="fa fa-plus pull-left"></i>
-								<h3 class="box-title" >{{item.title}}</h3>
-								<div class="box-tools pull-right">
+	            <div class="box-header with-border" >
+								<div class="row">
+									<div class="col-md-1">
+										<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+										</button>
+									</div><!-- /.col-md-1 -->
+									<div class="col-md-5">
+											<h3 class="box-title" >{{item.title}}</h3>
+									</div><!-- /.col-md-6 -->
+									<div class="col-md-3">
+
+									</div><!-- /.col-md-3 -->
+									<div class="col-md-3">
+										<div class="onoffswitch">
+				<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch">
+				<label class="onoffswitch-label" for="myonoffswitch">
+						<span class="onoffswitch-inner"></span>
+						<span class="onoffswitch-switch"></span>
+				</label>
+		</div>
+									</div><!-- /.col-md-3 -->
+								</div><!-- /.row -->
+
+
+
 									<!-- <span data-toggle="tooltip" title="" class="badge bg-light-blue" data-original-title="3 New Messages">3</span> -->
-									<!-- <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
-									</button> -->
-									<button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle">
-										<i class="fa fa-comments"></i>
-									</button>
+
+
+									<!-- <div class="box-tools pull-right"> -->
+
+									<!-- </div> -->
+
 									<!-- <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
-								</div>
-	              <!-- /.box-tools -->
+
 	            </div>
 	            <!-- /.box-header -->
 	            <div class="box-body">
@@ -23,9 +44,52 @@
 	          </div><!-- /.box- -->
 </template>
 <style scoped>
-
+.onoffswitch {
+    position: relative; width: 60px;
+    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #999999; border-radius: 50px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;
+    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    content: "YES";
+    padding-left: 10px;
+    background-color: #605CA8; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    content: "NO";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 22px; margin: 0px;
+    background: #FFFFFF;
+    position: absolute; top: 0; bottom: 0;
+    right: 38px;
+    border: 2px solid #999999; border-radius: 50px;
+    transition: all 0.3s ease-in 0s;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px;
+}
 </style>
-
 <script>
 var moment = require('moment')
 

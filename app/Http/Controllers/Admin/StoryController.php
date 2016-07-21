@@ -223,14 +223,21 @@ class StoryController extends Controller
 		public function addNewImage($id, Request $request)
 		{
 				$story = $this->story->findOrFail($id);
-
+				$storyGroup = $story->storyType->group;
+// dd($request->all());
 				$story->storyImages()->create([
-					'imagetype_id'=> $img->id,
+					'imagetype_id'=> $request->img_id,
 					'group'=> $storyGroup,
-					'image_type'=> $img->type,
-					'image_name'=> 'img' . $story->id . '_' . $img->type
+					'image_type'=> $request->img_type,
+					'image_name'=> 'img' . $story->id . '_' . $request->img_type
 
 					]);
+
+					if($request->img_type == 'front') {
+						$story->is_featured = 1;
+						$story->save();
+					}
+
 				// $storyImage = $story->addImage('hero');
 
 
@@ -307,7 +314,8 @@ class StoryController extends Controller
 				$stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
 
 				JavaScript::put([
-							'storytype' => $story->story_type
+							'storytype' => $story->story_type,
+							'is_featured' => $story->is_featured
 					]);
 					$user = auth()->user();
 					if($user == null)

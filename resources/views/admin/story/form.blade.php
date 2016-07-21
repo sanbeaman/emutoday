@@ -210,8 +210,15 @@ $(function () {
 			checkboxClass: 'icheckbox_flat-blue',
 			radioClass: 'iradio_flat-blue'
 		})
-		$('#is-featured-no').iCheck('check');
-		$('#is-featured-yes').iCheck('disable');
+
+		if (JSvars.is_featured == 1) {
+			$('#is-featured-yes').iCheck('check');
+		
+		} else {
+			$('#is-featured-yes').iCheck('check');
+			$('#is-featured-yes').iCheck('disable');
+		}
+
 
     //iCheck for checkbox and radio inputs
     $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
