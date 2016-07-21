@@ -213,9 +213,9 @@ $(function () {
 
 		if (JSvars.is_featured == 1) {
 			$('#is-featured-yes').iCheck('check');
-		
+
 		} else {
-			$('#is-featured-yes').iCheck('check');
+			$('#is-featured-no').iCheck('check');
 			$('#is-featured-yes').iCheck('disable');
 		}
 
