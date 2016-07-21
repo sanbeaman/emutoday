@@ -18,7 +18,6 @@ new Vue({
     el: '#vue-announcement-app',
     components: {
       AnnouncementApp: require('./components/AnnouncementApp.vue')
-
     },
     ready() {
       console.log('new Vue AnnouncementApp ready');

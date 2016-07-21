@@ -18,10 +18,17 @@
 		@parent
 	@endsection
 @section('content')
+	{{-- <div id="vueapp">
+	<component  :var-year-unit="{!! $varYearUnit !!}"
+							:var-month-unit="{!! $varMonthUnit !!}"
+							:var-day-unit="{!! $varDayUnit !!}"
+							is="event-view">
+	</component>
+</div><!-- vue-app --> --}}
 	<div id="vue-announcement-app">
-	<announcement-app  :recordsin="{!! $announcements !!}">
-	</announcement-app>
-</div><!-- /.vue-announcement-app -->
+			<announcement-app>
+			</announcement-app>
+	</div><!-- /.vue-announcement-app -->
 
 @endsection
 @section('footer-vendor')

@@ -15869,7 +15869,7 @@ exports.insert = function (css) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 
 var _AnnouncementListForm = require('./AnnouncementListForm.vue');
@@ -15880,31 +15880,59 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // import EventViewContent from './EventViewContent.vue'
 exports.default = {
-  components: { AnnouncementListForm: _AnnouncementListForm2.default },
-  props: ['recordsin'],
+	components: {
+		AnnouncementListForm: _AnnouncementListForm2.default
+	},
+	props: ['annrecords'],
 
-  ready: function ready() {
+	ready: function ready() {
+		this.fetchAllRecords();
+		// this.freshPageLand();
+	},
 
-    this.items = this.recordsin;
-    console.log('AnnouncementApp' + this.items);
-    // this.freshPageLand();
-  },
+	data: function data() {
+		return {
+			items: [],
+			objs: {}
+		};
+	},
+	methods: {
+		fetchAllRecords: function fetchAllRecords() {
+			var _this = this;
 
-  data: function data() {
-    return {
-      items: []
-    };
-  },
-  methods: {},
-  // the `events` option simply calls `$on` for you
-  // when the instance is created
-  events: {
-    // 'child-msg': function (msg) {
-    //   // `this` in event callbacks are automatically bound
-    //   // to the instance that registered it
-    //   this.messages.push(msg)
-    // }
-  }
+			this.$http.get('/api/announcement/listall').then(function (response) {
+				//response.status;
+				console.log('response.status=' + response.status);
+				console.log('response.ok=' + response.ok);
+				console.log('response.statusText=' + response.statusText);
+				console.log('response.data=' + response.data);
+				// data = response.data;
+
+				_this.items = response.data.data;
+				console.log('this.record= ' + _this.record);
+
+				_this.checkOverData();
+			}, function (response) {
+				//error callback
+				console.log("ERRORS");
+
+				//  this.formErrors =  response.data.error.message;
+			}).bind(this);
+		},
+		checkOverData: function checkOverData() {
+			console.log('this.items=' + this.items);
+		}
+	},
+
+	// the `events` option simply calls `$on` for you
+	// when the instance is created
+	events: {
+		// 'child-msg': function (msg) {
+		//   // `this` in event callbacks are automatically bound
+		//   // to the instance that registered it
+		//   this.messages.push(msg)
+		// }
+	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
 ;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\">\n\t\t\t<div class=\"col-md-6\">\n\t\t\t\t<announcement-list-form v-for=\"item in items\" :item=\"item\" :index=\"$index\">\n\t\t\t\t</announcement-list-form>\n\t\t\t</div><!-- /.col-md-6 -->\n\t\t\t<div class=\"col-md-6\">\n\n\t\t\t</div><!-- /.col-md-6 -->\n</div><!-- ./row -->\n"
@@ -15987,7 +16015,7 @@ module.exports = {
 	}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"panel panel-default\" _v-74bad2ad=\"\">\n  <div class=\"panel-body\" _v-74bad2ad=\"\">\n\t\t<h3 class=\"panel-title\" _v-74bad2ad=\"\">{{item.title}}</h3>\n\t<p _v-74bad2ad=\"\">{{item.announcement}}</p>\n  \t<p _v-74bad2ad=\"\">Posted {{item.start_date | momentPretty}}</p>\n  </div>\n</div>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"box box-default box-solid collapsed-box\" _v-74bad2ad=\"\">\n            <div type=\"button\" class=\"box-header with-border\" data-widget=\"collapse\" _v-74bad2ad=\"\">\n\t\t\t\t\t<i class=\"fa fa-plus pull-left\" _v-74bad2ad=\"\"></i>\n\t\t\t\t\t\t\t<h3 class=\"box-title\" _v-74bad2ad=\"\">{{item.title}}</h3>\n\t\t\t\t\t\t\t<div class=\"box-tools pull-right\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t\t\t<!-- <span data-toggle=\"tooltip\" title=\"\" class=\"badge bg-light-blue\" data-original-title=\"3 New Messages\">3</span> -->\n\t\t\t\t\t\t\t\t<!-- <button type=\"button\" class=\"btn btn-box-tool\" data-widget=\"collapse\"><i class=\"fa fa-plus\"></i>\n\t\t\t\t\t\t\t\t</button> -->\n\t\t\t\t\t\t\t\t<button type=\"button\" class=\"btn btn-box-tool\" data-toggle=\"tooltip\" title=\"Contacts\" data-widget=\"chat-pane-toggle\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t\t\t\t<i class=\"fa fa-comments\" _v-74bad2ad=\"\"></i>\n\t\t\t\t\t\t\t\t</button>\n\t\t\t\t\t\t\t\t<!-- <button type=\"button\" class=\"btn btn-box-tool\" data-widget=\"remove\"><i class=\"fa fa-times\"></i></button> -->\n\t\t\t\t\t\t\t</div>\n              <!-- /.box-tools -->\n            </div>\n            <!-- /.box-header -->\n            <div class=\"box-body\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t\t<p _v-74bad2ad=\"\">{{item.announcement}}</p>\n\t\t\t\t\t\t\t<p _v-74bad2ad=\"\">Posted {{item.start_date | momentPretty}}</p>\n            </div> <!-- /.box-body -->\n          </div><!-- /.box- -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16030,7 +16058,6 @@ new Vue({
   el: '#vue-announcement-app',
   components: {
     AnnouncementApp: require('./components/AnnouncementApp.vue')
-
   },
   ready: function ready() {
     console.log('new Vue AnnouncementApp ready');

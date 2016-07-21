@@ -57,6 +57,9 @@
 									</table>
 								</div>
 								<!-- /.box-body -->
+								<div class="box-footer text-right">
+											{!! $users->render() !!}
+								</div> <!-- /.box-footer -->
 							</div>
 							<!-- /.box -->
 						</div>
@@ -113,6 +116,6 @@
 						</div><!-- /.col-md-6 -->
 					</div><!-- /.row -->
 
-  
+
 
     @endsection

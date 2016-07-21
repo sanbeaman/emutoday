@@ -51,6 +51,21 @@ class AnnouncementController extends ApiController
         //     'data' => $this->storyTransformer->transformCollection($storys->all())
         // ]);
     }
+
+		public function listall()
+		{
+
+				$fractal = new Manager();
+
+				$announcements = Announcement::all();
+
+				$resource = new Fractal\Resource\Collection($announcements->all(), new FractalAnnouncementTransformerModel);
+					// Turn all of that into a JSON string
+					return $fractal->createData($resource)->toArray();
+				// return $this->respond([
+				//     'data' => $this->storyTransformer->transformCollection($storys->all())
+				// ]);
+		}
 		// public function index()
 		// {
 		//

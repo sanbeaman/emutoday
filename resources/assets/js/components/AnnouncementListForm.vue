@@ -1,13 +1,26 @@
 <template>
 
-	<div class="panel panel-default">
-	  <div class="panel-body">
-			<h3 class="panel-title">{{item.title}}</h3>
-		<p>{{item.announcement}}</p>
-	  	<p>Posted {{item.start_date | momentPretty}}</p>
-	  </div>
-	</div>
-
+	<div class="box box-default box-solid collapsed-box">
+	            <div type="button" class="box-header with-border" data-widget="collapse">
+						<i class="fa fa-plus pull-left"></i>
+								<h3 class="box-title" >{{item.title}}</h3>
+								<div class="box-tools pull-right">
+									<!-- <span data-toggle="tooltip" title="" class="badge bg-light-blue" data-original-title="3 New Messages">3</span> -->
+									<!-- <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+									</button> -->
+									<button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="Contacts" data-widget="chat-pane-toggle">
+										<i class="fa fa-comments"></i>
+									</button>
+									<!-- <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
+								</div>
+	              <!-- /.box-tools -->
+	            </div>
+	            <!-- /.box-header -->
+	            <div class="box-body">
+								<p>{{item.announcement}}</p>
+								<p>Posted {{item.start_date | momentPretty}}</p>
+	            </div> <!-- /.box-body -->
+	          </div><!-- /.box- -->
 </template>
 <style scoped>
 

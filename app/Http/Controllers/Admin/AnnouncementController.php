@@ -35,12 +35,21 @@ class AnnouncementController extends Controller
 
       $announcements = $this->announcement->get();
 
+			// $announcements->toJson();
       return view('admin.announcement.index', compact('announcements'));
 			}
     }
 
 			public function appload() {
-				  $announcements = $this->announcement->get();
+				  $announcements = $this->announcement->first();
+
+					\JavaScript::put([
+							'records' => $announcements
+					]);
+					// $announcements->toJson();
+				//  $announcements->toArray();
+					// $announcements->toJson(JSON_HEX_QUOT);
+
 					return view('admin.announcement.app', compact('announcements'));
 			}
     /**
