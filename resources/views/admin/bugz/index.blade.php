@@ -17,8 +17,8 @@
 	<div class="box">
 		<div class="box box-primary">
 			<div class="box-header with-border">
-				<h3 class="box-title">Announcement List</h3>
-				@include('admin.layouts.components.boxtools', ['rte' => 'announcement', 'path' => 'admin/announcement'])
+				<h3 class="box-title">Bugz List</h3>
+				@include('admin.layouts.components.boxtools', ['rte' => 'bugz', 'path' => 'admin/bugz'])
 			</div>	<!-- /.box-header -->
 
 

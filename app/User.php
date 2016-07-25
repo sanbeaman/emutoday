@@ -32,8 +32,10 @@ class User extends Authenticatable
         $this->attributes['password'] = bcrypt($value);
     }
 
-
-
+		public function getFullNameAttribute(){
+			return $this->last_name . ', '. $this->first_name;
+		}
+	
 		public function mediaFiles()
 		{
 			return $this->belongsToMany('emutoday\Mediafile');

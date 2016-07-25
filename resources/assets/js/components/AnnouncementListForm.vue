@@ -1,47 +1,63 @@
 <template>
 
-	<div class="box box-default box-solid collapsed-box">
-	            <div class="box-header with-border" >
-								<div class="row">
-									<div class="col-md-1">
-										<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
-										</button>
-									</div><!-- /.col-md-1 -->
-									<div class="col-md-5">
-											<h3 class="box-title" >{{item.title}}</h3>
-									</div><!-- /.col-md-6 -->
-									<div class="col-md-3">
+	<div class="box box-default box-solid">
+      <div class="box-header with-border" >
+				<div class="row">
+						<a v-on:click="toggleBody" href="#">
+					<div class="col-md-7">
 
-									</div><!-- /.col-md-3 -->
-									<div class="col-md-3">
-										<div class="onoffswitch">
-				<input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch">
-				<label class="onoffswitch-label" for="myonoffswitch">
-						<span class="onoffswitch-inner"></span>
-						<span class="onoffswitch-switch"></span>
-				</label>
-		</div>
-									</div><!-- /.col-md-3 -->
-								</div><!-- /.row -->
+							<h4 class="box-title">{{item.title}}</h4>
 
 
+						</div><!-- /.col-md-7-->
+							</a>
+					<div class="col-md-5">
+					<form class="form-inline pull-right">
+						<!-- <div class="form-group">
+							<button v-on:click.prevent="doThis" class="btn btn-sm">BTN</button>
+						</div> -->
+						<!-- /.form-group -->
+				  <div class="form-group">
+				    <label class="sr-only" for="priority-number">Priority</label>
+						<select id="priority-{{item.id}}" v-model="item.priority" class="form-control" number>
+							<option v-for="option in options" v-bind:value="option.value">
+								{{option.text}}
+							</option>
+						</select>
+				  </div>
+				  <div class="form-group">
+						<div class="onoffswitch ">
+							<!-- <input id="smitch-{{item.id}}" v-on:click="doThis" v-model="item.approved"  type="checkbox" name="onoffswitch" class="onoffswitch-checkbox"> -->
 
-									<!-- <span data-toggle="tooltip" title="" class="badge bg-light-blue" data-original-title="3 New Messages">3</span> -->
+							<label class="onoffswitch-label" for="smitch-{{item.id}}">
+									<span class="onoffswitch-inner"></span>
+									<span class="onoffswitch-switch"></span>
+							</label>
+						</div>
+				    </div>
+					</form>
+				</div><!-- /.col-md-6 -->
+			</div><!-- /.row -->
+	  </div>  <!-- /.box-header -->
 
 
-									<!-- <div class="box-tools pull-right"> -->
+        <div v-if="showBody" class="box-body">
+						<p>{{item.announcement}}</p>
+						<div class="announcement-info">
+							Submitted On: {{item.submission_date}}</br>
+							By: {{item.author_name}}</br>
+							{{item.author_email}} {{item.author_phone}}</br>
+							Dates: {{item.start_date}} - {{item.end_date}}
 
-									<!-- </div> -->
+						</div>
 
-									<!-- <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
+      </div><!-- /.box-body -->
+			<div class="box-footer list-footer">
+				<h6>Submitted On: {{item.submission_date}}, By: {{item.author_name}}, Dates: {{item.start_date}} - {{item.end_date}}</h6>
 
-	            </div>
-	            <!-- /.box-header -->
-	            <div class="box-body">
-								<p>{{item.announcement}}</p>
-								<p>Posted {{item.start_date | momentPretty}}</p>
-	            </div> <!-- /.box-body -->
-	          </div><!-- /.box- -->
+			</div><!-- /.box-footer -->
+
+	</div><!-- /.box- -->
 </template>
 <style scoped>
 .onoffswitch {
@@ -89,16 +105,41 @@
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
     right: 0px;
 }
+
+select.form-control {
+	height:auto;
+}
+
+h6 {
+	margin-top: 0;
+	margin-bottom: 0;
+}
 </style>
 <script>
 var moment = require('moment')
 
 module.exports  = {
 				props: [
-					'item'
+					'item',
+					'pid'
 				],
 			  data: function() {
 			    return {
+						options: [
+							{ text: '0', value: 0 },
+		 					{ text: '1', value: 1 },
+		 					{ text: '2', value: 2 },
+							{ text: '3', value: 3 },
+		 					{ text: '4', value: 4 },
+		 					{ text: '5', value: 5 },
+							{ text: '6', value: 6 },
+							{ text: '7', value: 7 },
+							{ text: '8', value: 8 },
+							{ text: '9', value: 9 },
+							{ text: '10', value: 10 },
+							{ text: '99', value: 99 }
+						],
+						showBody: false,
 						currentDate: {},
 						record: {
 							user_id : '',
@@ -117,12 +158,29 @@ module.exports  = {
 				},
 			  computed: {
 
+
 			  },
 			  methods: {
+					toggleBody: function(ev) {
+						if(this.showBody == false) {
+							this.showBody = true;
+						} else {
+							this.showBody = false;
+						}
+						console.log('toggleBody' + this.showBody)
+					},
+					doThis: function(ev) {
+						this.$emit('item-change',this.item);
+						console.log('ev ' + ev + 'this.item.id= '+  this.item.priority)
+					}
 
 				},
 				watch: {
-
+					'isapproved': function(val, oldVal) {
+						if (val !=  oldVal) {
+							console.log('val change')
+						}
+					}
 				},
 				directives: {
 						// mydatedropper: require('../directives/mydatedropper.js')

@@ -69,6 +69,12 @@ Route::group(['prefix' => 'api'], function() {
 	//  Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
 	//  Route::get('announcement/{announcement}', ['as' => 'api_announcement_get', 'uses' => 'Api\AnnouncementController@edit']);
 	Route::get('announcement/listall', ['as' => 'api.announcement.listall', 'uses' => 'Api\AnnouncementController@listall']);
+
+	Route::get('announcement/unapprovedItems', ['as' => 'api.announcement.unapprovedItems', 'uses' => 'Api\AnnouncementController@unapprovedItems']);
+	Route::get('announcement/approvedItems', ['as' => 'api.announcement.approvedItems', 'uses' => 'Api\AnnouncementController@approvedItems']);
+	Route::patch('announcement/updateItem/{id}', 'Api\AnnouncementController@updateItem');
+
+
 	 Route::resource('announcement', 'Api\AnnouncementController');
 
 	 Route::get('magazine', ['as' => 'api.magazine', 'uses' => 'Api\MagazineController@index']);
@@ -217,6 +223,7 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('queue', function() {
 					return view('admin.queue');
 				});
+
 
 			Route::resource('bugz', 'Admin\BugzController');
       Route::get('twitter', 'Admin\TwitterController@index');

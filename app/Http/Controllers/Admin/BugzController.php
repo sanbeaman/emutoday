@@ -5,7 +5,6 @@ namespace emutoday\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 
 use emutoday\Http\Requests;
-use emutoday\Http\Controllers\Controller;
 use emutoday\Bugz;
 
 class BugzController extends Controller

@@ -13,8 +13,14 @@ class Announcement extends Model
   protected $dates = ['end_date', 'start_date', 'submission_date', 'approved_date'];
 
 
+
 	public function author()
 	{
 		return $this->belongsTo('emutoday\User');
 	}
+
+	// public function author_name()
+	// {
+	// 	return $this->author->last_name;
+	// }
 }

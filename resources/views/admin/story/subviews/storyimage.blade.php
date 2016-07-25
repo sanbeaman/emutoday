@@ -44,9 +44,17 @@
 							</div>
 							@if($storyImage->imgtype->type == 'front')
 							<div class="form-group">
-								{!! Form::label('teaser', 'Teaser') !!}
+									{!! Form::label('caption', 'Headline/Caption') !!}
+									{!! Form::text('caption', null, ['class' => 'form-control input-sm']) !!}
+									<span class="help-block">Large text headline or title that is next to image when on the 'Front' page</span>
+
+								{!! Form::label('teaser', 'Subtitle/Teaser') !!}
 								{!! Form::textarea('teaser', null, ['class' => 'form-control input-sm teaser', 'rows'=>'3']) !!}
-								<span class="help-block">{{$storyImage->imgtype->infotxt}}</span>
+								<span class="help-block">Smaller text that appears under the headline or title, when on the 'Front' page</span>
+
+								{!! Form::label('moretext', 'More Text Link') !!}
+								{!! Form::text('moretext', null, ['class' => 'form-control input-sm']) !!}
+								<span class="help-block">Text used to link to full story</span>
 							</div>
 						@endif
 						</div><!-- /.box-body -->

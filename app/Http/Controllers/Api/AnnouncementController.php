@@ -66,6 +66,41 @@ class AnnouncementController extends ApiController
 				//     'data' => $this->storyTransformer->transformCollection($storys->all())
 				// ]);
 		}
+
+		public function approvedItems()
+		{
+
+				$fractal = new Manager();
+
+					 $announcements = Announcement::where('is_approved', 1)->get();
+
+
+
+
+				$resource = new Fractal\Resource\Collection($announcements->all(), new FractalAnnouncementTransformerModel);
+					// Turn all of that into a JSON string
+					return $fractal->createData($resource)->toArray();
+				// return $this->respond([
+				//     'data' => $this->storyTransformer->transformCollection($storys->all())
+				// ]);
+		}
+		public function unapprovedItems()
+		{
+
+				$fractal = new Manager();
+
+				$announcements = Announcement::where('is_approved', 0)->get();
+
+
+
+
+				$resource = new Fractal\Resource\Collection($announcements->all(), new FractalAnnouncementTransformerModel);
+					// Turn all of that into a JSON string
+					return $fractal->createData($resource)->toArray();
+				// return $this->respond([
+				//     'data' => $this->storyTransformer->transformCollection($storys->all())
+				// ]);
+		}
 		// public function index()
 		// {
 		//
@@ -238,8 +273,28 @@ class AnnouncementController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
-    }
+			// $announcement = Announcement::findOrFail($id);
+			// dd($request->all());
+			// $announcement->is_approved     		= $request->get('approved');
+			// $announcement->priority       		= $request->get('priority');
+			// $announcement->approved_date 			= \Carbon\Carbon::now();
+			// if($announcement->save()) {
+			// 		return $this->setStatusCode(201)
+			// 					->respondCreated('Announcement successfully Updated');
+			// 				}
+	  }
+
+		public function updateItem($id, Request $request)
+		{
+			$announcement = Announcement::findOrFail($id);
+			$announcement->is_approved = $request->get('approved');
+			$announcement->priority = $request->get('priority');
+			$announcement->approved_date 			= \Carbon\Carbon::now();
+			if($announcement->save()) {
+					return $this->setStatusCode(201)
+								->respondCreated('Announcement successfully patched');
+							}
+		}
 
     /**
      * Remove the specified resource from storage.
