@@ -65,7 +65,10 @@ Route::group(['prefix' => 'api'], function() {
 		Route::resource('minicalendars', 'Api\MiniCalendarsController', ['only'=>['index', 'show']] );
 		// Route::get('buildings', 'Api\BuildingController', ['only'=>['index']]);
 
-   Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
+	Route::get('magazine/articles', ['as'=> 'api.magazine.articles', 'uses'=> 'Api\StoryController@articles']);
+
+
+	 Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
 	 Route::post('story/delete', ['as' => 'api.story.delete', 'uses' => 'Api\StoryController@delete']);
 
    Route::resource('story', 'Api\StoryController');
@@ -154,6 +157,11 @@ Route::group(['middleware' => ['web']], function() {
 			Route::get('delete', function() {
 				return back();
 			});
+
+			Route::get('magazine/articles', function() {
+				return view('admin.magazine.articles');
+			});
+
       Route::get('magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
 			Route::post('magazine/{magazine}/addCoverImage', ['as' => 'store_magazine_cover', 'uses' => 'Admin\MagazineController@addCoverImage']);
 			Route::put('magazine/{mediafile}/updateCoverImage/', ['as' => 'update_magazine_cover', 'uses' => 'Admin\MagazineController@updateCoverImage']);

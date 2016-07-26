@@ -44,12 +44,14 @@
 	</ul>
 </li>
 @endcan
+
 @can('admin', $currentUser)
 <li class="treeview {{ set_active('admin/magazine*') }}">
 	<a href="#"><i class="fa fa-book"></i> <span>Magazine</span> <i class="fa fa-angle-left pull-right"></i></a>
 	<ul class="treeview-menu">
 		<li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine"><i class="fa fa-list"></i> <span>List</span></a></li>
 		<li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
+		<li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/articles"><i class="fa fa-file-text-o"></i> <span>Articles</span></a></li>
 	</ul>
 </li>
 @endcan

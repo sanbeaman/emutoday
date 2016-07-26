@@ -45,7 +45,6 @@
 					<!-- /.box-body -->
 				</div>
 				<!-- /.box -->
-    <a href="{{ route('admin.magazine.create') }}" class="button">Create New Magazine</a>
 
 
 @endsection

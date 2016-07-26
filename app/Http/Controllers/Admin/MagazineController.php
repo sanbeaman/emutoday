@@ -45,7 +45,7 @@ class MagazineController extends Controller
 			]);
       return view('admin.magazine.index', compact('magazines'));
     }
-
+	
     /**
      * Show the form for creating a new resource.
      *

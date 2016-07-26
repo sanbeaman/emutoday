@@ -51,6 +51,18 @@ class StoryController extends ApiController
         //     'data' => $this->storyTransformer->transformCollection($storys->all())
         // ]);
     }
+
+		public function articles()
+		{
+			$fractal = new Manager();
+
+			$storys = Story::where('story_type','storymagazine')->get();
+		
+
+			$resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformer);
+				// Turn all of that into a JSON string
+				return $fractal->createData($resource)->toArray();
+		}
 		// public function index()
 		// {
 		//
