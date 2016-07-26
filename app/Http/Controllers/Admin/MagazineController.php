@@ -167,6 +167,8 @@ class MagazineController extends Controller
 		}
 
 
+
+
     /**
      * Display the specified resource.
      *
@@ -177,14 +179,15 @@ class MagazineController extends Controller
     {
       $magazine = $this->magazine->findOrFail($id);
       $storyImages = $this->magazine->storyImages();
+			// dd($storyImages);
       $barImgs = collect();
 
 
       foreach ($magazine->storys as $story) {
           if ($story->pivot->story_position === 0) {
-              $heroImg = $story->storyImages()->where('image_type', 'imagehero')->first();
+              $heroImg = $story->storyImages()->where('image_type', 'front')->first();
           } else {
-              $barImgs->push( $story->storyImages()->where('image_type', 'imagesmall')->first() );
+              $barImgs->push( $story->storyImages()->where('image_type', 'small')->first() );
           }
 
       }
@@ -193,8 +196,10 @@ class MagazineController extends Controller
       ]);
       // $magazine = $this->magazines->findOrFail($id);
       // $storyImages = $this->magazines->storyImages();
-      return view('admin.magazine.preview', compact('magazine', 'storyImages', 'heroImg', 'barImgs'));
-    }
+      // return view('admin.magazine.preview', compact('magazine', 'storyImages', 'heroImg', 'barImgs'));
+			return view('public.magazine.index', compact('magazine', 'storyImages', 'heroImg', 'barImgs'));
+
+			}
 
     /**
      * Show the form for editing the specified resource.
@@ -208,7 +213,7 @@ class MagazineController extends Controller
 			$storys = Story::where('story_type', 'storymagazine')->with(['images' => function($query){
 															$query->where('group','=','article');
 														}])->get();
-													
+
 
 
 			$storyimgs = $this->storyImage->where([

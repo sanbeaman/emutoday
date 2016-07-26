@@ -32,6 +32,7 @@
 										<th class="text-center">Published</th>
 										<th class="text-center">Archived</th>
 										<th class="text-left">Start Date</th>
+										<th class="text-left">View</th>
 										<th class="text-left">Edit</th>
 										<th class="text-left">Delete</th>
 								</tr>
@@ -80,6 +81,9 @@
 					{"data": "archived"},
 					{"data": "start_date"},
 					{"date": null,
+						"defaultContent": "<a href='#'><i class='fa fa-eye'></i></a>"
+					},
+					{"date": null,
 						"defaultContent": "<a href='#'><i class='fa fa-pencil'></i></a>"
 					},
 					{"date": null,
@@ -92,7 +96,16 @@
 			// 	window.location.href =
 			// }
 			//
+			$('#main-magazine-table tbody').on('click', '.fa-eye', function () {
 
+				var data = table.row( $(this).parents('tr') ).data();
+			//	var storyid = data["id"];
+				window.location.href = '/admin/magazine/'+ data["id"];
+
+				//openroute('edit',data["id"]);
+				// var data = table.row( $(this).parents('tr') ).data();
+				// 	alert( data["id"]);
+			});
 			$('#main-magazine-table tbody').on('click', '.fa-pencil', function () {
 
 				var data = table.row( $(this).parents('tr') ).data();

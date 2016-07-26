@@ -285,16 +285,16 @@
 					});
 
 					//End Date picker
-					$('#end-date').datetimepicker({
-						format: 'YYYY-MM-DD HH:mm:ss',
-						useCurrent: false //Important! See Issue #1075
-					});
-					$("#start-date").on("dp.change", function (e) {
-								$('#end-date').data("DateTimePicker").minDate(e.date);
-						});
-						$("#end-date").on("dp.change", function (e) {
-								$('#start-date').data("DateTimePicker").maxDate(e.date);
-						});
+					// $('#end-date').datetimepicker({
+					// 	format: 'YYYY-MM-DD HH:mm:ss',
+					// 	useCurrent: false //Important! See Issue #1075
+					// });
+					// $("#start-date").on("dp.change", function (e) {
+					// 			$('#end-date').data("DateTimePicker").minDate(e.date);
+					// 	});
+					// 	$("#end-date").on("dp.change", function (e) {
+					// 			$('#start-date').data("DateTimePicker").maxDate(e.date);
+					// 	});
 
 
 

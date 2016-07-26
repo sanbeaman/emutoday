@@ -15,6 +15,8 @@ class Magazine extends Model
           ->withPivot('story_position');
   }
 
+
+
   public function storyImages()
   {
       return $this->hasManyThrough('emutoday\StoryImage', 'emutoday\Story');
