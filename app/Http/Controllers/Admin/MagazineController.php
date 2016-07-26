@@ -24,10 +24,11 @@ class MagazineController extends Controller
 
   protected $magazines;
 
-  public function __construct(Magazine $magazine, Story $story, Mediafile $mediafile)
+  public function __construct(Magazine $magazine, Story $story,StoryImage $storyImage, Mediafile $mediafile)
   {
       $this->magazine = $magazine;
       $this->story = $story;
+			$this->storyImage = $storyImage;
       $this->mediafile = $mediafile;
   }
 
@@ -204,18 +205,34 @@ class MagazineController extends Controller
     public function edit($id)
     {
       $magazine = $this->magazine->findOrFail($id);
-      $storys =  $this->story->where('story_type', 'storymagazine')->orderBy('updated_at', 'desc')->get();
-      $magazineStorys = $magazine->storys()->get();
+			$storys = Story::where('story_type', 'storymagazine')->with(['images' => function($query){
+															$query->where('group','=','article');
+														}])->get();
+													
+
+
+			$storyimgs = $this->storyImage->where([
+																			['group','article'],
+																			['image_type', 'small'],
+																			])
+																			->orderBy('updated_at', 'desc')->get();
+      // $storys =  $this->story->where('story_type', 'storymagazine')->orderBy('updated_at', 'desc')->get();
 			$mediafile = $this->mediafile;
 			$mediafiles = $magazine->mediafiles;
-      JavaScript::put([
+
+
+			$magazineStorys = $magazine->storys()->get();
+
+			JavaScript::put([
           'jsis' => 'foobar',
-          'magazinestorys' => $magazineStorys->toArray()
+          'magazinestorys' => $magazineStorys->toArray(),
+					'storyimgs' => $storyimgs->toArray(),
+					'storys' => $storys->toArray()
       ]);
 
 
 
-      return view('admin.magazine.edit', compact('magazine', 'storys', 'mediafiles','mediafile'));
+      return view('admin.magazine.edit', compact('magazine', 'storys','storyimgs', 'mediafiles','mediafile'));
     }
 
     /**

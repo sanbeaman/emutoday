@@ -32,7 +32,7 @@ class StoryImage extends Model
 
     public function story()
     {
-        return $this->belongsTo(Story::class);
+        return $this->belongsTo('emutoday\Story');
     }
 
 		public function imgtype()

@@ -148,7 +148,7 @@
 
 @section('footer-app')
 	@parent
-	  <script src="{{ '/js/my-redips.js' }}"></script>
+	  <script src="/js/pagebuild-redips.js"></script>
 @endsection
 
 @section('footer-script')

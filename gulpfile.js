@@ -206,14 +206,15 @@ require('laravel-elixir-vueify');
 			'resources/assets/js/moment.js',
 		], 'public/js/vendor-scripts.js');
 
-
+		mix.copy('resources/assets/js/pagebuild-redips.js', 'public/js/pagebuild-redips.js');
+		mix.copy('resources/assets/js/magbuild-redips.js', 'public/js/magbuild-redips.js');
 		// mix.browserify('vue-admin.js', 'public/js/vue-admin.js');
 		//  mix.browserify('admintools.js', 'public/js/admintools.js');
 		//  mix.browserify('vue-drag.js', 'public/js/vue-drag.js');
 		mix.browserify('vue-ajax-form.js', 'public/js/vue-ajax-form.js');
 		mix.browserify('mg-event-form-vue.js', 'public/js/mg-event-form-vue.js');
-			mix.browserify('vue-announcement-app.js', 'public/js/vue-announcement-app.js');
-			mix.browserify('vue-bugz-app.js', 'public/js/vue-bugz-app.js');
+		mix.browserify('vue-announcement-app.js', 'public/js/vue-announcement-app.js');
+		mix.browserify('vue-bugz-app.js', 'public/js/vue-bugz-app.js');
 
 
 	});

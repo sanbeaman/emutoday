@@ -243,7 +243,7 @@
 
 		@section('footer-app')
 			@parent
-			<script src="{{'/js/magazine-redips.js'}}"></script>
+			<script src="/js/magbuild-redips.js"></script>
 
 		@endsection
 

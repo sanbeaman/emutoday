@@ -79,7 +79,10 @@ class Story extends Model
     {
         return $this->hasMany(StoryImage::class);
     }
-
+		public function images()
+		{
+				return $this->hasMany('emutoday\StoryImage');
+		}
     /**
      * [tags description]
      * @return [type] [description]

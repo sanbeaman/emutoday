@@ -76,17 +76,22 @@ class PageController extends Controller
         // $storysWithHero = $this->storys->whereHas('storyImages', function ($query) {
         //     $query->where('image_type', 'imagehero');
         // })->get();
-        $storyimgs = $this->storyImage->where('image_type','front')
-																						->orWhere('image_type', 'small')
-																						->orderBy('updated_at', 'desc')->get();
-        $storys =  $this->story->where('story_type', '!=', 'storybasic')->orderBy('updated_at', 'desc')->get();
-        $connectedStorys = $page->storys()->get();
+        // $storyimgs = $this->storyImage->where('image_type','front')
+				// 																		->orWhere('image_type', 'small')
+				// 																		->orderBy('updated_at', 'desc')->get();
+        // $storys =  $this->story->where('story_type', '!=', 'storybasic')->orderBy('updated_at', 'desc')->get();
+				$storys = Story::where([
+								['story_type','!=' ,'storybasic'],
+								['is_approved',1],
+					])->with('images')->get();
+
+				$connectedStorys = $page->storys()->get();
 
         JavaScript::put([
             'jsis' => 'foobar',
             'storysonpage' => $connectedStorys->toArray()
         ]);
-				return view('admin.page.edit', compact('page', 'storys', 'storyimgs'));
+				return view('admin.page.edit', compact('page', 'storys'));
 
         // return view('admin.page.edit', compact('page', 'storys', 'storyImages', 'storysWithHero','storyimgs'));
     }
