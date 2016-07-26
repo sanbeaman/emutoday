@@ -5,12 +5,9 @@
 				<div class="row">
 						<a v-on:click="toggleBody" href="#">
 					<div class="col-md-7">
-
-							<h4 class="box-title">{{item.title}}</h4>
-
-
-						</div><!-- /.col-md-7-->
-							</a>
+						<h4 class="box-title">{{item.title}}</h4>
+					</div><!-- /.col-md-7-->
+				</a>
 					<div class="col-md-5">
 					<form class="form-inline pull-right">
 						<!-- <div class="form-group">
@@ -27,7 +24,7 @@
 				  </div>
 				  <div class="form-group">
 						<div class="onoffswitch ">
-							<!-- <input id="smitch-{{item.id}}" v-on:click="doThis" v-model="item.approved"  type="checkbox" name="onoffswitch" class="onoffswitch-checkbox"> -->
+							<input id="smitch-{{item.id}}" v-on:click="doThis" v-model="item.approved"  type="checkbox" name="onoffswitch" class="onoffswitch-checkbox">
 
 							<label class="onoffswitch-label" for="smitch-{{item.id}}">
 									<span class="onoffswitch-inner"></span>
@@ -107,12 +104,23 @@
 }
 
 select.form-control {
-	height:auto;
+	height:22px;
+	border: 1px solid #999999;
 }
+
 
 h6 {
 	margin-top: 0;
 	margin-bottom: 0;
+}
+.form-group {
+	/*border: 1px solid red;*/
+}
+.form-group label{
+	margin-bottom: 0;
+}
+.box.box-solid.box-default {
+	border: 1px solid #999999;
 }
 </style>
 <script>

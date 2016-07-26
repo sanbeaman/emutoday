@@ -31,59 +31,50 @@
 
 				<tr>
 					<th class="text-center">id</th>
-					<th class="text-center">userID</th>
+					<th class="text-center">uid</th>
 					<th class="text-left">type</th>
-					<th class="text-left">screen</th>
-
+					<th class="text-center">lvl</th>
 					<th class="text-left">notes</th>
-						<th class="text-center">priority</th>
-							<th class="text-center">response</th>
-					<th class="text-center">completed</th>
-					<th class="text-center">confirmed</th>
-						<th class="text-center">created on</th>
-							<th class="text-center">updated on</th>
+					<th class="text-left">response</th>
+					<th class="text-center">done</th>
+					<th class="text-center">chkd</th>
 					<th class="text-center">Edit</th>
-					<th class="text-center">Delete</th>
+					<th class="text-center">x</th>
 				</tr>
-				<tr>
 
 					@foreach($bugzs as $item)
-							<tr>
-								<td>
-										{{ $item->id }}
-								</td>
-									<td>{{ $item->user_id }}</td>
-									<td>{{ $item->type }}</td>
-									<td>{{ $item->screen }}</td>
-									<td>{{ $item->notes }}</td>
-									<td>{{ $item->priority }}</td>
-										<td>{{ $item->note_reply }}</td>
-									<td><i class='fa {{$item->complete == 1 ? 'fa-check-square-o' :'fa-square-o'}}'></i></td>
-									<td><i class='fa {{$item->confirmed == 1 ? 'fa-check-square-o' :'fa-square-o'}}'></i></td>
-									<td>{{ $item->created_at }}</td>
-									<td>{{ $item->updated_at }}</td>
-									<td>
-											<a href="{{ route('admin.bugz.edit', $item->id) }}">
-												<i class="fa fa-pencil"></i>
-
-											</a>
-									</td>
-									<td>
-											<i class="fa fa-trash"></i>
+						<tr>
+					<td class="text-center">{{ $item->id }}</td>
+					<th class="text-center">{{ $item->user_id }}</td>
+					<td class="text-left">{{ $item->type }}</td>
+					<td class="text-center">{{ $item->priority }}</td>
+					<td class="text-left">{{ $item->notes }}</td>
+					<td class="text-left">{{ $item->note_reply }}</td>
+					<td class="text-center"><i class='fa {{$item->complete == 1 ? 'fa-check-square-o' :'fa-square-o'}}'></i></td>
+					<td class="text-center"><i class='fa {{$item->confirmed == 1 ? 'fa-check-square-o' :'fa-square-o'}}'></i></td>
+					<td class="text-center">
+						<a href="{{ route('admin.bugz.edit', $item->id) }}">
+						<i class="fa fa-pencil"></i>
+						</a>
+					</td>
+					<td class="text-center">
+						<i class="fa fa-trash"></i>
 											{{-- <a href="{{ route('admin.role.confirm', $permission->id) }}">
 																<i class="fa fa-trash"></i>
 											</a> --}}
-									</td>
-							</tr>
+					</td>
+	</tr>
 					@endforeach
-				@endif
-				</tr>
 
-			</table>
-		</div>
-		<!-- /.box-body -->
-	</div>
-	<!-- /.box -->
+				</table>
+			</div>
+			<!-- /.box-body -->
+
+				@endif
+			</div>
+			<!-- /.box -->
+
+
 
 
 

@@ -1,6 +1,7 @@
 <template>
     <div class="row">
 			<div class="col-md-6">
+			<h3>Unapproved Announcements</h3>
 				<div id="items-unapproved">
 					<announcement-list-form
 					pid="items-unapproved"
@@ -14,6 +15,7 @@
 				</div>
 			</div><!-- /.col-md-6 -->
 			<div class="col-md-6">
+					<h3>Approved Announcements</h3>
 				<div id="items-approved">
 					<announcement-list-form
 					pid="items-approved"
@@ -27,6 +29,15 @@
 			</div><!-- /.col-md-6 -->
 </div><!-- ./row -->
 </template>
+<style scoped>
+#items-unapproved .box {
+	margin-bottom: 4px;
+}
+#items-approved .box {
+	margin-bottom: 4px;
+
+}
+</style>
 <script>
     import AnnouncementListForm from './AnnouncementListForm.vue'
     // import EventViewContent from './EventViewContent.vue'

@@ -39,6 +39,10 @@ Route::group(['prefix' => 'api'], function() {
 	});
 
 
+	Route::get('bugz/listall', ['as' => 'api.bugz.listall', 'uses' => 'Api\BugzController@listall']);
+
+	Route::patch('bugz/updateItem/{id}', 'Api\BugzController@updateItem');
+
 	Route::resource('bugz', 'Api\BugzController');
 
 	Route::get('zevent-catgeories', function() {
@@ -224,6 +228,7 @@ Route::group(['middleware' => ['web']], function() {
 					return view('admin.queue');
 				});
 
+			Route::get('bugz/app', ['as' => 'admin.bugz.app', 'uses' => 'Admin\BugzController@appload']);
 
 			Route::resource('bugz', 'Admin\BugzController');
       Route::get('twitter', 'Admin\TwitterController@index');

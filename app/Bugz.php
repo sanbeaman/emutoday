@@ -14,6 +14,6 @@ class Bugz extends Model
 
 	public function user()
 	{
-		return $this->belongsTo('emutoday\Bugz');
+		return $this->belongsTo('emutoday\User');
 	}
 }

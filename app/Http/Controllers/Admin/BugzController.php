@@ -29,6 +29,19 @@ class BugzController extends Controller
 
     }
 
+		public function appload() {
+
+			$user = auth()->user();
+			$bugzs = $this->bugz->get();
+
+				\JavaScript::put([
+						'records' => $bugzs
+				]);
+
+
+				return view('admin.bugz.app', compact('bugzs'));
+		}
+
     /**
      * Show the form for creating a new resource.
      *
