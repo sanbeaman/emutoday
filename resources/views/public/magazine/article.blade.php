@@ -16,8 +16,14 @@
                 </div>
                 <div class="large-4 medium-4 small-12 columns noleftpadding">
                   <div class="addthis magazine-top"><a href=""><img src="/assets/imgs/icons/fake-addthis.png" alt="addthis "></a></div>
-                </div>
+								</div>
               </div>
+							<div class="row">
+								<div class="large-8 medium-8 small-12 columns">
+									<h3>{{ $story->title }}</h3>
+			            <h5>{{ $story->subtitle }}</h5>
+								</div>
+							</div><!-- /.row -->
               <div id="big-feature-image">
                   <img src="{{$mainImage->present()->mainImageURL}}" alt="feature-image">
               </div>
