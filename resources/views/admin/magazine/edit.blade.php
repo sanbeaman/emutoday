@@ -49,6 +49,8 @@
 				<div class="box box-primary">
 					<div class="box-header with-border">
 						<h3 class="box-title">Edit Magazine Content</h3>
+						@include('admin.layouts.components.boxtools', ['rte' => 'magazine', 'path' => 'admin/magazine/', 'cuser'=>$currentUser, 'id'=>$magazine->id])
+
 					</div>
 					<div class="box-body">
 						<div class="row">
@@ -170,7 +172,7 @@
 												</div>
 												<div class="form-group">
 													{!! Form::label('teaser') !!}
-													{!! Form::text('teaser', null, ['class' => 'form-control']) !!}
+													{!! Form::textarea('teaser', null, ['class' => 'form-control', 'class'=>'ckeditor']) !!}
 												</div>
 												<div class="form-group">
 													{!! Form::label('link') !!}
@@ -305,6 +307,16 @@
 					$('#start-date').datetimepicker({
 						format: 'YYYY-MM-DD HH:mm:ss'
 					});
+
+					CKEDITOR.replaceAll('.ckeditor');
+				// 	CKEDITOR.replace( 'story-content', {
+				// 		// Define changes to default configuration here. For example:
+			  // filebrowserBrowseUrl : '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
+			  //   filebrowserImageBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=images',
+			  //   filebrowserUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=files',
+			  //   filebrowserImageUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=images'
+				//
+				// 				} );
 
 					//End Date picker
 					// $('#end-date').datetimepicker({

@@ -50,7 +50,8 @@ class MagazineController extends Controller
         // $storyImages = $this->magazines->storyImages();
         $storyImages = $this->magazine->storyImages();
         $barImgs = collect();
-				$magazineCover = $magazine->mediafiles()->first();
+				$magazineCover = $magazine->mediafiles()->where('type','cover')->first();
+				$magazineExtra = $magazine->mediafiles()->where('type','extra')->first();
 
 
         if ($currentIssue){
@@ -63,7 +64,7 @@ class MagazineController extends Controller
                 }
 
             }
-          return view('public.magazine.index', compact('magazine', 'storyImages', 'heroImg', 'barImgs', 'magazineCover'));
+          return view('public.magazine.index', compact('magazine', 'storyImages', 'heroImg', 'barImgs', 'magazineCover','magazineExtra'));
         } else {
           foreach ($magazine->storys as $story) {
               if ($story->pivot->story_position === 0) {
@@ -75,7 +76,7 @@ class MagazineController extends Controller
           }
 
 
-          return view('public.magazine.issue', compact('magazine', 'storyImages', 'barImgs','magazineCover'));
+          return view('public.magazine.issue', compact('magazine', 'storyImages', 'barImgs','magazineCover','magazineExtra'));
 
         }
         //

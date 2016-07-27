@@ -43,8 +43,8 @@
               </div>
               <div class="large-6 medium-6 small-12 columns photo-feature-text ">
                 <h5>{{$magazineExtra->headline}}</h5>
-                {{$magazineExtra->teaser}}
-                <p class="author">{{$magazineExtra->note}}</p>
+                {!! $magazineExtra->teaser !!}
+                <p class="author">{{$magazineExtra->caption}}</p>
               </div>
 
             </div>
@@ -59,7 +59,7 @@
               </div>
               <div class="large-6 medium-8 small-12 columns magazine-details">
 								<h4>{{$magazineCover->headline}}</h4>
-								<p>{{$magazineCover->teaser}}</p>
+								{!! $magazineCover->teaser !!}
 								<p><a href="{{$magazineCover->link}}">{{$magazineCover->link_text}}</a></p>
                 <p class="button-container"><a class="button expanded magazine-button">Subscribe</a></p>
                 <p class="button-container"><a class="button expanded magazine-button">Submit a story idea</a></p>
