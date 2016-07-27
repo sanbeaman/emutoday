@@ -164,7 +164,9 @@ Route::group(['middleware' => ['web']], function() {
 
       Route::get('magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
 			Route::post('magazine/{magazine}/addCoverImage', ['as' => 'store_magazine_cover', 'uses' => 'Admin\MagazineController@addCoverImage']);
+
 			Route::put('magazine/{mediafile}/updateCoverImage/', ['as' => 'update_magazine_cover', 'uses' => 'Admin\MagazineController@updateCoverImage']);
+
 			Route::post('magazine/delete', ['as' => 'admin_magazine_delete', 'uses' => 'Admin\MagazineController@delete'] );
 
       Route::resource('magazine', 'Admin\MagazineController');
@@ -229,6 +231,8 @@ Route::group(['middleware' => ['web']], function() {
 			Route::resource('role', 'Admin\RoleController');
 
 			Route::resource('permission', 'Admin\PermissionController');
+
+			Route::resource('mediatype', 'Admin\MediatypeController');
 
 			Route::resource('imagetype', 'Admin\ImagetypeController');
 

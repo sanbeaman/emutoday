@@ -61,7 +61,8 @@ return array(
 				'smallthumb' => 'emutoday\Emutoday\Filters\SmallThumb',
 				'ddsmall' => 'emutoday\Emutoday\Filters\DDSmall',
 				'ddfront' => 'emutoday\Emutoday\Filters\DDFront',
-				'avatar160' => 'emutoday\Emutoday\Filters\Avatar160'
+				'avatar160' => 'emutoday\Emutoday\Filters\Avatar160',
+				'magazinecover' => 'emutoday\Emutoday\Filters\MagazineCover'
 
     ),
 

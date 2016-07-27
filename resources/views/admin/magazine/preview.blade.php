@@ -32,7 +32,8 @@
         <div class="row collapse">
           <div class="large-7 large-push-5 medium-12 small-12 columns">
             <div class="row collapse photo-feature-section">
-              <div class="large-6 medium-6 small-12 columns"><img class="topic-image contributor" src="../images/magazine-images/back-page-image.jpg"  alt="back page image"/>
+              <div class="large-6 medium-6 small-12 columns">
+								<img class="topic-image contributor" src="../images/magazine-images/back-page-image.jpg"  alt="back page image"/>
               </div>
               <div class="large-6 medium-6 small-12 columns photo-feature-text ">
                 <h5>“Grand But Questionable Haven” </h5>
@@ -51,9 +52,10 @@
               <div class="large-6 medium-4 small-12 columns cover-box"><img class="topic-image magazine-cover" src="../images/magazine-images/covers/magazine-cover-winter2016.jpg"  alt="magazine image"/>
               </div>
               <div class="large-6 medium-8 small-12 columns magazine-details">
-                <h4>Winter 2016 Issue</h4>
-                <p>Axim quasperovit rem samet hilistibus eiusapiendis vel magnihilique evel ipicat.  Mus mod undenih icidem explabo rporem quaest videstor rem </p>
-                <p><a href="">Read the Digital Issue</a></p>
+                <h4>{{$magazineCover->headline}}</h4>
+                <p>{{$magazineCover->teaser}}</p>
+								<p><a href="{{$magazineCover->link}}">{{$magazineCover->link_text}}</a></p>
+                {{-- <p><a href="">Read the Digital Issue</a></p> --}}
                 <p class="button-container"><a class="button expand magazine-button">Subscribe</a></p>
                 <p class="button-container"><a class="button expand magazine-button">Submit a story idea</a></p>
               </div>

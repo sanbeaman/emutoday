@@ -134,29 +134,51 @@
 
 			<div class="col-sm-6">
 				@if(count($mediafiles) > 0 )
+
+
 					@foreach ($mediafiles as $mediafile)
 								<div class="box box-primary">
 									{{-- @if(count($magazine->mediafiles) > 0)
 										<h4>{{$magazine->mediafiles()->first()}}</h4>
 										@else --}}
 									<div class="box-header with-border">
-										<h3 class="box-title">Cover Image</h3>
+										<h3 class="box-title">{{$mediafile->type}} Image</h3>
 									</div><!-- /.box-header -->
 									<div class="box-body">
+
 										{!! Form::model($mediafile, [
 											'method' => 'put',
-											'route' => ['update_magazine_cover', $magazine->id]
+											'route' => ['update_magazine_cover', $mediafile->id],
+											'files' => true
 											]) !!}
 											<div class="form-group">
+												@if($mediafile->filename)
 												<img src="/imagecache/betterthumb/{{$mediafile->media_name}}" alt="{{$mediafile->name}}">
+											@endif
 											</div><!-- /.form-group -->
 
 												<div class="form-group">
 													{!! Form::file('photo', null, array('required','id' => 'photo', 'class'=>'form-control input-sm')) !!}
 												</div>
 												<div class="form-group">
+													{!! Form::label('headline') !!}
+													{!! Form::text('headline', null, ['class' => 'form-control']) !!}
+												</div>
+												<div class="form-group">
 													{!! Form::label('caption') !!}
 													{!! Form::text('caption', null, ['class' => 'form-control']) !!}
+												</div>
+												<div class="form-group">
+													{!! Form::label('teaser') !!}
+													{!! Form::text('teaser', null, ['class' => 'form-control']) !!}
+												</div>
+												<div class="form-group">
+													{!! Form::label('link') !!}
+													{!! Form::text('link', null, ['class' => 'form-control']) !!}
+												</div>
+												<div class="form-group">
+													{!! Form::label('link_text') !!}
+													{!! Form::text('link_text', null, ['class' => 'form-control']) !!}
 												</div>
 												<div class="form-group">
 													{!! Form::label('note') !!}
@@ -171,7 +193,7 @@
 									</div> <!-- /.box -->
 								@endforeach
 							@else
-								<div class="box box-info">
+								{{-- <div class="box box-info">
 									<div class="box-header with-border">
 										<h3 class="box-title">Add Cover Image</h3>
 									</div><!-- /.box-header -->
@@ -198,7 +220,7 @@
 
 					</div> <!-- /.box-body -->
 
-				</div> <!-- /.box -->
+				</div> <!-- /.box --> --}}
 			@endif
 
 			{{-- @each('admin.magazine.subviews.coverimage',$mediafiles, 'mediafile', 'admin.magazine.subviews.addcoverimage') --}}

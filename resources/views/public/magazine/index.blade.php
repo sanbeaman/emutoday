@@ -39,13 +39,12 @@
         <div class="row">
           <div class="large-7 large-push-5 medium-12 small-12 columns">
             <div class="row photo-feature-section">
-              <div class="large-6 medium-6 small-12 columns"><img class="topic-image contributor" src="/assets/imgs/magazine/back-page-image.jpg"  alt="back page image"/>
+              <div class="large-6 medium-6 small-12 columns"><img class="topic-image contributor" src="/imagecache/original/{{$magazineExtra->media_name}}"  alt="back page image"/>
               </div>
               <div class="large-6 medium-6 small-12 columns photo-feature-text ">
-                <h5>“Grand But Questionable Haven” </h5>
-                <p>This photo, to me, is a perfect representation of the beauty and the harshness of winter. I love the isolation of it and the capacity it has for explaining the conflicting emotions I felt that day.</p>
-                <p>Images I saw of Grand Haven in the winter from various Michigan photographers inspired me so much that I drove two and a half hours just to photograph the same location. This was the picture I set out to take in the first place and, somewhat uncharacteristically, it turned out almost exactly how I wanted or expected.  </p>
-                <p class="author">Photograph by Dana Kilroy, undergraduate student in Studio Art</p>
+                <h5>{{$magazineExtra->headline}}</h5>
+                {{$magazineExtra->teaser}}
+                <p class="author">{{$magazineExtra->note}}</p>
               </div>
 
             </div>
@@ -56,12 +55,12 @@
           <div class="large-5 large-pull-7 medium-12 small-12 columns">
             <div class="row">
               <div class="large-6 medium-4 show-for-medium columns cover-box">
-								<img class="topic-image magazine-cover" src="/assets/imgs/magazine/magazine-cover-winter2016.jpg"  alt="magazine image"/>
+								<img class="topic-image magazine-cover" src="/imagecache/magazinecover/{{$magazineCover->media_name}}"  alt="magazine image"/>
               </div>
               <div class="large-6 medium-8 small-12 columns magazine-details">
-                <h4>Winter 2016 Issue</h4>
-                <p>Axim quasperovit rem samet hilistibus eiusapiendis vel magnihilique evel ipicat.  Mus mod undenih icidem explabo rporem quaest videstor rem </p>
-                <p><a href="">Read the Digital Issue</a></p>
+								<h4>{{$magazineCover->headline}}</h4>
+								<p>{{$magazineCover->teaser}}</p>
+								<p><a href="{{$magazineCover->link}}">{{$magazineCover->link_text}}</a></p>
                 <p class="button-container"><a class="button expanded magazine-button">Subscribe</a></p>
                 <p class="button-container"><a class="button expanded magazine-button">Submit a story idea</a></p>
               </div>
