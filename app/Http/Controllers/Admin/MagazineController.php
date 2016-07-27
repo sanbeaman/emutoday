@@ -45,7 +45,7 @@ class MagazineController extends Controller
 			]);
       return view('admin.magazine.index', compact('magazines'));
     }
-	
+
     /**
      * Show the form for creating a new resource.
      *
@@ -155,8 +155,17 @@ class MagazineController extends Controller
 			 ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
 
 		// 	}
+			$mediafile->caption = $request->input('headline');
 			$mediafile->caption = $request->input('caption');
+			$mediafile->teaser = $request->input('teaser');
+			$mediafile->link = $request->input('link');
+			$mediafile->link_text = $request->input('link_text');
 			$mediafile->note = $request->input('note');
+
+			$mediafile->filename = $imgFileName;
+			$mediafile->type = 'cover';
+			$mediafile->group = 'magazine';
+
 			$mediafile->save();
 			$magazine->mediafiles()->save($mediafile);
 			flash()->success('Cover Image has been added');
