@@ -25,8 +25,8 @@ class StoryController extends Controller
     public function index($id = null)
     {
         if ($id == null) {
-          $storys = $this->storys->where('story_type', 'storypromoted')
-                                  ->orWhere('story_type', 'storybasic')
+          $storys = $this->storys->where('story_type', 'story')
+                                  ->orWhere('story_type', 'news')
                                   ->orderBy('start_date', 'desc')
                                   ->paginate(8);
                                   // dd($storys->count());
@@ -71,7 +71,7 @@ class StoryController extends Controller
 
 
 							$sideFeaturedStorys = $this->storys->where([
-									['story_type', 'storypromoted'],
+									['story_type', 'story'],
 									['id', '<>', $id],
 									['is_approved', 1],
 									])->orderBy('created_at', 'desc')->with(['storyImages'=> function($query) {
@@ -83,7 +83,7 @@ class StoryController extends Controller
 									}
 							//  dd($sideFeaturedStorys);
 						$sideStudentStorys = $this->storys->where([
-											['story_type', 'storystudent'],
+											['story_type', 'student'],
 											['id', '<>', $id],
 											['is_approved', 1],
 											])->orderBy('created_at', 'desc')->with(['storyImages'=> function($query) {

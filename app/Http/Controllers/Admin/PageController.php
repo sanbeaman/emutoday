@@ -79,9 +79,9 @@ class PageController extends Controller
         // $storyimgs = $this->storyImage->where('image_type','front')
 				// 																		->orWhere('image_type', 'small')
 				// 																		->orderBy('updated_at', 'desc')->get();
-        // $storys =  $this->story->where('story_type', '!=', 'storybasic')->orderBy('updated_at', 'desc')->get();
+        // $storys =  $this->story->where('story_type', '!=', 'news')->orderBy('updated_at', 'desc')->get();
 				$storys = Story::where([
-								['story_type','!=' ,'storybasic'],
+								['story_type','!=' ,'news'],
 								['is_approved',1],
 					])->with('images')->get();
 

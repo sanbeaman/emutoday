@@ -17,7 +17,7 @@
 				<div class="box">
 					<div class="box-header">
 						<h3 class="box-title">Article List</h3>
-						{{-- @include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story', 'cuser'=>$currentUser]) --}}
+						@include('admin.layouts.components.boxtools', ['rte' => 'article', 'path' => 'admin/magazine/article', 'cuser'=>$currentUser])
 					</div><!-- /.box-header -->
 					<div class="box-body">
 						<table id="main-article-table" class="table table-bordered table-hover">

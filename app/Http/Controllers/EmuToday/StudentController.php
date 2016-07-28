@@ -36,7 +36,7 @@ class StudentController extends Controller
 				}
 
 				$sideFeaturedStorys = $this->story->where([
-						['story_type', 'storypromoted'],
+						['story_type', 'story'],
 						['id', '<>', $id],
 						['is_approved', 1],
 						])->orderBy('created_at', 'desc')->with(['storyImages'=> function($query) {
@@ -48,7 +48,7 @@ class StudentController extends Controller
 						}
 
 			$sideStudentStorys = $this->story->where([
-								['story_type', 'storystudent'],
+								['story_type', 'student'],
 								['id', '<>', $id],
 								['is_approved', 1],
 								])->orderBy('created_at', 'desc')->with(['storyImages'=> function($query) {
@@ -107,7 +107,7 @@ class StudentController extends Controller
       } else {
 
 				$studentStorysApproved = $this->story->where([
-									['story_type', 'storystudent'],
+									['story_type', 'student'],
 									['is_approved', 1],
 									])->orderBy('created_at', 'desc')->with('storyImages')->get();
 

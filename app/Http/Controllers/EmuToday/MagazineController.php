@@ -160,12 +160,12 @@ class MagazineController extends Controller
 				// dd($mainImage);
         $sideFeaturedStorys = $this->story
                                   ->where([
-                                    ['story_type', 'storypromoted'],
+                                    ['story_type', 'story'],
                                     ['id', '<>', $id],
 																		['is_approved', 1],
                                   ])
                                   ->orWhere([
-                                    ['story_type', 'storystudent'],
+                                    ['story_type', 'student'],
                                     ['id', '<>', $id],
 																		['is_approved', 1],
                                   ])
@@ -182,7 +182,7 @@ class MagazineController extends Controller
 
         $sideNewsStorys = $this->story
                             ->where([
-                              ['story_type', 'storybasic'],
+                              ['story_type', 'news'],
                               ['id', '<>', $id],
 															['is_approved', 1],
                                 ])->orderBy('created_at', 'desc')->take(3)->get();

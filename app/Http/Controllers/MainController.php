@@ -36,7 +36,7 @@ class MainController extends Controller
         //     ['end_date', '>=', $currentDateTime],
         // ])->first();
         $page = $this->page->where('is_active', 1)->first();
-        $currentStorysBasic = $this->story->where('story_type', 'storybasic')->paginate(3);
+        $currentStorysBasic = $this->story->where('story_type', 'news')->paginate(3);
         $currentAnnouncements = $this->announcement->where('is_approved', 1)->orderBy('priority','desc')->paginate(3);
         $barImgs = collect();
         $storys = $page->storys()->get();
@@ -77,12 +77,12 @@ class MainController extends Controller
         $mainStoryImage =  $story->storyImages()->where('image_type', 'story')->first();
 
         $sideStorysFeatured = $this->story->where([
-            ['story_type', 'storypromoted'],
+            ['story_type', 'story'],
             ['id', '<>', $id],
 						['is_approved', 1],
             ])->orderBy('created_at', 'desc')->take(3)->get();
         $sideStorysStudent = $this->story->where([
-            ['story_type', 'storystudent'],
+            ['story_type', 'student'],
             ['id', '<>', $id],
 						['is_approved', 1],
         ])->orderBy('created_at', 'desc')->take(3)->get();

@@ -119,6 +119,23 @@ class StoryController extends Controller
 
 
     }
+		/**
+		 * Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryController@articleSetup']);
+		 * @return [type]        [Direct route for creating a magazine article]
+		 */
+    public function articleSetup()
+    {
+        $story = new Story;
+				$stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+				$stypes = 'article';
+      	$story->story_type = $stypes;
+        JavaScript::put([
+            'storytype' => $stypes
+        ]);
+
+        return view('admin.story.form', compact('story', 'stypes','stypelist'));
+
+    }
     /**
     * Show the form for creating a new resource.
     *
@@ -128,7 +145,7 @@ class StoryController extends Controller
     {
         $story = new Story;
         if ($stype != 'story' ) {
-            if ($stype == 'storyexternal'){
+            if ($stype == 'external'){
                     return view('admin.story.external', compact('story', 'stype'));
             } else {
                 return view('admin.story.create', compact('story', 'stype'));
@@ -173,7 +190,7 @@ class StoryController extends Controller
         );
 				$storyGroup = $story->storyType->group;
 
-				if($storyGroup != 'basic') {
+				if($storyGroup != 'news') {
 
 					$requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
 					$otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
@@ -215,10 +232,16 @@ class StoryController extends Controller
             //         'image_type'=> 'imagemain',
             //     ]);
             // }
+						if($story->story_type == 'article'){
+							flash()->success('Article has been created.');
+							return redirect(route('admin_magazine_article_edit', $story->id));
 
+						} else {
+							flash()->success('Story has been created.');
+			        return redirect(route('admin.story.edit', $story->id));
+						}
 
-        flash()->success('Story has been created.');
-        return redirect(route('admin.story.edit', $story->id));//->with('status', 'Story has been created.');
+        //->with('status', 'Story has been created.');
     }
 		public function addNewImage($id, Request $request)
 		{
@@ -386,11 +409,11 @@ class StoryController extends Controller
         $story = $this->story->findOrFail($id);
         $stype = $story->story_type;
 
-        if ($stype == 'storyexternal') {
+        if ($stype == 'external') {
 					$smallStoryImg = $story->storyImages()->where('image_type', 'small')->first();
 
             return view('admin.story.previewexternal', compact('story','smallStoryImg'));
-        } else if ($stype == 'storybasic') {
+        } else if ($stype == 'news') {
 
             return view('admin.story.preview', compact('story'));
         } else {

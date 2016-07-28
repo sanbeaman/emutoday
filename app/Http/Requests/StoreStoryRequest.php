@@ -25,7 +25,7 @@ class StoreStoryRequest extends Request
     {
         $rules = $this->rules;
         $storytype = $this->input('story_type');
-        if ($storytype == 'storyexternal') {
+        if ($storytype == 'external') {
             $rules['title'] = 'required';
             $rules['external_link'] = 'required';
         } else {

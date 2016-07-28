@@ -158,9 +158,12 @@ Route::group(['middleware' => ['web']], function() {
 				return back();
 			});
 
-			Route::get('magazine/articles', function() {
+			Route::get('magazine/article', function() {
 				return view('admin.magazine.articles');
 			});
+			Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryController@articleSetup']);
+			Route::get('magazine/article/{story}/edit', ['as' => 'admin_magazine_article_edit', 'uses' => 'Admin\StoryController@edit']);
+
 
       Route::get('magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
 			Route::post('magazine/{magazine}/addCoverImage', ['as' => 'store_magazine_cover', 'uses' => 'Admin\MagazineController@addCoverImage']);
@@ -181,7 +184,9 @@ Route::group(['middleware' => ['web']], function() {
 
 
       Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
-			Route::get('story/list/{stype}', ['as' => 'admin.story.list', 'uses' => 'Admin\StoryController@list']);
+			Route::get('story/{stype}', ['as' => 'admin.story.list', 'uses' => 'Admin\StoryController@list']);
+
+
 
       // Route::get('admin/story/create/{stype}/', ['as' => 'admin_story_create', 'uses' => 'Admin\StoryController@create']);
       Route::get('story/{story}/confirm', ['as' => 'admin.story.confirm', 'uses' => 'Admin\StoryController@confirm']);

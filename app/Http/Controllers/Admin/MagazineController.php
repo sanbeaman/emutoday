@@ -240,7 +240,7 @@ class MagazineController extends Controller
     public function edit($id)
     {
       $magazine = $this->magazine->findOrFail($id);
-			$storys = Story::where('story_type', 'storymagazine')->with(['images' => function($query){
+			$storys = Story::where('story_type', 'article')->with(['images' => function($query){
 															$query->where('group','=','article');
 														}])->get();
 
@@ -251,7 +251,7 @@ class MagazineController extends Controller
 																			['image_type', 'small'],
 																			])
 																			->orderBy('updated_at', 'desc')->get();
-      // $storys =  $this->story->where('story_type', 'storymagazine')->orderBy('updated_at', 'desc')->get();
+      // $storys =  $this->story->where('story_type', 'article')->orderBy('updated_at', 'desc')->get();
 			$mediatypes = Mediatype::where('group','magazine')->pluck('type','id');
 
 			// foreach ($mediatypes as $mediatype) {

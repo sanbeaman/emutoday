@@ -105,19 +105,19 @@ class Story extends Model
     {
 
       switch ($this->story_type) {
-          case 'storybasic':
+          case 'news':
             $type = 'news';
             break;
-          case 'storypromoted':
+          case 'story':
             $type = 'story';
             break;
-          case 'storystudent':
+          case 'student':
             $type = 'student';
             break;
-          case 'storymagazine':
+          case 'magazine':
             $type = 'magazine';
             break;
-          case 'storyexternal':
+          case 'external':
             $type = 'external';
             break;
           default:

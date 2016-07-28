@@ -18,24 +18,30 @@
 					 </ul>
 				 </div> --}}
 
-				 @if($rte == 'story')
-
-				 	@if(isset($id))
-				 	<a href="/admin/{{$rte}}/{{$id}}" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
-			 		@endif
-					<a href="{{ route('admin_story_setup', ['stype' => 'storybasic']) }}" class="btn bg-orange btn-sm {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
+				@if($rte == 'story')
+							 	@if(isset($id))
+							 	<a href="/admin/{{$rte}}/{{$id}}" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
+						 		@endif
+								<a href="{{ route('admin_story_setup', ['stype' => 'storybasic']) }}" class="btn bg-orange btn-sm {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
 				@elseif($rte == 'magazine')
 						@if(isset($id))
 							<a href="/admin/{{$rte}}/{{$id}}" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
 						@endif
-						<a href="/admin/{{$rte}}/create" class="btn bg-orange {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
-						<a href="/admin/{{$rte}}" class="btn bg-orange {{ set_active($path, 'disabled') }}"><i class="fa fa-list-alt"></i></a>
+							<a href="/admin/{{$rte}}/create" class="btn bg-orange {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
+							<a href="/admin/{{$rte}}" class="btn bg-orange {{ set_active($path, 'disabled') }}"><i class="fa fa-list-alt"></i></a>
+				@elseif($rte == 'article')
+							@if(isset($id))
+							<a href="/admin/magazine/{{$rte}}/{{$id}}" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
+							@endif
+							<a href="/admin/magazine/{{$rte}}" class="btn bg-orange {{ set_active($path, 'disabled') }}"><i class="fa fa-list-alt"></i></a>
+
+							<a href="/admin/magazine/{{$rte}}/setup" class="btn bg-orange btn-sm {{ set_active($path.'/setup', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
 
 				@else
 		{{-- @endcan --}}
 		{{-- @else --}}
-			<a href="/admin/{{$rte}}/create" class="btn bg-orange {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
-		@endif
+				<a href="/admin/{{$rte}}/create" class="btn bg-orange {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
+				@endif
 	</div><!-- /.btn-toolbar -->
 
 </div><!-- /.box-tools -->

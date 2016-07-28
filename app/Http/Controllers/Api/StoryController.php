@@ -56,8 +56,8 @@ class StoryController extends ApiController
 		{
 			$fractal = new Manager();
 
-			$storys = Story::where('story_type','storymagazine')->get();
-		
+			$storys = Story::where('story_type','article')->get();
+
 
 			$resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformer);
 				// Turn all of that into a JSON string
