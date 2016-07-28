@@ -5,12 +5,12 @@
     <div id="news-bar">
       <div class="row">
         <div class="large-7 medium-12 small-12 columns">
-          <img src="{{$heroImg->present()->mainImageURL}}" alt="featured image">
+          <img src="/imagecache/original/{{$heroImg->filename}}" alt="featured image">
         </div>
         <div id="featured-text" class="large-5 medium-12 small-12 columns">
-          <h3>{{$heroImg->caption}}</h3>
-          <p>{{$heroImg->teaser}}</p>
-          <p class="button-group"><a href="/emu-today/{{$heroImg->story->story_folder}}/{{$heroImg->story->id}}" class="button">{{$heroImg->moretext}}</a></p>
+          <h3>{{$heroImg->title}}</h3>
+          <p>{{$heroImg->caption}}</p>
+          <p class="button-group"><a href="/emu-today/{{$heroImg->group}}/{{$heroImg->story->id}}" class="button">{{$heroImg->moretext}}</a></p>
         </div>
       </div>
     </div>
@@ -23,13 +23,13 @@
       <div class="row small-up-2 medium-up-2 large-up-4" data-equalizer>
         @for ($i = 1; $i <= count($barImgs); $i++)
           <div class="column four-stories-block">
-            <img class="topic-image" src="{{$barImgs[$i]->present()->mainImageURL}}" alt="story image">
+            <img class="topic-image" src="/imagecache/original/{{$barImgs[$i]->filename}}" alt="story image">
             <div class="stories-content">
               <div class="stories-text-content" data-equalizer-watch>
                 <p>{{$barImgs[$i]->caption}}</p>
               </div>
               <p class="button-group">
-                <a href="/emu-today/{{$barImgs[$i]->story->story_folder}}/{{$barImgs[$i]->story->id}}" class="button">{{$barImgs[$i]->moretext}}<i class="fi-play"></i></a>
+                <a href="/emu-today/{{$barImgs[$i]->group}}/{{$barImgs[$i]->story->id}}" class="button">{{$barImgs[$i]->moretext}}<i class="fi-play"></i></a>
               </p>
             </div>
           </div>
