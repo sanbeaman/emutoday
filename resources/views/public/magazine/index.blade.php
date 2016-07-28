@@ -26,8 +26,8 @@
                 <img class="topic-image" src="{{$barImg->present()->mainImageURL}}"  alt="topic image"/>
                 <div class="profile-content">
                   <div class="profile-text-content magazine" data-equalizer-watch>
-                    <h3>{{$barImg->caption}}</h3>
-                    <p>{{$barImg->teaser}}</p>
+                    <h3>{{$barImg->title}}</h3>
+                    <p>{{$barImg->caption}}</p>
                   </div>
                 </div>
               </a>

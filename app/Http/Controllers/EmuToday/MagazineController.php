@@ -143,9 +143,12 @@ class MagazineController extends Controller
         JavaScript::put([
             'jsis' => 'hi',
         ]);
+
+				$magazineCover = $magazine->mediafiles()->where('type','cover')->first();
+				$magazineExtra = $magazine->mediafiles()->where('type','extra')->first();
         // $magazine = $this->magazines->findOrFail($id);
         // $storyImages = $this->magazines->storyImages();
-        return view('public.magazine.issue', compact('magazine', 'storyImages', 'barImgs'));
+        return view('public.magazine.issue', compact('magazine', 'storyImages', 'barImgs','magazineCover','magazineExtra'));
 
     }
     public function article($id)

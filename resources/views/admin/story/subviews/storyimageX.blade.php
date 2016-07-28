@@ -30,36 +30,33 @@
 								{!! Form::file('image', null, array('required', 'class'=>'form-control input-sm')) !!}
 								<span class="help-block">{{$storyImage->imgtype->helptxt}}</span>
 							</div>
-							<div class="form-group">
-								{!! Form::label('title', 'Title/Header') !!}
-								{!! Form::text('title', null, ['class' => 'form-control input-sm']) !!}
-								<span class="help-block">Large Bold text limited to a couple of words </span>
-							</div>
-							<div class="form-group">
-								{!! Form::label('caption', 'Caption/Subtitle') !!}
-								{!! Form::text('caption', null, ['class' => 'form-control input-sm']) !!}
-								<span class="help-block">Small to Medium size text limited to a couple of lines</span>
-							</div>
-							<div class="form-group">
-								{!! Form::label('teaser', 'Teaser/Byline') !!}
-								{!! Form::textarea('teaser', null, ['class' => 'form-control input-sm', 'rows'=>'5']) !!}
-								<span class="help-block">Small to Medium size text from a coupel lines to a couple paragraphs</span>
-							</div>
+								@if($storyImage->imgtype->type == 'small')
 							<div class="form-group">
 								{!! Form::label('moretext', 'More Text Link') !!}
 								{!! Form::text('moretext', null, ['class' => 'form-control input-sm']) !!}
 								<span class="help-block">Text used to link to full story</span>
 							</div>
+						@endif
 							<div class="form-group">
-								{!! Form::label('link', 'External Link') !!}
-								{!! Form::text('link', null, ['class' => 'form-control input-sm']) !!}
-								<span class="help-block">Fully qualified URL for linking to an external webpage</span>
+								{!! Form::label('caption', 'Caption') !!}
+								{!! Form::text('caption', null, ['class' => 'form-control input-sm']) !!}
+								<span class="help-block"></span>
 							</div>
+							@if($storyImage->imgtype->type == 'front')
 							<div class="form-group">
-								{!! Form::label('link_text', 'Link Text') !!}
-								{!! Form::text('link_text', null, ['class' => 'form-control input-sm']) !!}
-								<span class="help-block">Text for the external link</span>
+									{!! Form::label('caption', 'Headline/Caption') !!}
+									{!! Form::text('caption', null, ['class' => 'form-control input-sm']) !!}
+									<span class="help-block">Large text headline or title that is next to image when on the 'Front' page</span>
+
+								{!! Form::label('teaser', 'Subtitle/Teaser') !!}
+								{!! Form::textarea('teaser', null, ['class' => 'form-control input-sm teaser', 'rows'=>'3']) !!}
+								<span class="help-block">Smaller text that appears under the headline or title, when on the 'Front' page</span>
+
+								{!! Form::label('moretext', 'More Text Link') !!}
+								{!! Form::text('moretext', null, ['class' => 'form-control input-sm']) !!}
+								<span class="help-block">Text used to link to full story</span>
 							</div>
+						@endif
 						</div><!-- /.box-body -->
         		<div class="box-footer">
 							<div class="form-inline">

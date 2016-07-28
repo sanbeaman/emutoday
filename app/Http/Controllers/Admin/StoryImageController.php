@@ -45,25 +45,18 @@ class StoryImageController extends Controller
     {
        //create new instance of model to save from form
        $storyImage = $this->storyImages->findOrFail($id);
+			$storyImage->image_type = $request->get('image_type');
        $storyImage->is_active = $request->get('is_active');
-       $this->formatCheckboxValue($storyImage);
+
+
+
+				$storyImage->title = $request->get('title');
        $storyImage->caption = $request->get('caption');
        $storyImage->teaser = $request->get('teaser');
        $storyImage->moretext = $request->get('moretext');
-       $storyImage->image_type = $request->get('image_type');
+			 $storyImage->link = $request->get('link');
+       $storyImage->link_text = $request->get('link_text');
 
-/*
-       $storyImage = new StoryImage([
-           'image_name'        => $request->get('image_name'),
-           'image_extension'   => $request->file('image')->getClientOriginalExtension(),
-           'is_active'         => $request->get('is_active'),
-           'is_featured'       => $request->get('is_featured'),
-           'caption'           => $request->get('caption'),
-           'teaser'            => $request->get('teaser'),
-           'moretext'          => $request->get('moretext')
-
-       ]);
-*/
        //define the image paths
 
        $destinationFolder = '/imgs/story/';
@@ -103,38 +96,17 @@ class StoryImageController extends Controller
 
 
        $image = Image::make($imgFilePath)
-        ->save(public_path() . $destinationFolder . $imgFileName)
-        ->fit(100)
-        ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
+        ->save(public_path() . $destinationFolder . $imgFileName);
+        // ->fit(100)
+        // ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
 
     }
      $storyImage->is_active = 1;
         $storyImage->save();
 
-       /*
-       $imgPath = public_path('imgs/story');
-       $imgFileName = $file->getClientOriginalName();
-       $file->move($imgPath, $imgFileName);
-
-
-       $imageName = $storyImage->image_name;
-       $extension = $request->file('image')->getClientOriginalExtension();
-
-       //create instance of image from temp upload
-       $image = Image::make($file->getRealPath());
-       Storage::disk('public')->put($imageName, $image);
-
-       //save image with thumbnail
-
-       $image->save(public_path() . $destinationFolder . $imageName . '.' . $extension)
-           ->resize(60, 60)
-           // ->greyscale()
-           ->save(public_path() . $destinationThumbnail . 'thumb-' . $imageName . '.' . $extension);
-           // Process the uploaded image, add $model->attribute and folder name
-*/
       // flash()->success('Story Image Created!');
       $story = $storyImage->story;
-     flash()->success('Story Image has been created.');
+     flash()->success('Image has been upadted.');
       return redirect(route('admin.story.edit', $story->id ));//->with('status', 'Story Image has been created.');
       // return redirect()->route('backend/storyimages.show', [$storyImage]);
     }
@@ -167,9 +139,12 @@ class StoryImageController extends Controller
         $pathToImageForDelete = public_path() . $storyImage->image_path . $storyImage->image_name . '.' . $storyImage->image_extension;
         File::delete($pathToImageForDelete);
 
-        $pathToImageThumbForDelete = public_path() . $storyImage->image_path . 'thumbnails/' . 'thumb-' . $storyImage->image_name . '.' . $storyImage->image_extension;
-        File::delete($pathToImageThumbForDelete);
-        /*
+        // $pathToImageThumbForDelete = public_path() . $storyImage->image_path . 'thumbnails/' . 'thumb-' . $storyImage->image_name . '.' . $storyImage->image_extension;
+        // File::delete($pathToImageThumbForDelete);
+
+
+
+				/*
 
         $destinationFolder = '/imgs/story/';
         $thumbPath = $destinationFolder .'thumbnails/';

@@ -24,11 +24,11 @@
 										<div class="article-listing row column">
 										<a class="magazine-article-button" href="/emu-today/magazine/article/{{$barImg->story->id}}">
 										<div class="article-img small-12 medium-5 large-3 columns">
-												<img src="{{$barImg->present()->mainImageURL}}">
+												<img src="/imagecache/original/{{$barImg->filename}}">
 										</div>
 										<div class="article-text-teaser small-12 medium-7 large-9 columns">
-											<h3>{{$barImg->caption}}</h3>
-											<p>{{$barImg->teaser}}</p>
+											<h3>{{$barImg->title}}</h3>
+											<p>{{$barImg->caption}}</p>
 										</div>
 									</a>
 									</div>
@@ -37,8 +37,8 @@
             </div>
             <div class="large-3 medium-4 small-12 columns current-issue-padding">
               <div class="current-issue-info">
-                <p><img src="/assets/imgs/magazine/magazine-cover-winter2016.jpg"></p>
-                <p><a href="">Read the Digital Issue</a></p>
+                <p><img src="/imagecache/magazinecover/{{$magazineCover->filename}}"></p>
+                <p><a href="{{$magazine->ext_url}}">Read the Digital Issue</a></p>
               </div>
               <a class="expanded button magazine-button">Subscribe</a>
               <a class="expanded button magazine-button">Submit a Story Idea</a>
