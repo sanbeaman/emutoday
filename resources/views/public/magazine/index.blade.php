@@ -9,11 +9,11 @@
 @section('content')
   <div id="content-area">
     <div id="homepage-hero" class="row column">
-      <img src="{{$heroImg->present()->mainImageURL}}" alt="main image">
+      <img src="/imagecache/original/{{$heroImg->filename}}" alt="main image">
       <div id="magazine-text-over-image-box" class="row collapse">
         <div class="centered-main-title">
-          <h2><a href="/emu-today/magazine/article/{{$heroImg->story->id}}">{{$heroImg->caption}}</a></h2>
-          <p>{{$heroImg->teaser}}</p>
+          <h2><a href="/emu-today/magazine/article/{{$heroImg->story->id}}">{{$heroImg->title}}</a></h2>
+          <p>{{$heroImg->caption}}</p>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
           @foreach ($barImgs as $barImg)
             <div class="column">
               <a class="article-link" href="/emu-today/magazine/article/{{$barImg->story->id}}">
-                <img class="topic-image" src="{{$barImg->present()->mainImageURL}}"  alt="topic image"/>
+                <img class="topic-image" src="/imagecache/original/{{$barImg->filename}}"  alt="topic image"/>
                 <div class="profile-content">
                   <div class="profile-text-content magazine" data-equalizer-watch>
                     <h3>{{$barImg->title}}</h3>
