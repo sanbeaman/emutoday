@@ -75,9 +75,14 @@
 									<span class="help-block">Large Bold text limited to a couple of words visible when article is main feature on the  emu-today hub or the main article on magazine page </span>
 								</div>
 								<div class="form-group">
+									{!! Form::label('caption', 'Caption/Subtitle') !!}
+									{!! Form::text('caption', null, ['class' => 'form-control input-sm']) !!}
+									<span class="help-block">Small to Medium size text under title visible when article is the  featured article on  main magazine page</span>
+								</div>
+								<div class="form-group">
 									{!! Form::label('teaser', 'Teaser/Byline') !!}
 									{!! Form::textarea('teaser', null, ['class' => 'form-control input-sm', 'rows'=>'5']) !!}
-									<span class="help-block">Small to Medium size text under title, visible when article is main feature on emu-today hub and/or main article on magazine page</span>
+									<span class="help-block">Small to Medium size text under title, visible when article is main feature on emu-today hub. NOT visible when article is the featured article on  magazine page (use caption)</span>
 								</div>
 								<div class="form-group">
 									{!! Form::label('moretext', 'More Text Link') !!}
