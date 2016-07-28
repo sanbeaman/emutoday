@@ -28,7 +28,7 @@
 										</div>
 										<div class="article-text-teaser small-12 medium-7 large-9 columns">
 											<h3>{{$barImg->title}}</h3>
-											<p>{{$barImg->caption}}</p>
+											<p>{{$barImg->teaser}}</p>
 										</div>
 									</a>
 									</div>
