@@ -149,7 +149,17 @@
 							</div>
 					@else
 							@if ($story->storyImages()->count() > 0)
-								@each('admin.story.subviews.storyimage', $story->storyImages, 'storyImage')
+								@foreach($story->storyImages as $storyImage)
+									@if($storyImage->image_type == 'small')
+										@include('admin.storyimages.subviews.smallimage',['storyImage' => $storyImage, 'story_id' => $story->id ])
+									@elseif($storyImage->image_type == 'story')
+										@include('admin.storyimages.subviews.storyimage',['storyImage' => $storyImage, 'story_id' => $story->id ])
+									@elseif($storyImage->image_type == 'front')
+										@include('admin.storyimages.subviews.frontimage',['storyImage' => $storyImage, 'story_id' => $story->id ])
+									@else
+										@include('admin.storyimages.subviews.otherimage',['storyImage' => $storyImage, 'story_id' => $story->id ])
+									@endif
+								@endforeach
 							@endif
 							@if ($leftOverImages->count() > 0)
 								@foreach($leftOverImages as $leftOverImage)
