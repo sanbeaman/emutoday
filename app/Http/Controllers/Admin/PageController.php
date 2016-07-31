@@ -77,23 +77,24 @@ class PageController extends Controller
         //     $query->where('image_type', 'imagehero');
         // })->get();
         // $storyimgs = $this->storyImage->where('image_type','front')
-				// 																		->orWhere('image_type', 'small')
-				// 																		->orderBy('updated_at', 'desc')->get();
+                // 																		->orWhere('image_type', 'small')
+                // 																		->orderBy('updated_at', 'desc')->get();
         // $storys =  $this->story->where('story_type', '!=', 'news')->orderBy('updated_at', 'desc')->get();
-				$storys = Story::where([
-								['story_type','!=' ,'news'],
-								['is_approved',1],
-					])->with('images')->get();
+                $storys = Story::where([
+                                ['story_type','!=' ,'news'],
+                                ['is_approved',1],
+                    ])->with('images')->get();
 
-				$connectedStorys = $page->storys()->get();
+                $connectedStorys = $page->storys()->get();
 
         JavaScript::put([
             'jsis' => 'foobar',
             'storysonpage' => $connectedStorys->toArray()
         ]);
-				return view('admin.page.edit', compact('page', 'storys'));
+        return view('admin.page.form', compact('page', 'storys'));
 
-        // return view('admin.page.edit', compact('page', 'storys', 'storyImages', 'storysWithHero','storyimgs'));
+        // return view('admin.page.edit', compact('page', 'storys'));
+
     }
 
     public function update(Requests\UpdatePageRequest $request, $id)
@@ -127,13 +128,13 @@ class PageController extends Controller
         //return redirect(route('admin.story.edit', $story->id))->with('status', 'Story has been updated.');
     }
 
-		public function delete(Request $request)
-		{
-			$page = $this->page->findOrFail($request->get('id'));
-			$page->delete();
-			flash()->warning('Page has been deleted.');
-			return redirect(route('admin.page.index'));//->with('status', 'Story has been deleted.');
-		}
+        public function delete(Request $request)
+        {
+            $page = $this->page->findOrFail($request->get('id'));
+            $page->delete();
+            flash()->warning('Page has been deleted.');
+            return redirect(route('admin.page.index'));//->with('status', 'Story has been deleted.');
+        }
     public function destroy($id)
     {
         $page = $this->page->findOrFail($id);

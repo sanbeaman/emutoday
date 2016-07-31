@@ -13,7 +13,8 @@ return [
     | Example: 'footer' or ['footer', 'bottom']
     |
     */
-    'bind_js_vars_to_this_view' => 'include/js','admin/layouts/scriptshead', 'public/layouts/scriptshead',
+    // 'bind_js_vars_to_this_view' => 'include/js','admin/layouts/scriptshead', 'public/layouts/scriptshead',
+		'bind_js_vars_to_this_view' => 'include/js','admin/layouts/scriptsfooter','admin/layouts/scriptshead', 'public/layouts/scriptshead',
 
     /*
     |--------------------------------------------------------------------------

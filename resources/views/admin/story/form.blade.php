@@ -3,7 +3,6 @@
 @section('title', $story->exists ? 'Editing '.$story->title : 'Create New Story')
 	@section('style-plugin')
 		@parent
-
 <!-- iCheck for checkboxes and radio inputs -->
 <link rel="stylesheet" href="/themes/admin-lte/plugins/iCheck/all.css">
 <!-- Bootstrap Color Picker -->
@@ -13,8 +12,6 @@
 
 <link rel="stylesheet" href="/themes/plugins/eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
 
-<!-- bootstrap wysihtml5 - text editor -->
-<link rel="stylesheet" href="/themes/admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
     @endsection
 		@section('scripts-vendor')
 			<!-- Vendor Scripts that need to be loaded in the header before other plugin or app scripts -->
@@ -29,7 +26,9 @@
 			<!-- App related Scripts  that need to be loaded in the header -->
 			@parent
 		@endsection
-@section('content')
+
+
+		@section('content')
 		<div class="row">
 			<div class="col-md-7">
 				<div class="box box-primary">
@@ -38,8 +37,14 @@
 				        'route' => $story->exists ? ['admin.story.update', $story->id] : ['admin.story.store']
 				    ]) !!}
 						<div class="box-header with-border">
-							<h3 class="box-title">Create {{$story->exists ? $story->storyType->group : 'New' }} Story</h3>
-								@include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story/', 'cuser'=>$currentUser, 'id'=>$story->id ])
+							<h3 class="box-title">{{$story->exists ?'Edit ' . $story->story_type : 'New' }}</h3>
+							@if($story->exists )
+								@include('admin.layouts.components.boxtools', ['rte' => $story->story_type, 'path' => 'admin/story/'.$story->story_type , 'cuser'=>$currentUser, 'id'=>$story->id ])
+							@else
+								@include('admin.layouts.components.boxtools', ['rte' => $stypes, 'path' => 'admin/story/'.$stypes , 'cuser'=>$currentUser, 'id'=>$story->id ])
+
+							@endif
+
 						</div> 	<!-- /.box-header -->
 					<div class="box-body">
 						<div class="form-group @if ($errors->has('title')) has-error @endif">
@@ -62,7 +67,7 @@
 				        {!! Form::textarea('teaser', null, ['class' => 'form-control', 'rows'=>'4']) !!}
 				    </div>
 						<div class="form-group">
-				    @if($story->story_type == 'storyexternal')
+				    @if($story->story_type == 'external')
 					        {!! Form::label('external_link') !!}
 					        {!! Form::text('external_link', null, ['class' => 'form-control']) !!}
 					  @else
@@ -126,7 +131,7 @@
 						</div><!-- /.col-md-6 -->
 						<div class="col-md-6">
 							<div class="form-group">
-								{!! Form::submit($story->exists ? 'Save Story' : 'Create New Story', ['class' => 'btn btn-primary btn-block']) !!}
+								{!! Form::submit($story->exists ? 'UPDATE' : 'Create New', ['class' => 'btn btn-primary btn-block']) !!}
 							</div>
 						</div><!-- /.col-md-6 -->
 					</div><!-- /.row -->
@@ -137,12 +142,12 @@
 
 		<div class="col-md-5">
 			@if($story->exists)
-					@if($story->story_type == 'storybasic')
+					@if($story->story_type == 'news')
 							<div class="box box-warning">
 								<div class="box-header with-border">
 									<form action="promoteStory" method="POST">
 										{{ csrf_field() }}
-										{!! Form::select('new_story_type', $stypelist, 'storypromoted', ['class' => 'form-control']) !!}
+										{!! Form::select('new_story_type', $stypelist, 'story', ['class' => 'form-control']) !!}
 										<button class="btn btn-primary" href="#">Promote Story</button>
 									</form>
 								</div>
@@ -194,6 +199,9 @@
 <!-- FastClick -->
 <script src="/themes/admin-lte/plugins/fastclick/fastclick.js"></script>
 
+	@endsection
+	@section('scriptsfooter')
+		@parent
 	@endsection
 	@section('footer-script')
 		@parent
@@ -275,5 +283,6 @@ $('input[name=title]').on('blur', function () {
 
 		slugElement.val(this.value.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, ''));
 });
+
 </script>
 @endsection

@@ -25,6 +25,8 @@
 			<div class="box">
 				<div class="box-header with-border">
 					<h3 class="box-title">Page List Table</h3>
+					@include('admin.layouts.components.boxtools', ['rte' => 'page', 'path' => 'admin/page'])
+
 				</div>
 				<!-- /.box-header -->
 				<div class="box-body">
@@ -37,13 +39,13 @@
 									<th class="text-left">Active</th>
 									<th class="text-left">Start Date</th>
 									<th class="text-left">End Date</th>
-									<th class="text-left">Edit</th>
-									<th class="text-left">Delete</th>
+									<th class="text-center">Preview</th>
+									<th class="text-center">Edit</th>
+									<th class="text-center">Delete</th>
 							</tr>
 						</thead>
 					</table>
 				</div><!-- /.box-body -->
-					<a href="{{ route('admin.page.create') }}" class="button">Create New Page</a>
 			</div>
 			<!-- /.box -->
 @endsection
@@ -75,6 +77,9 @@
 				{"data": "start_date"},
 				{"data": "end_date"},
 				{"date": null,
+					"defaultContent": "<a href='#'><i class='fa fa-eye'></i></a>"
+				},
+				{"date": null,
 					"defaultContent": "<a href='#'><i class='fa fa-pencil'></i></a>"
 				},
 				{"date": null,
@@ -87,7 +92,10 @@
 		// 	window.location.href =
 		// }
 		//
-
+		$('#main-page-table tbody').on('click', '.fa-eye', function () {
+			var data = table.row( $(this).parents('tr') ).data();
+			window.location.href = '/preview/page/'+ data["id"];
+		});
 		$('#main-page-table tbody').on('click', '.fa-pencil', function () {
 
 			var data = table.row( $(this).parents('tr') ).data();

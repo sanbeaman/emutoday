@@ -142,7 +142,11 @@
                 </div><!-- /.box-tools -->
             </div>
             <div class="box-body">
-        @include('admin.page.templates.homeemutodayimg')
+                <div id="vue-page-builder-app">
+                    <page-builder-app>
+                    </page-builder-app>
+                </div><!-- /.vue-page-builder -->
+        {{-- @include('admin.page.templates.homeemutodayimg') --}}
     </div><!-- /.box-body -->
     </div><!-- /.box -->
 
@@ -160,7 +164,7 @@
 
 @section('footer-app')
     @parent
-      <script src="/js/pagebuild-redips.js"></script>
+      <script src="/js/vue-page-builder-app.js"></script>
 @endsection
 
 @section('footer-script')

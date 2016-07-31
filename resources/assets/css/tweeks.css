@@ -54,7 +54,7 @@
 	.newshub-tab-front ul li a.bottom-tab-link{
 
 			color: #0f654a;
-			
+
 
 	}
   .newshub-tab-front ul li a:hover{
@@ -117,4 +117,10 @@ a.magazine-article-button {
 	margin-bottom: .5rem;
 	font-size: .9rem;
 	line-height: 1.1rem;
+}
+
+
+#previewCover {
+	top: 2px;
+	right: 2px;
 }

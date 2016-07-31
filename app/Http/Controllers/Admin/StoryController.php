@@ -136,6 +136,22 @@ class StoryController extends Controller
         return view('admin.story.form', compact('story', 'stypes','stypelist'));
 
     }
+
+
+
+		public function storyTypeSetUp($stype)
+		{
+			$story = new Story;
+			$stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+			$stypes = $stype;
+			$story->story_type = $stypes;
+			JavaScript::put([
+					'storytype' => $stypes
+			]);
+
+			return view('admin.story.form', compact('story', 'stypes','stypelist'));
+
+		}
     /**
     * Show the form for creating a new resource.
     *
@@ -326,6 +342,40 @@ class StoryController extends Controller
 				 return redirect(route('admin.story.edit', $story->id));
 
     }
+		public function storyTypePreview($stype, Story $story)
+		{
+			// $ruteurl = "/emu-today/".$stype."/".$story->id;
+  		// return redirect(route('admin.story.edit', $story->id));
+			return redirect()->route('emutoday_preview',['stype'=> $stype, 'id' => $story->id]);
+			// return view('public.story.main', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
+
+		}
+
+		// Route::get('story/{stype}/{story}/edit', ['as' => 'admin_story_type_edit', 'uses' => 'Admin\StoryController@storyTypeEdit']);
+
+		public function storyTypeEdit($stype, Story $story)
+		{
+
+			$stypes = $stype;
+			$stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+
+			$tags = \emutoday\Tag::lists('name', 'id');
+			$storyGroup = $story->storyType->group;
+			$imagetypeNames = Imagetype::ofGroup($storyGroup)->get()->keyBy('id');
+			$currentStoryImages = $story->storyImages->pluck('image_type','imagetype_id');
+			$leftOverImages = $imagetypeNames->diffKeys($currentStoryImages);
+			// dd($leftOverImages);
+			$requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
+			$otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
+			JavaScript::put([
+						'storytype' => $story->story_type,
+						'is_featured' => $story->is_featured,
+				]);
+
+			return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
+
+		}
+
     public function edit($id)
     {
         $story = $this->story->findOrFail($id);
@@ -338,8 +388,11 @@ class StoryController extends Controller
 
 				JavaScript::put([
 							'storytype' => $story->story_type,
-							'is_featured' => $story->is_featured
+							'is_featured' => $story->is_featured,
 					]);
+
+
+
 					$user = auth()->user();
 					if($user == null)
 					{

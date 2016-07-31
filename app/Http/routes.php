@@ -21,74 +21,74 @@ Route::group(['prefix' => 'api'], function() {
   //   return view('public.event.form');
   // });
   // Route::get('calendar/events', 'Api\EventsController@byDate');
-	// Route::get('event-catgeories', function() {
-	// 	$text = Input::get('q');
-	// 	return Building::likeSearch('name', $text)->get();
-	// 	//return Building::ofMapType('illustrated')->get();
-	// });
-	Route::get('zbuildings', function() {
-		$text = Input::get('q');
-		return Building::likeSearch('name', $text)->get();
-		//return Building::ofMapType('illustrated')->get();
-	});
+    // Route::get('event-catgeories', function() {
+    // 	$text = Input::get('q');
+    // 	return Building::likeSearch('name', $text)->get();
+    // 	//return Building::ofMapType('illustrated')->get();
+    // });
+    Route::get('zbuildings', function() {
+        $text = Input::get('q');
+        return Building::likeSearch('name', $text)->get();
+        //return Building::ofMapType('illustrated')->get();
+    });
 
-	Route::get('zcats', function() {
-		$text = Input::get('q');
-		return Category::likeSearch('category', $text)->get();
-		//return Building::ofMapType('illustrated')->get();
-	});
+    Route::get('zcats', function() {
+        $text = Input::get('q');
+        return Category::likeSearch('category', $text)->get();
+        //return Building::ofMapType('illustrated')->get();
+    });
 
 
-	Route::get('bugz/listall', ['as' => 'api.bugz.listall', 'uses' => 'Api\BugzController@listall']);
+    Route::get('bugz/listall', ['as' => 'api.bugz.listall', 'uses' => 'Api\BugzController@listall']);
 
-	Route::patch('bugz/updateItem/{id}', 'Api\BugzController@updateItem');
+    Route::patch('bugz/updateItem/{id}', 'Api\BugzController@updateItem');
 
-	Route::resource('bugz', 'Api\BugzController');
+    Route::resource('bugz', 'Api\BugzController');
 
-	Route::get('zevent-catgeories', function() {
+    Route::get('zevent-catgeories', function() {
 
-		// $cats = \emutoday\Category::lists('category', 'id');
+        // $cats = \emutoday\Category::lists('category', 'id');
 
-		return \emutoday\Category::all();
-		//return Building::ofMapType('illustrated')->get();
-	});
+        return \emutoday\Category::all();
+        //return Building::ofMapType('illustrated')->get();
+    });
 
-	Route::get('list-event-categories', ['uses'=> 'Api\EventController@listEventCategories']);
+    Route::get('list-event-categories', ['uses'=> 'Api\EventController@listEventCategories']);
 
-	Route::get('buildings', ['uses'=> 'Api\EventController@buildings']);
-	Route::get('event', ['as' => 'api.event', 'uses' => 'Api\EventController@index']);
-	Route::resource('event', 'Api\EventController');
+    Route::get('buildings', ['uses'=> 'Api\EventController@buildings']);
+    Route::get('event', ['as' => 'api.event', 'uses' => 'Api\EventController@index']);
+    Route::resource('event', 'Api\EventController');
 
-		Route::get('events/{id}/categories', 'Api\CategoriesController@index');
+        Route::get('events/{id}/categories', 'Api\CategoriesController@index');
    Route::resource('categories', 'Api\CategoriesController', ['only'=>['index', 'show']] );
 
-		Route::resource('minicalendars', 'Api\MiniCalendarsController', ['only'=>['index', 'show']] );
-		// Route::get('buildings', 'Api\BuildingController', ['only'=>['index']]);
+        Route::resource('minicalendars', 'Api\MiniCalendarsController', ['only'=>['index', 'show']] );
+        // Route::get('buildings', 'Api\BuildingController', ['only'=>['index']]);
 
-	Route::get('magazine/articles', ['as'=> 'api.magazine.articles', 'uses'=> 'Api\StoryController@articles']);
+    Route::get('magazine/articles', ['as'=> 'api.magazine.articles', 'uses'=> 'Api\StoryController@articles']);
 
 
-	 Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
-	 Route::post('story/delete', ['as' => 'api.story.delete', 'uses' => 'Api\StoryController@delete']);
+     Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
+     Route::post('story/delete', ['as' => 'api.story.delete', 'uses' => 'Api\StoryController@delete']);
 
    Route::resource('story', 'Api\StoryController');
 
-	//  Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
-	//  Route::get('announcement/{announcement}', ['as' => 'api_announcement_get', 'uses' => 'Api\AnnouncementController@edit']);
-	Route::get('announcement/listall', ['as' => 'api.announcement.listall', 'uses' => 'Api\AnnouncementController@listall']);
+    //  Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
+    //  Route::get('announcement/{announcement}', ['as' => 'api_announcement_get', 'uses' => 'Api\AnnouncementController@edit']);
+    Route::get('announcement/listall', ['as' => 'api.announcement.listall', 'uses' => 'Api\AnnouncementController@listall']);
 
-	Route::get('announcement/unapprovedItems', ['as' => 'api.announcement.unapprovedItems', 'uses' => 'Api\AnnouncementController@unapprovedItems']);
-	Route::get('announcement/approvedItems', ['as' => 'api.announcement.approvedItems', 'uses' => 'Api\AnnouncementController@approvedItems']);
-	Route::patch('announcement/updateItem/{id}', 'Api\AnnouncementController@updateItem');
+    Route::get('announcement/unapprovedItems', ['as' => 'api.announcement.unapprovedItems', 'uses' => 'Api\AnnouncementController@unapprovedItems']);
+    Route::get('announcement/approvedItems', ['as' => 'api.announcement.approvedItems', 'uses' => 'Api\AnnouncementController@approvedItems']);
+    Route::patch('announcement/updateItem/{id}', 'Api\AnnouncementController@updateItem');
 
 
-	 Route::resource('announcement', 'Api\AnnouncementController');
+     Route::resource('announcement', 'Api\AnnouncementController');
 
-	 Route::get('magazine', ['as' => 'api.magazine', 'uses' => 'Api\MagazineController@index']);
-	Route::resource('magazine', 'Api\MagazineController');
+     Route::get('magazine', ['as' => 'api.magazine', 'uses' => 'Api\MagazineController@index']);
+    Route::resource('magazine', 'Api\MagazineController');
 
-	Route::get('page', ['as' => 'api.page', 'uses' => 'Api\PageController@index']);
-	Route::post('page/delete', ['as' => 'api.page.delete', 'uses' => 'Api\PageController@delete']);
+    Route::get('page', ['as' => 'api.page', 'uses' => 'Api\PageController@index']);
+    Route::post('page/delete', ['as' => 'api.page.delete', 'uses' => 'Api\PageController@delete']);
 
  Route::resource('page', 'Api\PageController');
 
@@ -107,42 +107,44 @@ Route::group(['middleware' => ['web']], function() {
       'getLogout' => 'auth.logout'
     ]);
 
-		// Route::get('imagecache', function()
-		// {
-		// 	$img = Image::make('img39_hero.jpg');
-		// 	return $img->response();
-		// });
+        // Route::get('imagecache', function()
+        // {
+        // 	$img = Image::make('img39_hero.jpg');
+        // 	return $img->response();
+        // });
 
     Route::get('/', ['as' => '/', 'uses' => 'MainController@index']);
 
     Route::group(['prefix' => 'emu-today'], function() {
+
+
       Route::get('story/{id?}', 'EmuToday\StoryController@index');
       Route::get('news/{id?}', 'EmuToday\StoryController@index');
       Route::get('student/{id?}', 'EmuToday\StudentController@index');
       Route::get('calendar/{year?}/{month?}/{day?}', 'EmuToday\CalendarController@index');
 
 
-		  // Route::get('magazine/index', 'EmuToday\MagazineController@index');
+          // Route::get('magazine/index', 'EmuToday\MagazineController@index');
       Route::get('magazine/article/{id?}', 'EmuToday\MagazineController@article');
-			Route::get('magazine/issue/{year?}/{season?}', 'EmuToday\MagazineController@issue');
+            Route::get('magazine/issue/{year?}/{season?}', 'EmuToday\MagazineController@issue');
       Route::get('magazine/{year?}/{season?}', 'EmuToday\MagazineController@index');
 
-			Route::get('announcement/create', 'EmuToday\AnnouncementController@create');
+            Route::get('announcement/create', 'EmuToday\AnnouncementController@create');
       Route::get('announcement/{id?}', 'EmuToday\AnnouncementController@index');
 
-			Route::resource('announcement', 'EmuToday\AnnouncementController');
+            Route::resource('announcement', 'EmuToday\AnnouncementController');
 
-			Route::get('formvue', function () {
-				return view('public.event.formvue');
-			});
+            Route::get('formvue', function () {
+                return view('public.event.formvue');
+            });
 
-			Route::get('event/{event}/edit', ['as' => 'emutoday_event_edit', 'uses' => 'EmuToday\EventController@edit']);
-			// Route::get('event/create', ['as' => 'emutoday_event_create', 'uses' => 'EmuToday\EventController@create']);
+            Route::get('event/{event}/edit', ['as' => 'emutoday_event_edit', 'uses' => 'EmuToday\EventController@edit']);
+            // Route::get('event/create', ['as' => 'emutoday_event_create', 'uses' => 'EmuToday\EventController@create']);
 
 
-			Route::resource('event', 'EmuToday\EventController');
+            Route::resource('event', 'EmuToday\EventController');
 
-			Route::get('hub', 'MainController@index');
+            Route::get('hub', 'MainController@index');
 
 
       // Route::get('events', function() {
@@ -151,77 +153,89 @@ Route::group(['middleware' => ['web']], function() {
     });
 
     //watch out for match anything ROUTES
+        Route::group(['prefix' => 'preview' ], function()
+        {
+            Route::get('page/{page}', ['as' => 'preview_hub', 'uses' => 'PreviewController@hub']);
+            Route::get('magazine/{magazine}', ['as' => 'preview_magazine', 'uses' => 'PreviewController@magazine']);
+
+            Route::get('{stype}/{story}', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
+
+        });
 
     Route::group(['prefix' => 'admin' ], function()
     {
-			Route::get('delete', function() {
-				return back();
-			});
+            Route::get('delete', function() {
+                return back();
+            });
 
-			Route::get('magazine/article', function() {
-				return view('admin.magazine.articles');
-			});
-			Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryController@articleSetup']);
-			Route::get('magazine/article/{story}/edit', ['as' => 'admin_magazine_article_edit', 'uses' => 'Admin\StoryController@edit']);
+            Route::get('magazine/article', function() {
+                return view('admin.magazine.articles');
+            });
+            Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryController@articleSetup']);
+            Route::get('magazine/article/{story}/edit', ['as' => 'admin_magazine_article_edit', 'uses' => 'Admin\StoryController@edit']);
+            Route::get('magazine/article/{story}', ['as' => 'admin_magazine_article_preview', 'uses' => 'Admin\StoryController@show']);
 
 
       Route::get('magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
-			Route::post('magazine/{magazine}/addCoverImage', ['as' => 'store_magazine_cover', 'uses' => 'Admin\MagazineController@addCoverImage']);
+            Route::post('magazine/{magazine}/addCoverImage', ['as' => 'store_magazine_cover', 'uses' => 'Admin\MagazineController@addCoverImage']);
 
-			Route::put('magazine/{mediafile}/updateCoverImage/', ['as' => 'update_magazine_cover', 'uses' => 'Admin\MagazineController@updateCoverImage']);
+            Route::put('magazine/{mediafile}/updateCoverImage/', ['as' => 'update_magazine_cover', 'uses' => 'Admin\MagazineController@updateCoverImage']);
 
-			Route::post('magazine/delete', ['as' => 'admin_magazine_delete', 'uses' => 'Admin\MagazineController@delete'] );
+            Route::post('magazine/delete', ['as' => 'admin_magazine_delete', 'uses' => 'Admin\MagazineController@delete'] );
 
       Route::resource('magazine', 'Admin\MagazineController');
 
 
-			Route::post('user/{user}/addMediafileUser', ['as' => 'store_mediafile_user', 'uses' => 'Admin\MediafileController@addMediafileUser']);
-			Route::post('user/{user}/updateMediafileUser', ['as' => 'update_mediafile_user', 'uses' => 'Admin\MediafileController@updateMediafileUser']);
-			Route::delete('user/{user}/removeMediafileUser', ['as' => 'remove_mediafile_user', 'uses' => 'Admin\MediafileController@removeMediafileUser']);
+            Route::post('user/{user}/addMediafileUser', ['as' => 'store_mediafile_user', 'uses' => 'Admin\MediafileController@addMediafileUser']);
+            Route::post('user/{user}/updateMediafileUser', ['as' => 'update_mediafile_user', 'uses' => 'Admin\MediafileController@updateMediafileUser']);
+            Route::delete('user/{user}/removeMediafileUser', ['as' => 'remove_mediafile_user', 'uses' => 'Admin\MediafileController@removeMediafileUser']);
 
       Route::get('users/{users}/confirm', ['as' => 'admin.users.confirm', 'uses' => 'Admin\UsersController@confirm']);
       Route::resource('users', 'Admin\UsersController');
 
 
-      Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
-			Route::get('story/{stype}', ['as' => 'admin.story.list', 'uses' => 'Admin\StoryController@list']);
+      // Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
 
+            Route::get('story/{stype}', ['as' => 'admin.story.list', 'uses' => 'Admin\StoryController@list']);
+            Route::get('story/{stype}/setup', ['as' => 'admin_story_type_setup', 'uses' => 'Admin\StoryController@storyTypeSetUp']);
 
+            Route::get('story/{stype}/{story}/edit', ['as' => 'admin_story_type_edit', 'uses' => 'Admin\StoryController@storyTypeEdit']);
+            Route::get('story/{stype}/{story}/preview', ['as' => 'admin_story_type_preview', 'uses' => 'Admin\StoryController@storyTypePreview']);
 
       // Route::get('admin/story/create/{stype}/', ['as' => 'admin_story_create', 'uses' => 'Admin\StoryController@create']);
       Route::get('story/{story}/confirm', ['as' => 'admin.story.confirm', 'uses' => 'Admin\StoryController@confirm']);
       // Route::get('admin/storyType/{storyType?}', ['as' => 'admin.storyType', 'uses' => 'Admin\StoryController@build']);
       // Route::get('admin/storyType/story/{story}', ['as' => 'admin.storyType.story', 'uses' => 'Admin\StoryController@build']);
-			Route::post('story/{id}/addnewimage','Admin\StoryController@addNewImage');
-			Route::post('story/{id}/addimage', 'Admin\StoryController@addImage');
-  		Route::post('story/{id}/promoteStory', 'Admin\StoryController@promoteStory');
-			Route::post('story/imageUpload',[
-										'as' => 'admin.story.imageupload',
-										'uses' => 'Admin\StoryController@imageUpload'
-			]);
+            Route::post('story/{id}/addnewimage','Admin\StoryController@addNewImage');
+            Route::post('story/{id}/addimage', 'Admin\StoryController@addImage');
+          Route::post('story/{id}/promoteStory', 'Admin\StoryController@promoteStory');
+            Route::post('story/imageUpload',[
+                                        'as' => 'admin.story.imageupload',
+                                        'uses' => 'Admin\StoryController@imageUpload'
+            ]);
 
-			Route::get('story/imageBrowse',[
-					'as' => 'admin.story.imagebrowse',
-					'uses' => 'Admin\StoryController@imageBrowse'
-				]);
+            Route::get('story/imageBrowse',[
+                    'as' => 'admin.story.imagebrowse',
+                    'uses' => 'Admin\StoryController@imageBrowse'
+                ]);
       Route::resource('story', 'Admin\StoryController');
-			// Route::get('announcement/app', function () {
-			// 	return view('admin.announcement.app');
-			// });
+            // Route::get('announcement/app', function () {
+            // 	return view('admin.announcement.app');
+            // });
 
-			Route::get('announcement/app', ['as' => 'admin.announcement.app', 'uses' => 'Admin\AnnouncementController@appload']);
+            Route::get('announcement/app', ['as' => 'admin.announcement.app', 'uses' => 'Admin\AnnouncementController@appload']);
 
       Route::get('announcement/{announcement}/confirm', ['as' => 'admin.announcement.confirm', 'uses' => 'Admin\AnnouncementController@confirm']);
-			Route::post('announcement/delete', ['as' => 'admin_announcement_delete', 'uses' => 'Admin\AnnouncementController@delete'] );
-			Route::resource('announcement', 'Admin\AnnouncementController');
+            Route::post('announcement/delete', ['as' => 'admin_announcement_delete', 'uses' => 'Admin\AnnouncementController@delete'] );
+            Route::resource('announcement', 'Admin\AnnouncementController');
 
       Route::get('storyimages/{storyimages}/confirm', ['as' => 'admin.storyimages.confirm', 'uses' => 'Admin\StoryImageController@confirm']);
       Route::resource('storyimages', 'Admin\StoryImageController');
 
       Route::get('page/{page}/confirm', ['as' => 'admin.page.confirm', 'uses' => 'Admin\PageController@confirm']);
-			Route::post('page/delete', ['as' => 'admin_page_delete', 'uses' => 'Admin\PageController@delete'] );
+    Route::post('page/delete', ['as' => 'admin_page_delete', 'uses' => 'Admin\PageController@delete'] );
 
-			Route::resource('page', 'Admin\PageController');
+    Route::resource('page', 'Admin\PageController');
 
       Route::get('dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);
 
@@ -230,24 +244,24 @@ Route::group(['middleware' => ['web']], function() {
 
 
 
-			Route::resource('mediafile', 'Admin\MediafileController');
+            Route::resource('mediafile', 'Admin\MediafileController');
 
 
-			Route::resource('role', 'Admin\RoleController');
+            Route::resource('role', 'Admin\RoleController');
 
-			Route::resource('permission', 'Admin\PermissionController');
+            Route::resource('permission', 'Admin\PermissionController');
 
-			Route::resource('mediatype', 'Admin\MediatypeController');
+            Route::resource('mediatype', 'Admin\MediatypeController');
 
-			Route::resource('imagetype', 'Admin\ImagetypeController');
+            Route::resource('imagetype', 'Admin\ImagetypeController');
 
-			Route::get('queue', function() {
-					return view('admin.queue');
-				});
+            Route::get('queue', function() {
+                    return view('admin.queue');
+                });
 
-			Route::get('bugz/app', ['as' => 'admin.bugz.app', 'uses' => 'Admin\BugzController@appload']);
+            Route::get('bugz/app', ['as' => 'admin.bugz.app', 'uses' => 'Admin\BugzController@appload']);
 
-			Route::resource('bugz', 'Admin\BugzController');
+            Route::resource('bugz', 'Admin\BugzController');
       Route::get('twitter', 'Admin\TwitterController@index');
       Route::post('approve-tweets', 'Admin\TwitterController@store');
 

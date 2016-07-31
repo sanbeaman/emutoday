@@ -99,7 +99,7 @@
 
 				var data = table.row( $(this).parents('tr') ).data();
 			//	var storyid = data["id"];
-				window.location.href = '/admin/magazine/'+ data["id"];
+				window.location.href = '/preview/magazine/'+ data["id"];
 
 				//openroute('edit',data["id"]);
 				// var data = table.row( $(this).parents('tr') ).data();

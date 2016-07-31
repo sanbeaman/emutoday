@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html>
 <head>
   <meta charset="utf-8">
@@ -11,19 +7,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	<!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	@section('style-vendor')
-		{{-- <link rel="stylesheet" href="{{ elixir('css/admin-styles.css') }}" /> --}}
 
-		<!-- Bootstrap 3.3.6 -->
-  	{{-- <link rel="stylesheet" href="/themes/admin-lte/bootstrap/css/bootstrap.min.css"> --}}
-		<!-- Bootstrap 3.3.6 -->
-		{{-- <link rel="stylesheet" href="{{ elixir('css/admin-styles.css') }}" /> --}}
-		<!-- Font Awesome -->
-		{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"> --}}
-		<!-- Ionicons -->
-		{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"> --}}
 	@show
 
 	@section('style-plugin')
+
 	@show
 
 	@section('style-app')
@@ -47,9 +35,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 	@show
 	@section('scripts-app')
 		<!-- App related Scripts  that need to be loaded in the header -->
-
 	@show
 	@include('include.js')
+
+
 
   </head>
 

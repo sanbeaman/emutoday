@@ -11,6 +11,8 @@
     @include('include.js')
   </head>
   <body>
+		@yield('bodytop')
+
     <div class="off-canvas-wrapper">
       <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
         <!-- ***** off-canvas off-canvas right menu 'small' screen -->

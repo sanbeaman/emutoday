@@ -133,7 +133,7 @@
 
 				var data = table.row( $(this).parents('tr') ).data();
 			//	var storyid = data["id"];
-				window.location.href = '/admin/story/'+ data["id"];
+				window.location.href = '/preview/'+data["type"] +'/' +data["id"];
 
 				//openroute('edit',data["id"]);
 				// var data = table.row( $(this).parents('tr') ).data();
@@ -143,7 +143,7 @@
 
 				var data = table.row( $(this).parents('tr') ).data();
 			//	var storyid = data["id"];
-				window.location.href = '/admin/story/'+ data["id"] + '/edit';
+				window.location.href = '/admin/story/'+data["type"] +'/' + data["id"] + '/edit';
 
 				//openroute('edit',data["id"]);
 				// var data = table.row( $(this).parents('tr') ).data();

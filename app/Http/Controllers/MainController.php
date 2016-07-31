@@ -27,6 +27,10 @@ class MainController extends Controller
 
 
     }
+		public function preview($stype, Story $story)
+		{
+			return 'need to recreate or reroute to correct preview page' . $stype . $story;
+		}
 
     public function index()
     {
