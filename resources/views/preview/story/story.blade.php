@@ -1,10 +1,17 @@
 <!-- Preview Story Page -->
-@extends('public.layouts.global')
 
+@extends('public.layouts.global')
+@section('styles')
+    @parent
+    @include('preview.includes.previewcoverstyle')
+@endsection
 @section('scriptshead')
     <!-- Scripts  for code libraries and plugins that need to be loaded in the header -->
     <script src="/themes/plugins/ckeditor/ckeditor.js"></script>
     @parent
+@endsection
+@section('bodytop')
+    @include('preview.includes.previewstory')
 @endsection
 @section('offcanvaslist')
     @include('preview.includes.offcanvaslist')

@@ -205,6 +205,7 @@ require('laravel-elixir-vueify');
             'resources/assets/js/vendor-public/timedropper.js',
             'resources/assets/js/moment.js',
         ], 'public/js/vendor-scripts.js');
+        mix.copy('resources/assets/css/my-redips.css', 'public/css/my-redips.css');
 
         mix.copy('resources/assets/js/pagebuild-redips.js', 'public/js/pagebuild-redips.js');
         mix.copy('resources/assets/js/magbuild-redips.js', 'public/js/magbuild-redips.js');

@@ -131,13 +131,12 @@
 </div><!-- /.box-body -->
 </div><!-- /.box -->
 
-    <div class="box box-info">
+    <div class="box box-primary">
             <div class="box-header">
                 <h3 class="box-title">Page Builder</h3>
                 <div class="box-tools">
                     <div class="btn-toolbar btn-group-sm">
                         <a href="/preview/page/{{$page->id}}" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
-
                     </div><!-- /.btn-toolbar -->
                 </div><!-- /.box-tools -->
             </div>

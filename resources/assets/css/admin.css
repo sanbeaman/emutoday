@@ -12,16 +12,22 @@
   border-radius: 2px;
 }
 ol.breadcrumb {
-	margin: 0;
-	padding:0;
-	background-color: transparent;
+    margin: 0;
+    padding:0;
+    background-color: transparent;
 }
 section.content, section.content-header {
-	padding: 8px;
+    padding: 8px;
 }
 .dropdown-menu {
-	left: auto;
-	right: 0;
+    left: auto;
+    right: 0;
+}
+img.better-thumb {
+    vertical-align: top;
+}
+.box-head-info {
+    display: inline-block;
 }
 /*.login-box,
 .register-box {
@@ -41,16 +47,16 @@ textarea .teaser,
 }
 
 table tbody tr.isfuture {
-	background-color: #2199e8;
+    background-color: #2199e8;
 }
 table tbody tr.iscurrent {
-	background-color: #e6e6e6;
+    background-color: #e6e6e6;
 }
 table tbody tr.ispast {
-	background-color: #ffae00;
+    background-color: #ffae00;
 }
 table tbody tr.isproblem {
-	background-color: #ec5840;
+    background-color: #ec5840;
 }
 table thead th, table thead td, table tfoot th, table tfoot td {
     padding: 0;
@@ -67,8 +73,8 @@ th {
     color: white;
 }
 .table {
-	border: 1px solid #005A31;
-	margin-top: 0.3rem;
+    border: 1px solid #005A31;
+    margin-top: 0.3rem;
 }*/
 /*.header {
   padding: 10rem 0;

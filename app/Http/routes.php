@@ -67,6 +67,7 @@ Route::group(['prefix' => 'api'], function() {
 
     Route::get('magazine/articles', ['as'=> 'api.magazine.articles', 'uses'=> 'Api\StoryController@articles']);
 
+    Route::get('story/listapproved', ['as' => 'api.story.listapproved', 'uses' => 'Api\StoryController@listApproved']);
 
      Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
      Route::post('story/delete', ['as' => 'api.story.delete', 'uses' => 'Api\StoryController@delete']);

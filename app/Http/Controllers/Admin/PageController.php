@@ -91,9 +91,9 @@ class PageController extends Controller
             'jsis' => 'foobar',
             'storysonpage' => $connectedStorys->toArray()
         ]);
-        return view('admin.page.form', compact('page', 'storys'));
+        // return view('admin.page.form', compact('page', 'storys'));
 
-        // return view('admin.page.edit', compact('page', 'storys'));
+         return view('admin.page.edit', compact('page', 'storys'));
 
     }
 

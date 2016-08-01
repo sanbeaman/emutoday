@@ -2,12 +2,17 @@ var Vue = require('vue');
 
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
+// import AsyncComputed from 'vue-async-computed'
+// Vue.use(AsyncComputed)
 // var VueDragula = require('vue-dragula');
 // Vue.use(VueDragula);
-var moment = require('moment');
-
+// var moment = require('moment');
+// var VueAsyncData = require('vue-async-data');
 new Vue({
     el: '#vue-page-builder-app',
+    data: {
+    items: []
+    },
     components: {
       PageBuilderApp: require('./components/PageBuilderApp.vue')
     },

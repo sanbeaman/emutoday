@@ -40,39 +40,50 @@ class StoryController extends ApiController
         // 2. Now way to attach metadata
         // 3. Linking db structurte to the API Output.. need to hide some data
         // 4. No error Checking
-				$fractal = new Manager();
+                $fractal = new Manager();
 
         $storys = Story::all();
 
-				$resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformer);
-					// Turn all of that into a JSON string
-					return $fractal->createData($resource)->toJson();
+                $resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformer);
+                    // Turn all of that into a JSON string
+                    return $fractal->createData($resource)->toJson();
         // return $this->respond([
         //     'data' => $this->storyTransformer->transformCollection($storys->all())
         // ]);
     }
 
-		public function articles()
-		{
-			$fractal = new Manager();
+    public function listApproved()
+    {
+        $fractal = new Manager();
 
-			$storys = Story::where('story_type','article')->get();
+        $storys = Story::where('is_approved',1)->get();
 
 
-			$resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformer);
-				// Turn all of that into a JSON string
-				return $fractal->createData($resource)->toArray();
-		}
-		// public function index()
-		// {
-		//
-		//
-		// 		$storys = Story::all();
-		//
-		// 		return $this->respond([
-		// 				'data' => $this->storyTransformer->transformCollection($storys->all())
-		// 		]);
-		// }
+        $resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformer);
+            // Turn all of that into a JSON string
+            return $fractal->createData($resource)->toArray();
+    }
+        public function articles()
+        {
+            $fractal = new Manager();
+
+            $storys = Story::where('story_type','article')->get();
+
+
+            $resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformer);
+                // Turn all of that into a JSON string
+                return $fractal->createData($resource)->toArray();
+        }
+        // public function index()
+        // {
+        //
+        //
+        // 		$storys = Story::all();
+        //
+        // 		return $this->respond([
+        // 				'data' => $this->storyTransformer->transformCollection($storys->all())
+        // 		]);
+        // }
 
     /**
      * Show the form for creating a new resource.
@@ -143,13 +154,13 @@ class StoryController extends ApiController
         //
     }
 
-			public function delete(Request $request)
-			{
-				$story = $this->story->findOrFail($request->get('id'));
-				$story->delete();
-				flash()->warning('Story has been deleted.');
-				return redirect(route('admin.story.index'));//->with('status', 'Story has been deleted.');
-			}
+            public function delete(Request $request)
+            {
+                $story = $this->story->findOrFail($request->get('id'));
+                $story->delete();
+                flash()->warning('Story has been deleted.');
+                return redirect(route('admin.story.index'));//->with('status', 'Story has been deleted.');
+            }
     /**
      * Remove the specified resource from storage.
      *
