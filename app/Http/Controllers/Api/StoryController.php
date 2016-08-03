@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use emutoday\Http\Requests\Api\Story_StoreRequest;
 
 use emutoday\Emutoday\Transformers\FractalStoryTransformer;
+use emutoday\Emutoday\Transformers\FractalStoryExtraTransformer;
+
 use League\Fractal\Manager;
 use League\Fractal;
 
@@ -53,7 +55,7 @@ class StoryController extends ApiController
     {
         $fractal = new Manager();
         $storys = Story::all();
-        $resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformer);
+        $resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryExtraTransformer);
         // Turn all of that into a Array string
         return $fractal->createData($resource)->toArray();
 

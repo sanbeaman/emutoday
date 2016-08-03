@@ -84,14 +84,6 @@
                         </div><!-- /.col-md-6 -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('end_date') !!}
-                                {!! Form::text('end_date', null, ['class' => 'form-control', 'id'=>'end-date']) !!}
-                            </div>
-                        </div><!-- /.col-md-6 -->
-                    </div><!-- /.row -->
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
                                     {!! Form::label('is_approved','Approved', ['class'=>'text-center']) !!}
                                     <div class="row">
                                 <div class="col-md-4">
@@ -102,7 +94,14 @@
                                         </div><!-- /.col-md-4-->
                                 </div><!-- /.row -->
                             </div><!-- /.form-group-->
+                            {{-- <div class="form-group">
+                                {!! Form::label('end_date') !!}
+                                {!! Form::text('end_date', null, ['class' => 'form-control', 'id'=>'end-date']) !!}
+                            </div> --}}
                         </div><!-- /.col-md-6 -->
+                    </div><!-- /.row -->
+                    <div class="row">
+
                         <div class="col-md-6">
 
                             <div class="form-group">
@@ -113,6 +112,12 @@
                                         {!! Form::select('story_type', $stypes, null, ['class' => 'form-control']) !!}
                                 @endif
                             </div>
+                            <div class="col-md-6">
+                                {!! Form::label('Story Group') !!}
+                                    {!! Form::text('story_group', $story->storyType->group, ['class' => 'form-control', 'readonly' => 'readonly']) !!}
+
+
+                            </div><!-- /.col-md-6 -->
                             {{-- <div class="form-group">
                         {!! Form::label('is_featured', 'Featured') !!}
                         <div class="row">
@@ -124,6 +129,15 @@
                             </div><!-- /.col-md-6 -->
                         </div><!-- /.row -->
                     </div><!-- /.form-group --> --}}
+                        </div><!-- /.col-md-6 -->
+                    </div><!-- /.row -->
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('tag_list', 'Tags:') !!}
+                                {!! Form::select('tag_list[]',$tags, $story->tags->lists('id')->toArray() , ['class' => 'form-control select2', 'multiple']) !!}
+                            </div>
                         </div><!-- /.col-md-6 -->
                     </div><!-- /.row -->
                     </div><!-- /.box-body -->

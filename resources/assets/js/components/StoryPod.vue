@@ -13,8 +13,10 @@
                     </a>
                     <div class="col-md-2">
                     <!-- <form class="form-inline pull-right"> -->
-                        <span class="item-featured-icon" :class="liveIcon"></span>
+                        <span class="item-featured-icon" :class="promotedIcon"></span>
                         <span class="item-featured-icon" :class="featuredIcon"></span>
+                        <span class="item-featured-icon" :class="homeIcon"></span>
+                        <span class="item-featured-icon" :class="archivedIcon"></span>
                         <!-- <div class="form-group">
                             <button v-on:click.prevent="doThis" class="btn btn-sm">BTN</button>
                         </div> -->
@@ -33,6 +35,7 @@
             <p>Featured: {{item.featured}}</p>
             <p>Live: {{item.live}}</p>
             <p>Archived: {{item.archived}}</p>
+            <p>Tags: {{item.tags | json}}</p>
             <p>Start Date: {{item.start_date}}</p>
             <div class="announcement-info">
                 Start Date: {{item.start_date}}</br>
@@ -40,7 +43,11 @@
 
       </div><!-- /.box-body -->
             <div class="box-footer list-footer">
-                <h6>Start Date: {{item.start_date}}</h6>
+                <div class="btn-group pull-right">
+                        <button v-on:click.prevent="editItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-pencil"></i></button>
+                        <button v-on:click.prevent="previewItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-eye"></i></button>
+                </div><!-- /.btn-toolbar -->
+
             </div><!-- /.box-footer -->
 
     </div><!-- /.box- -->
@@ -58,6 +65,13 @@
 
 .box-header {
     padding: 3px;
+}
+.box-footer {
+    padding: 3px;
+}
+button.footer-btn {
+    border-color: #1B1B1B;
+
 }
 h6.box-title {
     color: #1B1B1B;
@@ -226,28 +240,71 @@ module.exports  = {
                     console.log('type'+ this.item.type);
                 },
               computed: {
+                  itemEditPath: function(){
+                      return '/admin/story/'+ this.item.id + '/edit'
+                  },
+                  itemPreviewPath: function(){
+                      return '/preview/story/'+ this.item.id
+                  },
                   typeClass: function() {
 
+                  },
+                  promotedIcon: function() {
+
+                      if (this.item.promoted === 1){
+                          pIcon = 'fa fa-circle'
+                      } else {
+                          pIcon = 'fa fa-circle-o'
+                      }
+
+                      return pIcon
                   },
                   liveIcon: function() {
 
                       if (this.item.live === 1){
-                          featuredicon = 'fa fa-home'
+                          lIcon = 'fa fa-home'
                       } else {
-                          featuredicon = ''
+                          lIcon = ''
                       }
 
-                      return featuredicon
+                      return lIcon
+                  },
+                  homeIcon: function() {
+                      if (this.item.tags.length > 0){
+
+
+                      if (this.item.tags.indexOf('homepage') >= 0){
+                          hIcon = 'fa fa-home'
+                      } else {
+                          hIcon = ''
+                      }
+                  } else {
+                      hIcon = ''
+                  }
+
+                      return hIcon
+                  },
+                  archivedIcon: function() {
+
+                      if (this.item.archived === 1){
+                          aIcon = 'fa fa-archive'
+                      } else {
+                          aIcon = ''
+                        //   featuredicon = 'fa-star-o'
+                      }
+
+                      return aIcon
                   },
                   featuredIcon: function() {
 
                       if (this.item.featured === 1){
-                          featuredicon = 'fa-star'
+                          featuredicon = 'fa fa-star'
                       } else {
-                          featuredicon = 'fa-star-o'
+                        //   featuredicon = ''
+                          featuredicon = 'fa fa-star-o'
                       }
 
-                      return 'fa '+ featuredicon + ' pull-right'
+                      return featuredicon
                   },
                   typeIcon: function() {
                       switch (this.item.type) {
@@ -277,6 +334,14 @@ module.exports  = {
 
               },
               methods: {
+                  editItem: function(ev) {
+
+
+                      window.location.href = this.itemEditPath;
+                  },
+                  previewItem: function(ev) {
+                      window.location.href = this.itemPreviewPath;
+                  },
                     toggleBody: function(ev) {
                         if(this.showBody == false) {
                             this.showBody = true;

@@ -369,7 +369,14 @@ class StoryController extends Controller
             $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
 
             $tags = \emutoday\Tag::lists('name', 'id');
+
+            if ($stype == 'emutoday'){
+                $stype = 'story';
+            }
             $storyGroup = $story->storyType->group;
+            $stypes = $stype;
+            $story->story_type = $stype;
+            // dd($storyGroup);
             $imagetypeNames = Imagetype::ofGroup($storyGroup)->get()->keyBy('id');
             $currentStoryImages = $story->storyImages->pluck('image_type','imagetype_id');
             $leftOverImages = $imagetypeNames->diffKeys($currentStoryImages);
@@ -388,20 +395,16 @@ class StoryController extends Controller
     public function edit($id)
     {
         $story = $this->story->findOrFail($id);
-                $stypes = $story->story_type;
+        if ($story->story_type == 'emutoday'){
+            $story->story_type = 'story';
+        }
+        $stypes = $story->story_type;
         $tags = \emutoday\Tag::lists('name', 'id');
-
-
-
-                $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-
-                JavaScript::put([
+        $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+        JavaScript::put([
                             'storytype' => $story->story_type,
                             'is_featured' => $story->is_featured,
                     ]);
-
-
-
                     $user = auth()->user();
                     if($user == null)
                     {
@@ -414,7 +417,7 @@ class StoryController extends Controller
                     return view('admin.story.role.form', compact('story', 'stypes', 'tags'));
 
                 } else {
-                    $storyGroup = $story->storyType->group;
+                    $storyGroup = $story->storyGroup->group;
                     $imagetypeNames = Imagetype::ofGroup($storyGroup)->get()->keyBy('id');
                     $currentStoryImages = $story->storyImages->pluck('image_type','imagetype_id');
                     $leftOverImages = $imagetypeNames->diffKeys($currentStoryImages);
@@ -436,11 +439,27 @@ class StoryController extends Controller
         $story = $this->story->findOrFail($id);
 
         $story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','external_link', 'story_type','is_approved', 'is_featured'));
-                $story->start_date = \Carbon\Carbon::parse($request->start_date);
+        $story->start_date = \Carbon\Carbon::parse($request->start_date);
         $story->end_date = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
         $story->save();
         $taglistRequest = $request->input('tag_list') == null ? [] : $request->input('tag_list');
         $story->tags()->sync($taglistRequest);
+
+        $storyGroup = $story->storyGroup->group;
+        $requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
+        $countRequiredImages = $requiredImages->count();
+
+
+        $currentStoryImages = $story->storyImages()->where('is_active', 1)->get();
+        $countCurrentStoryImages = $currentStoryImages->count();
+
+        if($countCurrentStoryImages >= $countRequiredImages){
+            $story->is_promoted = 1;
+        } else {
+            $story->is_promoted = 0;
+        }
+        $story->save();
+
 
 
 
