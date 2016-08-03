@@ -13,30 +13,30 @@ body {
 
 /* drag container*/
 #redips-drag {
-    border: 2px dashed LightBlue;
+    /*border: 2px dashed LightBlue;*/
     /*width: 1200px;*/
     /*margin: auto;*/
 }
-        /* left container */
-        #redips-drag #left {
-            float: left;
-            width: 600px;
-        }
-        /* right container */
-        #redips-drag #right {
-            width: 440px;
-              display: table;
-            table-layout: auto;
-            /* align div to the right */
-            margin-left: auto;
+/* left container */
+#redips-drag #left {
+    /*float: left;
+    width: 600px;*/
+}
+/* right container */
+#redips-drag #right {
+    /*width: 440px;*/
+     display: table;
+    table-layout: auto;
+    /* align div to the right */
+    margin-left: auto;
 
-        }
-        /* right container */
-        #redips-drag #right .four-stories-bar {
-            height: 100px;
+}
+/* right container */
+/*#redips-drag #right .four-stories-bar {
+    height: 100px;
 
 
-        }
+}*/
 
 /* DIV object */
 .redips-drag {
@@ -50,24 +50,27 @@ body {
     /* round corners */
     border-radius: 4px; /* Opera, Chrome */
     -moz-border-radius: 4px; /* FF */
-    margin-bottom: 2px;
+    /*margin-bottom: 2px;*/
 }
 
 /* tables */
 div#redips-drag table {
 
     border-collapse: collapse;
-    margin: 5px;
+    margin: 0;
 }
     /* table cells */
     div#redips-drag td {
-        border: 1px solid white;
+        /*border: 1px solid white;*/
         text-align: center;
         font-size: 10pt;
         padding: 0px;
     }
     table#table1 td {
         height: 40px;
+        border: 1px solid black;
+        padding-left: 2px;
+        padding-right: 2px;
     }
     table#table1 td.redips-mark.story-title {
         text-align: left;
@@ -76,20 +79,61 @@ div#redips-drag table {
     }
     table#table2 td {
         background-color: #eee;
-        height: 122px;
+        /*height: 122px;*/
+    }
+    table#front-story-table0 td.front-story-view {
+        background-color: #eee;
+        background-position:center top;
+        height: 100px;
+        width: "100%";
+        text-align: right;
+        vertical-align:top;
+
+    }
+    table#front-story-table0 td.front-story-btn {
+        background-color: #009900;
+        height: 30px;
+        width: "100%";
+    }
+    table.small-story-table {
+        border-collapse: collapse;
+    }
+
+    table#small-story-table-group  td.small-story-view {
+        background-color: #eee;
+        height: 100px;
+        width: "100%";
+        vertical-align: top;
+        text-align: right;
+    }
+    table.small-story-table td.small-story-btn {
+        background-color: #eee;
+        height: 30px;
+        width: "100%";
+    }
+    div.redips-drag {
+        border: 1px solid  #001F3F;
+    }
+    table.small-story-table {
+        border: 1px solid #666666;
+    }
+    table.front-story-table {
+        border: 1px solid #666666;
+    }
+    .smallstory-btn
+    {
+        color: #fff;
+        background-color: #001F3F;
+    }
+    .frontstory-btn
+    {
+        background-color: #00a7d0;
+        /*background-color: #3D9970;*/
+        /*#db690b;*/
+        color: #001F3F;
     }
 
 
-/* green, orange and blue DIV elements */
-.green {
-    border: 1px solid #499B33;
-}
-.orange {
-    border: 1px solid #BF6A30;
-}
-.blue {
-    border: 1px solid SteelBlue;
-}
 
 /* message below tables */
 #message {

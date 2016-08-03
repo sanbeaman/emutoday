@@ -1,14 +1,14 @@
 {{-- Magazine Index Page --}}
 @extends('public.layouts.global')
 @section('styles')
-	@parent
-	@include('preview.includes.previewcoverstyle')
+    @parent
+    @include('preview.includes.previewcoverstyle')
 @endsection
 @section('bodytop')
-	@include('preview.includes.previewcover')
+    @include('preview.includes.previewcover')
 @endsection
 @section('offcanvaslist')
-	@include('public.magazine.partials.offcanvaslist')
+    @include('public.magazine.partials.offcanvaslist')
 @endsection
   @section('connectionbar')
     @include('public.magazine.partials.connectionbar')
@@ -27,19 +27,21 @@
     <div id="profiles-list" >
       <div class="row column">
         <div class="row small-up-2 medium-up-2 large-up-5">
-          @foreach ($barImgs as $barImg)
-            <div class="column">
-              <a class="article-link" href="/emu-today/magazine/article/{{$barImg->story->id}}">
-                <img class="topic-image" src="/imagecache/original/{{$barImg->filename}}"  alt="topic image"/>
-                <div class="profile-content">
-                  <div class="profile-text-content magazine" data-equalizer-watch>
-                    <h3>{{$barImg->title}}</h3>
-                    <p>{{$barImg->caption}}</p>
-                  </div>
+            @for ($i = 1; $i <= count($barImgs); $i++)
+                <div class="column">
+                  <a class="article-link" href="/emu-today/magazine/article/{{$barImgs[$i]->story->id}}">
+                    <img class="topic-image" src="/imagecache/original/{{$barImgs[$i]->filename}}"  alt="topic image"/>
+                    <div class="profile-content">
+                      <div class="profile-text-content magazine" data-equalizer-watch>
+                        <h3>{{$barImgs[$i]->title}}</h3>
+                        <p>{{$barImgs[$i]->caption}}</p>
+                      </div>
+                    </div>
+                  </a>
                 </div>
-              </a>
+            @endfor
+            {{-- @each('public.layouts.components.smallimg', $barImgs, 'barImg') --}}
             </div>
-          @endforeach
         </div>
       </div>
       <div id="magazine-feature">
@@ -62,12 +64,12 @@
           <div class="large-5 large-pull-7 medium-12 small-12 columns">
             <div class="row">
               <div class="large-6 medium-4 show-for-medium columns cover-box">
-								<img class="topic-image magazine-cover" src="/imagecache/magazinecover/{{$magazineCover->media_name}}"  alt="magazine image"/>
+                                <img class="topic-image magazine-cover" src="/imagecache/magazinecover/{{$magazineCover->media_name}}"  alt="magazine image"/>
               </div>
               <div class="large-6 medium-8 small-12 columns magazine-details">
-								<h4>{{$magazineCover->headline}}</h4>
-								{!! $magazineCover->teaser !!}
-								<p><a href="{{$magazineCover->link}}">{{$magazineCover->link_text}}</a></p>
+                                <h4>{{$magazineCover->headline}}</h4>
+                                {!! $magazineCover->teaser !!}
+                                <p><a href="{{$magazineCover->link}}">{{$magazineCover->link_text}}</a></p>
                 <p class="button-container"><a class="button expanded magazine-button">Subscribe</a></p>
                 <p class="button-container"><a class="button expanded magazine-button">Submit a story idea</a></p>
               </div>

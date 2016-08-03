@@ -3,6 +3,7 @@
 namespace emutoday\Providers;
 
 use emutoday\StoryImage;
+use emutoday\mediafile;
 
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -32,9 +33,51 @@ class EventServiceProvider extends ServiceProvider
 
         StoryImage::saving(function ($storyImage)
         {
-            $storyImage->filename = $storyImage->image_name . '.' . $storyImage->image_extension;
+
+            if (isset($storyImage->filename))
+            {
+                if(is_null($storyImage->filename))
+                {
+                    $storyImage->is_active = 0;
+                } else {
+                    if(empty($storyImage->image_name) || empty($storyImage->image_extension))
+                    {
+                        $storyImage->is_active = 0;
+                    } else {
+                        $storyImage->is_active = 1;
+                    }
+                }
+            } else {
+                $storyImage->is_active = 0;
+            }
+
+            // $storyImage->filename = $storyImage->image_name . '.' . $storyImage->image_extension;
 
        });
+
+       Mediafile::saving(function ($mediafile)
+       {
+
+           if (isset($mediafile->filename))
+           {
+               if(is_null($mediafile->filename))
+               {
+                   $mediafile->is_active = 0;
+               } else {
+                   if(empty($mediafile->name) || empty($mediafile->ext))
+                   {
+                       $mediafile->is_active = 0;
+                   } else {
+                       $mediafile->is_active = 1;
+                   }
+               }
+           } else {
+               $mediafile->is_active = 0;
+           }
+
+           // $storyImage->filename = $storyImage->image_name . '.' . $storyImage->image_extension;
+
+      });
 
         //
     }

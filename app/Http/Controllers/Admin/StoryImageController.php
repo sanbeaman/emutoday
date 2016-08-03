@@ -45,70 +45,51 @@ class StoryImageController extends Controller
     {
        //create new instance of model to save from form
        $storyImage = $this->storyImages->findOrFail($id);
-			$storyImage->image_type = $request->get('image_type');
+
+       $storyImage->image_type = $request->get('image_type');
        $storyImage->is_active = $request->get('is_active');
-
-
-
-				$storyImage->title = $request->get('title');
+       $storyImage->title = $request->get('title');
        $storyImage->caption = $request->get('caption');
        $storyImage->teaser = $request->get('teaser');
        $storyImage->moretext = $request->get('moretext');
-			 $storyImage->link = $request->get('link');
+       $storyImage->link = $request->get('link');
        $storyImage->link_text = $request->get('link_text');
 
        //define the image paths
-
        $destinationFolder = '/imgs/story/';
 
 
        //assign the image paths to new model, so we can save them to DB
-
        $storyImage->image_path = $destinationFolder;
-
-
        // format checkbox values and save model
 
        $this->formatCheckboxValue($storyImage);
-
-
        //parts of the image we will need
        if ( ! empty(Input::file('image'))){
-
-       $imgFile = Input::file('image');
-       $imgFilePath = $imgFile->getRealPath();
-       $imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
-
-
-       switch ($imgFileOriginalExtension) {
-           case 'jpg':
-           case 'jpeg':
-            $imgFileExtension = 'jpg';
-            break;
-            default:
-            $imgFileExtension = $imgFileOriginalExtension;
-
+           $imgFile = Input::file('image');
+           $imgFilePath = $imgFile->getRealPath();
+           $imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
+           switch ($imgFileOriginalExtension) {
+               case 'jpg':
+               case 'jpeg':
+               $imgFileExtension = 'jpg';
+               break;
+               default:
+               $imgFileExtension = $imgFileOriginalExtension;
+           }
+           $storyImage->image_extension = $imgFileExtension;
+           $imgFileName = $storyImage->image_name . '.' . $storyImage->image_extension;
+           $image = Image::make($imgFilePath)
+           ->save(public_path() . $destinationFolder . $imgFileName);
+           // ->fit(100)
+           // ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
+           $storyImage->filename = $imgFileName;
        }
-       $storyImage->image_extension = $imgFileExtension;
-
-
-       $imgFileName = $storyImage->image_name . '.' . $storyImage->image_extension;
-
-
-       $image = Image::make($imgFilePath)
-        ->save(public_path() . $destinationFolder . $imgFileName);
-        // ->fit(100)
-        // ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
-
-    }
-     $storyImage->is_active = 1;
+    //  $storyImage->is_active = 1;
         $storyImage->save();
-
-      // flash()->success('Story Image Created!');
-      $story = $storyImage->story;
-     flash()->success('Image has been upadted.');
-      return redirect(route('admin.story.edit', $story->id ));//->with('status', 'Story Image has been created.');
-      // return redirect()->route('backend/storyimages.show', [$storyImage]);
+        $story = $storyImage->story;
+        flash()->success('Image has been upadted.');
+        return redirect(route('admin.story.edit', $story->id ));
     }
 
     public function edit($id)
@@ -144,7 +125,7 @@ class StoryImageController extends Controller
 
 
 
-				/*
+                /*
 
         $destinationFolder = '/imgs/story/';
         $thumbPath = $destinationFolder .'thumbnails/';

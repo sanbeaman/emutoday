@@ -38,7 +38,9 @@
 
         @parent
     @endsection
+
     @section('content')
+
     <div class="row">
         {!! Form::model($magazine, [
             'method' =>  'put',
@@ -186,7 +188,7 @@
                 @include('admin.magazine.templates.layoutindex')
             </div><!-- /.box-body -->
             <div class="box-footer">
-                
+
             </div><!-- /.box-footer -->
             </div><!-- /.box -->
             </div>

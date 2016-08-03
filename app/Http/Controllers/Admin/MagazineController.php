@@ -29,7 +29,7 @@ class MagazineController extends Controller
   {
       $this->magazine = $magazine;
       $this->story = $story;
-			$this->storyImage = $storyImage;
+      $this->storyImage = $storyImage;
       $this->mediafile = $mediafile;
   }
 
@@ -41,9 +41,9 @@ class MagazineController extends Controller
     public function index()
     {
       $magazines = $this->magazine->orderBy('updated_at', 'desc')->get();
-			JavaScript::put([
-					'allmags' => $magazines,
-			]);
+            JavaScript::put([
+                    'allmags' => $magazines,
+            ]);
       return view('admin.magazine.index', compact('magazines'));
     }
 
@@ -73,128 +73,104 @@ class MagazineController extends Controller
       return redirect(route('admin.magazine.edit', $magazine->id));
     }
 
+    public function addCoverImage($id, Request $request)
+    {
+        $group = 'magazine';
+        $type = 'cover';
+        $mediafile = $this->mediafile->findOrFail($id);
+        //define the image paths
+        $destinationFolder = '/imgs/'. $group .'/'.$type;
+        $mediafile = new Mediafile();
+        //Find mediatype for this type of media file
+        $mediatype = Mediatype::where([
+                ['group',$group],
+                ['type', $type]
+            ])->first();
+                //Define mediatype to mediafile relationship
+        $mediafile->mediatype()->associate($mediatype);
 
-		public function addCoverImage($id, Request $request)
-		{
-			$group = 'magazine';
-			$type = 'cover';
+        $mediafile->group = $group;
+        $mediafile->type = $type;
+        $mediafile->path = $destinationFolder;
 
-  		$mediafile = $this->mediafile->findOrFail($id);
+        //parts of the image we will need
+        // if ( ! empty(Input::file('photo'))){
+        $imgFile = $request->file('photo');
 
+        // $imgFile = Input::file('photo');
+        $imgFilePath = $imgFile->getRealPath();
+        $imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
 
-			//define the image paths
-			$destinationFolder = '/imgs/'. $group .'/'.$type;
+            switch ($imgFileOriginalExtension) {
+                    case 'jpg':
+                    case 'jpeg':
+                     $imgFileExtension = 'jpg';
+                     break;
+                     default:
+                     $imgFileExtension = $imgFileOriginalExtension;
+                 }
 
-			$mediafile = new Mediafile();
+         $mediafile->name = 'cover'. '-' .$magazine->year . '-' . $magazine->season;
+         $mediafile->ext = $imgFileExtension;
 
-			//Find mediatype for this type of media file
-			$mediatype = Mediatype::where([
-				['group',$group],
-				['type', $type]
-			])->first();
-				//Define mediatype to mediafile relationship
-			$mediafile->mediatype()->associate($mediatype);
-
-			$mediafile->group = $group;
-			$mediafile->type = $type;
-			$mediafile->path = $destinationFolder;
-
-				//parts of the image we will need
-			// if ( ! empty(Input::file('photo'))){
-				$imgFile = $request->file('photo');
-
-				// $imgFile = Input::file('photo');
-				$imgFilePath = $imgFile->getRealPath();
-				$imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
-
-			switch ($imgFileOriginalExtension) {
-					case 'jpg':
-					case 'jpeg':
-					 $imgFileExtension = 'jpg';
-					 break;
-					 default:
-					 $imgFileExtension = $imgFileOriginalExtension;
-				 }
-
-				 $mediafile->name = 'cover'. '-' .$magazine->year . '-' . $magazine->season;
-				 $mediafile->ext = $imgFileExtension;
-
-				 $imgFileName = $mediafile->name . '.' . $mediafile->ext;
+         $imgFileName = $mediafile->name . '.' . $mediafile->ext;
 
 
-			$image = Image::make($imgFilePath)
-			 ->save(public_path() . $destinationFolder . $imgFileName);
-			//  ->fit(100)
-			//  ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
+        $image = Image::make($imgFilePath)
+                        ->save(public_path() . $destinationFolder . $imgFileName);
 
-		// 	}
-			$mediafile->filename = $imgFileName;
+        $mediafile->filename = $imgFileName;
+        $mediafile->headline = $request->input('headline');
+        $mediafile->caption = $request->input('caption');
+        $mediafile->teaser = $request->input('teaser');
+        $mediafile->link = $request->input('link');
+        $mediafile->link_text = $request->input('link_text');
+        $mediafile->note = $request->input('note');
+        $mediafile->save();
+        $magazine->mediafiles()->save($mediafile);
+        flash()->success('Cover Image has been added');
+        return redirect(route('admin.magazine.edit', $magazine->id));
+    }
 
-			$mediafile->headline = $request->input('headline');
-			$mediafile->caption = $request->input('caption');
-			$mediafile->teaser = $request->input('teaser');
-			$mediafile->link = $request->input('link');
-			$mediafile->link_text = $request->input('link_text');
-			$mediafile->note = $request->input('note');
+    public function updateCoverImage($id, Request $request)
+    {
+        $mediafile = $this->mediafile->findOrFail($id);
+        $magazine = $mediafile->magazines()->first();
+        $destinationFolder = '/imgs/'. $mediafile->group .'/';
 
+        if ( ! empty(Input::file('photo'))) {
+            $imgFile = $request->file('photo');
+            $imgFilePath = $imgFile->getRealPath();
+            $imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
 
-			$mediafile->save();
-			$magazine->mediafiles()->save($mediafile);
-			flash()->success('Cover Image has been added');
-			return redirect(route('admin.magazine.edit', $magazine->id));//->with('status', 'Story has been created.');
+            switch ($imgFileOriginalExtension) {
+                    case 'jpg':
+                    case 'jpeg':
+                     $imgFileExtension = 'jpg';
+                     break;
+                     default:
+                     $imgFileExtension = $imgFileOriginalExtension;
+                 }
+            $mediafile->path = $destinationFolder;
+            $mediafile->name = $mediafile->type .'-'. $magazine->year . '-' . $magazine->season;
+            $mediafile->ext = $imgFileExtension;
+            $imgFileName = $mediafile->name . '.' . $mediafile->ext;
+            $mediafile->filename = $imgFileName;
+            $image = Image::make($imgFilePath)
+                            ->save(public_path() . $destinationFolder . $imgFileName);
+            }
 
+            $mediafile->headline = $request->input('headline');
+            $mediafile->caption = $request->input('caption');
+            $mediafile->teaser = $request->input('teaser');
+            $mediafile->link = $request->input('link');
+            $mediafile->link_text = $request->input('link_text');
+            $mediafile->note = $request->input('note');
+            $mediafile->save();
 
-
-		}
-
-		public function updateCoverImage($id, Request $request)
-		{
-
-			$mediafile = $this->mediafile->findOrFail($id);
-			$magazine = $mediafile->magazines()->first();
-
-			$destinationFolder = '/imgs/'. $mediafile->group .'/';
-
-			if ( ! empty(Input::file('photo'))) {
-								$imgFile = $request->file('photo');
-								$imgFilePath = $imgFile->getRealPath();
-								$imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
-
-								switch ($imgFileOriginalExtension) {
-										case 'jpg':
-										case 'jpeg':
-										 $imgFileExtension = 'jpg';
-										 break;
-										 default:
-										 $imgFileExtension = $imgFileOriginalExtension;
-									 }
-
-									 $mediafile->path = $destinationFolder;
-								 	$mediafile->name = $mediafile->type .'-'. $magazine->year . '-' . $magazine->season;
-
-
-								 $mediafile->ext = $imgFileExtension;
-
-								 $imgFileName = $mediafile->name . '.' . $mediafile->ext;
-								 $mediafile->filename = $imgFileName;
-
-								 $image = Image::make($imgFilePath)
-							 						->save(public_path() . $destinationFolder . $imgFileName);
-							//  ->fit(100)
-							//  ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
-				}
-
-				$mediafile->headline = $request->input('headline');
-				$mediafile->caption = $request->input('caption');
-				$mediafile->teaser = $request->input('teaser');
-				$mediafile->link = $request->input('link');
-				$mediafile->link_text = $request->input('link_text');
-				$mediafile->note = $request->input('note');
-				$mediafile->save();
-
-				flash()->success('The Cover Image has been updated');
-				return redirect()->back();//->with('status', 'Story has been created.');
-			}
+            flash()->success('The Cover Image has been updated');
+            return redirect()->back();
+        }
 
 
     /**
@@ -207,9 +183,9 @@ class MagazineController extends Controller
     {
       $magazine = $this->magazine->findOrFail($id);
       $storyImages = $this->magazine->storyImages();
-			$magazineCover = $magazine->mediafiles()->where('type','cover')->first();
-			$magazineExtra = $magazine->mediafiles()->where('type','extra')->first();
-			// dd($storyImages);
+            $magazineCover = $magazine->mediafiles()->where('type','cover')->first();
+            $magazineExtra = $magazine->mediafiles()->where('type','extra')->first();
+            // dd($storyImages);
       $barImgs = collect();
 
 
@@ -227,9 +203,9 @@ class MagazineController extends Controller
       // $magazine = $this->magazines->findOrFail($id);
       // $storyImages = $this->magazines->storyImages();
       // return view('admin.magazine.preview', compact('magazine', 'storyImages', 'heroImg', 'barImgs'));
-			return view('public.magazine.index', compact('magazine', 'storyImages', 'heroImg', 'barImgs', 'magazineCover','magazineExtra'));
+            return view('public.magazine.index', compact('magazine', 'storyImages', 'heroImg', 'barImgs', 'magazineCover','magazineExtra'));
 
-			}
+            }
 
     /**
      * Show the form for editing the specified resource.
@@ -240,46 +216,48 @@ class MagazineController extends Controller
     public function edit($id)
     {
       $magazine = $this->magazine->findOrFail($id);
-			$storys = Story::where('story_type', 'article')->with(['images' => function($query){
-															$query->where('group','=','article');
-														}])->get();
+            $storys = Story::where('story_type', 'article')->with(['images' => function($query){
+                                                            $query->where('group','=','article');
+                                                        }])->get();
 
 
 
-			$storyimgs = $this->storyImage->where([
-																			['group','article'],
-																			['image_type', 'small'],
-																			])
-																			->orderBy('updated_at', 'desc')->get();
+            $storyimgs = $this->storyImage->where([
+                                                                            ['group','article'],
+                                                                            ['image_type', 'small'],
+                                                                            ])
+                                                                            ->orderBy('updated_at', 'desc')->get();
       // $storys =  $this->story->where('story_type', 'article')->orderBy('updated_at', 'desc')->get();
-			$mediatypes = Mediatype::where('group','magazine')->pluck('type','id');
+            $mediatypes = Mediatype::where('group','magazine')->pluck('type','id');
 
-			// foreach ($mediatypes as $mediatype) {
-			// 	$magazinefile = $magazine->mediafiles->firstOrCreate(['mediatype_id' => $mediatype->id]);
-			// }
-			$magazineMedia = Mediatype::ofGroup('magazine')->get();
-			// $otherImages = Imagetype::ofGroup('magazine')->isRequired(0)->get();
-			foreach ($magazineMedia as $img) {
-					$magazine->mediafiles()->firstorCreate([
-						'mediatype_id'=> $img->id,
-						'group'=> $img->group,
-						'type'=> $img->type
-				]);
-			}
+            // foreach ($mediatypes as $mediatype) {
+            // 	$magazinefile = $magazine->mediafiles->firstOrCreate(['mediatype_id' => $mediatype->id]);
+            // }
+            $magazineMedia = Mediatype::ofGroup('magazine')->get();
+            // $otherImages = Imagetype::ofGroup('magazine')->isRequired(0)->get();
+            foreach ($magazineMedia as $img) {
+                    $magazine->mediafiles()->firstorCreate([
+                        'mediatype_id'=> $img->id,
+                        'group'=> $img->group,
+                        'type'=> $img->type
+                ]);
+            }
 
-			$mediafile = $this->mediafile;
-			$mediafiles = $magazine->mediafiles;
+            $mediafile = $this->mediafile;
+            $mediafiles = $magazine->mediafiles;
 
 
 
-			$magazineStorys = $magazine->storys()->get();
+            $magazineStorys = $magazine->storys()->get();
+            $original_story_ids = $magazineStorys->pluck('id');
 
-			JavaScript::put([
-          'jsis' => 'foobar',
-					'mediatypes' => $mediatypes,
-          'magazinestorys' => $magazineStorys->toArray(),
-					'storyimgs' => $storyimgs->toArray(),
-					'storys' => $storys->toArray()
+            JavaScript::put([
+                    'mainrecordid' => $magazine->id,
+                    'mediatypes' => $mediatypes,
+                    'original_story_ids' => $original_story_ids,
+                    'magazinestorys' => $magazineStorys->toArray(),
+                    'storyimgs' => $storyimgs->toArray(),
+                    'storys' => $storys->toArray()
       ]);
 
 
@@ -335,19 +313,19 @@ class MagazineController extends Controller
         $magazine = $this->magazine->findOrFail($id);
         return view('admin.magazine.confirm', compact('magazine'));
     }
-		/**
-		 * Remove the specified resource from storage.
-		 *
-		 * @param  int  $id
-		 * @return \Illuminate\Http\Response
-		 */
-		public function delete(Request $request)
-		{
-			$magazine = $this->magazine->findOrFail($request->get('id'));
-			$magazine->delete();
-			flash()->warning('Magazine has been deleted.');
-			return redirect(route('admin.magazine.index'));//->with('status', 'Story has been deleted.');
-		}
+        /**
+         * Remove the specified resource from storage.
+         *
+         * @param  int  $id
+         * @return \Illuminate\Http\Response
+         */
+        public function delete(Request $request)
+        {
+            $magazine = $this->magazine->findOrFail($request->get('id'));
+            $magazine->delete();
+            flash()->warning('Magazine has been deleted.');
+            return redirect(route('admin.magazine.index'));//->with('status', 'Story has been deleted.');
+        }
     /**
      * Remove the specified resource from storage.
      *

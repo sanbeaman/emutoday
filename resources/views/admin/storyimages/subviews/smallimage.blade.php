@@ -36,6 +36,7 @@
                                 {!! Form::label('caption', 'Caption/Subtitle') !!}
                                 {!! Form::text('caption', null, ['class' => 'form-control input-sm']) !!}
                                 <span class="help-block">Small to Medium size text limited to a couple of lines, visible when story is Featured on homepage, emu-today hub, or in a sidebar</span>
+
                             </div>
                             <div class="form-group">
                                 {!! Form::label('moretext', 'More Text Link') !!}

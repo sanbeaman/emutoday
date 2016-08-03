@@ -4,7 +4,7 @@ namespace emutoday\Http\Controllers\Api;
 
 
 use emutoday\Magazine;
-
+use Illuminate\Support\Facades\Input as Input;
 
 use Illuminate\Http\Request;
 
@@ -20,7 +20,7 @@ class MagazineController extends ApiController
 
     function __construct(Magazine $magazine)
     {
-  		$this->magazine = $magazine;
+          $this->magazine = $magazine;
     }
 
     /**
@@ -30,27 +30,27 @@ class MagazineController extends ApiController
      */
     public function index()
     {
-				$fractal = new Manager();
+                $fractal = new Manager();
 
         $magazines = Magazine::all();
 
-				$resource = new Fractal\Resource\Collection($magazines->all(), new FractalMagazineTransformer);
-					// Turn all of that into a JSON string
-					return $fractal->createData($resource)->toJson();
+                $resource = new Fractal\Resource\Collection($magazines->all(), new FractalMagazineTransformer);
+                    // Turn all of that into a JSON string
+                    return $fractal->createData($resource)->toJson();
         // return $this->respond([
         //     'data' => $this->storyTransformer->transformCollection($storys->all())
         // ]);
     }
-		// public function index()
-		// {
-		//
-		//
-		// 		$storys = Story::all();
-		//
-		// 		return $this->respond([
-		// 				'data' => $this->storyTransformer->transformCollection($storys->all())
-		// 		]);
-		// }
+        // public function index()
+        // {
+        //
+        //
+        // 		$storys = Story::all();
+        //
+        // 		return $this->respond([
+        // 				'data' => $this->storyTransformer->transformCollection($storys->all())
+        // 		]);
+        // }
 
     /**
      * Show the form for creating a new resource.
@@ -110,7 +110,30 @@ class MagazineController extends ApiController
     {
         //
     }
+    public function saveAs(Request $request, $id)
+    {
+            $magazine = Magazine::findOrFail($id);
 
+
+            $storyIDString =  $request->get('story_ids');
+            $storyIDarray = explode(",", $storyIDString);
+            $storyIDarrayCount = count($storyIDarray);
+
+            $storyIDsForPivotArray;
+
+             for ($x = 0; $x < $storyIDarrayCount; $x++) {
+                $namedKey = $storyIDarray[$x];
+                 $attributeArray = array();
+                 $attributeArray["story_position"] = intval($x);
+                 $storyIDsForPivotArray[intval($namedKey)] = $attributeArray;
+
+             }
+            $magazine->storys()->sync($storyIDsForPivotArray);
+            if($magazine->save()) {
+                    return $this->setStatusCode(201)
+                                ->respondCreated('Magazine Updated');
+            }
+        }
     /**
      * Remove the specified resource from storage.
      *

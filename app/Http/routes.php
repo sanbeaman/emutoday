@@ -67,6 +67,8 @@ Route::group(['prefix' => 'api'], function() {
 
     Route::get('magazine/articles', ['as'=> 'api.magazine.articles', 'uses'=> 'Api\StoryController@articles']);
 
+
+    Route::get('story/appload', ['as' => 'api.story.appload', 'uses' => 'Api\StoryController@appLoad']);
     Route::get('story/listapproved', ['as' => 'api.story.listapproved', 'uses' => 'Api\StoryController@listApproved']);
 
      Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
@@ -86,6 +88,8 @@ Route::group(['prefix' => 'api'], function() {
      Route::resource('announcement', 'Api\AnnouncementController');
 
      Route::get('magazine', ['as' => 'api.magazine', 'uses' => 'Api\MagazineController@index']);
+
+     Route::patch('magazine/saveas/{id}', 'Api\MagazineController@saveAs');
     Route::resource('magazine', 'Api\MagazineController');
 
     Route::get('page', ['as' => 'api.page', 'uses' => 'Api\PageController@index']);
@@ -196,6 +200,8 @@ Route::group(['middleware' => ['web']], function() {
 
 
       // Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
+
+      Route::get('story/app', ['as' => 'admin.story.app', 'uses' => 'Admin\StoryController@appload']);
 
             Route::get('story/{stype}', ['as' => 'admin.story.list', 'uses' => 'Admin\StoryController@list']);
             Route::get('story/{stype}/setup', ['as' => 'admin_story_type_setup', 'uses' => 'Admin\StoryController@storyTypeSetUp']);

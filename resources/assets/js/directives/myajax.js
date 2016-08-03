@@ -1,16 +1,17 @@
 module.exports = {
-	twoWay: true,
+    twoWay: true,
   priority: 1000,
-	params: ['complete','userid'],
+    params: ['complete','userid'],
     bind: function () {
         this.el.addEventListener(
             'submit', this.onSubmit.bind(this)
         );
+        console.log('vueajax')
     },
 
     onSubmit: function (e) {
-			  e.preventDefault();
-				this.el.querySelector('button[type="submit"]').disabled = true;
+              e.preventDefault();
+                this.el.querySelector('button[type="submit"]').disabled = true;
         var requestType = this.getRequestType();
 
         this.vm
@@ -30,23 +31,23 @@ module.exports = {
     onError: function (response) {
         console.log(response.data.message); // Use pretty flash message instead.
     },
-		getFormData: function() {
-			 // You can use $(this.el) in jQuery and you will get the same thing.
-			 var serializedData = $(this.el).serializeArray();
-			 console.log(serializedData);
-			 var objectData = {};
-			 $.each(serializedData, function() {
-					 if (objectData[this.name] !== undefined) {
-							 if (!objectData[this.name].push) {
-									 objectData[this.name] = [objectData[this.name]];
-							 }
-							 objectData[this.name].push(this.value || '');
-					 } else {
-							 objectData[this.name] = this.value || '';
-					 }
-			 });
-			 return objectData;
-	 },
+        getFormData: function() {
+             // You can use $(this.el) in jQuery and you will get the same thing.
+             var serializedData = $(this.el).serializeArray();
+             console.log(serializedData);
+             var objectData = {};
+             $.each(serializedData, function() {
+                     if (objectData[this.name] !== undefined) {
+                             if (!objectData[this.name].push) {
+                                     objectData[this.name] = [objectData[this.name]];
+                             }
+                             objectData[this.name].push(this.value || '');
+                     } else {
+                             objectData[this.name] = this.value || '';
+                     }
+             });
+             return objectData;
+     },
 
     getRequestType: function () {
         var method = this.el.querySelector('input[name="_method"]');

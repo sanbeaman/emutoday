@@ -32,66 +32,66 @@ class PreviewController extends Controller
     public function __construct(Page $page, Story $story, Magazine $magazine, Event $event, Announcement $announcement)
     {
         $this->page = $page;
-				$this->magazine = $magazine;
+                $this->magazine = $magazine;
         $this->story = $story;
-      	$this->event = $event;
-				$this->announcement = $announcement;
+          $this->event = $event;
+                $this->announcement = $announcement;
 
 
     }
 
-		public function story($stype, Story $story)
-		{
+        public function story($stype, Story $story)
+        {
 
-			$mainStoryImage = null;
-			$mainStoryImages = $story->storyImages()->where('image_type','story')->get();
-			// dd($mainStoryImage);
-			foreach($mainStoryImages as $mainimg){
-				if($mainimg->imgtype->type == 'story') {
-					$mainStoryImage = $mainimg;
-					break;
-				}
-			}
-			$sideFeaturedStorys = null;
-			$sideStoryBlurbs = collect();
+            $mainStoryImage = null;
+            $mainStoryImages = $story->storyImages()->where('image_type','story')->get();
+            // dd($mainStoryImage);
+            foreach($mainStoryImages as $mainimg){
+                if($mainimg->imgtype->type == 'story') {
+                    $mainStoryImage = $mainimg;
+                    break;
+                }
+            }
+            $sideFeaturedStorys = null;
+            $sideStoryBlurbs = collect();
 
-			$sideStudentStorys = null;
-			$sideStudentBlurbs = collect();
+            $sideStudentStorys = null;
+            $sideStudentBlurbs = collect();
 
-			$sideNewsStorys = collect();
+            $sideNewsStorys = collect();
 
-			if($stype == 'story' || $stype == 'emutoday'){
-				$sideStoryBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
+            if($stype == 'story' || $stype == 'emutoday'){
+                $sideStoryBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
 
-				return view('preview.story.story', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
+                return view('preview.story.story', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
 
-			} else if($stype == 'student'){
-				$sideStudentBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
+            } else if($stype == 'student'){
+                $sideStudentBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
 
-				return view('preview.student.story', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
-
-
-			} else if($stype == 'article'){
-				$magazine = $story->magazine()->first();
-				$mainImage = $story->storyImages()->where('image_type','story')->first();
-				// dd($magazine);
-				$sideStoryBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
+                return view('preview.student.story', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
 
 
-
-			return view('preview.magazine.story', compact('magazine','story', 'mainImage','sideStoryBlurbs','sideNewsStorys'));
-
-
-			} else {
-				return 'no story type';
-			}
-		}
+            } else if($stype == 'article'){
+                $magazine = $story->magazine()->first();
+                $mainImage = $story->storyImages()->where('image_type','story')->first();
+                // dd($magazine);
+                $sideStoryBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
 
 
-		// public function hub(Page $page)
-		// {
-		// 	return 'need to recreate or reroute to correct preview page' . $page;
-		// }
+
+            return view('preview.magazine.story', compact('magazine','story', 'mainImage','sideStoryBlurbs','sideNewsStorys'));
+
+
+            } else {
+                return 'no story type';
+            }
+        }
+
+
+        // public function hub(Page $page)
+        // {
+        // 	return 'need to recreate or reroute to correct preview page' . $page;
+        // }
 
 
     public function hub(Page $page)
@@ -133,34 +133,57 @@ class PreviewController extends Controller
     }
 
     public function student(Story $story)
-		{
+        {
 
-				$heroImg = $story->storyImages()->where('image_type', 'front')->first();
-				$featureImg = $story->storyImages()->where('image_type', 'story')->first();
-				$barImgs = collect();
-				$barImgs->push( $story->storyImages()->where('image_type', 'small')->first() );
+                $heroImg = $story->storyImages()->where('image_type', 'front')->first();
+                $featureImg = $story->storyImages()->where('image_type', 'story')->first();
+                $barImgs = collect();
+                $barImgs->push( $story->storyImages()->where('image_type', 'small')->first() );
 
-			return view('preview.student.index', compact('heroImg', 'featureImg','barImgs'));
-		}
+            return view('preview.student.index', compact('heroImg', 'featureImg','barImgs'));
+        }
 
-		public function magazine(Magazine $magazine)
-		{
+        public function magazine(Magazine $magazine)
+        {
 
-			$storyImages = $magazine->storyImages();
-			$barImgs = collect();
-			$magazineCover = $magazine->mediafiles()->where('type','cover')->first();
-			$magazineExtra = $magazine->mediafiles()->where('type','extra')->first();
+            $storyImages = $magazine->storyImages();
 
-			foreach ($magazine->storys as $story) {
-						if ($story->pivot->story_position === 0) {
-								$heroImg = $story->storyImages()->where('image_type', 'front')->first();
-						} else {
-								$barImgs->push( $story->storyImages()->where('image_type', 'small')->first() );
-						}
+            $articleTotal = 6;
+            $articleCount = count($magazine->storys);
 
-				}
-			return view('preview.magazine.index', compact('magazine', 'storyImages', 'heroImg', 'barImgs', 'magazineCover','magazineExtra'));
+            $barImgs = collect();
+            $magazineCover = $magazine->mediafiles()->where('type','cover')->first();
+            if($magazineCover->filename == "" || $magazineCover->is_active == 0)
+            {
+                flash()->warning('Need to Add Cover Image');
+                return redirect()->back();
+            }
+
+            $magazineExtra = $magazine->mediafiles()->where('type','extra')->first();
+            if($magazineExtra->filename == "" || $magazineExtra->is_active == 0)
+            {
+                flash()->warning('Need to Add Extra  Magazine Image');
+                return redirect()->back();
+            }
+
+            if ($articleCount < $articleTotal){
+                $articlesNeeded = $articleTotal - $articleCount;
+                flash()->warning('Need to Add '. $articlesNeeded .' more articles');
+                return redirect()->back();
+            }
 
 
-		}
+            foreach ($magazine->storys as $story) {
+                        if ($story->pivot->story_position === 0) {
+                                $heroImg = $story->storyImages()->where('image_type', 'front')->first();
+                        } else {
+                            $barImgs[$story->pivot->story_position] = $story->storyImages()->where('image_type', 'small')->first();
+                            // $barImgs->push( $story->storyImages()->where('image_type', 'small')->first() );
+                        }
+
+                }
+            return view('preview.magazine.index', compact('magazine', 'storyImages', 'heroImg', 'barImgs', 'magazineCover','magazineExtra'));
+
+
+        }
 }

@@ -30,6 +30,7 @@
     "select2": "^4.0.3",
     "vue-async-computed": "^1.4.1",
     "vue-async-data": "^1.0.2",
+    "vue-awesome": "^0.3.0",
     "vue-bulma": "0.0.35",
     "vue-date-picker": "^1.0.2",
     "vue-dnd": "^0.1.1",

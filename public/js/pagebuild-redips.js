@@ -217,6 +217,8 @@ getContent = function (id) {
             var storypath = '/admin/story/'+ content +'/edit';
             location.assign(storypath);
         }
+
+        
         console.log('content='+ content);
     }
     //

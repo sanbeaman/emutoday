@@ -44,8 +44,6 @@
         </tr>
         <tr>
             <td class="redips-mark">
-
-
             <table class="four-stories-bar">
                 <colgroup>
                     <col width="100"/> <!--  first activity column -->

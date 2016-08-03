@@ -18,31 +18,29 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app['view']->composer(['layouts.auth', 'layouts.backend', 'admin.layouts.master'], Composers\AddStatusMessage::class);
-
-				$this->app['view']->composer(['*'], Composers\AddCurrentUser::class);
-
-				$this->app['view']->composer(['layouts.backend', 'admin.layouts.master','admin.layouts.global', 'admin.layouts.adminlte'], Composers\AddAdminUser::class);
+        $this->app['view']->composer(['*'], Composers\AddCurrentUser::class);
+        $this->app['view']->composer(['layouts.backend', 'admin.layouts.master','admin.layouts.global', 'admin.layouts.adminlte'], Composers\AddAdminUser::class);
         // $this->app['view']->composer('layouts.frontend', Composers\InjectPages::class);
 
         // $this->app['view']->setFinder($this->app['theme.finder']);
         //
         // Validator::extend('date_more_format', function($attribute, $value, $formats)
-				// {
-				// 	//iterate thru all formats
-				// 	foreach($formats as $format) {
-				// 		//pare date thru curretn format
-				// 		$parsed = date_parse_from_format($format, \Carbon::parse($value));
-				// 		// if value matches given format return true=validation succeeded
-		    //     if ($parsed['error_count'] === 0 && $parsed['warning_count'] === 0) {
-		    //       return true;
-		    //     }
-				// 	}
-				// 	//value didn't match
-				// 	return false;
-				// }
-				//
-				//
-				// )
+                // {
+                // 	//iterate thru all formats
+                // 	foreach($formats as $format) {
+                // 		//pare date thru curretn format
+                // 		$parsed = date_parse_from_format($format, \Carbon::parse($value));
+                // 		// if value matches given format return true=validation succeeded
+            //     if ($parsed['error_count'] === 0 && $parsed['warning_count'] === 0) {
+            //       return true;
+            //     }
+                // 	}
+                // 	//value didn't match
+                // 	return false;
+                // }
+                //
+                //
+                // )
     }
 
     /**
