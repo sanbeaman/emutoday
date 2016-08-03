@@ -3,7 +3,7 @@
 namespace emutoday\Providers;
 
 use emutoday\StoryImage;
-use emutoday\mediafile;
+use emutoday\Mediafile;
 
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
