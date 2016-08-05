@@ -79,10 +79,10 @@ class Story extends Model
     {
         return $this->hasMany(StoryImage::class);
     }
-		public function images()
-		{
-				return $this->hasMany('emutoday\StoryImage');
-		}
+        public function images()
+        {
+                return $this->hasMany('emutoday\StoryImage');
+        }
     /**
      * [tags description]
      * @return [type] [description]
@@ -99,6 +99,16 @@ class Story extends Model
     public function getTagListAttribute()
     {
       return $this->tags->lists('id')->all();
+    }
+
+
+    public function getPrettyStartDateAttribute()
+    {
+      return $this->start_date->toDateString();
+    }
+    public function getPrettyEndDateAttribute()
+    {
+      return $this->end_date->toDateString();
     }
 
     public function getStoryFolderAttribute()
@@ -137,10 +147,10 @@ class Story extends Model
         return $this->belongsTo('emutoday\StoryType', 'story_type', 'shortname');
     }
 
-		public function storyGroup()
-		{
-				return $this->belongsTo('emutoday\StoryType', 'story_type', 'shortname');
-		}
+        public function storyGroup()
+        {
+                return $this->belongsTo('emutoday\StoryType', 'story_type', 'shortname');
+        }
 
     /**
      * Inverse Many-to-Many relationship for page layouts
@@ -167,12 +177,12 @@ class Story extends Model
         return $query->where('story_type', $type);
     }
 
-		public function scopeOfStoryType($query, $group)
-		{
-				return $query->storyType->where('group', $group);
+        public function scopeOfStoryType($query, $group)
+        {
+                return $query->storyType->where('group', $group);
 
-				// where('story_type', $type);
-		}
+                // where('story_type', $type);
+        }
 
 
 }

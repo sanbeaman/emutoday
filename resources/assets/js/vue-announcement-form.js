@@ -13,7 +13,6 @@ var moment = require('moment');
 //
 //
 // Vue.component('autocomplete', autocomplete)
-
 new Vue({
     el: '#vue-announcements',
     components: {

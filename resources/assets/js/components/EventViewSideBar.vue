@@ -1,4 +1,4 @@
-ls<template>
+<template>
   <div class="calendar-bar row">
     <div class="small-12 column">
         <h4>Calendar</h4>
@@ -355,10 +355,10 @@ module.exports  = {
         this.monthArray = response.data.monthArray;
         this.dayVar = response.data.dayInMonth;
         this.calDaysArray = response.data.calDaysArray;
-				this.selectedDate.yearVar = response.data.selectedYear;
-				this.selectedDate.monthVar = response.data.selectedMonth;
-				 this.selectedDate.monthVarWord = response.data.selectedMonthWord;
-				this.selectedDate.dayVar = response.data.selectedDay;
+                this.selectedDate.yearVar = response.data.selectedYear;
+                this.selectedDate.monthVar = response.data.selectedMonth;
+                 this.selectedDate.monthVarWord = response.data.selectedMonthWord;
+                this.selectedDate.dayVar = response.data.selectedDay;
 
         console.log(response.data);
       //  this.pushFirstDateRange();
@@ -442,6 +442,6 @@ components: {
 events: {
  'responseCategoriesEvent': 'fetchCategoryList',
  'startFromThisDate': 'fetchCurrentEventsForCalendar'
-	}
+    }
 };
 </script>

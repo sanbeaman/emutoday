@@ -2,53 +2,55 @@
   "_args": [
     [
       {
-        "name": "admin-lte",
-        "raw": "admin-lte",
-        "rawSpec": "",
+        "raw": "admin-lte@^2.3.3",
         "scope": null,
-        "spec": "latest",
-        "type": "tag"
+        "escapedName": "admin-lte",
+        "name": "admin-lte",
+        "rawSpec": "^2.3.3",
+        "spec": ">=2.3.3 <3.0.0",
+        "type": "range"
       },
       "/Users/dbeaman/SITES/Code/emu/emutoday"
     ]
   ],
-  "_from": "admin-lte@latest",
-  "_id": "admin-lte@2.3.3",
+  "_from": "admin-lte@>=2.3.3 <3.0.0",
+  "_id": "admin-lte@2.3.5",
   "_inCache": true,
   "_installable": true,
   "_location": "/admin-lte",
   "_nodeVersion": "0.12.2",
   "_npmOperationalInternal": {
-    "host": "packages-12-west.internal.npmjs.com",
-    "tmp": "tmp/admin-lte-2.3.3.tgz_1459205339659_0.7310259302612394"
+    "host": "packages-16-east.internal.npmjs.com",
+    "tmp": "tmp/admin-lte-2.3.5.tgz_1467559368933_0.3783781419042498"
   },
   "_npmUser": {
-    "email": "abdullah@almsaeedstudio.com",
-    "name": "almasaeed2010"
+    "name": "almasaeed2010",
+    "email": "abdullah@almsaeedstudio.com"
   },
   "_npmVersion": "3.5.3",
   "_phantomChildren": {},
   "_requested": {
-    "name": "admin-lte",
-    "raw": "admin-lte",
-    "rawSpec": "",
+    "raw": "admin-lte@^2.3.3",
     "scope": null,
-    "spec": "latest",
-    "type": "tag"
+    "escapedName": "admin-lte",
+    "name": "admin-lte",
+    "rawSpec": "^2.3.3",
+    "spec": ">=2.3.3 <3.0.0",
+    "type": "range"
   },
   "_requiredBy": [
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/admin-lte/-/admin-lte-2.3.3.tgz",
-  "_shasum": "af369786b08a552b3b8b55931f5d8ea2affba19f",
+  "_resolved": "https://registry.npmjs.org/admin-lte/-/admin-lte-2.3.5.tgz",
+  "_shasum": "7667469f1b3e98834daacf0442817cfd9a2689c0",
   "_shrinkwrap": null,
-  "_spec": "admin-lte",
+  "_spec": "admin-lte@^2.3.3",
   "_where": "/Users/dbeaman/SITES/Code/emu/emutoday",
   "bugs": {
     "url": "https://github.com/almasaeed2010/AdminLTE/issues"
   },
   "dependencies": {},
-  "description": "**I apologize to everyone for my slow rate of response and development recently.** This is my final semester and I am very busy. Although I usually work on AdminLTE a few hours a week, there are weeks full of exams and assignments. Thanks for your underst",
+  "description": "Introduction ============",
   "devDependencies": {
     "R2": "^1.4.3",
     "grunt": "~0.4.5",
@@ -66,17 +68,17 @@
   },
   "directories": {},
   "dist": {
-    "shasum": "af369786b08a552b3b8b55931f5d8ea2affba19f",
-    "tarball": "https://registry.npmjs.org/admin-lte/-/admin-lte-2.3.3.tgz"
+    "shasum": "7667469f1b3e98834daacf0442817cfd9a2689c0",
+    "tarball": "https://registry.npmjs.org/admin-lte/-/admin-lte-2.3.5.tgz"
   },
-  "gitHead": "a49aaf581b6520678a63d92677ce0adbbb186bab",
+  "gitHead": "0ab2eb7f382e79810ebf3032ce766a02af2b0f3b",
   "homepage": "https://github.com/almasaeed2010/AdminLTE#readme",
   "license": "MIT",
   "main": "dist/js/app.min.js",
   "maintainers": [
     {
-      "email": "abdullah@almsaeedstudio.com",
-      "name": "almasaeed2010"
+      "name": "almasaeed2010",
+      "email": "abdullah@almsaeedstudio.com"
     }
   ],
   "name": "admin-lte",
@@ -87,5 +89,5 @@
     "url": "git://github.com/almasaeed2010/AdminLTE.git"
   },
   "scripts": {},
-  "version": "2.3.3"
+  "version": "2.3.5"
 }

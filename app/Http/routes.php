@@ -13,19 +13,7 @@ Route::group(['prefix' => 'api'], function() {
   Route::get('active-categories/{year?}/{month?}/{day?}','Api\CategoriesController@activeCategories');
   Route::get('calendar/month/{year?}/{month?}/{day?}','Api\CalendarController@eventsInMonth');
   Route::get('calendar/events/{year?}/{month?}/{day?}','Api\CalendarController@eventsByDay');
-  //events api
-  // Route::get('eventview', function() {
-  //   return view('public.event.home');
-  // });
-  // Route::get('eventfoam', function() {
-  //   return view('public.event.form');
-  // });
-  // Route::get('calendar/events', 'Api\EventsController@byDate');
-    // Route::get('event-catgeories', function() {
-    // 	$text = Input::get('q');
-    // 	return Building::likeSearch('name', $text)->get();
-    // 	//return Building::ofMapType('illustrated')->get();
-    // });
+
     Route::get('zbuildings', function() {
         $text = Input::get('q');
         return Building::likeSearch('name', $text)->get();
@@ -56,6 +44,9 @@ Route::group(['prefix' => 'api'], function() {
     Route::get('list-event-categories', ['uses'=> 'Api\EventController@listEventCategories']);
 
     Route::get('buildings', ['uses'=> 'Api\EventController@buildings']);
+
+    Route::get('event/unapprovedItems', ['as' => 'api.event.unapproveditems', 'uses' => 'Api\EventController@unapprovedItems']);
+    Route::get('event/approvedItems', ['as' => 'api.event.approveditems', 'uses' => 'Api\EventController@approvedItems']);
     Route::get('event', ['as' => 'api.event', 'uses' => 'Api\EventController@index']);
     Route::resource('event', 'Api\EventController');
 
@@ -239,12 +230,16 @@ Route::group(['middleware' => ['web']], function() {
       Route::get('storyimages/{storyimages}/confirm', ['as' => 'admin.storyimages.confirm', 'uses' => 'Admin\StoryImageController@confirm']);
       Route::resource('storyimages', 'Admin\StoryImageController');
 
+      Route::get('page/app', ['as' => 'admin.page.app', 'uses' => 'Admin\PageController@appLoad']);
+
       Route::get('page/{page}/confirm', ['as' => 'admin.page.confirm', 'uses' => 'Admin\PageController@confirm']);
     Route::post('page/delete', ['as' => 'admin_page_delete', 'uses' => 'Admin\PageController@delete'] );
 
     Route::resource('page', 'Admin\PageController');
 
       Route::get('dashboard', ['as' => 'admin.dashboard', 'uses' => 'Admin\DashboardController@index']);
+
+      Route::get('event/queue', ['as' => 'admin.event.queue', 'uses' => 'Admin\EventController@queue']);
 
       Route::get('event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
       Route::resource('event', 'Admin\EventController');

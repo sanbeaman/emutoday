@@ -1,6 +1,1339 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// shim for using process in browser
+"use strict";
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+var flatpickr = function flatpickr(selector, config) {
+	var elements = void 0;
+
+	var createInstance = function createInstance(element) {
+		if (element._flatpickr) {
+			element._flatpickr.destroy();
+		}
+
+		element._flatpickr = new flatpickr.init(element, config);
+		return element._flatpickr;
+	};
+
+	if (selector.nodeName) {
+		return createInstance(selector);
+	}
+	/*
+ Utilize the performance of native getters if applicable
+ https://jsperf.com/getelementsbyclassname-vs-queryselectorall/18
+ https://jsperf.com/jquery-vs-javascript-performance-comparison/22
+ */
+	else if (/^#[a-zA-Z0-9\-_]*$/.test(selector)) {
+			return createInstance(document.getElementById(selector.slice(1)));
+		} else if (/^\.[a-zA-Z0-9\-_]*$/.test(selector)) {
+			elements = document.getElementsByClassName(selector.slice(1));
+		} else {
+			elements = document.querySelectorAll(selector);
+		}
+
+	var instances = [];
+
+	for (var i = 0; i < elements.length; i++) {
+		instances.push(createInstance(elements[i]));
+	}
+
+	if (instances.length === 1) {
+		return instances[0];
+	}
+
+	return {
+		calendars: instances,
+		byID: function byID(id) {
+			return document.getElementById(id)._flatpickr;
+		}
+	};
+};
+
+/**
+ * @constructor
+ */
+flatpickr.init = function (element, instanceConfig) {
+	function createElement(tag, className, content) {
+		var newElement = document.createElement(tag);
+
+		if (content) {
+			newElement.textContent = content;
+		}
+
+		if (className) {
+			newElement.className = className;
+		}
+
+		return newElement;
+	}
+
+	var debounce = function debounce(func, wait, immediate) {
+		var timeout = void 0;
+		return function () {
+			for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+				args[_key] = arguments[_key];
+			}
+
+			var context = this;
+
+			var later = function later() {
+				timeout = null;
+				if (!immediate) {
+					func.apply(context, args);
+				}
+			};
+
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (immediate && !timeout) {
+				func.apply(context, args);
+			}
+		};
+	};
+
+	// functions
+	var self = this;
+	var parseConfig = void 0,
+	    init = void 0,
+	    wrap = void 0,
+	    uDate = void 0,
+	    equalDates = void 0,
+	    pad = void 0,
+	    monthToStr = void 0,
+	    isEnabled = void 0,
+	    buildMonthNavigation = void 0,
+	    buildWeekdays = void 0,
+	    buildCalendar = void 0,
+	    buildDays = void 0,
+	    buildWeeks = void 0,
+	    buildTime = void 0,
+	    timeWrapper = void 0,
+	    yearScroll = void 0,
+	    updateValue = void 0,
+	    amPMToggle = void 0,
+	    onKeyDown = void 0,
+	    onResize = void 0,
+	    updateNavigationCurrentMonth = void 0,
+	    handleYearChange = void 0,
+	    changeMonth = void 0,
+	    getDaysinMonth = void 0,
+	    documentClick = void 0,
+	    selectDate = void 0,
+	    getRandomCalendarIdStr = void 0,
+	    bind = void 0,
+	    triggerChange = void 0;
+
+	// elements & variables
+	var calendarContainer = void 0,
+	    weekdayContainer = void 0,
+	    timeContainer = void 0,
+	    navigationCurrentMonth = void 0,
+	    monthsNav = void 0,
+	    prevMonthNav = void 0,
+	    currentYearElement = void 0,
+	    currentMonthElement = void 0,
+	    nextMonthNav = void 0,
+	    calendar = void 0,
+	    weekNumbers = void 0,
+	    now = new Date(),
+	    wrapperElement = void 0,
+	    clickEvt = void 0;
+
+	self.formats = {
+		// weekday name, short, e.g. Thu
+		D: function D() {
+			return self.l10n.weekdays.shorthand[self.formats.w()];
+		},
+
+		// full month name e.g. January
+		F: function F() {
+			return monthToStr(self.formats.n() - 1, false);
+		},
+
+		// hours with leading zero e.g. 03
+		H: function H() {
+			return pad(self.selectedDateObj.getHours());
+		},
+
+		// day (1-30) with ordinal suffix e.g. 1st, 2nd
+		J: function J() {
+			return self.formats.j() + self.l10n.ordinal(self.formats.j());
+		},
+
+		// AM/PM
+		K: function K() {
+			return self.selectedDateObj.getHours() > 11 ? "PM" : "AM";
+		},
+
+		// shorthand month e.g. Jan, Sep, Oct, etc
+		M: function M() {
+			return monthToStr(self.formats.n() - 1, true);
+		},
+
+		// seconds 00-59
+		S: function S() {
+			return pad(self.selectedDateObj.getSeconds());
+		},
+
+		// unix timestamp
+		U: function U() {
+			return self.selectedDateObj.getTime() / 1000;
+		},
+
+		// full year e.g. 2016
+		Y: function Y() {
+			return self.selectedDateObj.getFullYear();
+		},
+
+		// day in month, padded (01-30)
+		d: function d() {
+			return pad(self.formats.j());
+		},
+
+		// hour from 1-12 (am/pm)
+		h: function h() {
+			return self.selectedDateObj.getHours() % 12 ? self.selectedDateObj.getHours() % 12 : 12;
+		},
+
+		// minutes, padded with leading zero e.g. 09
+		i: function i() {
+			return pad(self.selectedDateObj.getMinutes());
+		},
+
+		// day in month (1-30)
+		j: function j() {
+			return self.selectedDateObj.getDate();
+		},
+
+		// weekday name, full, e.g. Thursday
+		l: function l() {
+			return self.l10n.weekdays.longhand[self.formats.w()];
+		},
+
+		// padded month number (01-12)
+		m: function m() {
+			return pad(self.formats.n());
+		},
+
+		// the month number (1-12)
+		n: function n() {
+			return self.selectedDateObj.getMonth() + 1;
+		},
+
+		// seconds 0-59
+		s: function s() {
+			return self.selectedDateObj.getSeconds();
+		},
+
+		// number of the day of the week
+		w: function w() {
+			return self.selectedDateObj.getDay();
+		},
+
+		// last two digits of year e.g. 16 for 2016
+		y: function y() {
+			return String(self.formats.Y()).substring(2);
+		}
+	};
+
+	self.defaultConfig = {
+		/* if true, dates will be parsed, formatted, and displayed in UTC.
+  preloading date strings w/ timezones is recommended but not necessary */
+		utc: false,
+
+		// wrap: see https://chmln.github.io/flatpickr/#strap
+		wrap: false,
+
+		// enables week numbers
+		weekNumbers: false,
+
+		allowInput: false,
+
+		/*
+  	clicking on input opens the date(time)picker.
+  	disable if you wish to open the calendar manually with .open()
+  */
+		clickOpens: true,
+
+		// display time picker in 24 hour mode
+		time_24hr: false,
+
+		// enables the time picker functionality
+		enableTime: false,
+
+		// noCalendar: true will hide the calendar. use for a time picker along w/ enableTime
+		noCalendar: false,
+
+		// more date format chars at https://chmln.github.io/flatpickr/#dateformat
+		dateFormat: "Y-m-d",
+
+		// altInput - see https://chmln.github.io/flatpickr/#altinput
+		altInput: false,
+
+		// the created altInput element will have this class.
+		altInputClass: "",
+
+		// same as dateFormat, but for altInput
+		altFormat: "F j, Y", // defaults to e.g. June 10, 2016
+
+		// defaultDate - either a datestring or a date object. used for datetimepicker"s initial value
+		defaultDate: null,
+
+		// the minimum date that user can pick (inclusive)
+		minDate: null,
+
+		// the maximum date that user can pick (inclusive)
+		maxDate: null,
+
+		// dateparser that transforms a given string to a date object
+		parseDate: null,
+
+		// see https://chmln.github.io/flatpickr/#disable
+		enable: [],
+
+		// see https://chmln.github.io/flatpickr/#disable
+		disable: [],
+
+		// display the short version of month names - e.g. Sep instead of September
+		shorthandCurrentMonth: false,
+
+		// displays calendar inline. see https://chmln.github.io/flatpickr/#inline-calendar
+		inline: false,
+
+		// position calendar inside wrapper and next to the input element
+		// leave at false unless you know what you"re doing
+		static: false,
+
+		// code for previous/next icons. this is where you put your custom icon code e.g. fontawesome
+		prevArrow: "&lt;",
+		nextArrow: "&gt;",
+
+		// enables seconds in the time picker
+		enableSeconds: false,
+
+		// step size used when scrolling/incrementing the hour element
+		hourIncrement: 1,
+
+		// step size used when scrolling/incrementing the minute element
+		minuteIncrement: 5,
+
+		// onChange callback when user selects a date or time
+		onChange: null, // function (dateObj, dateStr) {}
+
+		// called every time calendar is opened
+		onOpen: null, // function (dateObj, dateStr) {}
+
+		// called every time calendar is closed
+		onClose: null, // function (dateObj, dateStr) {}
+
+		onValueUpdate: null
+	};
+
+	init = function init() {
+		instanceConfig = instanceConfig || {};
+
+		self.element = element;
+
+		parseConfig();
+
+		self.input = self.config.wrap ? element.querySelector("[data-input]") : element;
+		self.input.classList.add("flatpickr-input");
+
+		if (self.config.defaultDate) {
+			self.config.defaultDate = uDate(self.config.defaultDate);
+		}
+
+		if (self.input.value || self.config.defaultDate) {
+			self.selectedDateObj = uDate(self.config.defaultDate || self.input.value);
+		}
+
+		wrap();
+		buildCalendar();
+		bind();
+
+		self.uDate = uDate;
+		self.jumpToDate();
+		updateValue();
+	};
+
+	parseConfig = function parseConfig() {
+		self.config = {};
+
+		Object.keys(self.defaultConfig).forEach(function (key) {
+			if (instanceConfig.hasOwnProperty(key)) {
+				self.config[key] = instanceConfig[key];
+			} else if (self.element.dataset && self.element.dataset.hasOwnProperty(key.toLowerCase())) {
+				self.config[key] = self.element.dataset[key.toLowerCase()];
+			} else if (!self.element.dataset && self.element.hasAttribute("data-" + key)) {
+				self.config[key] = self.element.getAttribute("data-" + key);
+			} else {
+				self.config[key] = flatpickr.init.prototype.defaultConfig[key] || self.defaultConfig[key];
+			}
+
+			if (typeof self.defaultConfig[key] === "boolean") {
+				self.config[key] = self.config[key] === true || self.config[key] === "" || self.config[key] === "true";
+			}
+
+			if (key === "enableTime" && self.config[key]) {
+				self.defaultConfig.dateFormat = !self.config.time_24hr ? "Y-m-d h:i K" : "Y-m-d H:i";
+				self.defaultConfig.altFormat = !self.config.time_24hr ? "F j Y, h:i K" : "F j, Y H:i";
+			} else if (key === "noCalendar" && self.config[key]) {
+				self.defaultConfig.dateFormat = "h:i K";
+				self.defaultConfig.altFormat = "h:i K";
+			}
+		});
+	};
+
+	getRandomCalendarIdStr = function getRandomCalendarIdStr() {
+		var randNum = void 0,
+		    idStr = void 0;
+		do {
+			randNum = Math.round(Math.random() * Math.pow(10, 10));
+			idStr = "flatpickr-" + randNum;
+		} while (document.getElementById(idStr) !== null);
+
+		return idStr;
+	};
+
+	uDate = function uDate(date, timeless) {
+		timeless = timeless || false;
+
+		if (date === "today") {
+			date = new Date();
+			timeless = true;
+		} else if (typeof date === "string") {
+			date = date.trim();
+
+			if (self.config.parseDate) {
+				date = self.config.parseDate(date);
+			} else if (/^\d\d\d\d\-\d{1,2}\-\d\d$/.test(date)) {
+				// this utc datestring gets parsed, but incorrectly by Date.parse
+				date = new Date(date.replace(/(\d)-(\d)/g, "$1/$2"));
+			} else if (Date.parse(date)) {
+				date = new Date(date);
+			} else if (/^\d\d\d\d\-\d\d\-\d\d/.test(date)) {
+				// disable special utc datestring
+				date = new Date(date.replace(/(\d)-(\d)/g, "$1/$2"));
+			} else if (/^(\d?\d):(\d\d)/.test(date)) {
+				// time-only picker
+				var matches = date.match(/^(\d?\d):(\d\d)(:(\d\d))?/),
+				    seconds = matches[4] !== undefined ? matches[4] : 0;
+
+				date = new Date();
+				date.setHours(matches[1], matches[2], seconds, 0);
+			} else {
+				console.error("flatpickr: invalid date string " + date);
+				console.info(self.element);
+			}
+		}
+
+		if (!(date instanceof Date) || !date.getTime()) {
+			return null;
+		}
+
+		if (self.config.utc && !date.fp_isUTC) {
+			date = date.fp_toUTC();
+		}
+
+		if (timeless) {
+			date.setHours(0, 0, 0, 0);
+		}
+
+		return date;
+	};
+
+	equalDates = function equalDates(date1, date2) {
+		return date1.getDate() === date2.getDate() && date1.getMonth() === date2.getMonth() && date1.getFullYear() === date2.getFullYear();
+	};
+
+	wrap = function wrap() {
+		wrapperElement = createElement("div", "flatpickr-wrapper");
+
+		if (self.config.inline || self.config.static) {
+			// Wrap input and place calendar underneath
+			self.element.parentNode.insertBefore(wrapperElement, self.element);
+			wrapperElement.appendChild(self.element);
+
+			wrapperElement.classList.add(self.config.inline ? "inline" : "static");
+		} else {
+			// Insert at bottom of BODY tag to display outside
+			// of relative positioned elements with css "overflow: hidden;"
+			// property set.
+			document.body.appendChild(wrapperElement);
+		}
+
+		if (self.config.altInput) {
+			// replicate self.element
+			self.altInput = createElement(self.input.nodeName, self.config.altInputClass + " flatpickr-input");
+			self.altInput.placeholder = self.input.placeholder;
+			self.altInput.type = "text";
+
+			self.input.type = "hidden";
+			self.input.parentNode.insertBefore(self.altInput, self.input.nextSibling);
+		}
+	};
+
+	getDaysinMonth = function getDaysinMonth() {
+		var month = arguments.length <= 0 || arguments[0] === undefined ? self.currentMonth : arguments[0];
+
+		var yr = self.currentYear;
+
+		if (month === 1 && (yr % 4 === 0 && yr % 100 !== 0 || yr % 400 === 0)) {
+			return 29;
+		}
+
+		return self.l10n.daysInMonth[month];
+	};
+
+	updateValue = function updateValue(e) {
+		if (self.config.noCalendar && !self.selectedDateObj) {
+			// picking time only and method triggered from picker
+			self.selectedDateObj = new Date();
+		} else if (!self.selectedDateObj) {
+			return;
+		}
+
+		if (e) {
+			e.target.blur();
+		}
+
+		var timeHasChanged = void 0;
+
+		if (self.config.enableTime) {
+			var previousTimestamp = self.selectedDateObj.getTime();
+
+			// update time
+			var hours = parseInt(self.hourElement.value, 10) || 0,
+			    seconds = void 0;
+
+			var minutes = (60 + (parseInt(self.minuteElement.value, 10) || 0)) % 60;
+
+			if (self.config.enableSeconds) {
+				seconds = (60 + parseInt(self.secondElement.value, 10) || 0) % 60;
+			}
+
+			if (!self.config.time_24hr) {
+				// the real number of hours for the date object
+				hours = hours % 12 + 12 * (self.amPM.innerHTML === "PM");
+			}
+
+			self.selectedDateObj.setHours(hours, minutes, seconds === undefined ? self.selectedDateObj.getSeconds() : seconds);
+
+			self.hourElement.value = pad(!self.config.time_24hr ? (12 + hours) % 12 + 12 * (hours % 12 === 0) : hours);
+			self.minuteElement.value = pad(minutes);
+
+			if (seconds !== undefined) {
+				self.secondElement.value = pad(seconds);
+			}
+
+			timeHasChanged = self.selectedDateObj.getTime() !== previousTimestamp;
+		}
+
+		self.input.value = self.formatDate(self.config.dateFormat);
+
+		if (self.altInput) {
+			self.altInput.value = self.formatDate(self.config.altFormat);
+		}
+
+		if (e && (timeHasChanged || e.target.classList.contains("flatpickr-day"))) {
+			triggerChange();
+		}
+
+		if (self.config.onValueUpdate) {
+			self.config.onValueUpdate(self.selectedDateObj, self.input.value, self);
+		}
+	};
+
+	pad = function pad(num) {
+		return ("0" + num).slice(-2);
+	};
+
+	self.formatDate = function (dateFormat) {
+		var formattedDate = "";
+		var formatPieces = dateFormat.split("");
+
+		for (var i = 0; i < formatPieces.length; i++) {
+			var c = formatPieces[i];
+			if (self.formats.hasOwnProperty(c) && formatPieces[i - 1] !== "\\") {
+				formattedDate += self.formats[c]();
+			} else if (c !== "\\") {
+				formattedDate += c;
+			}
+		}
+
+		return formattedDate;
+	};
+
+	monthToStr = function monthToStr(date, shorthand) {
+		if (shorthand || self.config.shorthandCurrentMonth) {
+			return self.l10n.months.shorthand[date];
+		}
+
+		return self.l10n.months.longhand[date];
+	};
+
+	isEnabled = function isEnabled(dateToCheck) {
+		if (self.config.minDate && dateToCheck < self.config.minDate || self.config.maxDate && dateToCheck > self.config.maxDate) {
+			return false;
+		}
+
+		dateToCheck = uDate(dateToCheck, true); // timeless
+
+		var bool = self.config.enable.length > 0,
+		    array = bool ? self.config.enable : self.config.disable;
+
+		var d = void 0;
+
+		for (var i = 0; i < array.length; i++) {
+			d = array[i];
+
+			if (d instanceof Function && d(dateToCheck)) {
+				// disabled by function
+				return bool;
+			} else if ( // disabled weekday
+			typeof d === "string" && /^wkd/.test(d) && dateToCheck.getDay() === (parseInt(d.slice(-1), 10) + self.l10n.firstDayOfWeek - 1) % 7) {
+				return bool;
+			} else if ((d instanceof Date || typeof d === "string" && !/^wkd/.test(d)) && uDate(d, true).getTime() === dateToCheck.getTime()) {
+				// disabled by date string
+				return bool;
+			} else if ( // disabled by range
+			(typeof d === "undefined" ? "undefined" : _typeof(d)) === "object" && d.hasOwnProperty("from") && dateToCheck >= uDate(d.from) && dateToCheck <= uDate(d.to)) {
+				return bool;
+			}
+		}
+
+		return !bool;
+	};
+
+	yearScroll = function yearScroll(event) {
+		event.preventDefault();
+
+		var delta = Math.max(-1, Math.min(1, event.wheelDelta || -event.deltaY));
+		self.currentYear = event.target.value = parseInt(event.target.value, 10) + delta;
+		self.redraw();
+	};
+
+	timeWrapper = function timeWrapper(e) {
+		e.preventDefault();
+
+		var min = parseInt(e.target.min, 10),
+		    max = parseInt(e.target.max, 10),
+		    step = parseInt(e.target.step, 10),
+		    value = parseInt(e.target.value, 10);
+
+		var newValue = value;
+
+		if (e.type === "wheel") {
+			newValue = value + step * Math.max(-1, Math.min(1, e.wheelDelta || -e.deltaY));
+		}
+
+		if (newValue <= min) {
+			newValue = max - step;
+		} else if (newValue >= max) {
+			newValue = min + step;
+		}
+
+		e.target.value = pad(newValue);
+	};
+
+	updateNavigationCurrentMonth = function updateNavigationCurrentMonth() {
+		currentMonthElement.textContent = monthToStr(self.currentMonth) + " ";
+		currentYearElement.value = self.currentYear;
+	};
+
+	handleYearChange = function handleYearChange() {
+		if (self.currentMonth < 0 || self.currentMonth > 11) {
+			self.currentYear += self.currentMonth % 11;
+			self.currentMonth = (self.currentMonth + 12) % 12;
+		}
+	};
+
+	documentClick = function documentClick(e) {
+		var isCalendarElement = wrapperElement.contains(e.relatedTarget || e.target),
+		    isInput = self.element.contains(e.relatedTarget || e.target) || e.relatedTarget || e.target === self.altInput;
+
+		if (self.isOpen && !isCalendarElement && !isInput) {
+			self.close();
+		}
+	};
+
+	changeMonth = function changeMonth(offset) {
+		self.currentMonth += offset;
+
+		handleYearChange();
+		updateNavigationCurrentMonth();
+		buildDays();
+		(self.config.noCalendar ? timeContainer : calendar).focus();
+	};
+
+	selectDate = function selectDate(e) {
+		e.preventDefault();
+		e.stopPropagation();
+
+		if (self.config.allowInput && e.target === (self.altInput || self.input) && e.which === 13) {
+			self.setDate((self.altInput || self.input).value);
+			self.redraw();
+		} else if (e.target.classList.contains("flatpickr-day")) {
+			var isPrevMonthDay = e.target.classList.contains("prevMonthDay"),
+			    isNextMonthDay = e.target.classList.contains("nextMonthDay"),
+			    monthNum = self.currentMonth - isPrevMonthDay + isNextMonthDay;
+
+			if (isPrevMonthDay || isNextMonthDay) {
+				changeMonth(+isNextMonthDay - isPrevMonthDay);
+			}
+
+			self.selectedDateObj = new Date(self.currentYear, monthNum, e.target.innerHTML);
+
+			updateValue(e);
+			buildDays();
+
+			if (!self.config.enableTime) {
+				self.close();
+			}
+		}
+	};
+
+	buildCalendar = function buildCalendar() {
+		calendarContainer = createElement("div", "flatpickr-calendar");
+		calendarContainer.id = getRandomCalendarIdStr();
+
+		calendar = createElement("div", "flatpickr-days");
+		calendar.tabIndex = -1;
+
+		if (!self.config.noCalendar) {
+			buildMonthNavigation();
+			buildWeekdays();
+
+			if (self.config.weekNumbers) {
+				buildWeeks();
+			}
+
+			buildDays();
+
+			calendarContainer.appendChild(calendar);
+		}
+
+		wrapperElement.appendChild(calendarContainer);
+
+		if (self.config.enableTime) {
+			buildTime();
+		}
+	};
+
+	buildMonthNavigation = function buildMonthNavigation() {
+		monthsNav = createElement("div", "flatpickr-month");
+
+		prevMonthNav = createElement("span", "flatpickr-prev-month");
+		prevMonthNav.innerHTML = self.config.prevArrow;
+
+		currentMonthElement = createElement("span", "cur_month");
+
+		currentYearElement = createElement("input", "cur_year");
+		currentYearElement.type = "number";
+		currentYearElement.title = self.l10n.scrollTitle;
+
+		nextMonthNav = createElement("span", "flatpickr-next-month");
+		nextMonthNav.innerHTML = self.config.nextArrow;
+
+		navigationCurrentMonth = createElement("span", "flatpickr-current-month");
+		navigationCurrentMonth.appendChild(currentMonthElement);
+		navigationCurrentMonth.appendChild(currentYearElement);
+
+		monthsNav.appendChild(prevMonthNav);
+		monthsNav.appendChild(navigationCurrentMonth);
+		monthsNav.appendChild(nextMonthNav);
+
+		calendarContainer.appendChild(monthsNav);
+		updateNavigationCurrentMonth();
+	};
+
+	buildWeekdays = function buildWeekdays() {
+		weekdayContainer = createElement("div", "flatpickr-weekdays");
+		var firstDayOfWeek = self.l10n.firstDayOfWeek;
+
+		var weekdays = self.l10n.weekdays.shorthand.slice();
+
+		if (firstDayOfWeek > 0 && firstDayOfWeek < weekdays.length) {
+			weekdays = [].concat(weekdays.splice(firstDayOfWeek, weekdays.length), weekdays.splice(0, firstDayOfWeek));
+		}
+
+		if (self.config.weekNumbers) {
+			weekdayContainer.innerHTML = "<span>" + self.l10n.weekAbbreviation + "</span>";
+		}
+
+		weekdayContainer.innerHTML += "<span>" + weekdays.join("</span><span>") + "</span>";
+
+		calendarContainer.appendChild(weekdayContainer);
+	};
+
+	buildWeeks = function buildWeeks() {
+		calendarContainer.classList.add("hasWeeks");
+
+		weekNumbers = createElement("div", "flatpickr-weeks");
+		calendarContainer.appendChild(weekNumbers);
+	};
+
+	buildDays = function buildDays() {
+		var firstOfMonth = (new Date(self.currentYear, self.currentMonth, 1).getDay() - self.l10n.firstDayOfWeek + 7) % 7,
+		    daysInMonth = getDaysinMonth(),
+		    prevMonthDays = getDaysinMonth((self.currentMonth - 1 + 12) % 12),
+		    days = document.createDocumentFragment();
+
+		var dayNumber = prevMonthDays + 1 - firstOfMonth,
+		    currentDate = void 0,
+		    dateIsDisabled = void 0;
+
+		if (self.config.weekNumbers) {
+			weekNumbers.innerHTML = "";
+		}
+
+		calendar.innerHTML = "";
+
+		self.config.minDate = uDate(self.config.minDate, true);
+		self.config.maxDate = uDate(self.config.maxDate, true);
+
+		// prepend days from the ending of previous month
+		for (; dayNumber <= prevMonthDays; dayNumber++) {
+			var curDate = new Date(self.currentYear, self.currentMonth - 1, dayNumber, 0, 0, 0, 0, 0),
+			    dateIsEnabled = isEnabled(curDate),
+			    dayElem = createElement("span", dateIsEnabled ? "flatpickr-day prevMonthDay" : "disabled", dayNumber);
+
+			if (dateIsEnabled) {
+				dayElem.tabIndex = 0;
+			}
+
+			days.appendChild(dayElem);
+		}
+
+		// Start at 1 since there is no 0th day
+		for (dayNumber = 1; dayNumber <= daysInMonth; dayNumber++) {
+			currentDate = new Date(self.currentYear, self.currentMonth, dayNumber, 0, 0, 0, 0, 0);
+
+			if (self.config.weekNumbers && dayNumber % 7 === 1) {
+				weekNumbers.appendChild(createElement("span", "disabled flatpickr-day", currentDate.fp_getWeek()));
+			}
+
+			dateIsDisabled = !isEnabled(currentDate);
+
+			var dayElement = createElement("span", dateIsDisabled ? "disabled" : "flatpickr-day", dayNumber);
+
+			if (!dateIsDisabled) {
+				dayElement.tabIndex = 0;
+
+				if (equalDates(currentDate, now)) {
+					dayElement.classList.add("today");
+				}
+
+				if (self.selectedDateObj && equalDates(currentDate, self.selectedDateObj)) {
+					dayElement.classList.add("selected");
+				}
+			}
+
+			days.appendChild(dayElement);
+		}
+
+		// append days from the next month
+		for (var dayNum = daysInMonth + 1; dayNum <= 42 - firstOfMonth; dayNum++) {
+			var _curDate = new Date(self.currentYear, self.currentMonth + 1, dayNum % daysInMonth, 0, 0, 0, 0, 0),
+			    _dateIsEnabled = isEnabled(_curDate),
+			    _dayElement = createElement("span", _dateIsEnabled ? "nextMonthDay flatpickr-day" : "disabled", dayNum % daysInMonth);
+
+			if (self.config.weekNumbers && dayNum % 7 === 1) {
+				weekNumbers.appendChild(createElement("span", "disabled", _curDate.fp_getWeek()));
+			}
+
+			if (_dateIsEnabled) {
+				_dayElement.tabIndex = 0;
+			}
+
+			days.appendChild(_dayElement);
+		}
+
+		calendar.appendChild(days);
+	};
+
+	buildTime = function buildTime() {
+		timeContainer = createElement("div", "flatpickr-time");
+		timeContainer.tabIndex = -1;
+		var separator = createElement("span", "flatpickr-time-separator", ":");
+
+		self.hourElement = createElement("input", "flatpickr-hour");
+		self.minuteElement = createElement("input", "flatpickr-minute");
+
+		self.hourElement.tabIndex = self.minuteElement.tabIndex = 0;
+		self.hourElement.type = self.minuteElement.type = "number";
+
+		self.hourElement.value = self.selectedDateObj ? pad(self.selectedDateObj.getHours()) : 12;
+
+		self.minuteElement.value = self.selectedDateObj ? pad(self.selectedDateObj.getMinutes()) : "00";
+
+		self.hourElement.step = self.config.hourIncrement;
+		self.minuteElement.step = self.config.minuteIncrement;
+
+		self.hourElement.min = -self.config.time_24hr;
+		self.hourElement.max = self.config.time_24hr ? 24 : 13;
+
+		self.minuteElement.min = -self.minuteElement.step;
+		self.minuteElement.max = 60;
+
+		self.hourElement.title = self.minuteElement.title = self.l10n.scrollTitle;
+
+		timeContainer.appendChild(self.hourElement);
+		timeContainer.appendChild(separator);
+		timeContainer.appendChild(self.minuteElement);
+
+		if (self.config.enableSeconds) {
+			timeContainer.classList.add("has-seconds");
+
+			self.secondElement = createElement("input", "flatpickr-second");
+			self.secondElement.type = "number";
+			self.secondElement.value = self.selectedDateObj ? pad(self.selectedDateObj.getSeconds()) : "00";
+
+			self.secondElement.step = self.minuteElement.step;
+			self.secondElement.min = self.minuteElement.min;
+			self.secondElement.max = self.minuteElement.max;
+
+			timeContainer.appendChild(createElement("span", "flatpickr-time-separator", ":"));
+			timeContainer.appendChild(self.secondElement);
+		}
+
+		if (!self.config.time_24hr) {
+			// add self.amPM if appropriate
+			self.amPM = createElement("span", "flatpickr-am-pm", ["AM", "PM"][self.hourElement.value > 11 | 0]);
+			self.amPM.title = self.l10n.toggleTitle;
+			self.amPM.tabIndex = 0;
+			timeContainer.appendChild(self.amPM);
+		}
+
+		calendarContainer.appendChild(timeContainer);
+	};
+
+	bind = function bind() {
+		document.addEventListener("keydown", onKeyDown);
+		window.addEventListener("resize", onResize);
+
+		if (self.config.clickOpens) {
+			(self.altInput || self.input).addEventListener("click", self.open);
+			(self.altInput || self.input).addEventListener("focus", self.open);
+		}
+
+		if (self.config.wrap && self.element.querySelector("[data-open]")) {
+			self.element.querySelector("[data-open]").addEventListener("click", self.open);
+		}
+
+		if (self.config.wrap && self.element.querySelector("[data-close]")) {
+			self.element.querySelector("[data-close]").addEventListener("click", self.close);
+		}
+
+		if (self.config.wrap && self.element.querySelector("[data-toggle]")) {
+			self.element.querySelector("[data-toggle]").addEventListener("click", self.toggle);
+		}
+
+		if (self.config.wrap && self.element.querySelector("[data-clear]")) {
+			self.element.querySelector("[data-clear]").addEventListener("click", self.clear);
+		}
+
+		if (!self.config.noCalendar) {
+			prevMonthNav.addEventListener("click", function () {
+				changeMonth(-1);
+			});
+
+			nextMonthNav.addEventListener("click", function () {
+				changeMonth(1);
+			});
+
+			currentYearElement.addEventListener("wheel", yearScroll);
+			currentYearElement.addEventListener("focus", currentYearElement.select);
+
+			currentYearElement.addEventListener("input", function (event) {
+				self.currentYear = parseInt(event.target.value, 10);
+				self.redraw();
+			});
+
+			calendar.addEventListener("click", selectDate);
+		}
+
+		document.addEventListener("click", documentClick, true);
+		document.addEventListener("focus", documentClick, true);
+
+		if (self.config.enableTime) {
+			self.hourElement.addEventListener("wheel", timeWrapper);
+			self.minuteElement.addEventListener("wheel", timeWrapper);
+
+			self.hourElement.addEventListener("input", timeWrapper);
+			self.minuteElement.addEventListener("input", timeWrapper);
+
+			self.hourElement.addEventListener("mouseout", updateValue);
+			self.minuteElement.addEventListener("mouseout", updateValue);
+
+			self.hourElement.addEventListener("change", updateValue);
+			self.minuteElement.addEventListener("change", updateValue);
+
+			self.hourElement.addEventListener("focus", self.hourElement.select);
+			self.minuteElement.addEventListener("focus", self.minuteElement.select);
+
+			if (self.config.enableSeconds) {
+				self.secondElement.addEventListener("wheel", timeWrapper);
+				self.secondElement.addEventListener("input", timeWrapper);
+				self.secondElement.addEventListener("mouseout", updateValue);
+				self.secondElement.addEventListener("change", updateValue);
+				self.secondElement.addEventListener("focus", self.secondElement.select);
+			}
+
+			if (!self.config.time_24hr) {
+				self.amPM.addEventListener("click", amPMToggle);
+
+				self.amPM.addEventListener("wheel", amPMToggle);
+				self.amPM.addEventListener("mouseout", updateValue);
+
+				self.amPM.addEventListener("keydown", function (e) {
+					if (e.which === 38 || e.which === 40) {
+						amPMToggle(e);
+					}
+				});
+			}
+		}
+
+		if (document.createEvent) {
+			clickEvt = document.createEvent("MouseEvent");
+			// without all these args ms edge spergs out
+			clickEvt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+		} else {
+			clickEvt = new MouseEvent("click", {
+				view: window,
+				bubbles: true,
+				cancelable: true
+			});
+		}
+	};
+
+	self.open = function () {
+		if (self.isOpen || (self.altInput || self.input).disabled || self.config.inline) {
+			return;
+		} else if (!self.config.static) {
+			self.positionCalendar();
+		}
+
+		self.isOpen = true;
+
+		wrapperElement.classList.add("open");
+
+		if (!self.config.allowInput) {
+			(self.altInput || self.input).blur();
+			(self.config.noCalendar ? timeContainer : calendar).focus();
+		}
+
+		(self.altInput || self.input).classList.add("active");
+
+		if (self.config.onOpen) {
+			self.config.onOpen(self.selectedDateObj, self.input.value, self);
+		}
+	};
+
+	// For calendars inserted in BODY (as opposed to inline wrapper)
+	// it"s necessary to properly calculate top/left position.
+	self.positionCalendar = function () {
+		var calendarHeight = calendarContainer.offsetHeight,
+		    input = self.altInput || self.input,
+		    inputBounds = input.getBoundingClientRect(),
+		    distanceFromBottom = window.innerHeight - inputBounds.bottom + input.offsetHeight;
+
+		var top = void 0,
+		    left = window.pageXOffset + inputBounds.left;
+
+		if (distanceFromBottom < calendarHeight) {
+			top = window.pageYOffset - calendarHeight + inputBounds.top - 2;
+			calendarContainer.classList.remove("arrowTop");
+			calendarContainer.classList.add("arrowBottom");
+		} else {
+			top = window.pageYOffset + input.offsetHeight + inputBounds.top + 2;
+			calendarContainer.classList.remove("arrowBottom");
+			calendarContainer.classList.add("arrowTop");
+		}
+
+		wrapperElement.style.top = top + "px";
+		wrapperElement.style.left = left + "px";
+	};
+
+	self.toggle = function () {
+		if (self.isOpen) {
+			self.close();
+		} else {
+			self.open();
+		}
+	};
+
+	self.close = function () {
+		self.isOpen = false;
+		wrapperElement.classList.remove("open");
+		(self.altInput || self.input).classList.remove("active");
+
+		if (self.config.onClose) {
+			self.config.onClose(self.selectedDateObj, self.input.value, self);
+		}
+	};
+
+	self.clear = function () {
+		self.input.value = "";
+
+		if (self.altInput) {
+			self.altInput.value = "";
+		}
+
+		self.selectedDateObj = null;
+
+		triggerChange();
+		self.jumpToDate();
+	};
+
+	triggerChange = function triggerChange() {
+		self.input.dispatchEvent(clickEvt);
+
+		if (self.config.onChange) {
+			self.config.onChange(self.selectedDateObj, self.input.value, self);
+		}
+	};
+
+	self.destroy = function () {
+		document.removeEventListener("click", documentClick, false);
+
+		if (self.altInput) {
+			self.altInput.parentNode.removeChild(self.altInput);
+		}
+
+		if (self.config.inline) {
+			var parent = self.element.parentNode,
+			    removedElement = parent.removeChild(self.element);
+
+			parent.removeChild(calendarContainer);
+			parent.parentNode.replaceChild(removedElement, parent);
+		} else {
+			document.getElementsByTagName("body")[0].removeChild(wrapperElement);
+		}
+	};
+
+	self.redraw = function () {
+		if (self.config.noCalendar) {
+			return;
+		}
+
+		updateNavigationCurrentMonth();
+		buildDays();
+	};
+
+	self.jumpToDate = function (jumpDate) {
+		jumpDate = uDate(jumpDate || self.selectedDateObj || self.config.defaultDate || self.config.minDate || now);
+
+		self.currentYear = jumpDate.getFullYear();
+		self.currentMonth = jumpDate.getMonth();
+		self.redraw();
+	};
+
+	self.setDate = function (date, triggerChangeEvent) {
+		date = uDate(date);
+
+		if (date instanceof Date && date.getTime()) {
+			self.selectedDateObj = uDate(date);
+			self.jumpToDate(self.selectedDateObj);
+			updateValue();
+
+			if (triggerChangeEvent) {
+				triggerChange();
+			}
+		}
+	};
+
+	self.setTime = function (hour, minute, triggerChangeEvent) {
+		if (!self.selectedDateObj) {
+			return;
+		}
+
+		self.hourElement.value = parseInt(hour, 10) % 24;
+		self.minuteElement.value = parseInt(minute || 0, 10) % 60;
+
+		if (!self.config.time_24hr) {
+			self.amPM.innerHTML = hour > 11 ? "PM" : "AM";
+		}
+
+		updateValue();
+
+		if (triggerChangeEvent) {
+			triggerChange();
+		}
+	};
+
+	self.set = function (key, value) {
+		if (key in self.config) {
+			self.config[key] = value;
+			self.jumpToDate();
+		}
+	};
+
+	amPMToggle = function amPMToggle(e) {
+		e.preventDefault();
+		self.amPM.textContent = ["AM", "PM"][self.amPM.innerHTML === "AM" | 0];
+	};
+
+	onKeyDown = function onKeyDown(e) {
+		if (!self.isOpen || self.config.enableTime && timeContainer.contains(e.target)) {
+			return;
+		}
+
+		switch (e.which) {
+			case 13:
+				selectDate(e);
+				break;
+
+			case 27:
+				self.close();
+				break;
+
+			case 37:
+				changeMonth(-1);
+				break;
+
+			case 38:
+				e.preventDefault();
+				self.currentYear++;
+				self.redraw();
+				break;
+
+			case 39:
+				changeMonth(1);
+				break;
+
+			case 40:
+				e.preventDefault();
+				self.currentYear--;
+				self.redraw();
+				break;
+
+			default:
+				break;
+		}
+	};
+
+	onResize = debounce(function () {
+		if (self.isOpen && !self.config.inline && !self.config.static) {
+			self.positionCalendar();
+		}
+	}, 300);
+
+	try {
+		init();
+	} catch (error) {
+		// skip and carry on
+		console.error(error);
+		console.info(self.element);
+	}
+
+	return self;
+};
+
+flatpickr.init.prototype = {
+
+	defaultConfig: {},
+
+	l10n: {
+		weekdays: {
+			shorthand: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+			longhand: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+		},
+		months: {
+			shorthand: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+			longhand: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+		},
+		daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+		firstDayOfWeek: 0,
+		ordinal: function ordinal(nth) {
+			var s = nth % 100;
+			if (s > 3 && s < 21) return "th";
+			switch (s % 10) {
+				case 1:
+					return "st";
+				case 2:
+					return "nd";
+				case 3:
+					return "rd";
+				default:
+					return "th";
+			}
+		},
+		weekAbbreviation: "Wk",
+		scrollTitle: "Scroll to increment",
+		toggleTitle: "Click to toggle"
+	}
+
+};
+
+Date.prototype.fp_incr = function (days) {
+	return new Date(this.getFullYear(), this.getMonth(), this.getDate() + parseInt(days, 10));
+};
+
+Date.prototype.fp_isUTC = false;
+Date.prototype.fp_toUTC = function () {
+	var newDate = new Date(this.getTime() + this.getTimezoneOffset() * 60000);
+	newDate.fp_isUTC = true;
+
+	return newDate;
+};
+
+Date.prototype.fp_getWeek = function () {
+	var date = new Date(this.getTime());
+	date.setHours(0, 0, 0, 0);
+
+	// Thursday in current week decides the year.
+	date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+	// January 4 is always in week 1.
+	var week1 = new Date(date.getFullYear(), 0, 4);
+	// Adjust to Thursday in week 1 and count number of weeks from date to week1.
+	return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+};
+
+// classList polyfill
+if (!("classList" in document.documentElement) && Object.defineProperty && typeof HTMLElement !== "undefined") {
+	Object.defineProperty(HTMLElement.prototype, "classList", {
+		get: function get() {
+			var selfElements = this;
+			function update(fn) {
+				return function (value) {
+					var classes = selfElements.className.split(/\s+/);
+					var index = classes.indexOf(value);
+
+					fn(classes, index, value);
+					selfElements.className = classes.join(" ");
+				};
+			}
+
+			var ret = {
+				add: update(function (classes, index, value) {
+					return ~index || classes.push(value);
+				}),
+				remove: update(function (classes, index) {
+					return ~index && classes.splice(index, 1);
+				}),
+				toggle: update(function (classes, index, value) {
+					if (~index) {
+						classes.splice(index, 1);
+					} else {
+						classes.push(value);
+					}
+				}),
+				contains: function contains(value) {
+					return !! ~selfElements.className.split(/\s+/).indexOf(value);
+				}
+			};
+
+			return ret;
+		}
+	});
+}
+
+if (typeof module !== "undefined") {
+	module.exports = flatpickr;
+}
+},{}],2:[function(require,module,exports){
+// shim for using process in browser
 var process = module.exports = {};
 
 // cached from whatever global is present so that test runners that stub it
@@ -12,21 +1345,35 @@ var cachedSetTimeout;
 var cachedClearTimeout;
 
 (function () {
-  try {
-    cachedSetTimeout = setTimeout;
-  } catch (e) {
-    cachedSetTimeout = function () {
-      throw new Error('setTimeout is not defined');
+    try {
+        cachedSetTimeout = setTimeout;
+    } catch (e) {
+        cachedSetTimeout = function () {
+            throw new Error('setTimeout is not defined');
+        }
     }
-  }
-  try {
-    cachedClearTimeout = clearTimeout;
-  } catch (e) {
-    cachedClearTimeout = function () {
-      throw new Error('clearTimeout is not defined');
+    try {
+        cachedClearTimeout = clearTimeout;
+    } catch (e) {
+        cachedClearTimeout = function () {
+            throw new Error('clearTimeout is not defined');
+        }
     }
-  }
 } ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        return setTimeout(fun, 0);
+    } else {
+        return cachedSetTimeout.call(null, fun, 0);
+    }
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        clearTimeout(marker);
+    } else {
+        cachedClearTimeout.call(null, marker);
+    }
+}
 var queue = [];
 var draining = false;
 var currentQueue;
@@ -51,7 +1398,7 @@ function drainQueue() {
     if (draining) {
         return;
     }
-    var timeout = cachedSetTimeout(cleanUpNextTick);
+    var timeout = runTimeout(cleanUpNextTick);
     draining = true;
 
     var len = queue.length;
@@ -68,7 +1415,7 @@ function drainQueue() {
     }
     currentQueue = null;
     draining = false;
-    cachedClearTimeout(timeout);
+    runClearTimeout(timeout);
 }
 
 process.nextTick = function (fun) {
@@ -80,7 +1427,7 @@ process.nextTick = function (fun) {
     }
     queue.push(new Item(fun, args));
     if (queue.length === 1 && !draining) {
-        cachedSetTimeout(drainQueue, 0);
+        runTimeout(drainQueue);
     }
 };
 
@@ -119,7 +1466,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var Vue // late bind
 var map = Object.create(null)
 var shimmed = false
@@ -420,9 +1767,9 @@ function format (id) {
   return match ? match[0] : id
 }
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /*!
- * vue-resource v0.9.1
+ * vue-resource v0.9.3
  * https://github.com/vuejs/vue-resource
  * Released under the MIT License.
  */
@@ -1336,7 +2683,7 @@ function timeout (request, next) {
 
     if (request.timeout) {
         timeout = setTimeout(function () {
-            request.cancel();
+            request.abort();
         }, request.timeout);
     }
 
@@ -1445,24 +2792,24 @@ function Client (context) {
             }
 
             function next(response) {
-                when(response, function (response) {
 
-                    if (isFunction(response)) {
+                if (isFunction(response)) {
 
-                        resHandlers.unshift(response);
-                    } else if (isObject(response)) {
+                    resHandlers.unshift(response);
+                } else if (isObject(response)) {
 
-                        resHandlers.forEach(function (handler) {
-                            handler.call(context, response);
+                    resHandlers.forEach(function (handler) {
+                        response = when(response, function (response) {
+                            return handler.call(context, response) || response;
                         });
+                    });
 
-                        resolve(response);
+                    when(response, resolve);
 
-                        return;
-                    }
+                    return;
+                }
 
-                    exec();
-                });
+                exec();
             }
 
             exec();
@@ -1733,10 +3080,10 @@ if (typeof window !== 'undefined' && window.Vue) {
 }
 
 module.exports = plugin;
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (process,global){
 /*!
- * Vue.js v1.0.25
+ * Vue.js v1.0.26
  * (c) 2016 Evan You
  * Released under the MIT License.
  */
@@ -5146,7 +6493,7 @@ function traverse(val, seen) {
   }
   var isA = isArray(val);
   var isO = isObject(val);
-  if (isA || isO) {
+  if ((isA || isO) && Object.isExtensible(val)) {
     if (val.__ob__) {
       var depId = val.__ob__.dep.id;
       if (seen.has(depId)) {
@@ -6632,13 +7979,13 @@ var select = {
     this.vm.$on('hook:attached', function () {
       nextTick(_this.forceUpdate);
     });
+    if (!inDoc(el)) {
+      nextTick(this.forceUpdate);
+    }
   },
 
   update: function update(value) {
     var el = this.el;
-    if (!inDoc(el)) {
-      return nextTick(this.forceUpdate);
-    }
     el.selectedIndex = -1;
     var multi = this.multiple && isArray(value);
     var options = el.options;
@@ -11586,7 +12933,13 @@ var filters = {
 
   pluralize: function pluralize(value) {
     var args = toArray(arguments, 1);
-    return args.length > 1 ? args[value % 10 - 1] || args[args.length - 1] : args[0] + (value === 1 ? '' : 's');
+    var length = args.length;
+    if (length > 1) {
+      var index = value % 10 - 1;
+      return index in args ? args[index] : args[length - 1];
+    } else {
+      return args[0] + (value === 1 ? '' : 's');
+    }
   },
 
   /**
@@ -11788,7 +13141,7 @@ function installGlobalAPI (Vue) {
 
 installGlobalAPI(Vue);
 
-Vue.version = '1.0.25';
+Vue.version = '1.0.26';
 
 // devtools global hook
 /* istanbul ignore next */
@@ -11804,7 +13157,7 @@ setTimeout(function () {
 
 module.exports = Vue;
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":1}],5:[function(require,module,exports){
+},{"_process":2}],6:[function(require,module,exports){
 var inserted = exports.cache = {}
 
 exports.insert = function (css) {
@@ -11824,311 +13177,348 @@ exports.insert = function (css) {
   return elem
 }
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n p[_v-0879ddea] {\n\t margin:0;\n }\n      label[_v-0879ddea] {\n           display: block;\n           /*margin-bottom: 1.5em;*/\n       }\n\n       label > span[_v-0879ddea] {\n           display: inline-block;\n           width: 8em;\n           vertical-align: top;\n       }\n.valid-titleField[_v-0879ddea] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.no-input[_v-0879ddea] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.invalid-input[_v-0879ddea] {\n  background-color: rgba(236, 88, 64, 0.1);\n  border: 1px dotted red;\n}\n.invalid[_v-0879ddea] {\n  color: #ff0000;\n}\n\n\nfieldset label.radiobtns[_v-0879ddea]  {\n  display: inline;\n  margin: 4px;\n  padding: 2px;\n}\n\n[type='text'][_v-0879ddea], [type='password'][_v-0879ddea], [type='date'][_v-0879ddea], [type='datetime'][_v-0879ddea], [type='datetime-local'][_v-0879ddea], [type='month'][_v-0879ddea], [type='week'][_v-0879ddea], [type='email'][_v-0879ddea], [type='number'][_v-0879ddea], [type='search'][_v-0879ddea], [type='tel'][_v-0879ddea], [type='time'][_v-0879ddea], [type='url'][_v-0879ddea], [type='color'][_v-0879ddea],\ntextarea[_v-0879ddea] {\n\tmargin: 0;\n\tpadding: 0;\n\tpadding-left: 8px;\n}\n[type='file'][_v-0879ddea], [type='checkbox'][_v-0879ddea], [type='radio'][_v-0879ddea] {\n\tmargin: 0;\n\tmargin-left: 8px;\n\tpadding: 0;\n\tpadding-left: 2px;\n}\n.reqstar[_v-0879ddea] {\n    font-size: .5rem;\n    color: #E33100;\n\t\tvertical-align:text-top;\n}\nbutton.button-primary[_v-0879ddea] {\n\tmargin-top: 1rem;\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\np[_v-af7b979e] {\n    margin:0;\n}\nlabel[_v-af7b979e] {\n    display: block;\n    /*margin-bottom: 1.5em;*/\n}\n\nlabel > span[_v-af7b979e] {\n    display: inline-block;\n    width: 8em;\n    vertical-align: top;\n}\n.valid-titleField[_v-af7b979e] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.no-input[_v-af7b979e] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.invalid-input[_v-af7b979e] {\n    background-color: rgba(236, 88, 64, 0.1);\n    border: 1px dotted red;\n}\n.invalid[_v-af7b979e] {\n    color: #ff0000;\n}\n\n\nfieldset label.radiobtns[_v-af7b979e]  {\n    display: inline;\n    margin: 4px;\n    padding: 2px;\n}\n\n[type='text'][_v-af7b979e], [type='password'][_v-af7b979e], [type='date'][_v-af7b979e], [type='datetime'][_v-af7b979e], [type='datetime-local'][_v-af7b979e], [type='month'][_v-af7b979e], [type='week'][_v-af7b979e], [type='email'][_v-af7b979e], [type='number'][_v-af7b979e], [type='search'][_v-af7b979e], [type='tel'][_v-af7b979e], [type='time'][_v-af7b979e], [type='url'][_v-af7b979e], [type='color'][_v-af7b979e],\ntextarea[_v-af7b979e] {\n    margin: 0;\n    padding: 0;\n    padding-left: 8px;\n    width: 100%;\n}\n[type='file'][_v-af7b979e], [type='checkbox'][_v-af7b979e], [type='radio'][_v-af7b979e] {\n    margin: 0;\n    margin-left: 8px;\n    padding: 0;\n    padding-left: 2px;\n}\n.reqstar[_v-af7b979e] {\n    font-size: .5rem;\n    color: #E33100;\n    vertical-align:text-top;\n}\nbutton.button-primary[_v-af7b979e] {\n    margin-top: 1rem;\n}\n\n\ninput[type='email'][_v-af7b979e],\ninput[type='number'][_v-af7b979e],\ninput[type='password'][_v-af7b979e],\ninput[type='search'][_v-af7b979e],\ninput[type='tel'][_v-af7b979e],\ninput[type='text'][_v-af7b979e],\ninput[type='url'][_v-af7b979e],\ntextarea[_v-af7b979e],\nselect[_v-af7b979e] {\n    -webkit-appearance: none;\n    -moz-appearance: none;\n    appearance: none;\n    background-color: transparent;\n    border: 0.1rem solid #d1d1d1;\n    border-radius: 0.4rem;\n    box-shadow: none;\n    height: 3.8rem;\n    padding: 0.6rem 1rem;\n    width: 100%;\n}\ninput[type='email'][_v-af7b979e]:focus,\ninput[type='number'][_v-af7b979e]:focus,\ninput[type='password'][_v-af7b979e]:focus,\ninput[type='search'][_v-af7b979e]:focus,\ninput[type='tel'][_v-af7b979e]:focus,\ninput[type='text'][_v-af7b979e]:focus,\ninput[type='url'][_v-af7b979e]:focus,\ntextarea[_v-af7b979e]:focus,\nselect[_v-af7b979e]:focus {\n    border: 0.1rem solid #9b4dca;\n    outline: 0;\n}\n\n")
 'use strict';
 
+var _flatpickr = require('flatpickr');
+
+var _flatpickr2 = _interopRequireDefault(_flatpickr);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 module.exports = {
-	props: {
-		authorid: { default: '0' },
-		eventexists: { default: false },
-		editeventid: { default: '' }
-	},
-	data: function data() {
-		return {
-			sdate: '',
-			edate: '',
-			stime: '',
-			rdate: '',
-			ticketoptions: [{ text: 'Online', value: 'online' }, { text: 'Phone', value: 'phone' }, { text: 'Ticket Office', value: 'office' }, { text: 'Online, Phone and Ticket Office', value: 'all' }, { text: 'Other', value: 'other' }],
-			participants: [{ text: 'Campus Only', value: 'campus' }, { text: 'Open to Public', value: 'public' }, { text: 'Students Only', value: 'students' }, { text: 'Invitation Only', value: 'invite' }, { text: 'Tickets Required', value: 'tickets' }],
-			totalChars: {
-				start: 0,
-				title: 100,
-				description: 255
-			},
-			newbuilding: '',
-			zcategories: [],
-			zbuildings: [],
-			buildings: [],
-			zcats: [],
-			categories: {},
-			minicalendars: {},
-			newevent: {
-				on_campus: 1,
-				all_day: 0,
-				no_end_time: 0,
-				free: 0,
-				title: '',
-				description: ''
-			},
-			response: {},
-			formStatus: {},
-			vModelLike: "",
-			formMessage: {
-				isOk: false,
-				msg: ''
-			},
-			formInputs: {},
-			formErrors: {}
-		};
-	},
-	ready: function ready() {
-		//  this.fetchCategoryList();
-		// console.log('editevent='+ this.editevent)
-		console.log('eventexists' + this.eventexists);
+    props: {
+        authorid: { default: '0' },
+        recordexists: { default: false },
+        editid: { default: '' },
+        framework: { default: 'foundation' }
+    },
+    data: function data() {
+        return {
+            startdatePicker: null,
+            enddatePicker: null,
+            starttimePicker: null,
+            endtimePicker: null,
+            regdeadlinePicker: null,
+            sdate: '',
+            edate: '',
+            stime: '',
+            rdate: '',
+            ticketoptions: [{ text: 'Online', value: 'online' }, { text: 'Phone', value: 'phone' }, { text: 'Ticket Office', value: 'office' }, { text: 'Online, Phone and Ticket Office', value: 'all' }, { text: 'Other', value: 'other' }],
+            participants: [{ text: 'Campus Only', value: 'campus' }, { text: 'Open to Public', value: 'public' }, { text: 'Students Only', value: 'students' }, { text: 'Invitation Only', value: 'invite' }, { text: 'Tickets Required', value: 'tickets' }],
+            totalChars: {
+                start: 0,
+                title: 100,
+                description: 255
+            },
+            newbuilding: '',
+            zcategories: [],
+            zbuildings: [],
+            buildings: [],
+            zcats: [],
+            categories: {},
+            minicalendars: {},
+            newevent: {
+                on_campus: 1,
+                all_day: 0,
+                no_end_time: 0,
+                free: 0,
+                title: '',
+                description: ''
+            },
+            response: {},
+            formStatus: {},
+            vModelLike: "",
+            formMessage: {
+                isOk: false,
+                msg: ''
+            },
+            formInputs: {},
+            formErrors: {}
+        };
+    },
+    ready: function ready() {
+        var self = this;
 
-		if (this.eventexists) {
-			console.log('editeventid' + this.editeventid);
-			this.fetchCurrentEvent(this.editeventid);
-		}
+        this.startdatePicker = (0, _flatpickr2.default)(document.getElementById("start-date"), {
+            minDate: "today",
+            enableTime: false,
+            altFormat: "m-d-Y",
+            altInput: true,
+            altInputClass: "form-control",
+            dateFormat: "Y-m-d",
+            onChange: function onChange(dateObject, dateString) {
+                self.newevent.start_date = dateString;
+                self.startdatePicker.value = dateString;
+            }
+        });
+        this.enddatePicker = (0, _flatpickr2.default)(document.getElementById("end-date"), {
+            minDate: "today",
+            enableTime: false,
+            altFormat: "m-d-Y",
+            altInput: true,
+            altInputClass: "form-control",
+            dateFormat: "Y-m-d",
+            onChange: function onChange(dateObject, dateString) {
+                self.newevent.end_date = dateString;
+                self.enddatePicker.value = dateString;
+            }
+        });
+        this.starttimePicker = (0, _flatpickr2.default)(document.getElementById("start-time"), {
+            noCalendar: true,
+            enableTime: true,
+            onChange: function onChange(timeObject, timeString) {
+                self.newevent.start_time = timeString;
+                self.starttimePicker.value = timeString;
+            }
+        });
+        this.endtimePicker = (0, _flatpickr2.default)(document.getElementById("end-time"), {
+            noCalendar: true,
+            enableTime: true,
+            onChange: function onChange(timeObject, timeString) {
+                self.newevent.end_time = timeString;
+                self.endtimePicker.value = timeString;
+            }
+        });
 
-		this.fetchMiniCalendarList();
-	},
+        this.regdeadlinePicker = (0, _flatpickr2.default)(document.getElementById("reg-deadline"), {
+            minDate: "today",
+            enableTime: false,
+            altFormat: "m-d-Y",
+            altInput: true,
+            altInputClass: "form-control",
+            dateFormat: "Y-m-d",
+            onChange: function onChange(dateObject, dateString) {
+                self.record.reg_deadline = dateString;
+                self.regdeadlinePicker.value = dateString;
+            }
+        });
+        //  this.fetchCategoryList();
+        // console.log('editevent='+ this.editevent)
+        console.log('eventexists' + this.eventexists);
 
-	computed: {
-		computedLocation: function computedLocation() {
-			if (this.zbuildings) {
-				this.newevent.building = this.zbuildings.length > 0 ? this.zbuildings[0] : '';
-				buildingChoice = this.newevent.building;
-			} else {
-				return;
-			}
-			var room = this.newevent.room ? ' - Room:' + this.newevent.room : '';
-			return buildingChoice + room;
-			// return this.zbuilding[0] + room
-		},
-		isOnCampus: function isOnCampus() {
-			return this.newevent.on_campus == 1 ? true : false;
-		},
-		realCost: function realCost() {
-			if (this.newevent.free == 1) {
-				return '0.00';
-			} else {
-				// this.newevent.cost = '';
-				return '';
-			}
-			// return this.newevent.free == 1 ? false:true;
-		},
-		hasCost: function hasCost() {
-			if (this.newevent.free == 1) {
-				this.newevent.cost = '0.00';
-				return false;
-			} else {
-				// this.newevent.cost = '';
-				return true;
-			}
-			// return this.newevent.free == 1 ? false:true;
-		},
-		titleChars: function titleChars() {
-			var str = this.newevent.title;
+        if (this.eventexists) {
+            console.log('editeventid' + this.editeventid);
+            this.fetchCurrentEvent(this.editeventid);
+        }
 
-			console.log(str.length);
-			var cclength = str.length;
-			return this.totalChars.title - cclength;
-			// this.totalChars.title - (this.newevent.title).length
-		},
-		descriptionChars: function descriptionChars() {
-			var str = this.newevent.description;
-			console.log(str.length);
-			var cclength = str.length;
-			return this.totalChars.description - cclength;
-			// this.totalChars.title - (this.newevent.title).length
-		},
-		hasStartTime: function hasStartTime() {
-			return this.newevent.all_day == 1 ? false : true;
-		},
-		hasEndTime: function hasEndTime() {
-			return this.newevent.all_day == 1 || this.newevent.no_end_time == 1 ? false : true;
-		}
+        this.fetchMiniCalendarList();
+    },
 
-	},
-	methods: {
-		fetchCurrentEvent: function fetchCurrentEvent() {
-			var _this = this;
+    computed: {
+        md6col: function md6col() {
+            return this.framework == 'foundation' ? 'medium-6 columns' : 'col-md-6';
+        },
+        md12col: function md12col() {
+            return this.framework == 'foundation' ? 'medium-12 columns' : 'col-md-12';
+        },
+        md8col: function md8col() {
+            return this.framework == 'foundation' ? 'medium-8 columns' : 'col-md-8';
+        },
+        md4col: function md4col() {
+            return this.framework == 'foundation' ? 'medium-4 columns' : 'col-md-4';
+        },
+        md2col: function md2col() {
+            return this.framework == 'foundation' ? 'medium-2 columns' : 'col-md-2';
+        },
+        md10col: function md10col() {
+            return this.framework == 'foundation' ? 'medium-10 columns' : 'col-md-10';
+        },
+        btnPrimary: function btnPrimary() {
+            return this.framework == 'foundation' ? 'button button-primary' : 'btn btn-primary';
+        },
+        formGroup: function formGroup() {
+            return this.framework == 'foundation' ? '' : 'form-group';
+        },
+        computedLocation: function computedLocation() {
+            if (this.zbuildings) {
+                this.newevent.building = this.zbuildings.length > 0 ? this.zbuildings[0] : '';
+                buildingChoice = this.newevent.building;
+            } else {
+                return;
+            }
+            var room = this.newevent.room ? ' - Room:' + this.newevent.room : '';
+            return buildingChoice + room;
+            // return this.zbuilding[0] + room
+        },
+        isOnCampus: function isOnCampus() {
+            return this.newevent.on_campus == 1 ? true : false;
+        },
+        realCost: function realCost() {
+            if (this.newevent.free == 1) {
+                return '0.00';
+            } else {
+                // this.newevent.cost = '';
+                return '';
+            }
+            // return this.newevent.free == 1 ? false:true;
+        },
+        hasCost: function hasCost() {
+            if (this.newevent.free == 1) {
+                this.newevent.cost = '0.00';
+                return false;
+            } else {
+                // this.newevent.cost = '';
+                return true;
+            }
+            // return this.newevent.free == 1 ? false:true;
+        },
+        titleChars: function titleChars() {
+            var str = this.newevent.title;
 
-			this.$http.get('/api/event/' + this.editeventid).then(function (response) {
-				//response.status;
-				console.log('response.status=' + response.status);
-				console.log('response.ok=' + response.ok);
-				console.log('response.statusText=' + response.statusText);
-				// console.log('response.data=' + response.data.json());
-				_this.newevent = response.data;
+            console.log(str.length);
+            var cclength = str.length;
+            return this.totalChars.title - cclength;
+            // this.totalChars.title - (this.newevent.title).length
+        },
+        descriptionChars: function descriptionChars() {
+            var str = this.newevent.description;
+            console.log(str.length);
+            var cclength = str.length;
+            return this.totalChars.description - cclength;
+            // this.totalChars.title - (this.newevent.title).length
+        },
+        hasStartTime: function hasStartTime() {
+            return this.newevent.all_day == 1 ? false : true;
+        },
+        hasEndTime: function hasEndTime() {
+            return this.newevent.all_day == 1 || this.newevent.no_end_time == 1 ? false : true;
+        }
 
-				_this.checkOverData();
-			}, function (response) {
-				//error callback
-				console.log("ERRORS");
+    },
+    methods: {
+        fetchCurrentEvent: function fetchCurrentEvent() {
+            var _this = this;
 
-				// this.formErrors =  response.data.error.message;
-			}).bind(this);
-		},
-		checkOverData: function checkOverData() {
+            this.$http.get('/api/event/' + this.editeventid).then(function (response) {
+                //response.status;
+                console.log('response.status=' + response.status);
+                console.log('response.ok=' + response.ok);
+                console.log('response.statusText=' + response.statusText);
+                // console.log('response.data=' + response.data.json());
+                _this.newevent = response.data;
 
-			if (this.newevent.building) {
-				this.buildings.push(this.newevent.building);
-			}
-			if (this.newevent.room) {
-				this.newevent.room = this.newevent.room;
-			}
+                _this.checkOverData();
+            }, function (response) {
+                //error callback
+                console.log("ERRORS");
 
-			if (this.newevent.eventcategories) {
-				for (var i = 0; i < this.newevent.eventcategories.length; i++) {
-					var reduceobj = this.newevent.eventcategories[i].id;
-					this.zcats.push(reduceobj);
-				}
+                // this.formErrors =  response.data.error.message;
+            }).bind(this);
+        },
+        checkOverData: function checkOverData() {
 
-				console.log('this.zcats' + this.zcats.length);
-			}
+            if (this.newevent.building) {
+                this.buildings.push(this.newevent.building);
+            }
+            if (this.newevent.room) {
+                this.newevent.room = this.newevent.room;
+            }
 
-			// this.newbuilding = this.newevent.building;
-			// this.zbuilding.push(this.newevent.building);
-		},
-		fetchMiniCalendarList: function fetchMiniCalendarList() {
-			this.$http.get('/api/minicalendars').then(function (response) {
-				// console.log('response->minicalendars=' + JSON.stringify(response.data));
-				this.minicalendars = response.data.data;
-			}, function (response) {
-				//  this.$set(this.formErrors, response.data);
-				console.log(response);
-			});
-		},
+            if (this.newevent.eventcategories) {
+                for (var i = 0; i < this.newevent.eventcategories.length; i++) {
+                    var reduceobj = this.newevent.eventcategories[i].id;
+                    this.zcats.push(reduceobj);
+                }
 
-		submitForm: function submitForm(e) {
-			var _this2 = this;
+                console.log('this.zcats' + this.zcats.length);
+            }
 
-			//  console.log('this.eventform=' + this.eventform.$valid);
-			e.preventDefault();
-			// this.newevent.start_date = this.sdate;
-			// this.newevent.end_date = this.edate;
-			// this.newevent.reg_deadline = this.rdate;
-			this.newevent.author_id = this.authorid;
-			if (this.newevent.on_campus == true) {
-				this.newevent.location = this.computedLocation;
-			} else {
-				this.newevent.location = this.newevent.locationoffcampus;
-			}
-			// this.newevent.location = (this.on_campus)?this.computedLocation: this.newevent.location;
-			this.newevent.categories = this.zcategories;
-			console.log("cats=" + this.newevent.categories);
-			this.$http.post('/api/event', this.newevent).then(function (response) {
-				//response.status;
-				console.log('response.status=' + response.status);
-				console.log('response.ok=' + response.ok);
-				console.log('response.statusText=' + response.statusText);
-				console.log('response.data=' + response.data.message);
-				_this2.formMessage.msg = response.data.message;
-				_this2.formMessage.isOk = response.ok;
-			}, function (response) {
-				//error callback
-				// console.log("FORM ERRORS     "+ response.json() );
+            // this.newbuilding = this.newevent.building;
+            // this.zbuilding.push(this.newevent.building);
+        },
+        fetchMiniCalendarList: function fetchMiniCalendarList() {
+            this.$http.get('/api/minicalendars').then(function (response) {
+                // console.log('response->minicalendars=' + JSON.stringify(response.data));
+                this.minicalendars = response.data.data;
+            }, function (response) {
+                //  this.$set(this.formErrors, response.data);
+                console.log(response);
+            });
+        },
 
-				_this2.formErrors = response.data.error.message;
-			}).bind(this);
-		}
-	},
-	// .then(function(response){
-	//get status
-	// response.status;
-	//   console.log('response.status=' + response.status);
-	//   console.log('response.ok=' + response.ok);
-	//     console.log('response.statusText=' + response.statusText);
-	//     console.log('response.request=' + JSON.stringify(response.request));
+        submitForm: function submitForm(e) {
+            var _this2 = this;
 
-	// var responseData = response.data;
+            //  console.log('this.eventform=' + this.eventform.$valid);
+            e.preventDefault();
+            // this.newevent.start_date = this.sdate;
+            // this.newevent.end_date = this.edate;
+            // this.newevent.reg_deadline = this.rdate;
+            this.newevent.author_id = this.authorid;
+            if (this.newevent.on_campus == true) {
+                this.newevent.location = this.computedLocation;
+            } else {
+                this.newevent.location = this.newevent.locationoffcampus;
+            }
+            // this.newevent.location = (this.on_campus)?this.computedLocation: this.newevent.location;
+            this.newevent.categories = this.zcategories;
+            console.log("cats=" + this.newevent.categories);
+            this.$http.post('/api/event', this.newevent).then(function (response) {
+                //response.status;
+                console.log('response.status=' + response.status);
+                console.log('response.ok=' + response.ok);
+                console.log('response.statusText=' + response.statusText);
+                console.log('response.data=' + response.data.message);
+                _this2.formMessage.msg = response.data.message;
+                _this2.formMessage.isOk = response.ok;
+            }, function (response) {
+                //error callback
+                // console.log("FORM ERRORS     "+ response.json() );
 
-	// console.log('response-length=' + responseData.length);
+                _this2.formErrors = response.data.error.message;
+            }).bind(this);
+        }
+    },
 
-	// for (var key in responseData){
-	//     var attrName = key;
-	//     var attrValue = responseData[key];
-	// 		console.log('attrName='+attrName +'____attrValue='+attrValue);
-	// }
+    watch: {},
 
-	// // //get all headers
-	// response.headers();
-	// // //get 'expirese' header
-	// response.headers('expires');
-	//
-	// //set data on vm
-	// if (response.data.errors){
-	// 	console.log('has errrrrrrrrrrrrors');
-	//     this.formErrors = response.data.errors;
-	//
-	// } else {
-	//   this.formErrors = {};
-	// }
-	// console.log('json-'+JSON.stringify(response.data));
-	//     }, function(response) {
-	// 				console.log(this.newevent.title);
-	// 				console.log("FORM ERRORS     "+ JSON.stringify(response.data));
-	//
-	//       	this.formErrors =  response.data.error.message;
-	//
-	//     }).bind(this);
-	//   }
-	// },
-	watch: {},
+    directives: {
+        // mydatedropper: require('../directives/mydatedropper.js'),
+        // mytimedropper: require('../directives/mytimedropper.js'),
+        myselect: require('../directives/myselect.js')
 
-	directives: {
-		mydatedropper: require('../directives/mydatedropper.js'),
-		mytimedropper: require('../directives/mytimedropper.js'),
-		myselect: require('../directives/myselect.js')
+    },
+    components: {
+        // datepicker: require('../vendor/datepicker.vue')
+        // listselect2: require('./ListSelect2.vue')
+        // autocomplete: require('./vue-autocomplete.vue'),
+        // 'datepicker': require('../vendor/datepicker.vue'),
 
-	},
-	components: {
-		datepicker: require('../vendor/datepicker.vue')
-		// listselect2: require('./ListSelect2.vue')
-		// autocomplete: require('./vue-autocomplete.vue'),
-		// 'datepicker': require('../vendor/datepicker.vue'),
+    },
+    events: {
 
-	},
-	events: {
-
-		// 'building-change':function(name) {
-		// 	this.newbuilding = '';
-		// 	this.newbuilding = name;
-		// 	console.log(this.newbuilding);
-		// },
-		// 'categories-change':function(list) {
-		// 	this.categories = '';
-		// 	this.categories = list;
-		// 	console.log(this.categories);
-		// }
-	}
+        // 'building-change':function(name) {
+        // 	this.newbuilding = '';
+        // 	this.newbuilding = name;
+        // 	console.log(this.newbuilding);
+        // },
+        // 'categories-change':function(list) {
+        // 	this.categories = '';
+        // 	this.categories = list;
+        // 	console.log(this.categories);
+        // }
+    }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form _v-0879ddea=\"\">\n\t<slot name=\"csrf\" _v-0879ddea=\"\"></slot>\n\t<!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"small-12 columns\" _v-0879ddea=\"\">\n\t\t\t<div v-show=\"formMessage.isOk\" class=\"callout success\" _v-0879ddea=\"\">\n\t\t\t\t<h5 _v-0879ddea=\"\">{{formMessage.msg}}</h5>\n\t\t\t\t\t</div>\n\t\t\t<!-- <div class=\"form-group\">\n\t\t\t\t<label>zBuilding</label>\n\t\t\t\t\t<select id=\"select-zbuilding\" style=\"width: 75%\" v-myselect=\"zbuilding\"  ajaxurl=\"/api/zbuildings\" data-placeholder=\"zbuildings\" data-tags=\"false\" multiple=\"multiple\" data-maximum-selection-length=\"1\">\n\t\t\t\t\t\t<option value=\"0\">default</option>\n\t\t\t\t\t</select>\n\t\t\t</div> -->\n\t\t\t<!-- /.data-minimum-results-for-search=\"Infinity\" data-maximum-input-length=\"0\" form-group -->\n\t\t\t<!-- <div class=\"form-group\">\n\t\t\t\t<label>zCats</label>\n\t\t\t\t\t<select id=\"select-zcats\" style=\"width: 75%\" v-myselect=\"zcategories\" ajaxurl=\"/api/zcats\" data-close-on-select=\"false\" data-placeholder=\"zcats\" data-tags=\"false\"  multiple=\"multiple\">\n\t\t\t\t\t\t<option value=\"0\">\n\t\t\t\t\t\t\tdefault\n\t\t\t\t\t\t</option>\n\t\t\t\t\t</select>\n\t\t\t</div> -->\n\t\t\t<!-- /.form-group -->\n\t\t\t\t<!-- <input v-model=\"newevent.building2\" v-bind:class=\"[formErrors.building ? 'invalid-input' : '']\" name=\"select-building\" type=\"text\"> -->\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Title <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t\t<p class=\"help-text\" id=\"title-helptext\" _v-0879ddea=\"\">Please enter a title ({{titleChars}} characters left)</p>\n\t\t\t\t\t\t<input v-model=\"newevent.title\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-0879ddea=\"\">\tPlease Include a Title!</p>\n    \t\t</div>\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Short Title\t</label>\n\t\t\t\t\t\t<input v-model=\"newevent.short_title\" type=\"text\" placeholder=\"Short Title\" name=\"short-title\" _v-0879ddea=\"\">\n\t\t\t\t</div>\n\t\t</div><!-- /.small-12 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Is Event on Campus?\n\t\t\t\t\t\t<input id=\"on-campus-yes\" name=\"on_campus\" type=\"checkbox\" value=\"1\" v-model=\"newevent.on_campus\" _v-0879ddea=\"\">\n\t\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-6 columns -->\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\n\t\t</div><!-- /.medium-6 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t\t<template v-if=\"isOnCampus\">\n\t\t\t\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<div class=\"medium-8 columns\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Building</label>\n\t\t\t\t\t\t\t<select id=\"select-zbuilding\" class=\"js-example-basic-multiple\" style=\"width: 100%\" v-myselect=\"zbuildings\" ajaxurl=\"/api/zbuildings\" v-bind:resultvalue=\"buildings\" data-tags=\"false\" multiple=\"multiple\" data-maximum-selection-length=\"1\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t<!-- <option value=\"0\">default</option> -->\n\t\t\t\t\t\t\t</select>\n\t\t\t\t\t\t</div><!-- /.medium-8 columns -->\n\t\t\t\t\t\t<div class=\"medium-4 columns\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Room</label>\n\t\t\t\t\t\t\t<input v-model=\"newevent.room\" v-bind:class=\"[formErrors.room ? 'invalid-input' : '']\" name=\"room\" type=\"text\" _v-0879ddea=\"\">\n\n\t\t\t\t\t\t</div><!-- /.medium-4 columns -->\n\t\t\t\t\t</div><!-- /.row -->\n\t\t\t\t</template>\n\t\t\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<template v-if=\"isOnCampus\">\n\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Location <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t\t\t\t<input v-model=\"computedLocation\" v-bind:class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" readonly=\"readonly\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t\t<template v-else=\"\">\n\t\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Location <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t\t\t\t<input v-model=\"newevent.locationoffcampus\" v-bind:class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t</template>\n\t\t\t\t\t\t</div><!-- /.medium-12 column -->\n\t\t\t\t</div><!-- /.row -->\n\t\t\t</div><!-- /.medium-12 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"small-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label for=\"start-date\" _v-0879ddea=\"\">Start Date: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t<input id=\"start-date\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"newevent.start_date\" aria-describedby=\"errorStartDate\" v-mydatedropper=\"\" _v-0879ddea=\"\">\n\t\t\t\t\t<p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-0879ddea=\"\">Need a Start Date</p>\n\t\t\t\t</div><!--form-group -->\n\t\t</div><!-- /.small-6 columns -->\n\t\t<div class=\"small-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<label for=\"end-date\" _v-0879ddea=\"\">End Date: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t\t<input id=\"end-date\" v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"newevent.end_date\" aria-describedby=\"errorEndDate\" v-mydatedropper=\"\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<!-- <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\"></datepicker> -->\n\t\t\t\t\t\t<p v-if=\"formErrors.end_date\" class=\"help-text invalid\" _v-0879ddea=\"\">Need an End Date</p>\n\n\t\t\t\t\t</div><!--form-group -->\n\t\t</div><!-- /.small-6 columns -->\n\t</div><!-- /.row -->\n\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"small-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t  <label for=\"all-day\" _v-0879ddea=\"\">All Day Event:\n\t\t\t\t\t<input id=\"all-day\" name=\"all_day\" type=\"checkbox\" value=\"1\" v-model=\"newevent.all_day\" _v-0879ddea=\"\">\n\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.small-6 column -->\n\t\t\t<div class=\"small-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div v-show=\"hasEndTime\" class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label for=\"no-end-time\" _v-0879ddea=\"\">No End Time:\n\t\t\t\t\t\t<input id=\"no-end-time\" name=\"no_end_time\" type=\"checkbox\" value=\"1\" v-model=\"newevent.no_end_time\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t<!-- <label for=\"no-end-time-no\" class=\"radiobtns\">no</label><input id=\"no-end-time-no\"  name=\"no_end_time\" type=\"radio\" value=\"0\" v-model=\"newevent.no_end_time\"/> -->\n\t\t\t\t\t\t</label></div>\n\t\t\t</div><!-- /.small-6 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div v-show=\"hasStartTime\" class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<label for=\"start-time\" _v-0879ddea=\"\">Start Time: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t<input id=\"start-time\" type=\"text\" v-model=\"newevent.start_time\" v-mytimedropper=\"\" _v-0879ddea=\"\">\n\t\t\t\t</div><!-- /.form-group -->\n\t\t\t</div><!-- /.medium-6 columns -->\n\t\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div v-show=\"hasEndTime\" class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label for=\"end-time\" _v-0879ddea=\"\">End Time: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t<input id=\"end-time\" type=\"text\" v-model=\"newevent.end_time\" v-mytimedropper=\"\" _v-0879ddea=\"\">\n\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t</div><!-- /.medium-6 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"small-12 column\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label _v-0879ddea=\"\">Categories: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t<select v-bind:class=\"[formErrors.categories ? 'invalid-input' : '']\" id=\"select-zcats\" style=\"width: 100%\" v-myselect=\"zcategories\" v-bind:resultvalue=\"zcats\" ajaxurl=\"/api/zcats\" data-close-on-select=\"false\" data-placeholder=\"zcats\" data-tags=\"false\" multiple=\"multiple\" _v-0879ddea=\"\">\n\t\t\t\t\t<option value=\"0\" _v-0879ddea=\"\">\n\t\t\t\t\t\tdefault\n\t\t\t\t\t</option>\n\t\t\t\t</select>\n\t\t\t\t\t<!-- <listselect2 v-on:val-change=\"categoriesValChange\" v-bind:class=\"[formErrors.categories ? 'invalid-input' : '']\" id=\"select-categories\" ismultiple='true' :resultvalue.sync=\"newevent.categoriessync\" ajaxurl=\"/api/zevent-catgeories\" minforsearch=\"Infinity\" tags=\"false\" placeholder=\"Choose Categories\"></listselect2> -->\n\t\t\t</div><!-- /.form-group -->\n\t\t\t\t\t<!-- <div class=\"form-group\" v-bind:class=\"[formErrors.categories ? 'invalid-input' : '']\">\n\n\t\t\t\t\t\t\t<label for=\"categories\">Categories:</label>\n\t\t\t\t\t\t\t<select v-model=\"newevent.categories\" id=\"categories\" multiple=\"multiple\" class=\"multiselect\">\n\t\t\t\t\t\t\t\t<option v-for=\"category in categories\" :value=\"category.id\">\n\t\t\t\t\t\t\t\t\t{{category.category}}\n\t\t\t\t\t\t\t\t</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t\t</div> -->\n\t\t</div><!-- /.small-12 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label _v-0879ddea=\"\">Contact Person <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i>\n\t\t\t\t\t<input v-model=\"newevent.contact_person\" v-bind:class=\"[formErrors.contact_person ? 'invalid-input' : '']\" name=\"contact-person\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t<p v-if=\"formErrors.contact_person\" class=\"help-text invalid\" _v-0879ddea=\"\">Need a Contact Person!</p>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-6 columns -->\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label _v-0879ddea=\"\">Contact Email: <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i> <em _v-0879ddea=\"\">(ex. janedoe@emich.edu)</em>\n\t\t\t\t\t<input v-model=\"newevent.contact_email\" v-bind:class=\"[formErrors.contact_email ? 'invalid-input' : '']\" name=\"contact-email\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t<p v-if=\"formErrors.contact_email\" class=\"help-text invalid\" _v-0879ddea=\"\">Need a Contact Email!</p>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-6 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\n\t\t\t\t<label _v-0879ddea=\"\">Contact Phone <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i> <em _v-0879ddea=\"\">(ex. 734.487.1849)</em>\n\t\t\t\t\t<input v-model=\"newevent.contact_phone\" v-bind:class=\"[formErrors.contact_phone ? 'invalid-input' : '']\" name=\"contact-phone\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t<p v-if=\"formErrors.contact_phone\" class=\"help-text invalid\" _v-0879ddea=\"\">Need a Contact Phone!</p>\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-6 columns -->\n\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label _v-0879ddea=\"\">Contact Fax: <em _v-0879ddea=\"\">(ex. 734.487.1849)</em>\n\t\t\t\t\t<input v-model=\"newevent.contact_fax\" v-bind:class=\"[formErrors.contact_fax ? 'invalid-input' : '']\" name=\"contact-fax\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-6 columns -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Related Link: <em _v-0879ddea=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t<input v-model=\"newevent.related_link_1\" v-bind:class=\"[formErrors.related_link_1 ? 'invalid-input' : '']\" name=\"related-link-1\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t</label>\n\t\t\t\t\t<label _v-0879ddea=\"\">Related Link: <em _v-0879ddea=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t<input v-model=\"newevent.related_link_2\" v-bind:class=\"[formErrors.related_link_2 ? 'invalid-input' : '']\" name=\"related-link-2\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t</label>\n\t\t\t\t\t<label _v-0879ddea=\"\">Related Link: <em _v-0879ddea=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t<input v-model=\"newevent.related_link_1\" v-bind:class=\"[formErrors.related_link_1 ? 'invalid-input' : '']\" name=\"related-link-1\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.medium-12 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label for=\"reg-deadline\" _v-0879ddea=\"\">Registration Deadline</label>\n\t\t\t\t\t<input id=\"reg-deadline\" type=\"text\" v-model=\"newevent.reg_deadline\" :value.sync=\"rdate\" aria-describedby=\"errorRegDeadline\" v-mydatedropper=\"\" _v-0879ddea=\"\">\n\t\t\t\t</div>\n\t\t\t</div><!-- /.medium-6 columns-->\n\t\t</div><!-- /.row -->\n\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"medium-12 columns\" _v-0879ddea=\"\">\n\n\t\t\t\t\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t<div class=\"medium-4 columns\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Free</label>\n\t\t\t\t\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t<input id=\"free\" name=\"free\" type=\"checkbox\" value=\"1\" v-model=\"newevent.free\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t</div><!-- /.form-group -->\n\t\t\t\t\t\t\t</div><!-- /.medium-4 columns -->\n\t\t\t\t\t\t\t<div class=\"medium-8 columns\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t<label _v-0879ddea=\"\">Event Cost <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i></label>\n\t\t\t\t\t\t\t\t<div v-show=\"hasCost\" class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"input-group-label\" _v-0879ddea=\"\">$</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.cost\" v-bind:class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t</div><!-- /. input-group -->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t<div v-else=\"\" class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t<div class=\"input-group\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t\t<span class=\"input-group-label\" _v-0879ddea=\"\">$</span>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<input v-model=\"newevent.cost\" v-bind:class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"text\" readonly=\"readonly\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t\t\t\t\t</div><!-- /. input-group -->\n\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t</div><!-- /.medium-8 columns -->\n\t\t\t\t\t\t</div><!-- /.row -->\n\n\n\t\t\t</div><!-- /.medium-6 -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Tickets Available\n\t\t\t\t\t\t<select v-model=\"newevent.tickets\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t<option v-for=\"ticketoption in ticketoptions\" v-bind:value=\"ticketoption.value\" _v-0879ddea=\"\">\n\t\t\t\t\t\t\t {{ ticketoption.text }}\n\t\t\t\t\t\t </option>\n\t\t\t\t\t</select>\n\t\t\t\t\t</label>\n\t\t\t\t\t<template v-if=\"newevent.tickets == 'online' || newevent.tickets == 'all'\">\n\t\t\t\t\t\t<label _v-0879ddea=\"\">Link: <em _v-0879ddea=\"\">(ex. http://www.emich.edu/calendar)</em>\n\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_online\" v-bind:class=\"[formErrors.ticket_details_online ? 'invalid-input' : '']\" name=\"ticket-details-online\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</template>\n\t\t\t\t\t<template v-if=\"newevent.tickets == 'phone' || newevent.tickets == 'all'\">\n\t\t\t\t\t\t<label _v-0879ddea=\"\">Tickets by Phone <em _v-0879ddea=\"\">(ex. 734.487.1849)</em>\n\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_phone\" v-bind:class=\"[formErrors.ticket_details_phone ? 'invalid-input' : '']\" name=\"ticket-details-phone\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</template>\n\t\t\t\t\t<template v-if=\"newevent.tickets == 'office' || newevent.tickets == 'all'\">\n\t\t\t\t\t\t<label _v-0879ddea=\"\">Address\n\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_office\" v-bind:class=\"[formErrors.ticket_details_office ? 'invalid-input' : '']\" name=\"ticket-details-office\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</template>\n\t\t\t\t\t<template v-if=\"newevent.tickets == 'other'\">\n\t\t\t\t\t\t<label _v-0879ddea=\"\">Other\n\t\t\t\t\t\t\t<input v-model=\"newevent.ticket_details_other\" v-bind:class=\"[formErrors.ticket_details_other ? 'invalid-input' : '']\" name=\"ticket-details-other\" type=\"text\" _v-0879ddea=\"\">\n\t\t\t\t\t\t</label>\n\t\t\t\t\t</template>\n\t\t\t\t</div><!-- /.form-group -->\n\t\t\t</div><!-- /.medium-12 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<label _v-0879ddea=\"\">Participants\n\t\t\t\t\t<select v-model=\"newevent.participants\" _v-0879ddea=\"\">\n\t\t\t\t\t\t<option v-for=\"participant in participants\" v-bind:value=\"participant.value\" _v-0879ddea=\"\">\n\t\t\t\t\t {{ participant.text }}\n\t\t\t\t \t</option>\n\t\t\t\t</select>\n\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!--/.medium-12 column -->\n\t</div><!-- /.row -->\n\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label for=\"lbc-reviewed\" _v-0879ddea=\"\">LBC Approved: <em _v-0879ddea=\"\">(pre-approval required)</em>\n\t\t\t\t\t<input id=\"lbc-reviewed\" name=\"lbc-reviewed\" type=\"checkbox\" value=\"1\" v-model=\"newevent.lbc_reviewed\" _v-0879ddea=\"\">\n\t\t\t\t</label>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.medium-6 columns -->\n\t\t\t<div class=\"medium-6 columns\" _v-0879ddea=\"\">\n\n\t\t\t</div><!-- /.medium-6 columns -->\n\t\t</div><!-- /.row -->\n\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t\t<label _v-0879ddea=\"\">Description <i class=\"fi-star reqstar\" _v-0879ddea=\"\"></i> <p class=\"help-text\" id=\"description-helptext\" _v-0879ddea=\"\">({{descriptionChars}} characters left)</p>\n\n\t\t\t\t\t<textarea v-model=\"newevent.description\" v-bind:class=\"[formErrors.description ? 'invalid-input' : '']\" name=\"description\" type=\"textarea\" rows=\"6\" _v-0879ddea=\"\"></textarea>\n\t\t\t\t</label>\n\t\t\t\t<p v-if=\"formErrors.description\" class=\"help-text invalid\" _v-0879ddea=\"\">Need a Description!</p>\n\n\t\t\t\t</div>\n\t\t\t</div><!-- /.medium-12 column -->\n\t\t</div><!-- /.row -->\n\t\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\n\t\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t<label _v-0879ddea=\"\">Group Website Calendar <p class=\"help-text\" id=\"minicalendar-helptext\" _v-0879ddea=\"\">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>\n\t\t\t\t\t<select v-model=\"newevent.mini_calendar\" id=\"mini_calendar\" _v-0879ddea=\"\">\n\t\t\t\t<option v-for=\"minicalendar in minicalendars\" :value=\"minicalendar.id\" _v-0879ddea=\"\">\n\t\t\t\t\t{{minicalendar.calendar}}\n\t\t\t\t</option>\n\t\t\t</select>\n\t\t\t</label>\n\t\t\t</div>\n\t\t</div><!-- /.medium-12 column -->\n\t</div><!-- /.row -->\n\t<div class=\"row\" _v-0879ddea=\"\">\n\t\t<div class=\"medium-12 column\" _v-0879ddea=\"\">\n\t\t\t<div class=\"form-group\" _v-0879ddea=\"\">\n\t\t\t\t<button v-on:click=\"submitForm\" type=\"submit\" class=\"button button-primary\" _v-0879ddea=\"\">Submit For Approval</button>\n\t\t\t</div>\n\t\t\t\t</div></div></form>\n\t\t<!-- /.medium-12 column -->\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n    <form _v-af7b979e=\"\">\n        <slot name=\"csrf\" _v-af7b979e=\"\"></slot>\n        <!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n                <div v-show=\"formMessage.isOk\" class=\"callout success\" _v-af7b979e=\"\">\n                    <h5 _v-af7b979e=\"\">{{formMessage.msg}}</h5>\n                </div>\n\n                <div class=\"form-group\" _v-af7b979e=\"\">\n    <label _v-af7b979e=\"\">Title <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i></label>\n    <p class=\"help-text\" id=\"title-helptext\" _v-af7b979e=\"\">Please enter a title ({{titleChars}} characters left)</p>\n    <input v-model=\"newevent.title\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-af7b979e=\"\">\n    <p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-af7b979e=\"\">\tPlease Include a Title!</p>\n</div>\n<div class=\"form-group\" _v-af7b979e=\"\">\n    <label _v-af7b979e=\"\">Short Title\t</label>\n    <input v-model=\"newevent.short_title\" type=\"text\" placeholder=\"Short Title\" name=\"short-title\" _v-af7b979e=\"\">\n</div>\n</div><!-- /.md12col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label _v-af7b979e=\"\">Is Event on Campus?\n                <input id=\"on-campus-yes\" name=\"on_campus\" type=\"checkbox\" value=\"1\" v-model=\"newevent.on_campus\" _v-af7b979e=\"\">\n            </label>\n        </div>\n    </div><!-- /.md6col -->\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n\n    </div><!-- /.md6col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n        <template v-if=\"isOnCampus\">\n            <div class=\"row\" _v-af7b979e=\"\">\n                <div v-bind:class=\"md8col\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Building</label>\n                    <select id=\"select-zbuilding\" class=\"js-example-basic-multiple\" style=\"width: 100%\" v-myselect=\"zbuildings\" ajaxurl=\"/api/zbuildings\" v-bind:resultvalue=\"buildings\" data-tags=\"false\" multiple=\"multiple\" data-maximum-selection-length=\"1\" _v-af7b979e=\"\">\n                        <!-- <option value=\"0\">default</option> -->\n                    </select>\n                </div><!-- /.md8col -->\n                <div v-bind:class=\"md4col\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Room</label>\n                    <input v-model=\"newevent.room\" v-bind:class=\"[formErrors.room ? 'invalid-input' : '']\" name=\"room\" type=\"text\" _v-af7b979e=\"\">\n\n                </div><!-- /.md4col -->\n            </div><!-- /.row -->\n        </template>\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n                <template v-if=\"isOnCampus\">\n                    <label _v-af7b979e=\"\">Location <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i></label>\n                    <input v-model=\"computedLocation\" v-bind:class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" readonly=\"readonly\" _v-af7b979e=\"\">\n                </template>\n                <template v-else=\"\">\n                    <label _v-af7b979e=\"\">Location <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i></label>\n                    <input v-model=\"newevent.locationoffcampus\" v-bind:class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" _v-af7b979e=\"\">\n                </template>\n            </div><!-- /.md12col -->\n        </div><!-- /.row -->\n    </div><!-- /.md12col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label for=\"start-date\" _v-af7b979e=\"\">Start Date: <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i></label>\n            <input id=\"start-date\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"newevent.start_date\" aria-describedby=\"errorStartDate\" _v-af7b979e=\"\">\n            <p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Start Date</p>\n        </div><!--form-group -->\n    </div><!-- /.md6col -->\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label for=\"end-date\" _v-af7b979e=\"\">End Date: <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i></label>\n            <input id=\"end-date\" v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"newevent.end_date\" aria-describedby=\"errorEndDate\" _v-af7b979e=\"\">\n            <!-- <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\"></datepicker> -->\n            <p v-if=\"formErrors.end_date\" class=\"help-text invalid\" _v-af7b979e=\"\">Need an End Date</p>\n\n        </div><!--form-group -->\n    </div><!-- /.md6col -->\n</div><!-- /.row -->\n\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label for=\"all-day\" _v-af7b979e=\"\">All Day Event:\n                <input id=\"all-day\" name=\"all_day\" type=\"checkbox\" value=\"1\" v-model=\"newevent.all_day\" _v-af7b979e=\"\">\n            </label>\n        </div>\n    </div><!-- /.small-6 column -->\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div v-show=\"hasEndTime\" class=\"form-group\" _v-af7b979e=\"\">\n            <label for=\"no-end-time\" _v-af7b979e=\"\">No End Time:\n                <input id=\"no-end-time\" name=\"no_end_time\" type=\"checkbox\" value=\"1\" v-model=\"newevent.no_end_time\" _v-af7b979e=\"\">\n                <!-- <label for=\"no-end-time-no\" class=\"radiobtns\">no</label><input id=\"no-end-time-no\"  name=\"no_end_time\" type=\"radio\" value=\"0\" v-model=\"newevent.no_end_time\"/> -->\n            </label></div>\n        </div><!-- /.small-6 column -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-af7b979e=\"\">\n        <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n            <div v-show=\"hasStartTime\" class=\"form-group\" _v-af7b979e=\"\">\n                <label for=\"start-time\" _v-af7b979e=\"\">Start Time: <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i></label>\n                <input id=\"start-time\" type=\"text\" v-model=\"newevent.start_time\" _v-af7b979e=\"\">\n            </div><!-- /.form-group -->\n        </div><!-- /.md6col -->\n        <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n            <div v-show=\"hasEndTime\" class=\"form-group\" _v-af7b979e=\"\">\n                <label for=\"end-time\" _v-af7b979e=\"\">End Time: <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i></label>\n                <input id=\"end-time\" type=\"text\" v-model=\"newevent.end_time\" _v-af7b979e=\"\">\n            </div><!-- /.form-group -->\n        </div><!-- /.md6col -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-af7b979e=\"\">\n        <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label _v-af7b979e=\"\">Categories: <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i></label>\n                <select v-bind:class=\"[formErrors.categories ? 'invalid-input' : '']\" id=\"select-zcats\" style=\"width: 100%\" v-myselect=\"zcategories\" v-bind:resultvalue=\"zcats\" ajaxurl=\"/api/zcats\" data-close-on-select=\"false\" data-placeholder=\"zcats\" data-tags=\"false\" multiple=\"multiple\" _v-af7b979e=\"\">\n                    <option value=\"0\" _v-af7b979e=\"\">\n                        default\n                    </option>\n                </select>\n\n            </div><!-- /.form-group -->\n</div><!-- /.md12col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label _v-af7b979e=\"\">Contact Person <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i>\n                <input v-model=\"newevent.contact_person\" v-bind:class=\"[formErrors.contact_person ? 'invalid-input' : '']\" name=\"contact-person\" type=\"text\" _v-af7b979e=\"\">\n                <p v-if=\"formErrors.contact_person\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Contact Person!</p>\n            </label>\n        </div>\n    </div><!-- /.md6col -->\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label _v-af7b979e=\"\">Contact Email: <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i> <em _v-af7b979e=\"\">(ex. janedoe@emich.edu)</em>\n                <input v-model=\"newevent.contact_email\" v-bind:class=\"[formErrors.contact_email ? 'invalid-input' : '']\" name=\"contact-email\" type=\"text\" _v-af7b979e=\"\">\n                <p v-if=\"formErrors.contact_email\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Contact Email!</p>\n            </label>\n        </div>\n    </div><!-- /.md6col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n\n            <label _v-af7b979e=\"\">Contact Phone <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i> <em _v-af7b979e=\"\">(ex. 734.487.1849)</em>\n                <input v-model=\"newevent.contact_phone\" v-bind:class=\"[formErrors.contact_phone ? 'invalid-input' : '']\" name=\"contact-phone\" type=\"text\" _v-af7b979e=\"\">\n                <p v-if=\"formErrors.contact_phone\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Contact Phone!</p>\n            </label>\n        </div>\n    </div><!-- /.md6col -->\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label _v-af7b979e=\"\">Contact Fax: <em _v-af7b979e=\"\">(ex. 734.487.1849)</em>\n                <input v-model=\"newevent.contact_fax\" v-bind:class=\"[formErrors.contact_fax ? 'invalid-input' : '']\" name=\"contact-fax\" type=\"text\" _v-af7b979e=\"\">\n            </label>\n        </div>\n    </div><!-- /.md6col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label _v-af7b979e=\"\">Related Link: <em _v-af7b979e=\"\">(ex. http://www.emich.edu/calendar)</em>\n                <input v-model=\"newevent.related_link_1\" v-bind:class=\"[formErrors.related_link_1 ? 'invalid-input' : '']\" name=\"related-link-1\" type=\"text\" _v-af7b979e=\"\">\n            </label>\n            <label _v-af7b979e=\"\">Related Link: <em _v-af7b979e=\"\">(ex. http://www.emich.edu/calendar)</em>\n                <input v-model=\"newevent.related_link_2\" v-bind:class=\"[formErrors.related_link_2 ? 'invalid-input' : '']\" name=\"related-link-2\" type=\"text\" _v-af7b979e=\"\">\n            </label>\n            <label _v-af7b979e=\"\">Related Link: <em _v-af7b979e=\"\">(ex. http://www.emich.edu/calendar)</em>\n                <input v-model=\"newevent.related_link_1\" v-bind:class=\"[formErrors.related_link_1 ? 'invalid-input' : '']\" name=\"related-link-1\" type=\"text\" _v-af7b979e=\"\">\n            </label>\n        </div>\n    </div><!-- /.md12col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label for=\"reg-deadline\" _v-af7b979e=\"\">Registration Deadline</label>\n            <input id=\"reg-deadline\" type=\"text\" v-model=\"newevent.reg_deadline\" :value.sync=\"rdate\" aria-describedby=\"errorRegDeadline\" _v-af7b979e=\"\">\n        </div>\n    </div><!-- /.md6col-->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div v-bind:class=\"md2col\" _v-af7b979e=\"\">\n                <label _v-af7b979e=\"\">Free</label>\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <input id=\"free\" name=\"free\" type=\"checkbox\" value=\"1\" v-model=\"newevent.free\" _v-af7b979e=\"\">\n                </div><!-- /.form-group -->\n            </div><!-- /.md4col -->\n            <div v-bind:class=\"md10col\" _v-af7b979e=\"\">\n                <label _v-af7b979e=\"\">Event Cost <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i></label>\n                <div v-show=\"hasCost\" class=\"form-group\" _v-af7b979e=\"\">\n                    <div class=\"input-group\" _v-af7b979e=\"\">\n                        <span class=\"input-group-label\" _v-af7b979e=\"\">$</span>\n                        <input v-model=\"newevent.cost\" v-bind:class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"text\" _v-af7b979e=\"\">\n                    </div><!-- /. input-group -->\n                </div>\n                <div v-else=\"\" class=\"form-group\" _v-af7b979e=\"\">\n                    <div class=\"input-group\" _v-af7b979e=\"\">\n                        <span class=\"input-group-label\" _v-af7b979e=\"\">$</span>\n                        <input v-model=\"newevent.cost\" v-bind:class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"text\" readonly=\"readonly\" _v-af7b979e=\"\">\n                    </div><!-- /. input-group -->\n                </div>\n            </div><!-- /.md8col -->\n        </div><!-- /.row -->\n\n\n    </div><!-- /.medium-6 -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label _v-af7b979e=\"\">Tickets Available\n                <select v-model=\"newevent.tickets\" _v-af7b979e=\"\">\n                    <option v-for=\"ticketoption in ticketoptions\" v-bind:value=\"ticketoption.value\" _v-af7b979e=\"\">\n                        {{ ticketoption.text }}\n                    </option>\n                </select>\n            </label>\n            <template v-if=\"newevent.tickets == 'online' || newevent.tickets == 'all'\">\n                <label _v-af7b979e=\"\">Link: <em _v-af7b979e=\"\">(ex. http://www.emich.edu/calendar)</em>\n                    <input v-model=\"newevent.ticket_details_online\" v-bind:class=\"[formErrors.ticket_details_online ? 'invalid-input' : '']\" name=\"ticket-details-online\" type=\"text\" _v-af7b979e=\"\">\n                </label>\n            </template>\n            <template v-if=\"newevent.tickets == 'phone' || newevent.tickets == 'all'\">\n                <label _v-af7b979e=\"\">Tickets by Phone <em _v-af7b979e=\"\">(ex. 734.487.1849)</em>\n                    <input v-model=\"newevent.ticket_details_phone\" v-bind:class=\"[formErrors.ticket_details_phone ? 'invalid-input' : '']\" name=\"ticket-details-phone\" type=\"text\" _v-af7b979e=\"\">\n                </label>\n            </template>\n            <template v-if=\"newevent.tickets == 'office' || newevent.tickets == 'all'\">\n                <label _v-af7b979e=\"\">Address\n                    <input v-model=\"newevent.ticket_details_office\" v-bind:class=\"[formErrors.ticket_details_office ? 'invalid-input' : '']\" name=\"ticket-details-office\" type=\"text\" _v-af7b979e=\"\">\n                </label>\n            </template>\n            <template v-if=\"newevent.tickets == 'other'\">\n                <label _v-af7b979e=\"\">Other\n                    <input v-model=\"newevent.ticket_details_other\" v-bind:class=\"[formErrors.ticket_details_other ? 'invalid-input' : '']\" name=\"ticket-details-other\" type=\"text\" _v-af7b979e=\"\">\n                </label>\n            </template>\n        </div><!-- /.form-group -->\n    </div><!-- /.md12col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label _v-af7b979e=\"\">Participants\n                <select v-model=\"newevent.participants\" _v-af7b979e=\"\">\n                    <option v-for=\"participant in participants\" v-bind:value=\"participant.value\" _v-af7b979e=\"\">\n                        {{ participant.text }}\n                    </option>\n                </select>\n            </label>\n        </div>\n    </div><!--/.md12col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label for=\"lbc-reviewed\" _v-af7b979e=\"\">LBC Approved: <em _v-af7b979e=\"\">(pre-approval required)</em>\n                <input id=\"lbc-reviewed\" name=\"lbc-reviewed\" type=\"checkbox\" value=\"1\" v-model=\"newevent.lbc_reviewed\" _v-af7b979e=\"\">\n            </label>\n        </div>\n    </div><!-- /.md6col -->\n    <div v-bind:class=\"md6col\" _v-af7b979e=\"\">\n\n    </div><!-- /.md6col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label _v-af7b979e=\"\">Description <i class=\"fi-star reqstar\" _v-af7b979e=\"\"></i> <p class=\"help-text\" id=\"description-helptext\" _v-af7b979e=\"\">({{descriptionChars}} characters left)</p>\n\n                <textarea v-model=\"newevent.description\" v-bind:class=\"[formErrors.description ? 'invalid-input' : '']\" name=\"description\" type=\"textarea\" rows=\"6\" _v-af7b979e=\"\"></textarea>\n            </label>\n            <p v-if=\"formErrors.description\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Description!</p>\n\n        </div>\n    </div><!-- /.md12col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <label _v-af7b979e=\"\">Group Website Calendar <p class=\"help-text\" id=\"minicalendar-helptext\" _v-af7b979e=\"\">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>\n                <select v-model=\"newevent.mini_calendar\" id=\"mini_calendar\" _v-af7b979e=\"\">\n                    <option v-for=\"minicalendar in minicalendars\" :value=\"minicalendar.id\" _v-af7b979e=\"\">\n                        {{minicalendar.calendar}}\n                    </option>\n                </select>\n            </label>\n        </div>\n    </div><!-- /.md12col -->\n</div><!-- /.row -->\n<div class=\"row\" _v-af7b979e=\"\">\n    <div v-bind:class=\"md12col\" _v-af7b979e=\"\">\n        <div class=\"form-group\" _v-af7b979e=\"\">\n            <button v-on:click=\"submitForm\" type=\"submit\" class=\"button button-primary\" _v-af7b979e=\"\">Submit For Approval</button>\n        </div>\n    </div></div></form>\n<!-- /.md12col -->\n\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n p[_v-0879ddea] {\n\t margin:0;\n }\n      label[_v-0879ddea] {\n           display: block;\n           /*margin-bottom: 1.5em;*/\n       }\n\n       label > span[_v-0879ddea] {\n           display: inline-block;\n           width: 8em;\n           vertical-align: top;\n       }\n.valid-titleField[_v-0879ddea] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.no-input[_v-0879ddea] {\n  background-color: #fefefe;\n  border-color: #cacaca;\n}\n.invalid-input[_v-0879ddea] {\n  background-color: rgba(236, 88, 64, 0.1);\n  border: 1px dotted red;\n}\n.invalid[_v-0879ddea] {\n  color: #ff0000;\n}\n\n\nfieldset label.radiobtns[_v-0879ddea]  {\n  display: inline;\n  margin: 4px;\n  padding: 2px;\n}\n\n[type='text'][_v-0879ddea], [type='password'][_v-0879ddea], [type='date'][_v-0879ddea], [type='datetime'][_v-0879ddea], [type='datetime-local'][_v-0879ddea], [type='month'][_v-0879ddea], [type='week'][_v-0879ddea], [type='email'][_v-0879ddea], [type='number'][_v-0879ddea], [type='search'][_v-0879ddea], [type='tel'][_v-0879ddea], [type='time'][_v-0879ddea], [type='url'][_v-0879ddea], [type='color'][_v-0879ddea],\ntextarea[_v-0879ddea] {\n\tmargin: 0;\n\tpadding: 0;\n\tpadding-left: 8px;\n}\n[type='file'][_v-0879ddea], [type='checkbox'][_v-0879ddea], [type='radio'][_v-0879ddea] {\n\tmargin: 0;\n\tmargin-left: 8px;\n\tpadding: 0;\n\tpadding-left: 2px;\n}\n.reqstar[_v-0879ddea] {\n    font-size: .5rem;\n    color: #E33100;\n\t\tvertical-align:text-top;\n}\nbutton.button-primary[_v-0879ddea] {\n\tmargin-top: 1rem;\n}\n"] = false
+    __vueify_insert__.cache["\np[_v-af7b979e] {\n    margin:0;\n}\nlabel[_v-af7b979e] {\n    display: block;\n    /*margin-bottom: 1.5em;*/\n}\n\nlabel > span[_v-af7b979e] {\n    display: inline-block;\n    width: 8em;\n    vertical-align: top;\n}\n.valid-titleField[_v-af7b979e] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.no-input[_v-af7b979e] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.invalid-input[_v-af7b979e] {\n    background-color: rgba(236, 88, 64, 0.1);\n    border: 1px dotted red;\n}\n.invalid[_v-af7b979e] {\n    color: #ff0000;\n}\n\n\nfieldset label.radiobtns[_v-af7b979e]  {\n    display: inline;\n    margin: 4px;\n    padding: 2px;\n}\n\n[type='text'][_v-af7b979e], [type='password'][_v-af7b979e], [type='date'][_v-af7b979e], [type='datetime'][_v-af7b979e], [type='datetime-local'][_v-af7b979e], [type='month'][_v-af7b979e], [type='week'][_v-af7b979e], [type='email'][_v-af7b979e], [type='number'][_v-af7b979e], [type='search'][_v-af7b979e], [type='tel'][_v-af7b979e], [type='time'][_v-af7b979e], [type='url'][_v-af7b979e], [type='color'][_v-af7b979e],\ntextarea[_v-af7b979e] {\n    margin: 0;\n    padding: 0;\n    padding-left: 8px;\n    width: 100%;\n}\n[type='file'][_v-af7b979e], [type='checkbox'][_v-af7b979e], [type='radio'][_v-af7b979e] {\n    margin: 0;\n    margin-left: 8px;\n    padding: 0;\n    padding-left: 2px;\n}\n.reqstar[_v-af7b979e] {\n    font-size: .5rem;\n    color: #E33100;\n    vertical-align:text-top;\n}\nbutton.button-primary[_v-af7b979e] {\n    margin-top: 1rem;\n}\n\n\ninput[type='email'][_v-af7b979e],\ninput[type='number'][_v-af7b979e],\ninput[type='password'][_v-af7b979e],\ninput[type='search'][_v-af7b979e],\ninput[type='tel'][_v-af7b979e],\ninput[type='text'][_v-af7b979e],\ninput[type='url'][_v-af7b979e],\ntextarea[_v-af7b979e],\nselect[_v-af7b979e] {\n    -webkit-appearance: none;\n    -moz-appearance: none;\n    appearance: none;\n    background-color: transparent;\n    border: 0.1rem solid #d1d1d1;\n    border-radius: 0.4rem;\n    box-shadow: none;\n    height: 3.8rem;\n    padding: 0.6rem 1rem;\n    width: 100%;\n}\ninput[type='email'][_v-af7b979e]:focus,\ninput[type='number'][_v-af7b979e]:focus,\ninput[type='password'][_v-af7b979e]:focus,\ninput[type='search'][_v-af7b979e]:focus,\ninput[type='tel'][_v-af7b979e]:focus,\ninput[type='text'][_v-af7b979e]:focus,\ninput[type='url'][_v-af7b979e]:focus,\ntextarea[_v-af7b979e]:focus,\nselect[_v-af7b979e]:focus {\n    border: 0.1rem solid #9b4dca;\n    outline: 0;\n}\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-0879ddea", module.exports)
+    hotAPI.createRecord("_v-af7b979e", module.exports)
   } else {
-    hotAPI.update("_v-0879ddea", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-af7b979e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../directives/mydatedropper.js":7,"../directives/myselect.js":8,"../directives/mytimedropper.js":9,"../vendor/datepicker.vue":10,"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],7:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-	twoWay: true,
-	priority: 1000,
-	params: ['options'],
-	bind: function bind() {
-		$(this.el).dateDropper();
-		console.log(this.params);
-	},
-	update: function update() {}
-};
-
-},{}],8:[function(require,module,exports){
+},{"../directives/myselect.js":8,"flatpickr":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -12213,170 +13603,6 @@ module.exports = {
 },{}],9:[function(require,module,exports){
 'use strict';
 
-module.exports = {
-	twoWay: true,
-	priority: 1000,
-	params: ['options'],
-	bind: function bind() {
-		$(this.el).timeDropper();
-		console.log(this.params);
-	},
-	update: function update() {
-		// alert('update');
-	}
-};
-
-},{}],10:[function(require,module,exports){
-var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.datetime-picker[_v-e5327c24] {\n    position: relative;\n    display: inline-block;\n    font-family: \"Segoe UI\",\"Lucida Grande\",Helvetica,Arial,\"Microsoft YaHei\";\n    -webkit-font-smoothing: antialiased;\n    color: #333;\n}\n\n.datetime-picker *[_v-e5327c24] {\n    box-sizing: border-box;\n}\n\n.datetime-picker input[_v-e5327c24] {\n    width: 100%;\n    padding: 5px 10px;\n    height: 30px;\n    outline: 0 none;\n    border: 1px solid #ccc;\n    font-size: 13px;\n}\n\n.datetime-picker .picker-wrap[_v-e5327c24] {\n    position: absolute;\n    z-index: 1000;\n    width: 238px;\n    height: 280px;\n    margin-top: 2px;\n    background-color: #fff;\n    box-shadow: 0 0 6px #ccc;\n}\n\n.datetime-picker table[_v-e5327c24] {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    text-align: center;\n    font-size: 13px;\n}\n\n.datetime-picker tr[_v-e5327c24] {\n    height: 34px;\n    border: 0 none;\n}\n\n.datetime-picker th[_v-e5327c24], .datetime-picker td[_v-e5327c24] {\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    width: 34px;\n    height: 34px;\n    padding: 0;\n    border: 0 none;\n    line-height: 34px;\n    text-align: center;\n}\n\n.datetime-picker td[_v-e5327c24] {\n    cursor: pointer;\n}\n\n.datetime-picker td[_v-e5327c24]:hover {\n    background-color: #f0f0f0;\n}\n\n.datetime-picker td.date-pass[_v-e5327c24], .datetime-picker td.date-future[_v-e5327c24] {\n    color: #aaa;\n}\n\n.datetime-picker td.date-active[_v-e5327c24] {\n    background-color: #ececec;\n    color: #3bb4f2;\n}\n\n.datetime-picker .date-head[_v-e5327c24] {\n    background-color: #3bb4f2;\n    text-align: center;\n    color: #fff;\n    font-size: 14px;\n}\n\n.datetime-picker .date-days[_v-e5327c24] {\n    color: #3bb4f2;\n    font-size: 14px;\n}\n\n.datetime-picker .show-year[_v-e5327c24] {\n    display: inline-block;\n    min-width: 62px;\n    vertical-align: middle;\n}\n\n.datetime-picker .show-month[_v-e5327c24] {\n    display: inline-block;\n    min-width: 28px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24],\n.datetime-picker .btn-next[_v-e5327c24] {\n    cursor: pointer;\n    display: inline-block;\n    padding: 0 10px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24]:hover,\n.datetime-picker .btn-next[_v-e5327c24]:hover {\n    background: rgba(16, 160, 234, 0.5);\n}\n")
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-    props: {
-        width: { type: String, default: '238px' },
-        readonly: { type: Boolean, default: false },
-        value: { type: String, default: '' },
-        format: { type: String, default: 'YYYY-MM-DD' }
-    },
-    data: function data() {
-        return {
-            show: false,
-            days: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-            months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            date: [],
-            now: new Date()
-        };
-    },
-
-    watch: {
-        now: function now() {
-            this.update();
-        },
-        show: function show() {
-            this.update();
-        }
-    },
-    methods: {
-        close: function close() {
-            this.show = false;
-        },
-        update: function update() {
-            var arr = [];
-            var time = new Date(this.now);
-            time.setMonth(time.getMonth(), 1); // the first day
-            var curFirstDay = time.getDay();
-            curFirstDay === 0 && (curFirstDay = 7);
-            time.setDate(0); // the last day
-            var lastDayCount = time.getDate();
-            for (var i = curFirstDay; i > 0; i--) {
-                arr.push({
-                    text: lastDayCount - i + 1,
-                    time: new Date(time.getFullYear(), time.getMonth(), lastDayCount - i + 1),
-                    status: 'date-pass'
-                });
-            }
-
-            time.setMonth(time.getMonth() + 2, 0); // the last day of this month
-            var curDayCount = time.getDate();
-            time.setDate(1); // fix bug when month change
-            var value = this.value || this.stringify(new Date());
-            for (var _i = 0; _i < curDayCount; _i++) {
-                var tmpTime = new Date(time.getFullYear(), time.getMonth(), _i + 1);
-                var status = '';
-                this.stringify(tmpTime) === value && (status = 'date-active');
-                arr.push({
-                    text: _i + 1,
-                    time: tmpTime,
-                    status: status
-                });
-            }
-
-            var j = 1;
-            while (arr.length < 42) {
-                arr.push({
-                    text: j,
-                    time: new Date(time.getFullYear(), time.getMonth() + 1, j),
-                    status: 'date-future'
-                });
-                j++;
-            }
-            this.date = arr;
-        },
-        yearClick: function yearClick(flag) {
-            this.now.setFullYear(this.now.getFullYear() + flag);
-            this.now = new Date(this.now);
-        },
-        monthClick: function monthClick(flag) {
-            this.now.setMonth(this.now.getMonth() + flag);
-            this.now = new Date(this.now);
-        },
-        pickDate: function pickDate(index) {
-            this.show = false;
-            this.now = new Date(this.date[index].time);
-            this.value = this.stringify();
-        },
-        parse: function parse(str) {
-            var time = new Date(str);
-            return isNaN(time.getTime()) ? null : time;
-        },
-        stringify: function stringify() {
-            var time = arguments.length <= 0 || arguments[0] === undefined ? this.now : arguments[0];
-            var format = arguments.length <= 1 || arguments[1] === undefined ? this.format : arguments[1];
-
-            var year = time.getFullYear();
-            var month = time.getMonth() + 1;
-            var date = time.getDate();
-            var monthName = this.months[time.getMonth()];
-
-            var map = {
-                YYYY: year,
-                MMM: monthName,
-                MM: ('0' + month).slice(-2),
-                M: month,
-                DD: ('0' + date).slice(-2),
-                D: date
-            };
-            return format.replace(/Y+|M+|D+/g, function (str) {
-                return map[str];
-            });
-        }
-    },
-    ready: function ready() {
-        var _this = this;
-
-        this.now = this.parse(this.value) || new Date();
-        document.addEventListener('click', function (e) {
-            if (!_this.$el.contains(e.target)) {
-                _this.close();
-            }
-        }, false);
-    },
-    beforeDestroy: function beforeDestroy() {
-        document.removeEventListener('click', this.close, false);
-    }
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"datetime-picker\" :style=\"{ width: width }\" _v-e5327c24=\"\">\n    <input type=\"text\" :style=\"styleObj\" :readonly=\"readonly\" :value=\"value\" @click=\"show = !show\" _v-e5327c24=\"\">\n    <div class=\"picker-wrap\" v-show=\"show\" _v-e5327c24=\"\">\n        <table class=\"date-picker\" _v-e5327c24=\"\">\n            <thead _v-e5327c24=\"\">\n                <tr class=\"date-head\" _v-e5327c24=\"\">\n                    <th colspan=\"4\" _v-e5327c24=\"\">\n                        <span class=\"btn-prev\" @click=\"yearClick(-1)\" _v-e5327c24=\"\">&lt;</span>\n                        <span class=\"show-year\" _v-e5327c24=\"\">{{now.getFullYear()}}</span>\n                        <span class=\"btn-next\" @click=\"yearClick(1)\" _v-e5327c24=\"\">&gt;</span>\n                    </th>\n                    <th colspan=\"3\" _v-e5327c24=\"\">\n                        <span class=\"btn-prev\" @click=\"monthClick(-1)\" _v-e5327c24=\"\">&lt;</span>\n                        <span class=\"show-month\" _v-e5327c24=\"\">{{months[now.getMonth()]}}</span>\n                        <span class=\"btn-next\" @click=\"monthClick(1)\" _v-e5327c24=\"\">&gt;</span>\n                    </th>\n                </tr>\n                <tr class=\"date-days\" _v-e5327c24=\"\">\n                    <th v-for=\"day in days\" _v-e5327c24=\"\">{{day}}</th>\n                </tr>\n            </thead>\n            <tbody _v-e5327c24=\"\">\n                <tr v-for=\"i in 6\" _v-e5327c24=\"\">\n                    <td v-for=\"j in 7\" :class=\"date[i * 7 + j] &amp;&amp; date[i * 7 + j].status\" :date=\"date[i * 7 + j] &amp;&amp; date[i * 7 + j].date\" @click=\"pickDate(i * 7 + j)\" _v-e5327c24=\"\">{{date[i * 7 + j] &amp;&amp; date[i * 7 + j].text}}</td>\n                </tr>\n            </tbody>\n        </table>\n    </div>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.datetime-picker[_v-e5327c24] {\n    position: relative;\n    display: inline-block;\n    font-family: \"Segoe UI\",\"Lucida Grande\",Helvetica,Arial,\"Microsoft YaHei\";\n    -webkit-font-smoothing: antialiased;\n    color: #333;\n}\n\n.datetime-picker *[_v-e5327c24] {\n    box-sizing: border-box;\n}\n\n.datetime-picker input[_v-e5327c24] {\n    width: 100%;\n    padding: 5px 10px;\n    height: 30px;\n    outline: 0 none;\n    border: 1px solid #ccc;\n    font-size: 13px;\n}\n\n.datetime-picker .picker-wrap[_v-e5327c24] {\n    position: absolute;\n    z-index: 1000;\n    width: 238px;\n    height: 280px;\n    margin-top: 2px;\n    background-color: #fff;\n    box-shadow: 0 0 6px #ccc;\n}\n\n.datetime-picker table[_v-e5327c24] {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    text-align: center;\n    font-size: 13px;\n}\n\n.datetime-picker tr[_v-e5327c24] {\n    height: 34px;\n    border: 0 none;\n}\n\n.datetime-picker th[_v-e5327c24], .datetime-picker td[_v-e5327c24] {\n    -webkit-user-select: none;\n       -moz-user-select: none;\n        -ms-user-select: none;\n            user-select: none;\n    width: 34px;\n    height: 34px;\n    padding: 0;\n    border: 0 none;\n    line-height: 34px;\n    text-align: center;\n}\n\n.datetime-picker td[_v-e5327c24] {\n    cursor: pointer;\n}\n\n.datetime-picker td[_v-e5327c24]:hover {\n    background-color: #f0f0f0;\n}\n\n.datetime-picker td.date-pass[_v-e5327c24], .datetime-picker td.date-future[_v-e5327c24] {\n    color: #aaa;\n}\n\n.datetime-picker td.date-active[_v-e5327c24] {\n    background-color: #ececec;\n    color: #3bb4f2;\n}\n\n.datetime-picker .date-head[_v-e5327c24] {\n    background-color: #3bb4f2;\n    text-align: center;\n    color: #fff;\n    font-size: 14px;\n}\n\n.datetime-picker .date-days[_v-e5327c24] {\n    color: #3bb4f2;\n    font-size: 14px;\n}\n\n.datetime-picker .show-year[_v-e5327c24] {\n    display: inline-block;\n    min-width: 62px;\n    vertical-align: middle;\n}\n\n.datetime-picker .show-month[_v-e5327c24] {\n    display: inline-block;\n    min-width: 28px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24],\n.datetime-picker .btn-next[_v-e5327c24] {\n    cursor: pointer;\n    display: inline-block;\n    padding: 0 10px;\n    vertical-align: middle;\n}\n\n.datetime-picker .btn-prev[_v-e5327c24]:hover,\n.datetime-picker .btn-next[_v-e5327c24]:hover {\n    background: rgba(16, 160, 234, 0.5);\n}\n"] = false
-    document.head.removeChild(__vueify_style__)
-  })
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-e5327c24", module.exports)
-  } else {
-    hotAPI.update("_v-e5327c24", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":4,"vue-hot-reload-api":2,"vueify/lib/insert-css":5}],11:[function(require,module,exports){
-'use strict';
-
 var _vueResource = require('vue-resource');
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
@@ -12400,7 +13626,7 @@ Vue.use(_vueResource2.default);
 new Vue({
   el: '#vue-event-form',
   components: {
-    EventForm: require('./components/EventForm.vue')
+    EventForm: require('./components/EventFormUniversal.vue')
 
   },
   ready: function ready() {
@@ -12408,6 +13634,6 @@ new Vue({
   }
 });
 
-},{"./components/EventForm.vue":6,"vue":4,"vue-resource":3}]},{},[11]);
+},{"./components/EventFormUniversal.vue":7,"vue":5,"vue-resource":4}]},{},[9]);
 
 //# sourceMappingURL=vue-event-form.js.map

@@ -29,7 +29,12 @@ class EventController extends Controller
 
       return view('admin.event.index', compact('events'));
     }
+    public function queue(Event $event)
+    {
+    //   $events = $this->events->orderBy('start_date', 'desc')->paginate(10);
 
+      return view('admin.event.queue', compact('event'));
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -38,8 +43,8 @@ class EventController extends Controller
     public function create(Event $event)
     {
       //  $categories = \emutoday\Category::lists('category', 'id');
-
-        return view('admin.event.create', compact('event','categories'));
+        return view('admin.event.form', compact('event', 'categories'));
+        // return view('admin.event.create', compact('event','categories'));
     }
 
     /**
@@ -86,7 +91,7 @@ class EventController extends Controller
     {
       $event = $this->events->findOrFail($id);
       $categories = \emutoday\Category::lists('category', 'id');
-		
+
       return view('admin.event.form', compact('event', 'categories'));
     }
 

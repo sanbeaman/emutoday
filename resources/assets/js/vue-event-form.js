@@ -17,7 +17,7 @@ Vue.use(VueResource);
 new Vue({
     el: '#vue-event-form',
     components: {
-      EventForm: require('./components/EventForm.vue')
+      EventForm: require('./components/EventFormUniversal.vue')
 
     },
     ready() {

@@ -30,7 +30,7 @@ class Event extends Model
  * [$dates description]
  * @var [type]
  */
-  protected $dates = ['start_date', 'end_date'];
+  protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
 
   /**
       * The attributes that should be casted to native types.
