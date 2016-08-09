@@ -16041,11 +16041,11 @@ exports.insert = function (css) {
 
 },{}],7:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n#items-bugz .box[_v-115661a7] {\n\tmargin-bottom: 4px;\n}\n.border-between > [class*='col-'][_v-115661a7]:before {\n background: #999999;\n bottom: 0;\n content: \" \";\n left: 0;\n position: absolute;\n width: 2px;\n top: 0;\n}\n.border-between > [class*='col-'][_v-115661a7]:first-child:before {\n display: none;\n}\n\n")
+var __vueify_style__ = __vueify_insert__.insert("\n#items-bugz .box[_v-115661a7] {\n    margin-bottom: 4px;\n}\n.border-between > [class*='col-'][_v-115661a7]:before {\n background: #999999;\n bottom: 0;\n content: \" \";\n left: 0;\n position: absolute;\n width: 2px;\n top: 0;\n}\n.border-between > [class*='col-'][_v-115661a7]:first-child:before {\n display: none;\n}\n\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
 var _BugzListForm = require('./BugzListForm.vue');
@@ -16056,161 +16056,161 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // import EventViewContent from './EventViewContent.vue'
 exports.default = {
-	components: {
-		BugzListForm: _BugzListForm2.default
-	},
-	props: ['records'],
+    components: {
+        BugzListForm: _BugzListForm2.default
+    },
+    props: ['records'],
 
-	ready: function ready() {
-		// this.resource = this.$resource('/api/announcement/:id');
-		this.fetchAllRecords();
-		// this.fetchUnapprovedRecords();
-	},
+    ready: function ready() {
+        // this.resource = this.$resource('/api/announcement/:id');
+        this.fetchAllRecords();
+        // this.fetchUnapprovedRecords();
+    },
 
-	data: function data() {
-		return {
-			resource: {},
-			allitems: [],
-			items: [],
-			xitems: [],
-			objs: {}
-		};
-	},
+    data: function data() {
+        return {
+            resource: {},
+            allitems: [],
+            items: [],
+            xitems: [],
+            objs: {}
+        };
+    },
 
-	computed: {
-		itemsApproved: function itemsApproved() {
-			return this.itemyes(this.allitems);
-		},
-		itemsUnapproved: function itemsUnapproved() {
-			return this.itemno(this.allitems);
-		},
-		itemsApprovedPriority: function itemsApprovedPriority() {
-			return this.itemno(this.allitems);
-		}
+    computed: {
+        itemsApproved: function itemsApproved() {
+            return this.itemyes(this.allitems);
+        },
+        itemsUnapproved: function itemsUnapproved() {
+            return this.itemno(this.allitems);
+        },
+        itemsApprovedPriority: function itemsApprovedPriority() {
+            return this.itemno(this.allitems);
+        }
 
-	},
+    },
 
-	methods: {
-		// checkIndexWithValue: function (chitem){
-		// 	return
-		// },
-		itemChanged: function itemChanged(method, changeditem) {
-			// var changeditem = chitem;
-			console.log('changeitem id' + changeditem.id);
-			if (method == 'removeItem') {
-				this.removeRecord(changeditem);
-			} else {
-				this.updateRecord(changeditem);
-			}
-			console.log('method' + method + 'changeditem' + changeditem);
-		},
-		movedItemIndex: function movedItemIndex(mid) {
-			return this.xitems.findIndex(function (item) {
-				return item.id == mid;
-			});
-		},
-		removeRecord: function removeRecord(item) {
-			var _this = this;
+    methods: {
+        // checkIndexWithValue: function (chitem){
+        // 	return
+        // },
+        itemChanged: function itemChanged(method, changeditem) {
+            // var changeditem = chitem;
+            console.log('changeitem id' + changeditem.id);
+            if (method == 'removeItem') {
+                this.removeRecord(changeditem);
+            } else {
+                this.updateRecord(changeditem);
+            }
+            console.log('method' + method + 'changeditem' + changeditem);
+        },
+        movedItemIndex: function movedItemIndex(mid) {
+            return this.xitems.findIndex(function (item) {
+                return item.id == mid;
+            });
+        },
+        removeRecord: function removeRecord(item) {
+            var _this = this;
 
-			var currentRecordId = item.id;
-			var currentRecord = item;
-			this.$http.patch('/api/bugz/removeItem/' + item.id, currentRecord, {
-				method: 'DELETE'
+            var currentRecordId = item.id;
+            var currentRecord = item;
+            this.$http.patch('/api/bugz/removeItem/' + item.id, currentRecord, {
+                method: 'DELETE'
 
-			}).then(function (response) {
-				console.log('good?' + response);
+            }).then(function (response) {
+                console.log('good?' + response);
 
-				var currentRecordIndex = _this.movedItemIndex(currentRecordId);
-				_this.allitems.splice(currentRecordIndex, 1);
-				console.log('removeIndex===' + currentRecordIndex);
-			}, function (response) {
-				console.log('bad?' + response);
-			});
-		},
-		updateRecord: function updateRecord(item) {
-			var _this2 = this;
+                var currentRecordIndex = _this.movedItemIndex(currentRecordId);
+                _this.allitems.splice(currentRecordIndex, 1);
+                console.log('removeIndex===' + currentRecordIndex);
+            }, function (response) {
+                console.log('bad?' + response);
+            });
+        },
+        updateRecord: function updateRecord(item) {
+            var _this2 = this;
 
-			var currentRecordId = item.id;
-			var currentRecord = item;
-			this.$http.patch('/api/bugz/updateItem/' + item.id, currentRecord, {
-				method: 'PATCH'
+            var currentRecordId = item.id;
+            var currentRecord = item;
+            this.$http.patch('/api/bugz/updateItem/' + item.id, currentRecord, {
+                method: 'PATCH'
 
-			}).then(function (response) {
-				console.log('currentRecord.complete' + currentRecord.complete + 'good?' + response);
+            }).then(function (response) {
+                console.log('currentRecord.complete' + currentRecord.complete + 'good?' + response);
 
-				var currentRecordIndex = _this2.movedItemIndex(currentRecordId);
-				// this.xitems.pop(movedRecord);
-				//
-				if (currentRecord.complete == 1) {
-					_this2.allitems.splice(currentRecordIndex, 1);
-				}
+                var currentRecordIndex = _this2.movedItemIndex(currentRecordId);
+                // this.xitems.pop(movedRecord);
+                //
+                if (currentRecord.complete == 1) {
+                    _this2.allitems.splice(currentRecordIndex, 1);
+                }
 
-				console.log('movedIndex===' + currentRecordIndex);
-			}, function (response) {
-				console.log('bad?' + response);
-			});
-		},
-		fetchAllRecords: function fetchAllRecords() {
-			var _this3 = this;
+                console.log('movedIndex===' + currentRecordIndex);
+            }, function (response) {
+                console.log('bad?' + response);
+            });
+        },
+        fetchAllRecords: function fetchAllRecords() {
+            var _this3 = this;
 
-			this.$http.get('/api/bugz/listall').then(function (response) {
-				//response.status;
-				console.log('response.status=' + response.status);
-				console.log('response.ok=' + response.ok);
-				console.log('response.statusText=' + response.statusText);
-				console.log('response.data=' + response.data);
-				// data = response.data;
-				//
-				_this3.$set('allitems', response.data.data);
+            this.$http.get('/api/bugz/listall').then(function (response) {
+                //response.status;
+                console.log('response.status=' + response.status);
+                console.log('response.ok=' + response.ok);
+                console.log('response.statusText=' + response.statusText);
+                console.log('response.data=' + response.data);
+                // data = response.data;
+                //
+                _this3.$set('allitems', response.data.data);
 
-				// this.allitems = response.data.data;
-				// console.log('this.record= ' + this.record);
+                // this.allitems = response.data.data;
+                // console.log('this.record= ' + this.record);
 
-				_this3.checkOverDataFilter();
-			}, function (response) {
-				//error callback
-				console.log("ERRORS");
+                _this3.checkOverDataFilter();
+            }, function (response) {
+                //error callback
+                console.log("ERRORS");
 
-				//  this.formErrors =  response.data.error.message;
-			}).bind(this);
-		},
-		checkOverDataFilter: function checkOverDataFilter() {
-			console.log('items=' + this.allitems);
-			// var unapprovedItems = this.allitems.filter(function(item) {
-			// 	return item.approved === 0
-			// });
-			//
-			// this.xitems = unapprovedItems;
-			//
-			//
-			// var approvedItems = this.allitems.filter(function(item) {
-			// 	return item.approved === 1
-			// });
-			//
-			// this.items = approvedItems.sort(function(a,b){
-			// 	return parseFloat(b.priority) - parseFloat(a.priority);
-			// });
-		}
-	},
+                //  this.formErrors =  response.data.error.message;
+            }).bind(this);
+        },
+        checkOverDataFilter: function checkOverDataFilter() {
+            console.log('items=' + this.allitems);
+            // var unapprovedItems = this.allitems.filter(function(item) {
+            // 	return item.approved === 0
+            // });
+            //
+            // this.xitems = unapprovedItems;
+            //
+            //
+            // var approvedItems = this.allitems.filter(function(item) {
+            // 	return item.approved === 1
+            // });
+            //
+            // this.items = approvedItems.sort(function(a,b){
+            // 	return parseFloat(b.priority) - parseFloat(a.priority);
+            // });
+        }
+    },
 
-	// the `events` option simply calls `$on` for you
-	// when the instance is created
-	events: {
-		// 'child-msg': function (msg) {
-		//   // `this` in event callbacks are automatically bound
-		//   // to the instance that registered it
-		//   this.messages.push(msg)
-		// }
-	}
+    // the `events` option simply calls `$on` for you
+    // when the instance is created
+    events: {
+        // 'child-msg': function (msg) {
+        //   // `this` in event callbacks are automatically bound
+        //   // to the instance that registered it
+        //   this.messages.push(msg)
+        // }
+    }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-115661a7=\"\">\n\t\t\t<div class=\"col-md-12\" _v-115661a7=\"\">\n\t\t\t<h3 _v-115661a7=\"\">Bugz</h3>\n\n\t\t\t\t<div class=\"box box-default box-solid\" _v-115661a7=\"\">\n\t\t\t    \t<div class=\"box-header with-border\" _v-115661a7=\"\">\n\t\t\t\t\t\t\t<div class=\"row border-between\" _v-115661a7=\"\">\n\t\t\t\t\t\t\t\t\t<!-- <a v-on:click=\"toggleBody\" href=\"#\"> -->\n\t\t\t\t\t\t\t\t<div class=\"col-md-1\" _v-115661a7=\"\">\n\t\t\t\t\t\t\t\t\t<h4 class=\"box-title\" _v-115661a7=\"\">type</h4>\n\t\t\t\t\t\t\t\t</div><!-- /.col-md-4-->\n\t\t\t\t\t\t\t\t<div class=\"col-md-1\" _v-115661a7=\"\">\n\t\t\t\t\t\t\t\t\t<h4 class=\"box-title\" _v-115661a7=\"\">lvl</h4>\n\t\t\t\t\t\t\t\t</div><!-- /.col-md-4-->\n\t\t\t\t\t\t\t\t<div class=\"col-md-4\" _v-115661a7=\"\">\n\t\t\t\t\t\t\t\t\t<h4 class=\"box-title\" _v-115661a7=\"\">note</h4>\n\t\t\t\t\t\t\t\t</div><!-- /.col-md-4-->\n\t\t\t\t\t\t\t\t<div class=\"col-md-4\" _v-115661a7=\"\">\n\t\t\t\t\t\t\t\t\t<h4 class=\"box-title\" _v-115661a7=\"\">reply</h4>\n\t\t\t\t\t\t\t\t</div><!-- /.col-md-4-->\n\t\t\t\t\t\t\t\t<div class=\"col-md-2\" _v-115661a7=\"\">\n\t\t\t\t\t\t\t\t\t<h4 class=\"box-title pull-left\" _v-115661a7=\"\">edit</h4>\n\n\t\t\t\t\t\t\t\t\t<h4 class=\"box-title pull-right\" _v-115661a7=\"\">done</h4>\n\t\t\t\t\t\t\t\t</div><!-- /.col-md-2 -->\n\t\t\t\t\t\t</div><!-- /.row -->\n\t\t\t\t  </div>  <!-- /.box-header -->\n\t\t\t\t<div id=\"items-bugz\" _v-115661a7=\"\">\n\t\t\t\t\t<bugz-list-form pid=\"items-list\" v-for=\"item in allitems | orderBy 'priority' -1\" @item-change=\"itemChanged\" :item=\"item\" :index=\"$index\" :is=\"bugz-list\" _v-115661a7=\"\">\n\t\t\t\t</bugz-list-form>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.box -->\n\t\t\t</div><!-- /.col-md-6 -->\n</div><!-- ./row -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-115661a7=\"\">\n            <div class=\"col-md-12\" _v-115661a7=\"\">\n            <h3 _v-115661a7=\"\">Bugz</h3>\n\n                <div class=\"box box-default box-solid\" _v-115661a7=\"\">\n                    <div class=\"box-header with-border\" _v-115661a7=\"\">\n                            <div class=\"row border-between\" _v-115661a7=\"\">\n                                    <!-- <a v-on:click=\"toggleBody\" href=\"#\"> -->\n                                <div class=\"col-md-1\" _v-115661a7=\"\">\n                                    <h4 class=\"box-title\" _v-115661a7=\"\">type</h4>\n                                </div><!-- /.col-md-4-->\n                                <div class=\"col-md-1\" _v-115661a7=\"\">\n                                    <h4 class=\"box-title\" _v-115661a7=\"\">lvl</h4>\n                                </div><!-- /.col-md-4-->\n                                <div class=\"col-md-4\" _v-115661a7=\"\">\n                                    <h4 class=\"box-title\" _v-115661a7=\"\">note</h4>\n                                </div><!-- /.col-md-4-->\n                                <div class=\"col-md-4\" _v-115661a7=\"\">\n                                    <h4 class=\"box-title\" _v-115661a7=\"\">reply</h4>\n                                </div><!-- /.col-md-4-->\n                                <div class=\"col-md-2\" _v-115661a7=\"\">\n                                    <h4 class=\"box-title pull-left\" _v-115661a7=\"\">edit</h4>\n\n                                    <h4 class=\"box-title pull-right\" _v-115661a7=\"\">done</h4>\n                                </div><!-- /.col-md-2 -->\n                        </div><!-- /.row -->\n                  </div>  <!-- /.box-header -->\n                <div id=\"items-bugz\" _v-115661a7=\"\">\n                    <bugz-list-form pid=\"items-list\" v-for=\"item in allitems | orderBy 'priority' -1\" @item-change=\"itemChanged\" :item=\"item\" :index=\"$index\" :is=\"bugz-list\" _v-115661a7=\"\">\n                </bugz-list-form>\n                </div>\n            </div><!-- /.box -->\n            </div><!-- /.col-md-6 -->\n</div><!-- ./row -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n#items-bugz .box[_v-115661a7] {\n\tmargin-bottom: 4px;\n}\n.border-between > [class*='col-'][_v-115661a7]:before {\n background: #999999;\n bottom: 0;\n content: \" \";\n left: 0;\n position: absolute;\n width: 2px;\n top: 0;\n}\n.border-between > [class*='col-'][_v-115661a7]:first-child:before {\n display: none;\n}\n\n"] = false
+    __vueify_insert__.cache["\n#items-bugz .box[_v-115661a7] {\n    margin-bottom: 4px;\n}\n.border-between > [class*='col-'][_v-115661a7]:before {\n background: #999999;\n bottom: 0;\n content: \" \";\n left: 0;\n position: absolute;\n width: 2px;\n top: 0;\n}\n.border-between > [class*='col-'][_v-115661a7]:first-child:before {\n display: none;\n}\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {

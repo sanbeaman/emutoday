@@ -30,7 +30,7 @@ class Event extends Model
  * [$dates description]
  * @var [type]
  */
-  protected $dates = ['start_date', 'end_date', 'created_at', 'updated_at'];
+  protected $dates = ['start_date', 'end_date', 'submission_date','approved_date','reg_deadline', 'created_at', 'updated_at'];
 
   /**
       * The attributes that should be casted to native types.
@@ -51,6 +51,10 @@ class Event extends Model
                   'mba' =>  'boolean'
     ];
 
+    
+    public function mediaFile(){
+         return $this->belongsTo('emutoday\Mediafile', 'mediafile_id');
+    }
   public function minicalendars()
   {
     return $this->belongsToMany('emutoday\MiniCalendar', 'cea_event_minicalendar', 'event_id', 'mini_calendar_id');

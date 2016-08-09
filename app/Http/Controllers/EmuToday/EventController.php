@@ -16,11 +16,11 @@ use JavaScript;
 class EventController extends Controller
 {
 
-		public function __construct(Event $event)
-		{
-				$this->event = $event;
-				$this->middleware('auth', ['except'=>'index']);
-		}
+        public function __construct(Event $event)
+        {
+                $this->event = $event;
+                $this->middleware('auth', ['except'=>'index']);
+        }
     /**
      * Display a listing of the resource.
      *
@@ -38,39 +38,39 @@ class EventController extends Controller
      */
     public function create(Event $event)
     {
-			// $cats = \emutoday\Category::lists('category', 'id');
-			// $categories = $event->categories;
-			// dd($categories);
-					// $this->event = $event;
-					if (\Auth::check()) {
-				// The user is logged in...
-					$user = \Auth::user();
-				} else {
-					return redirect(route('auth.login'));
-				}
-				// $event = $this->event->findOrFail($id);
-				// $users = emutoday\Event::with(['posts' => function ($query) {
-				//     $query->where('title', 'like', '%first%');
-				//
-				// }])->get();
+            // $cats = \emutoday\Category::lists('category', 'id');
+            // $categories = $event->categories;
+            // dd($categories);
+                    // $this->event = $event;
+                    if (\Auth::check()) {
+                // The user is logged in...
+                    $user = \Auth::user();
+                } else {
+                    return redirect(route('auth.login'));
+                }
+                // $event = $this->event->findOrFail($id);
+                // $users = emutoday\Event::with(['posts' => function ($query) {
+                //     $query->where('title', 'like', '%first%');
+                //
+                // }])->get();
 
-				$approveditems = $this->event->where([
-					['author_id', $user->id],
-					['approved',1]
-					])->get();
-					$submitteditems = $this->event->where([
-						['author_id', $user->id],
-						['approved',0]
-						])->get();
+                $approveditems = $this->event->where([
+                    ['author_id', $user->id],
+                    ['is_approved',1]
+                    ])->get();
+                    $submitteditems = $this->event->where([
+                        ['author_id', $user->id],
+                        ['is_approved',0]
+                        ])->get();
 
-				return view('public.event.form', compact('event', 'approveditems','submitteditems'));
+                return view('public.event.form', compact('event', 'approveditems','submitteditems'));
 
-				// return redirect(route('emutoday_event_edit'));
-				// $approveditems = $user->events->where('approved', '1');
-				// $submitteditems = $user->events->where('approved', '0');
-				//
-				// return view('public.event.form', compact('event', 'approveditems','submitteditems'));
-			// return view('public.event.form', compact('event'));
+                // return redirect(route('emutoday_event_edit'));
+                // $approveditems = $user->events->where('approved', '1');
+                // $submitteditems = $user->events->where('approved', '0');
+                //
+                // return view('public.event.form', compact('event', 'approveditems','submitteditems'));
+            // return view('public.event.form', compact('event'));
 
 
     }
@@ -105,36 +105,36 @@ class EventController extends Controller
      */
     public function edit($id = null)
     {
-			if (\Auth::check()) {
-		// The user is logged in...
-			$user = \Auth::user();
-		} else {
-			return redirect(route('auth.login'));
-		}
-		if ($id){
-				$event = $this->event->findOrFail($id);
+            if (\Auth::check()) {
+        // The user is logged in...
+            $user = \Auth::user();
+        } else {
+            return redirect(route('auth.login'));
+        }
+        if ($id){
+                $event = $this->event->findOrFail($id);
 
-			} else {
-				$event = new Event();
+            } else {
+                $event = new Event();
 
-			}
+            }
 
 
 
-			$approveditems = $this->event->where([
-				['author_id', $user->id],
-				['approved',1]
-				])->get();
-				$submitteditems = $this->event->where([
-					['author_id', $user->id],
-					['approved',0]
-					])->get();
+            $approveditems = $this->event->where([
+                ['author_id', $user->id],
+                ['is_approved',1]
+                ])->get();
+                $submitteditems = $this->event->where([
+                    ['author_id', $user->id],
+                    ['is_approved',0]
+                    ])->get();
 
-			  JavaScript::put([
-					'jsis' => 'hi',
+              JavaScript::put([
+                    'jsis' => 'hi',
 
-				]);
-			return view('public.event.form', compact('event', 'approveditems','submitteditems'));
+                ]);
+            return view('public.event.form', compact('event', 'approveditems','submitteditems'));
 
     }
 
@@ -147,8 +147,8 @@ class EventController extends Controller
      */
     public function update(Request $request, $id)
     {
-			$taglistRequest = $request->input('tag_list') == null ? [] : $request->input('tag_list');
-			$story->tags()->sync($taglistRequest);
+            $taglistRequest = $request->input('tag_list') == null ? [] : $request->input('tag_list');
+            $story->tags()->sync($taglistRequest);
 
     }
 
@@ -163,10 +163,10 @@ class EventController extends Controller
         //
     }
 
-		// private function syncCategories(Event $event, array $cats)
-		// {
-		// 	$event->categories()->sync($cats)
-		// 	// $story->tags()->sync($tags);
-		//
-		// }
+        // private function syncCategories(Event $event, array $cats)
+        // {
+        // 	$event->categories()->sync($cats)
+        // 	// $story->tags()->sync($tags);
+        //
+        // }
 }

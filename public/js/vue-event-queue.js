@@ -16063,34 +16063,50 @@ exports.default = {
 
     ready: function ready() {
         // this.resource = this.$resource('/api/announcement/:id');
-        // this.fetchAllRecords();
-        this.fetchUnapprovedRecords();
+        this.fetchAllRecords();
+        // this.fetchUnapprovedRecords();
     },
 
     data: function data() {
         return {
             resource: {},
             allitems: [],
+            otheritems: [],
+            appitems: [],
+            unappitems: [],
             items: [],
             xitems: [],
             objs: {}
         };
     },
-
     computed: {
         itemsApproved: function itemsApproved() {
-            return this.itemyes(this.allitems);
+            return this.filterItemsApproved(this.allitems);
         },
         itemsUnapproved: function itemsUnapproved() {
-            return this.itemno(this.allitems);
+            return this.filterItemsUnapproved(this.allitems);
         },
-        itemsApprovedPriority: function itemsApprovedPriority() {
-            return this.itemno(this.allitems);
+        itemsPromoted: function itemsPromoted() {
+            return this.filterItemsPromoted(this.itemsApproved);
         }
-
     },
 
     methods: {
+        filterItemsApproved: function filterItemsApproved(items) {
+            return items.filter(function (item) {
+                return item.approved === 1;
+            });
+        },
+        filterItemsUnapproved: function filterItemsUnapproved(items) {
+            return items.filter(function (item) {
+                return item.approved === 0;
+            });
+        },
+        filterItemsPromoted: function filterItemsPromoted(items) {
+            return items.filter(function (item) {
+                return item.promoted === 1;
+            });
+        },
         // checkIndexWithValue: function (chitem){
         // 	return
         // },
@@ -16111,58 +16127,37 @@ exports.default = {
 
             this.updateRecord(changeditem);
         },
-        itemyes: function itemyes(items) {
-            return items.filter(function (item) {
-                return item.approved === 1;
-            });
-        },
-        itemno: function itemno(items) {
-            return items.filter(function (item) {
-                return item.approved === 0;
-            });
-        },
-        itemsByPriority: function itemsByPriority(items) {
-            return items.sort(function (item) {
-                return item.approved === 0;
-            });
-        },
         movedItemIndex: function movedItemIndex(mid) {
             return this.xitems.findIndex(function (item) {
                 return item.id == mid;
             });
         },
         updateRecord: function updateRecord(item) {
-            var _this = this;
+            var currentRecordId = item.id;
 
-            var movedid = item.id;
-            var movedRecord = item;
+            var currentRecord = item;
             this.$http.patch('/api/event/updateItem/' + item.id, item, {
                 method: 'PATCH'
-
             }).then(function (response) {
                 console.log('good?' + response);
-                var movedIndex = _this.movedItemIndex(movedid);
-                // this.xitems.pop(movedRecord);
-                if (movedRecord.approved == 1) {
-                    _this.xitems.splice(movedIndex, 1);
-                    _this.items.push(movedRecord);
-                } else {
-                    _this.items.splice(movedIndex, 1);
-                    _this.xitems.push(movedRecord);
-                }
 
-                console.log('movedIndex===' + movedIndex);
+                //var movedIndex = this.movedItemIndex(movedid);
+                // this.xitems.pop(movedRecord);
+                // if (movedRecord.approved == 1) {
+                //         this.xitems.splice(movedIndex, 1);
+                //      this.items.push(movedRecord);
+                //  } else {
+                //      this.items.splice(movedIndex, 1);
+                //     this.xitems.push(movedRecord);
+                //  }
+
+                //console.log('movedIndex==='+ movedIndex)
             }, function (response) {
                 console.log('bad?' + response);
             });
         },
-        // getRequestType: function () {
-        //     var method = this.el.querySelector('input[name="_method"]');
-        //
-        //     return (method ? method.value : this.el.method).toLowerCase();
-        // },
         fetchUnapprovedRecords: function fetchUnapprovedRecords() {
-            var _this2 = this;
+            var _this = this;
 
             this.$http.get('/api/event/unapprovedItems').then(function (response) {
                 console.log('response.status=' + response.status);
@@ -16170,9 +16165,9 @@ exports.default = {
                 console.log('response.statusText=' + response.statusText);
                 console.log('response.data=' + response.data);
 
-                _this2.$set('xitems', response.data.data);
+                _this.$set('unappitems', response.data.data);
 
-                _this2.fetchApprovedRecords();
+                _this.fetchApprovedRecords();
             }, function (response) {
                 //error callback
                 console.log("ERRORS");
@@ -16181,7 +16176,7 @@ exports.default = {
             }).bind(this);
         },
         fetchApprovedRecords: function fetchApprovedRecords() {
-            var _this3 = this;
+            var _this2 = this;
 
             this.$http.get('/api/event/approvedItems').then(function (response) {
                 //response.status;
@@ -16191,10 +16186,30 @@ exports.default = {
                 console.log('response.data=' + response.data);
                 // data = response.data;
                 //
-                _this3.$set('items', response.data.data);
+                _this2.$set('allitems', response.data.data);
 
                 // this.allitems = response.data.data;
                 // console.log('this.record= ' + this.record);
+
+                _this2.checkOverDataFilter();
+            }, function (response) {
+                //error callback
+                console.log("ERRORS");
+
+                //  this.formErrors =  response.data.error.message;
+            }).bind(this);
+        },
+        fetchAllRecords: function fetchAllRecords() {
+            var _this3 = this;
+
+            this.$http.get('/api/event/queue').then(function (response) {
+                //response.status;
+                console.log('response.status=' + response.status);
+                console.log('response.ok=' + response.ok);
+                console.log('response.statusText=' + response.statusText);
+                console.log('response.data=' + response.data);
+
+                _this3.$set('allitems', response.data.data);
 
                 _this3.checkOverDataFilter();
             }, function (response) {
@@ -16204,10 +16219,10 @@ exports.default = {
                 //  this.formErrors =  response.data.error.message;
             }).bind(this);
         },
-        fetchAllRecords: function fetchAllRecords() {
+        fetchOtherRecords: function fetchOtherRecords() {
             var _this4 = this;
 
-            this.$http.get('/api/event/queue').then(function (response) {
+            this.$http.get('/api/event/otherItems').then(function (response) {
                 //response.status;
                 console.log('response.status=' + response.status);
                 console.log('response.ok=' + response.ok);
@@ -16215,7 +16230,7 @@ exports.default = {
                 console.log('response.data=' + response.data);
                 // data = response.data;
                 //
-                _this4.$set('allitems', response.data.data);
+                _this4.$set('otheritems', response.data.data);
 
                 // this.allitems = response.data.data;
                 // console.log('this.record= ' + this.record);
@@ -16268,7 +16283,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-35d5cc5b=\"\">\n            <div class=\"col-md-6\" _v-35d5cc5b=\"\">\n            <h3 _v-35d5cc5b=\"\">Unapproved Announcements</h3>\n                <div id=\"items-unapproved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-unapproved\" v-for=\"item in xitems\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"unapproved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-6\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Approved Announcements</h3>\n                <div id=\"items-approved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-approved\" v-for=\"item in items | orderBy 'priority' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"approved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n</div><!-- ./row -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-35d5cc5b=\"\">\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n            <h3 _v-35d5cc5b=\"\">Unapproved Events</h3>\n                <div id=\"items-unapproved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-unapproved\" v-for=\"item in itemsUnapproved | orderBy 'start_date'\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"unapproved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Approved Events</h3>\n                <div id=\"items-approved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-approved\" v-for=\"item in itemsApproved | orderBy 'priority' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"approved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Events</h3>\n                <div id=\"items-other\" _v-35d5cc5b=\"\">\n                <event-queue-item pid=\"items-other\" v-for=\"item in itemsPromoted | orderBy 'priority' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"other-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n</div><!-- ./row -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16285,102 +16300,217 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"./EventQueueItem.vue":8,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.onoffswitch[_v-19815ee4] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-19815ee4] {\n    display: none;\n}\n.onoffswitch-label[_v-19815ee4] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-19815ee4] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-19815ee4]:before, .onoffswitch-inner[_v-19815ee4]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-19815ee4]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-19815ee4]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-19815ee4] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-19815ee4] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-19815ee4] {\n    right: 0px;\n}\n\nselect.form-control[_v-19815ee4] {\n\theight:22px;\n\tborder: 1px solid #999999;\n}\n\n\nh6[_v-19815ee4] {\n\tmargin-top: 0;\n\tmargin-bottom: 0;\n}\n.form-group[_v-19815ee4] {\n\t/*border: 1px solid red;*/\n}\n.form-group label[_v-19815ee4]{\n\tmargin-bottom: 0;\n}\n.box.box-solid.box-default[_v-19815ee4] {\n\tborder: 1px solid #999999;\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.box-date-top[_v-19815ee4] {\n\n}\n.box-date-bot[_v-19815ee4] {\n\n}\n.box-date[_v-19815ee4] {\n\n}\n    select.form-control[_v-19815ee4] {\n        height:22px;\n        border: 1px solid #999999;\n    }\n\n\n    h6[_v-19815ee4] {\n        font-size: 14px;\n        margin-top: 0;\n        margin-bottom: 0;\n    }\n    .form-group[_v-19815ee4] {\n        /*border: 1px solid red;*/\n    }\n    .form-group label[_v-19815ee4]{\n        margin-bottom: 0;\n    }\n    .box.box-solid.box-default[_v-19815ee4] {\n        border: 1px solid #999999;\n    }\n    .box-body[_v-19815ee4] {\n        padding: 3px 6px;\n    }\n")
 'use strict';
 
 var moment = require('moment');
 
 module.exports = {
-	props: ['item', 'pid'],
-	data: function data() {
-		return {
-			options: [{ text: '0', value: 0 }, { text: '1', value: 1 }, { text: '2', value: 2 }, { text: '3', value: 3 }, { text: '4', value: 4 }, { text: '5', value: 5 }, { text: '6', value: 6 }, { text: '7', value: 7 }, { text: '8', value: 8 }, { text: '9', value: 9 }, { text: '10', value: 10 }, { text: '99', value: 99 }],
-			showBody: false,
-			currentDate: {},
-			record: {
-				user_id: '',
-				title: '',
-				announcement: '',
-				start_date: ''
-			}
-		};
-	},
-	created: function created() {
-		// this.currentDate = moment();
-		// console.log('this.currentDate=' + this.currentDate)
-	},
-	ready: function ready() {
-		//ready function
-	},
-	computed: {},
-	methods: {
-		toggleBody: function toggleBody(ev) {
-			if (this.showBody == false) {
-				this.showBody = true;
-			} else {
-				this.showBody = false;
-			}
-			console.log('toggleBody' + this.showBody);
-		},
-		doThis: function doThis(ev) {
-			this.$emit('item-change', this.item);
-			console.log('ev ' + ev + 'this.item.id= ' + this.item.priority);
-		}
+    props: ['item', 'pid'],
+    data: function data() {
+        return {
+            is_approved: 0,
+            options: [{ text: '0', value: 0 }, { text: '1', value: 1 }, { text: '2', value: 2 }, { text: '3', value: 3 }, { text: '4', value: 4 }, { text: '5', value: 5 }, { text: '6', value: 6 }, { text: '7', value: 7 }, { text: '8', value: 8 }, { text: '9', value: 9 }, { text: '10', value: 10 }, { text: '99', value: 99 }],
+            formInputs: {
+                event_id: '',
+                attachment: ''
 
-	},
-	watch: {
-		'isapproved': function isapproved(val, oldVal) {
-			if (val != oldVal) {
-				console.log('val change');
-			}
-		}
-	},
-	directives: {
-		// mydatedropper: require('../directives/mydatedropper.js')
-		// dtpicker: require('../directives/dtpicker.js')
-	},
-	components: {
-		// listselect2: require('./ListSelect2.vue')
-		// autocomplete: require('./vue-autocomplete.vue'),
-		// 'datepicker': require('../vendor/datepicker.vue'),
+            },
+            showBody: false,
+            showPanel: false,
+            currentDate: {},
+            record: {}
+        };
+    },
+    created: function created() {
+        // this.is_approved = this.item.approved;
+        // this.currentDate = moment();
+        // console.log('this.currentDate=' + this.currentDate)
+    },
+    ready: function ready() {
+        this.is_approved = this.item.approved;
+        // this.formInputs.event_id = this.item.id;
+        //ready function
+    },
+    computed: {
+        hasEventImage: function hasEventImage() {
+            if (this.item.eventimage) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        canHaveImage: function canHaveImage() {
+            if (this.item.approved) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        imageUrl: function imageUrl() {
+            var pth = "/imagecache/smallthumb/";
+            var fname = this.item.eventimage;
+            console.log(pth + fname);
+            return pth + fname;
+        }
 
-	},
-	filters: {
-		momentPretty: {
-			read: function read(val) {
-				console.log('read-val' + val);
+    },
+    methods: {
+        // We will call this event each time the file upload input changes. This will push the data to our data property above so we can use the data on form submission.
+        // onFileChange(event) {
+        //     console.log("event.target.file" + event.target.file)
+        //     this.formInputs.attachment = event.target.file;
+        // },
+        // Handle the form submission here
+        uploadMediaFile: function uploadMediaFile(event) {
+            event.preventDefault();
+            event.stopPropagation();
 
-				return val ? moment(val).format('MM-DD-YYYY') : '';
-			},
-			write: function write(val, oldVal) {
-				console.log('write-val' + val + '--' + oldVal);
+            var files = this.$els.eventimg.files;
+            var data = new FormData();
+            data.append('event_id', this.formInputs.event_id);
 
-				return moment(val).format('YYYY-MM-DD');
-			}
-		}
-	},
-	events: {
+            // Since we have multiple files, we will loop through them and add them to an array in our form object.
+            //    for(var key in this.formInputs.attachment) {
+            data.append('eventimg', files[0]);
+            //    }
+            // var formid = '#form-mediafile-upload'+this.item.id;
+            // var action =  $(formid).action;
+            var action = '/api/event/addMediaFile/' + this.formInputs.event_id;
+            this.$http.post(action, data, {
+                method: 'PUT'
+            }).then(function (response) {
+                console.log('good?' + response);
+            }, function (response) {
+                console.log('bad?' + response);
+            });
+            //    var action = $('#form-submit-ticket').action;
+            // POST the data to our Laravel controller
+            //    this.$http.post(action, form, function(response) {
+            //        console.log('Success:', response)
+            //    })
+        },
 
-		// 'building-change':function(name) {
-		// 	this.newbuilding = '';
-		// 	this.newbuilding = name;
-		// 	console.log(this.newbuilding);
-		// },
-		// 'categories-change':function(list) {
-		// 	this.categories = '';
-		// 	this.categories = list;
-		// 	console.log(this.categories);
-		// }
-	}
+        AddMediaFileToEvent: function AddMediaFileToEvent(item, args) {
+            var _this = this;
+
+            console.log(args);
+            var currentRecordId = item.id;
+            var currentRecord = args;
+
+            this.$http.patch('/api/event/updateItem/' + item.id, currentRecord, {
+                method: 'PATCH'
+            }).then(function (response) {
+                console.log('good?' + response);
+                var movedIndex = _this.movedItemIndex(movedid);
+                // this.xitems.pop(movedRecord);
+                // if (movedRecord.approved == 1) {
+                //         this.xitems.splice(movedIndex, 1);
+                //      this.items.push(movedRecord);
+                //  } else {
+                //      this.items.splice(movedIndex, 1);
+                //     this.xitems.push(movedRecord);
+                //  }
+
+                console.log('movedIndex===' + movedIndex);
+            }, function (response) {
+                console.log('bad?' + response);
+            });
+        },
+
+        togglePanel: function togglePanel(ev) {
+            if (this.showPanel === false) {
+                this.showPanel = true;
+            } else {
+                this.showPanel = false;
+            }
+            console.log('this.showPanel' + this.showPanel);
+        },
+        toggleBody: function toggleBody(ev) {
+            if (this.showBody == false) {
+                this.showBody = true;
+            } else {
+                this.showBody = false;
+            }
+            console.log('toggleBody' + this.showBody);
+        },
+        doThis: function doThis(ev) {
+            this.item.is_approved = this.is_approved === 0 ? 1 : 0;
+            this.$emit('item-change', this.item);
+            //console.log('ev ' + ev + 'this.item.id= '+  this.item.priority)
+        },
+        addMediaFile: function addMediaFile(ev) {
+            var formData = new FormData();
+            formData.append('image', fileInput, this.$els.finput.files[0]);
+
+            // var fileinputObject = this.$els.finput;
+            // console.log('fileinputObject.name= '+ fileinputObject.name)
+            // console.log('fileinputObject.value= '+ fileinputObject.value)
+            // console.log('fileinputObject.files= '+ fileinputObject.files[0])
+            this.$emit('add-media-file', formData);
+            console.log('ev ' + ev + 'this.item.id= ' + this.item);
+        }
+
+    },
+    watch: {
+        'isapproved': function isapproved(val, oldVal) {
+            if (val != oldVal) {
+                console.log('val change');
+            }
+        }
+    },
+    directives: {
+        // mydatedropper: require('../directives/mydatedropper.js')
+        // dtpicker: require('../directives/dtpicker.js')
+    },
+    components: {
+        VuiFlipSwitch: require('./VuiFlipSwitch.vue')
+        // autocomplete: require('./vue-autocomplete.vue'),
+        // 'datepicker': require('../vendor/datepicker.vue'),
+
+    },
+    filters: {
+        titleDay: function titleDay(value) {
+            return moment(value).format("ddd");
+        },
+        titleDate: function titleDate(value) {
+            return moment(value).format("MM/DD");
+        },
+        momentPretty: {
+            read: function read(val) {
+                console.log('read-val' + val);
+
+                return val ? moment(val).format('MM-DD-YYYY') : '';
+            },
+            write: function write(val, oldVal) {
+                console.log('write-val' + val + '--' + oldVal);
+
+                return moment(val).format('YYYY-MM-DD');
+            }
+        }
+    },
+    events: {
+
+        // 'building-change':function(name) {
+        // 	this.newbuilding = '';
+        // 	this.newbuilding = name;
+        // 	console.log(this.newbuilding);
+        // },
+        // 'categories-change':function(list) {
+        // 	this.categories = '';
+        // 	this.categories = list;
+        // 	console.log(this.categories);
+        // }
+    }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\t<div class=\"box box-default box-solid\" _v-19815ee4=\"\">\n      <div class=\"box-header with-border\" _v-19815ee4=\"\">\n\t\t\t\t<div class=\"row\" _v-19815ee4=\"\">\n\t\t\t\t\t\t<a v-on:click=\"toggleBody\" href=\"#\" _v-19815ee4=\"\">\n\t\t\t\t\t<div class=\"col-md-7\" _v-19815ee4=\"\">\n\t\t\t\t\t\t<h4 class=\"box-title\" _v-19815ee4=\"\">{{item.title}}</h4>\n\t\t\t\t\t</div><!-- /.col-md-7-->\n\t\t\t\t</a>\n\t\t\t\t\t<div class=\"col-md-5\" _v-19815ee4=\"\">\n\t\t\t\t\t<form class=\"form-inline pull-right\" _v-19815ee4=\"\">\n\t\t\t\t\t\t<!-- <div class=\"form-group\">\n\t\t\t\t\t\t\t<button v-on:click.prevent=\"doThis\" class=\"btn btn-sm\">BTN</button>\n\t\t\t\t\t\t</div> -->\n\t\t\t\t\t\t<!-- /.form-group -->\n\t\t\t\t  <div class=\"form-group\" _v-19815ee4=\"\">\n\t\t\t\t    <label class=\"sr-only\" for=\"priority-number\" _v-19815ee4=\"\">Priority</label>\n\t\t\t\t\t\t<select id=\"priority-{{item.id}}\" v-model=\"item.priority\" class=\"form-control\" number=\"\" _v-19815ee4=\"\">\n\t\t\t\t\t\t\t<option v-for=\"option in options\" v-bind:value=\"option.value\" _v-19815ee4=\"\">\n\t\t\t\t\t\t\t\t{{option.text}}\n\t\t\t\t\t\t\t</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t  </div>\n\t\t\t\t  <div class=\"form-group\" _v-19815ee4=\"\">\n\t\t\t\t\t\t<div class=\"onoffswitch \" _v-19815ee4=\"\">\n\t\t\t\t\t\t\t<input id=\"smitch-{{item.id}}\" v-on:click=\"doThis\" v-model=\"item.approved\" type=\"checkbox\" name=\"onoffswitch\" class=\"onoffswitch-checkbox\" _v-19815ee4=\"\">\n\n\t\t\t\t\t\t\t<label class=\"onoffswitch-label\" for=\"smitch-{{item.id}}\" _v-19815ee4=\"\">\n\t\t\t\t\t\t\t\t\t<span class=\"onoffswitch-inner\" _v-19815ee4=\"\"></span>\n\t\t\t\t\t\t\t\t\t<span class=\"onoffswitch-switch\" _v-19815ee4=\"\"></span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t    </div>\n\t\t\t\t\t</form>\n\t\t\t\t</div><!-- /.col-md-6 -->\n\t\t\t</div><!-- /.row -->\n\t  </div>  <!-- /.box-header -->\n\n\n        <div v-if=\"showBody\" class=\"box-body\" _v-19815ee4=\"\">\n\t\t\t\t\t\t<p _v-19815ee4=\"\">{{item.announcement}}</p>\n\t\t\t\t\t\t<div class=\"announcement-info\" _v-19815ee4=\"\">\n\t\t\t\t\t\t\tSubmitted On: {{item.submission_date}}<br _v-19815ee4=\"\">\n\t\t\t\t\t\t\tBy: {{item.author_name}}<br _v-19815ee4=\"\">\n\t\t\t\t\t\t\t{{item.author_email}} {{item.author_phone}}<br _v-19815ee4=\"\">\n\t\t\t\t\t\t\tDates: {{item.start_date}} - {{item.end_date}}\n\n\t\t\t\t\t\t</div>\n\n      </div><!-- /.box-body -->\n\t\t\t<div class=\"box-footer list-footer\" _v-19815ee4=\"\">\n\t\t\t\t<h6 _v-19815ee4=\"\">Submitted On: {{item.submission_date}}, By: {{item.author_name}}, Dates: {{item.start_date}} - {{item.end_date}}</h6>\n\n\t\t\t</div><!-- /.box-footer -->\n\n\t</div><!-- /.box- -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n    <div class=\"box box-default box-solid\" _v-19815ee4=\"\">\n        <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-19815ee4=\"\">\n            <div class=\"box-header with-border\" _v-19815ee4=\"\">\n                <div class=\"box-date pull-left\" _v-19815ee4=\"\">\n                    <div class=\"box-date-top\" _v-19815ee4=\"\">{{item.start_date | titleDay}}</div>\n                    <div class=\"box-date-bot\" _v-19815ee4=\"\">{{item.start_date | titleDate}}</div>\n                </div>\n                <h5 class=\"box-title pull-right\" _v-19815ee4=\"\">{{item.title}}</h5>\n            </div>  <!-- /.box-header -->\n        </a>\n        <div class=\"box-body\" _v-19815ee4=\"\">\n        <div v-if=\"showBody\" class=\"panel\" _v-19815ee4=\"\">\n            <p _v-19815ee4=\"\">From: {{item.start_time}} to {{item.end_time}}</p>\n            <p _v-19815ee4=\"\">{{item.description}}</p>\n            <div class=\"item-info\" _v-19815ee4=\"\">\n                Dates: {{item.start_date}} - {{item.end_date}}\n            </div>\n\n        <template v-if=\"canHaveImage\">\n            <img v-if=\"hasEventImage\" :src=\"imageUrl\" _v-19815ee4=\"\">\n            <a v-on:click=\"togglePanel\" class=\"btn bg-olive btn-sm\" href=\"#\" _v-19815ee4=\"\">{{hasEventImage ? 'Change Image' : 'Promote Event'}}</a>\n            <div v-show=\"showPanel\" class=\"panel\" _v-19815ee4=\"\">\n                <form id=\"form-mediafile-upload{{item.id}}\" @submit.prevent=\"uploadMediaFile\" class=\"m-t\" role=\"form\" action=\"/api/event/addMediaFile/{{item.id}}\" enctype=\"multipart/form-data\" _v-19815ee4=\"\">\n                    <input class=\"hidden\" type=\"input\" value=\"{{item.id}}\" v-model=\"formInputs.event_id\" _v-19815ee4=\"\">\n                    <div class=\"form-group\" _v-19815ee4=\"\">\n                        <label for=\"event-image\" _v-19815ee4=\"\">Event Image</label><br _v-19815ee4=\"\">\n                        <input v-el:eventimg=\"\" type=\"file\" name=\"eventimg\" id=\"eventimg\" _v-19815ee4=\"\">\n                    </div>\n                    <button id=\"btn-mediafile-upload\" type=\"submit\" class=\"btn btn-primary block m-b\" _v-19815ee4=\"\">Submit</button>\n                </form>\n            </div><!-- /.panel mediaform -->\n        </template>\n            </div><!-- /.panel -->\n        </div><!-- /.box-body -->\n        <div class=\"box-footer list-footer\" _v-19815ee4=\"\">\n            <div class=\"row\" _v-19815ee4=\"\">\n                <div class=\"col-md-4\" _v-19815ee4=\"\">\n                    <h4 _v-19815ee4=\"\">{{item.id}}</h4>\n                </div><!-- /.col-md-8 -->\n                <div class=\"col-md-8\" _v-19815ee4=\"\">\n                    <form class=\"form-inline pull-right\" _v-19815ee4=\"\">\n                    <div class=\"form-group\" _v-19815ee4=\"\">\n                        <label class=\"sr-only\" for=\"priority-number\" _v-19815ee4=\"\">Priority</label>\n                        <select id=\"priority-{{item.id}}\" v-model=\"item.priority\" class=\"form-control\" number=\"\" _v-19815ee4=\"\">\n                            <option v-for=\"option in options\" v-bind:value=\"option.value\" _v-19815ee4=\"\">\n                                {{option.text}}\n                            </option>\n                        </select>\n                    </div>\n                    <div class=\"form-group\" _v-19815ee4=\"\">\n                        <vui-flip-switch id=\"smitch-{{item.id}}\" v-on:click=\"doThis\" :value=\"is_approved\" _v-19815ee4=\"\">\n                        </vui-flip-switch>\n                    </div>\n                    </form>\n                </div><!-- /.col-md-4 -->\n            </div><!-- /.row -->\n    </div><!-- /.box-footer -->\n</div><!-- /.box- -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.onoffswitch[_v-19815ee4] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-19815ee4] {\n    display: none;\n}\n.onoffswitch-label[_v-19815ee4] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-19815ee4] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-19815ee4]:before, .onoffswitch-inner[_v-19815ee4]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-19815ee4]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-19815ee4]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-19815ee4] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-19815ee4] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-19815ee4] {\n    right: 0px;\n}\n\nselect.form-control[_v-19815ee4] {\n\theight:22px;\n\tborder: 1px solid #999999;\n}\n\n\nh6[_v-19815ee4] {\n\tmargin-top: 0;\n\tmargin-bottom: 0;\n}\n.form-group[_v-19815ee4] {\n\t/*border: 1px solid red;*/\n}\n.form-group label[_v-19815ee4]{\n\tmargin-bottom: 0;\n}\n.box.box-solid.box-default[_v-19815ee4] {\n\tborder: 1px solid #999999;\n}\n"] = false
+    __vueify_insert__.cache["\n.box-date-top[_v-19815ee4] {\n\n}\n.box-date-bot[_v-19815ee4] {\n\n}\n.box-date[_v-19815ee4] {\n\n}\n    select.form-control[_v-19815ee4] {\n        height:22px;\n        border: 1px solid #999999;\n    }\n\n\n    h6[_v-19815ee4] {\n        font-size: 14px;\n        margin-top: 0;\n        margin-bottom: 0;\n    }\n    .form-group[_v-19815ee4] {\n        /*border: 1px solid red;*/\n    }\n    .form-group label[_v-19815ee4]{\n        margin-bottom: 0;\n    }\n    .box.box-solid.box-default[_v-19815ee4] {\n        border: 1px solid #999999;\n    }\n    .box-body[_v-19815ee4] {\n        padding: 3px 6px;\n    }\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -16389,7 +16519,49 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-19815ee4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],9:[function(require,module,exports){
+},{"./VuiFlipSwitch.vue":9,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],9:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.vuiflipswitch {\n    position: relative; width: 36px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.vuiflipswitch-checkbox {\n    display: none;\n}\n.vuiflipswitch-label {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 1px solid #666666; border-radius: 4px;\n}\n.vuiflipswitch-inner {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.vuiflipswitch-inner:before, .vuiflipswitch-inner:after {\n    display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;\n    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.vuiflipswitch-inner:before {\n    content: \"Y\";\n    padding-left: 5px;\n    background-color: #EEEEEE; color: #605CA8;\n}\n.vuiflipswitch-inner:after {\n    content: \"N\";\n    padding-right: 5px;\n    background-color: #EEEEEE; color: #666666;\n    text-align: right;\n}\n.vuiflipswitch-switch {\n    display: block;\n    width: 16px;\n    margin: 0;\n    background: #666666;\n    position: absolute; top: 0; bottom: 0;\n    /*right: 16px;*/\n    /*border: 2px solid #666666; */\n    border-radius: 4px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-inner {\n    margin-left: 0;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-switch {\n    right: 0px;\n    background-color: #605CA8;\n}\nselect.form-control {\n    height:22px;\n    border: 1px solid #666666;\n}\n\n\nh6 {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group {\n    /*border: 1px solid red;*/\n}\n.form-group label{\n    margin-bottom: 0;\n}\n.box.box-solid.box-default {\n    border: 1px solid #666666;\n}\n")
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    props: {
+        disabled: Boolean,
+        checked: [Boolean, Number],
+        value: Number
+    },
+    ready: function ready() {
+        this.value == !!this.checked;
+    },
+
+    data: function data() {
+        return {
+            // compval: $('#slct').val()
+        };
+    },
+    methods: {},
+    events: {}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"vuiflipswitch\">\n    <input v-model=\"value\" type=\"checkbox\" name=\"vuiflipswitch\" class=\"vuiflipswitch-checkbox\" :disabled=\"disabled\" lazy=\"\">\n    <label class=\"vuiflipswitch-label\" :class=\"{checked:value}\">\n            <span class=\"vuiflipswitch-inner\"></span>\n            <span class=\"vuiflipswitch-switch\"></span>\n    </label>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.vuiflipswitch {\n    position: relative; width: 36px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.vuiflipswitch-checkbox {\n    display: none;\n}\n.vuiflipswitch-label {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 1px solid #666666; border-radius: 4px;\n}\n.vuiflipswitch-inner {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.vuiflipswitch-inner:before, .vuiflipswitch-inner:after {\n    display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;\n    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.vuiflipswitch-inner:before {\n    content: \"Y\";\n    padding-left: 5px;\n    background-color: #EEEEEE; color: #605CA8;\n}\n.vuiflipswitch-inner:after {\n    content: \"N\";\n    padding-right: 5px;\n    background-color: #EEEEEE; color: #666666;\n    text-align: right;\n}\n.vuiflipswitch-switch {\n    display: block;\n    width: 16px;\n    margin: 0;\n    background: #666666;\n    position: absolute; top: 0; bottom: 0;\n    /*right: 16px;*/\n    /*border: 2px solid #666666; */\n    border-radius: 4px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-inner {\n    margin-left: 0;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-switch {\n    right: 0px;\n    background-color: #605CA8;\n}\nselect.form-control {\n    height:22px;\n    border: 1px solid #666666;\n}\n\n\nh6 {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group {\n    /*border: 1px solid red;*/\n}\n.form-group label{\n    margin-bottom: 0;\n}\n.box.box-solid.box-default {\n    border: 1px solid #666666;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-83bd83d2", module.exports)
+  } else {
+    hotAPI.update("_v-83bd83d2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],10:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
@@ -16401,26 +16573,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var Vue = require('vue');
 
 Vue.use(_vueResource2.default);
+// Remember the token we created in the <head> tags? Get it here.
+var CSRFToken = document.querySelector('meta[name="_token"]').getAttribute('content');
+Vue.http.headers.common['X-CSRF-TOKEN'] = CSRFToken;
 
 var moment = require('moment');
 
 new Vue({
-        el: '#vue-event-queue',
-        components: {
-                EventQueue: require('./components/EventQueue.vue')
-        },
-        http: {
-                headers: {
-                        // You could also store your token in a global object,
-                        // and reference it here. APP.token
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                }
-        },
-        ready: function ready() {
-                console.log('new Vue Event Queue ready');
-        }
+    el: '#vue-event-queue',
+    components: {
+        EventQueue: require('./components/EventQueue.vue')
+    },
+    // http: {
+    //         headers: {
+    //                 // You could also store your token in a global object,
+    //                 // and reference it here. APP.token
+    //                 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+    //         }
+    // },
+    ready: function ready() {
+        console.log('new Vue Event Queue ready');
+    }
 });
 
-},{"./components/EventQueue.vue":7,"moment":1,"vue":5,"vue-resource":4}]},{},[9]);
+},{"./components/EventQueue.vue":7,"moment":1,"vue":5,"vue-resource":4}]},{},[10]);
 
 //# sourceMappingURL=vue-event-queue.js.map

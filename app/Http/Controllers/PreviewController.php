@@ -60,7 +60,7 @@ class PreviewController extends Controller
 
             $sideNewsStorys = collect();
 
-            if($stype == 'story' || $stype == 'emutoday'){
+            if($stype == 'story' || $stype == 'emutoday' || $stype == 'news'){
                 $sideStoryBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
 
                 return view('preview.story.story', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
@@ -113,7 +113,11 @@ class PreviewController extends Controller
         }
        //$events = $this->event->where(['start_date', '>=', $currentDateTime])->orderBy('start_date','desc')->get();
     //   $fakeDate = Carbon::now()->subYear();
-        $events = $this->event->where('start_date', '>=', Carbon::now()->startOfDay())->orderBy('start_date', 'asc')->paginate(4);
+        $events = $this->event->where([
+                ['is_approved',1],
+                ['start_date', '>=', Carbon::now()->startOfDay()]
+                ])->orderBy('start_date', 'asc')
+                ->paginate(4);
 
 
         $storyImages = $page->storyImages();

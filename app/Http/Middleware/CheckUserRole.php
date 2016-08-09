@@ -15,16 +15,16 @@ class CheckUserRole
      */
     public function handle($request, Closure $next, $urole = null)
     {
-			//if user loged in  AND
-			//if user has role of admin
-			//
-			$user = $request->user();
+            //if user loged in  AND
+            //if user has role of admin
+            //
+            $user = $request->user();
 
-			if ($user && $user->hasRole($urole) ) {
-        return $next($request);
-			}
+            if ($user && $user->hasRole($urole) ) {
+                return $next($request);
+            }
 
-			return redirect('/');
+            return redirect('/');
 
 
     }

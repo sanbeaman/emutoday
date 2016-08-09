@@ -46,7 +46,7 @@ $_CONFIG = array(
     'jpegQuality' => 90,
     'thumbsDir' => ".thumbs",
 
-    'maxImageWidth' => 0,
+    'maxImageWidth' => 1280,
     'maxImageHeight' => 0,
 
     'thumbWidth' => 100,

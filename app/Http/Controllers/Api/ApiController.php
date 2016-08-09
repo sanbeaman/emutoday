@@ -1,18 +1,19 @@
 <?php
 
 namespace emutoday\Http\Controllers\Api;
-
 use emutoday\Http\Controllers\Controller as Controller;
 use Illuminate\Http\Response as IlluminateResponse;
 
 
 class ApiController extends Controller
 {
-    /**
-     * [$statusCode description]
-     * @var integer
-     */
-    protected $statusCode = 200;
+
+/**
+ * [$statusCode description]
+ * @var integer
+ */
+protected $statusCode = 200;
+
 
 
     /**

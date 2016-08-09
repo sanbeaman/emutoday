@@ -17,7 +17,7 @@
     <div class="box">
         <div class="box-header">
             <h3 class="box-title">Story List</h3>
-                @include('admin.layouts.components.boxtools', ['rte' => 'story', 'path' => 'admin/story', 'cuser'=>$currentUser])
+                @include('admin.layouts.components.boxtools', ['rte' => $stype, 'path' => 'admin/story', 'cuser'=>$currentUser])
             </div><!-- /.box-header -->
         <div class="box-body">
             <table id="main-story-table" class="table table-bordered table-hover">
@@ -40,16 +40,20 @@
             </table>
         </div><!-- /.box-body -->
     </div><!-- /.box -->
+    @if(is_string($stypes))
+
+    @else
     <label id="stype-filter" for="stype">Filter By Type:
-        {!! Form::select('stype', $stypes, $stype, ['id'=> 'stype1', 'class' => 'form-control input-sm']) !!}
+        {!! Form::select('stype', $stypes, null, ['id'=> 'stype1', 'class' => 'form-control input-sm']) !!}
     </label>
+@endif
 @endsection
 @section('footer-plugin')
     @parent
     <script src="/themes/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.min.js"></script>
     <!-- SlimScroll -->
-<script src="/themes/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+{{-- <script src="/themes/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script> --}}
 <!-- FastClick -->
 <script src="/themes/admin-lte/plugins/fastclick/fastclick.js"></script>
 @endsection
@@ -60,6 +64,14 @@
     @parent
     <script>
     $(function () {
+        var stype =  JSvars.stype;
+        var ajaxurl = "/api/story/"+ stype;
+        var stypefilter = $('#stype1').val();
+            console.log('stypefilter' + stypefilter)
+
+        if (stypefilter != undefined  ) {
+
+
             /* Custom filtering function which will search data in column four between two values */
             $.fn.dataTable.ext.search.push(
             function( settings, data, dataIndex ) {
@@ -78,8 +90,15 @@
             }
             );
 
+
+
+        } else {
+
+        }
+
+// "/api/story/indexList",
             var table = $('#main-story-table').DataTable({
-                "ajax": "/api/story",
+                "ajax": ajaxurl,
                 "columns": [
                     {"data": "id"},
                     {"data": "type"},

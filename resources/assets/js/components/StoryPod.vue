@@ -1,31 +1,28 @@
 <template>
-
     <div class="box box-solid {{item.type}}">
-        <div class="box-header with-border">
-
+        <a v-on:click.prevent="toggleBody" href="#">
+            <div class="box-header with-border">
                 <div class="row">
-
-                    <a v-on:click.prevent="toggleBody" href="#">
-                    <div class="col-md-10">
-                        <span class="item-type-icon" :class="typeIcon"></span>
+                    <div class="col-md-12">
+                        <div class="pull-left">
+                            <span class="item-type-icon" :class="typeIcon"></span>
+                        </div><!-- /.pull-left -->
+                        <div class="pull-right">
+                            <span class="item-featured-icon" :class="promotedIcon"></span>
+                            <span class="item-featured-icon" :class="featuredIcon"></span>
+                            <span class="item-featured-icon" :class="homeIcon"></span>
+                            <span class="item-featured-icon" :class="archivedIcon"></span>
+                        </div><!-- /.pull-right -->
+                    </div><!-- /.col-md-12-->
+                </div><!-- /.row -->
+                <div class="row">
+                    <div class="col-md-12">
                         <h6 class="box-title">{{item.title}}</h6>
-                    </div><!-- /.col-md-7-->
-                    </a>
-                    <div class="col-md-2">
-                    <!-- <form class="form-inline pull-right"> -->
-                        <span class="item-featured-icon" :class="promotedIcon"></span>
-                        <span class="item-featured-icon" :class="featuredIcon"></span>
-                        <span class="item-featured-icon" :class="homeIcon"></span>
-                        <span class="item-featured-icon" :class="archivedIcon"></span>
-                        <!-- <div class="form-group">
-                            <button v-on:click.prevent="doThis" class="btn btn-sm">BTN</button>
-                        </div> -->
-                        <!-- /.form-group -->
+                    </div><!-- /.col-md-12 -->
+                </div><!-- /.row -->
 
-                    <!-- </form> -->
-                </div><!-- /.col-md-6 -->
-            </div><!-- /.row -->
-      </div>  <!-- /.box-header -->
+        </div>  <!-- /.box-header -->
+      </a>
       <div v-if="showBody" class="box-body">
             <p>ID: {{item.id}}</p>
             <p>Type: {{item.type}}</p>
@@ -61,6 +58,7 @@
     background-color: #fff;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    margin:0;
 }
 
 .box-header {

@@ -8,7 +8,12 @@ use emutoday\Tag;
 use emutoday\User;
 use emutoday\Imagetype;
 use emutoday\StoryType;
+use emutoday\Emutoday\Transformers\FractalStoryTransformer;
+use emutoday\Emutoday\Transformers\FractalStoryExtraTransformer;
+use emutoday\Emutoday\Transformers\StoryTransformer;
 
+use League\Fractal\Manager;
+use League\Fractal;
 use Illuminate\Http\Request;
 use emutoday\Http\Requests;
 use DB;
@@ -18,13 +23,14 @@ class StoryController extends Controller
 {
     private $story;
 
-    public function __construct(Story $story)
+    public function __construct(Story $story, StoryTransformer $storyTransformer)
     {
         $this->story = $story;
+        $this->storyTransformer = $storyTransformer;
     }
 
 
-    public function appload(Story $story) {
+    public function queue(Story $story) {
           $storys = $this->story;
 
             \JavaScript::put([
@@ -37,63 +43,87 @@ class StoryController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function index(Request $request)
-    {
+    // public function index(Request $request)
+    // {
+    //     $user = auth()->user();
+    //         if($user == null)
+    //         {
+    //             return redirect(route('admin.dashboard'));
+    //         }
+    //     $storys =   $this->story->newQuery();
+    //         if ($user->hasRole('contributor_1'))
+    //         {
+    //             $storys = $storys->where('author_id', $user->id)->get();
+    //               return view('admin.story.role.index', compact('storys'));
+    //         } else {
+    //             $stype = $request->get('stype');
+    //             $order = $request->get('order');
+    //             $dir = $request->get('dir');
+    //             $page_appends = null;
+    //
+    //             if (!$stype || $stype == 'all') {
+    //                 $stype = 'all';
+    //             } else {
+    //                 $storys = $this->story->ofStoryType($stype)->get();
+    //                 dd($storys);
+    //                 // $storys->storyTypes()->where('group', $stype);
+    //                 // where('story_type', $stype);
+    //             }
+    //
+    //             if (!$order && !$dir) {
+    //         $order = 'created_at';
+    //                     $dir = 'desc';
+    //     }
+    //             $storys = $storys->orderBy($order, $dir);
+    //             // Tell the Paginator to append the following to the page URL as well
+    //             $page_appends = [
+    //                     'order' => $order,
+    //                     'dir' => $dir,
+    //             ];
+    //     $storys = $storys->paginate(5);
+    //             // $stypes = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+    //             $stypes = \emutoday\StoryType::all()->pluck('group','group');
+    //             $stypes = $stypes->prepend('all', 'all');
+    //
+    //             $data['storys'] = $storys;
+    //              $data['dir'] = $dir == 'asc' ? 'desc' : 'asc';
+    //              $data['page_appends'] = $page_appends;
+    //             $data['stype'] = $stype;
+    //             $data['stypes'] = $stypes;
+    //
+    //             return view('admin.story.index', $data);
+    //             }
+    // }
+    //
 
-            $user = auth()->user();
-            if($user == null)
-            {
-                return redirect(route('admin.dashboard'));
-            }
-            $storys =   $this->story->newQuery();
-            if ($user->hasRole('contributor_1'))
-            {
-                $storys = $storys->where('author_id', $user->id)->get();
-                  return view('admin.story.role.index', compact('storys'));
-            } else {
-                $stype = $request->get('stype');
-                $order = $request->get('order');
-                $dir = $request->get('dir');
-                $page_appends = null;
 
-                if (!$stype || $stype == 'all') {
-                    $stype = 'all';
-                } else {
-                    $storys = $this->story->ofStoryType($stype)->get();
-                    dd($storys);
-                    // $storys->storyTypes()->where('group', $stype);
-                    // where('story_type', $stype);
-                }
 
-                if (!$order && !$dir) {
-            $order = 'created_at';
-                        $dir = 'desc';
+        public function index(){
+            $stypes = \emutoday\StoryType::all()->pluck('group','group');
+            $stypes = $stypes->prepend('all', 'all');
+            $stype = 'all';
+            \JavaScript::put([
+                    'stype' => 'all'
+            ]);
+                      //
+                    //   $data['storys'] = $storys;
+                    //    $data['dir'] = $dir == 'asc' ? 'desc' : 'asc';
+                    //    $data['page_appends'] = $page_appends;
+                    //   $data['stype'] = $stype;
+                    //   $data['stypes'] = $stypes;
+
+            return view('admin.story.index', compact('stype','stypes'));
         }
-                $storys = $storys->orderBy($order, $dir);
-                // Tell the Paginator to append the following to the page URL as well
-                $page_appends = [
-                        'order' => $order,
-                        'dir' => $dir,
-                ];
-        $storys = $storys->paginate(5);
-                // $stypes = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-                $stypes = \emutoday\StoryType::all()->pluck('group','group');
-                $stypes = $stypes->prepend('all', 'all');
-
-                $data['storys'] = $storys;
-                 $data['dir'] = $dir == 'asc' ? 'desc' : 'asc';
-                 $data['page_appends'] = $page_appends;
-                $data['stype'] = $stype;
-                $data['stypes'] = $stypes;
-
-                return view('admin.story.index', $data);
-                }
-    }
-
         public function list($stype)
         {
-        $storys = $this->story->where('story_type', $stype)->get();
-        return view('admin.story.list', compact('storys','stype'));
+            //$storys = $this->story->where('story_type', $stype)->get();
+            $stypes = $stype;
+            \JavaScript::put([
+                    'stype' => $stype
+            ]);
+            return view('admin.story.index', compact('stype', 'stypes'));
+            // return view('admin.story.index', compact('stype'));
+
         }
 
         /**
@@ -103,10 +133,8 @@ class StoryController extends Controller
          */
     public function setup($stype)
     {
-
-
         $story = new Story;
-                $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+        $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
 
         if ($stype != 'story' ) {
             $story->story_type = $stype;
@@ -148,17 +176,41 @@ class StoryController extends Controller
 
 
 
+            /**
+             * [storyTypeSetUp description]
+             * @param  [type] $stype [description]
+             * @return [type]        [description]
+             */
         public function storyTypeSetUp($stype)
         {
             $story = new Story;
-            $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-            $stypes = $stype;
-            $story->story_type = $stypes;
+
+            $user = \Auth::user();
+            if ($user->hasRole('contributor_1')){
+                // dd($user->id);
+                $stypelist = 'news';
+
+            } else {
+            $stypelist = \emutoday\StoryType::where('level', 1)->pluck('name','shortname');
+
+            }
+
+            // $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+
+            if($stype == 'story') {
+                $stypes = $stypelist;
+
+            } else {
+                $stypes = $stype;
+                $story->story_type = $stypes;
+            }
+
             JavaScript::put([
-                    'storytype' => $stypes
+                    'stypes' => $stypes,
+                    'storytype' => $stype
             ]);
 
-            return view('admin.story.form', compact('story', 'stypes','stypelist'));
+            return view('admin.story.form', compact('story','stypes','stypelist'));
 
         }
     /**
@@ -176,8 +228,12 @@ class StoryController extends Controller
                 return view('admin.story.create', compact('story', 'stype'));
             }
         } else {
-            $storyTypes = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-            return view('admin.story.create', compact('story', 'storyTypes'));
+            $stypes = $stype;
+            $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+
+            return view('admin.story.form', compact('story', 'stypes','stypelist'));
+
+            // return view('admin.story.form', compact('story', 'storyTypes'));
         }
 
     }
@@ -199,7 +255,7 @@ class StoryController extends Controller
     public function store(Requests\StoreStoryRequest $request)
     {
 
-        //dd($request->input('storyTypes'));
+        // dd($request->all());
         //
       //  dd($request->end_date);
              $pubStartDate = $request->start_date;
@@ -383,12 +439,24 @@ class StoryController extends Controller
             // dd($leftOverImages);
             $requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
             $otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
+
+            $storyasarray = $this->storyTransformer->transform($story);
+
+            $storydata = json_encode($storyasarray);
+
+            // return $this->respond([
+            // 				'data' => $this->storyTransformer->transformCollection($storys->all())
+            // 		]);
+            // }
+            // $storyj = $story->toJson();
             JavaScript::put([
+                        'story' => $story,
+                        'stype' => $stype,
                         'storytype' => $story->story_type,
                         'is_featured' => $story->is_featured,
                 ]);
 
-            return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
+            return view('admin.story.form', compact('story', 'stypes','storydata', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
 
         }
 
@@ -402,6 +470,7 @@ class StoryController extends Controller
         $tags = \emutoday\Tag::lists('name', 'id');
         $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
         JavaScript::put([
+                            'stype' => $stypes,
                             'storytype' => $story->story_type,
                             'is_featured' => $story->is_featured,
                     ]);
@@ -414,7 +483,19 @@ class StoryController extends Controller
 
                 if ($user->hasRole('contributor_1'))
                 {
-                    return view('admin.story.role.form', compact('story', 'stypes', 'tags'));
+                    $stypelist = $story->story_type;
+                    $storyGroup = $story->storyGroup->group;
+                    $imagetypeNames = null;
+                    $currentStoryImages = null;
+                    $leftOverImages = null;
+                    // dd($leftOverImages);
+                    $requiredImages = null;
+                    $otherImages = null;
+
+
+
+                    // return view('admin.story.role.form', compact('story', 'stypes', 'tags'));
+                    return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
 
                 } else {
                     $storyGroup = $story->storyGroup->group;
@@ -543,8 +624,12 @@ class StoryController extends Controller
         // 	]);
         // 	}
 
-            public function imageBrowse(Request $request)
+        public function imageBrowse(Request $request)
             {
+                dd($request->all());
+                $this->validate($request, [
+                    'image' => 'required|dimensions:max_width=900,max_height=500|size:3000|'
+                ]);
                 $CKEditor = Input::get('CKEditor');
                   $funcNum = Input::get('CKEditorFuncNum');
                     $message = $url = '';
@@ -568,7 +653,11 @@ class StoryController extends Controller
             // Route::post('/upload_image', function() {
             public function imageUpload(Request $request)
             {
+
+
                     $file = $request->file('upload');
+
+
                     $uploadDestination = public_path() . '/imgs/uploads/story/';
                     $filename = preg_replace('/\s+/', "", $file->getClientOriginalName());
                     $fileName = md5($filename) . "_" . $filename;

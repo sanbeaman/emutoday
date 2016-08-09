@@ -5,7 +5,8 @@ namespace emutoday\Http\Controllers\Api;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Input as Input;
-
+// import the Intervention Image Manager Class
+use Intervention\Image\ImageManagerStatic as Image;
 use League\Fractal\Manager;
 use League\Fractal;
 
@@ -18,6 +19,8 @@ use League\Fractal\Serializer\JsonApiSerializer;
 use emutoday\Event;
 use emutoday\Category;
 use emutoday\Building;
+use emutoday\Mediafile;
+use emutoday\Mediatype;
 
 use Carbon\Carbon;
 
@@ -37,34 +40,53 @@ class EventController extends ApiController
 
   public function queue()
   {
-
-          $fractal = new Manager();
-
-          $events = Event::all();
-
-          $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
-              // Turn all of that into a JSON string
-              return $fractal->createData($resource)->toArray();
-          // return $this->respond([
-          //     'data' => $this->storyTransformer->transformCollection($storys->all())
-          // ]);
+        $cFullDateSub3Months = Carbon::now()->subMonths(6);
+        $fractal = new Manager();
+        $events = Event::where('end_date', '>', $cFullDateSub3Months)->get();
+        $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
+         // Turn all of that into a JSON string
+         return $fractal->createData($resource)->toArray();
   }
+  public function otherItems()
+  {
+      $cFullDateSub3Months = Carbon::now()->subMonths(3);
+      $fractal = new Manager();
+      $events = Event::where([
+          ['is_approved', 1],
+          ['is_promoted', 1],
+          ['end_date', '>', $cFullDateSub3Months]
+          ])->get();
+          $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
+          // Turn all of that into a JSON string
+          return $fractal->createData($resource)->toArray();
 
+      }
   public function approvedItems()
   {
+
+      $cFullDateSub3Months = Carbon::now()->subMonths(3);
       $fractal = new Manager();
-      $events = Event::where('approved', 1)->get();
-      $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
-    // Turn all of that into a JSON string
-        return $fractal->createData($resource)->toArray();
-          // return $this->respond([
-          //     'data' => $this->storyTransformer->transformCollection($storys->all())
-          // ]);
-  }
+      $events = Event::where([
+          ['is_approved', 1],
+          ['end_date', '>', $cFullDateSub3Months]
+          ])->get();
+          $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
+          // Turn all of that into a JSON string
+          return $fractal->createData($resource)->toArray();
+
+      }
   public function unapprovedItems()
   {
-          $fractal = new Manager();
-          $events = Event::where('approved', 0)->get();
+      $currentDate = Carbon::now();
+      $DateMinus2 =  $currentDate->subYears(1);
+    $fractal = new Manager();
+
+        $events = Event::where([
+                            ['is_approved', 0],
+                            ['end_date', '>', $DateMinus2]
+                                ])->get();
+
+          $events = Event::where('is_approved', 0)->get();
           $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
               // Turn all of that into a JSON string
               return $fractal->createData($resource)->toArray();
@@ -164,20 +186,18 @@ class EventController extends ApiController
 
 
         $validation = \Validator::make( Input::all(), [
-                                                                    'title'           => 'required',
-                                                                    'location'        => 'required',
-                                                                    'on_campus'				=> 'required',
-                                                                    'start_date'      => 'required|date',
-                                                                    'end_date'        => 'required|date',
-                                                                    'categories'      => 'required',
-                                                                    'cost'						=> 'required',
-                                                                    'description'     => 'required',
-                                                                    'contact_person'  => 'required',
-                                                                    'contact_phone'  => 'required',
-                                                                    'contact_email'  => 'required|email'
-
-
-                                                             ]);
+            'title'           => 'required',
+            'location'        => 'required',
+            'on_campus'				=> 'required',
+            'start_date'      => 'required|date',
+            'end_date'        => 'required|date',
+            'categories'      => 'required',
+            'cost'						=> 'required',
+            'description'     => 'required',
+            'contact_person'  => 'required',
+            'contact_phone'  => 'required',
+            'contact_email'  => 'required|email'
+        ]);
 
          if( $validation->fails() )
          {
@@ -363,6 +383,95 @@ class EventController extends ApiController
         // return $event;
     }
 
+
+
+
+
+
+    public function addMediaFile(Request $request)
+    {
+
+            $group = 'event';
+            $type = 'small';
+            // $imgFile = $request->file('attachment');
+            // dd($imgFile);
+            $event_id = $request->input('event_id');
+            // $imgFile = $request->file('attachment');
+
+            $event = Event::findOrFail($event_id);
+            //define the image paths
+            $destinationFolder = '/imgs/'.$group.'/';
+
+            $mediafile = new Mediafile();
+            //Find mediatype for this type of media file
+            $mediatype = Mediatype::where([
+                    ['group',$group],
+                    ['type', $type]
+                ])->first();
+                    //Define mediatype to mediafile relationship
+            $mediafile->mediatype()->associate($mediatype);
+
+            $mediafile->group = $group;
+            $mediafile->type = $type;
+            $mediafile->path = $destinationFolder;
+
+            $imgFile = Input::file('eventimg');
+            $imgFilePath = $imgFile->getRealPath();
+            $imgFileOriginalExtension = strtolower($imgFile->getClientOriginalExtension());
+
+            switch ($imgFileOriginalExtension) {
+                    case 'jpg':
+                    case 'jpeg':
+                     $imgFileExtension = 'jpg';
+                     break;
+                     default:
+                     $imgFileExtension = $imgFileOriginalExtension;
+                 }
+                 $mediafile->name = 'event'. '-' .$event->id;
+                 $mediafile->ext = $imgFileExtension;
+
+                 $imgFileName = $mediafile->name . '.' . $mediafile->ext;
+
+
+
+            $image = Image::make($imgFilePath)
+             ->save(public_path() . $destinationFolder . $imgFileName);
+            //  ->fit(100)
+            //  ->save(public_path() . $destinationFolder . 'thumbnails/' . 'thumb-' . $imgFileName);
+
+            // 	}
+            //
+            $mediafile->filename = $imgFileName;
+            $mediafile->save();
+
+
+            $event->mediaFile()->associate($mediafile);
+            $event->is_promoted = 1;
+
+            if($event->save()) {
+                    return $this->setStatusCode(201)
+                                ->respondCreated('Event successfully updated');
+                            }
+        }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateItem(Request $request, $id)
+    {
+        $event = Event::findOrFail($id);
+        //$event->priority = $request->get('priority');
+        $event->is_approved = $request->get('is_approved');
+
+            if($event->save()) {
+                    return $this->setStatusCode(201)
+                    ->respond([$event->is_approved]);
+                                // ->respondCreated('Event successfully patched');
+                            }
+        }
     /**
      * Update the specified resource in storage.
      *

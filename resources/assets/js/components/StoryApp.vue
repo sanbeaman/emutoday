@@ -208,7 +208,7 @@ export default  {
         //     }).bind(this);
         // },
         fetchAllRecords: function() {
-            this.$http.get('/api/story/appload')
+            this.$http.get('/api/story/appLoad')
 
             .then((response) =>{
                 //response.status;

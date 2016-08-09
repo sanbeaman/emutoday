@@ -33,7 +33,6 @@ class Kernel extends HttpKernel
 
         'api' => [
             'throttle:60,1',
-              \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         ],
     ];
 
@@ -47,8 +46,9 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \emutoday\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
         'guest' => \emutoday\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-				'checkuserrole' => \emutoday\Http\Middleware\CheckUserRole::class
+        'checkuserrole' => \emutoday\Http\Middleware\CheckUserRole::class
     ];
 }

@@ -58,7 +58,6 @@ class StoryImageController extends Controller
        //define the image paths
        $destinationFolder = '/imgs/story/';
 
-
        //assign the image paths to new model, so we can save them to DB
        $storyImage->image_path = $destinationFolder;
        // format checkbox values and save model
@@ -119,23 +118,6 @@ class StoryImageController extends Controller
 
         $pathToImageForDelete = public_path() . $storyImage->image_path . $storyImage->image_name . '.' . $storyImage->image_extension;
         File::delete($pathToImageForDelete);
-
-        // $pathToImageThumbForDelete = public_path() . $storyImage->image_path . 'thumbnails/' . 'thumb-' . $storyImage->image_name . '.' . $storyImage->image_extension;
-        // File::delete($pathToImageThumbForDelete);
-
-
-
-                /*
-
-        $destinationFolder = '/imgs/story/';
-        $thumbPath = $destinationFolder .'thumbnails/';
-        Storage::disk('public')->delete(url($destinationFolder .  $storyImage->image_name . '.' . $storyImage->image_extension));
-
-        Storage::disk('public')->delete(url($thumbPath . 'thumb-' .  $storyImage->image_name . '.' . $storyImage->image_extension));
-*/
-        //File::delete(public_path($storyImage->image_path) . $storyImage->image_name . '.' . $storyImage->image_extension);
-        //Storage::delete(public_path($thumbPath). 'thumb-' . $storyImage->image_name . '.' . $storyImage->image_extension);
-        $storyImage->delete();
         flash()->warning('Image has been deleted');
 
         return redirect()->back();//->with('status', 'Record has been deleted.');

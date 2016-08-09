@@ -7,7 +7,7 @@ use emutoday\Mediafile;
 
 class User extends Authenticatable
 {
-		use HasRoles;
+    use HasRoles;
     /**
      * The attributes that are mass assignable.
      *
@@ -32,36 +32,40 @@ class User extends Authenticatable
         $this->attributes['password'] = bcrypt($value);
     }
 
-		public function getFullNameAttribute(){
-			return $this->last_name . ', '. $this->first_name;
-		}
-	
-		public function mediaFiles()
-		{
-			return $this->belongsToMany('emutoday\Mediafile');
-		}
+        public function getFullNameAttribute(){
+            return $this->last_name . ', '. $this->first_name;
+        }
+        public function storys()
+        {
+            return $this->hasMany('emutoday\Story', 'author_id');
+        }
 
-		public function announcements()
-		{
-			return $this->hasMany('emutoday\Announcement', 'author_id');
-		}
+        public function mediaFiles()
+        {
+            return $this->belongsToMany('emutoday\Mediafile');
+        }
+
+        public function announcements()
+        {
+            return $this->hasMany('emutoday\Announcement', 'author_id');
+        }
 
 
-		public function events() {
+        public function events() {
       return $this->hasMany('emutoday\Event', 'author_id');
     }
-		public function bugztracked(){
-			return $this->hasMany('emutoday\Bugz', 'user_id');
-		}
+        public function bugztracked(){
+            return $this->hasMany('emutoday\Bugz', 'user_id');
+        }
 
 
 
-		// public function avatarImgUrl()
-		// {
-		// 	$mfile = $this->belongsToMany('emutoday\Mediafile')->first();
-		// 	//dd($this->mediaFiles()->first());
-		// 	 return $mfile->path . $mfile->name .'.'.$mfile->ext;
-		// }
+        // public function avatarImgUrl()
+        // {
+        // 	$mfile = $this->belongsToMany('emutoday\Mediafile')->first();
+        // 	//dd($this->mediaFiles()->first());
+        // 	 return $mfile->path . $mfile->name .'.'.$mfile->ext;
+        // }
 
 
 }
