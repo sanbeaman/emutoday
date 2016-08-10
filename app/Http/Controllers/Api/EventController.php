@@ -218,7 +218,7 @@ class EventController extends ApiController
          if($validation->passes())
          {
            $event = new Event;
-             $event->author_id       	= $request->get('author_id');
+             $event->user_id       	= $request->get('user_id');
            $event->title           	= $request->get('title');
            $event->short_title     	= $request->get('short_title');
             // $templocation = $request->get('location');serialize($templocation);
@@ -319,7 +319,7 @@ class EventController extends ApiController
                 // if($validation->passes())
                 // {
                 //   $event = new Event;
-                //   $event->author_id       = auth()->user()->id;
+            
                 //   $event->title           = $request->get('title');
                 //   $event->short_title     = $request->get('short_title');
                 //   $event->location        = $request->get('location');

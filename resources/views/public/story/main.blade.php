@@ -31,16 +31,16 @@
             <div id="story-content-edit">
               {!! $story->content !!}
             </div>
-            <div class="story-author">{{ $story->author->name }}</div>
-            <p class="news-contacts">Contact {{ $story->author->email }}</p>
+            <div class="story-author">{{ $story->user->name }}</div>
+            <p class="news-contacts">Contact {{ $story->user->email }}</p>
           </div>
           <!-- Page Side Bar Column -->
           <div class="large-3 medium-4 small-12 columns featurepadding">
             @include('public.layouts.components.sideblock', ['sidetitle' => 'Featured Stories','storytype'=> 'story', 'sideitems' => $sideStoryBlurbs])
-						@include('public.layouts.components.sideblock', ['sidetitle' => "<span class='truemu'>EMU</span> student profiles",'storytype'=> 'student', 'sideitems' => $sideStudentBlurbs])
+                        @include('public.layouts.components.sideblock', ['sidetitle' => "<span class='truemu'>EMU</span> student profiles",'storytype'=> 'student', 'sideitems' => $sideStudentBlurbs])
 
 
-					</div>
+                    </div>
 
 
         </div>

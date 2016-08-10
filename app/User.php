@@ -37,7 +37,7 @@ class User extends Authenticatable
         }
         public function storys()
         {
-            return $this->hasMany('emutoday\Story', 'author_id');
+            return $this->hasMany('emutoday\Story', 'user_id');
         }
 
         public function mediaFiles()
@@ -47,12 +47,12 @@ class User extends Authenticatable
 
         public function announcements()
         {
-            return $this->hasMany('emutoday\Announcement', 'author_id');
+            return $this->hasMany('emutoday\Announcement', 'user_id');
         }
 
 
         public function events() {
-      return $this->hasMany('emutoday\Event', 'author_id');
+      return $this->hasMany('emutoday\Event', 'user_id');
     }
         public function bugztracked(){
             return $this->hasMany('emutoday\Bugz', 'user_id');

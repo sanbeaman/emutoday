@@ -24,7 +24,7 @@ class Event extends Model
    * [$fillable description]
    * @var [type]
    */
-  protected $fillable = ['author_id', 'title', 'short_title', 'location', 'start_date', 'start_time', 'end_date', 'end_time' ,'all_day', 'no_end_time', 'description', 'building','room'];
+  protected $fillable = ['user_id', 'title', 'short_title', 'location', 'start_date', 'start_time', 'end_date', 'end_time' ,'all_day', 'no_end_time', 'description', 'building','room'];
 
 /**
  * [$dates description]
@@ -51,7 +51,7 @@ class Event extends Model
                   'mba' =>  'boolean'
     ];
 
-    
+
     public function mediaFile(){
          return $this->belongsTo('emutoday\Mediafile', 'mediafile_id');
     }

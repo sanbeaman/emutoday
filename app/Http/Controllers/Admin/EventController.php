@@ -56,7 +56,7 @@ class EventController extends Controller
     public function store(Requests\StoreEventRequest $request)
     {
       $data = [
-        'author_id' => auth()->user()->id,
+        'user_id' => auth()->user()->id,
         'title' => $request->title,
         'short_title' => $request->short_title,
         'location' => $request->location,

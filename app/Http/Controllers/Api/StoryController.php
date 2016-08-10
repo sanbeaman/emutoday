@@ -40,7 +40,7 @@ class StoryController extends ApiController
 
                $user = \Auth::user();
 
-               $storys = Story::where('author_id', $user->id)->get();
+               $storys = Story::where('user_id', $user->id)->get();
                // $storys = Story::all();
 
                $fractal = new Manager();
@@ -51,7 +51,7 @@ class StoryController extends ApiController
            } else {
 
 
-                   dd('shit');
+                   dd('oops');
 
            }
            }
@@ -69,7 +69,7 @@ class StoryController extends ApiController
             // dd($user->roles);
             if ($user->hasRole('contributor_1')){
                 // dd($user->id);
-                $storys = $user->storys()->get();// Story::where('author_id',$user->id)->get();
+                $storys = $user->storys()->get();
             } else {
                 $storys  = Story::get();
             }
@@ -95,7 +95,7 @@ class StoryController extends ApiController
             // dd($user->roles);
             if ($user->hasRole('contributor_1')){
                 // dd($user->id);
-                $storys = $user->storys()->get();// Story::where('author_id',$user->id)->get();
+                $storys = $user->storys()->get();
             } else {
                 $storys  = Story::get();
             }
@@ -121,13 +121,13 @@ class StoryController extends ApiController
             if ($user->hasRole('contributor_1')){
                 // dd($user->id);
                 if($stype == 'all'){
-                    $storys = $user->storys()->get();// Story::where('author_id',$user->id)->get();
+                    $storys = $user->storys()->get();
                 } else {
-                    $storys = $user->storys()->where('story_type', $stype)->get();// Story::where('author_id',$user->id)->get();
+                    $storys = $user->storys()->where('story_type', $stype)->get();
                 }
             } else {
                 if($stype == 'all'){
-                    $storys = Story::get();// Story::where('author_id',$user->id)->get();
+                    $storys = Story::get();
                 } else {
                     $storys  = Story::where('story_type', $stype)->get();
                 }
@@ -207,7 +207,6 @@ class StoryController extends ApiController
      if($validation->passes())
     {
         $story = new Story;
-        $story->author_id       	= $request->get('author_id');
         $story->title           	= $request->get('title');
         $story->slug           	= $request->get('slug');
         $story->subtitle           	= $request->get('subtitle');
@@ -305,13 +304,14 @@ class StoryController extends ApiController
       if($validation->passes())
      {
          $story = new Story;
-         $story->author_id       	= $request->get('author_id');
+         $story->user_id       	= $request->get('user_id');
          $story->title           	= $request->get('title');
          $story->slug           	= $request->get('slug');
          $story->subtitle           = $request->get('subtitle');
          $story->teaser           	= $request->get('teaser');
          $story->story_type         = $request->get('type');
-         $story->author_info        = $request->get('author_info');
+         $story->author_id        = $request->get('author_id',0);
+         $story->author_info        = $request->get('author_info', null);
          $story->content     	    = $request->get('content');
          $story->is_approved     	= $request->get('is_approved', 0);
 

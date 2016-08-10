@@ -55,11 +55,11 @@ class EventController extends Controller
                 // }])->get();
 
                 $approveditems = $this->event->where([
-                    ['author_id', $user->id],
+                    ['user_id', $user->id],
                     ['is_approved',1]
                     ])->get();
                     $submitteditems = $this->event->where([
-                        ['author_id', $user->id],
+                        ['user_id', $user->id],
                         ['is_approved',0]
                         ])->get();
 
@@ -122,11 +122,11 @@ class EventController extends Controller
 
 
             $approveditems = $this->event->where([
-                ['author_id', $user->id],
+                ['user_id', $user->id],
                 ['is_approved',1]
                 ])->get();
                 $submitteditems = $this->event->where([
-                    ['author_id', $user->id],
+                    ['user_id', $user->id],
                     ['is_approved',0]
                     ])->get();
 

@@ -47,7 +47,7 @@ class BlogController extends Controller
     public function store(Requests\StorePostRequest $request)
     {
         $this->posts->create(
-        ['author_id' => auth()->user()->id] + $request->only('title', 'slug', 'published_at', 'body', 'excerpt')
+        ['XXXXxxxauthor_id' => auth()->user()->id] + $request->only('title', 'slug', 'published_at', 'body', 'excerpt')
         );
 
         return redirect(route('backend.blog.index'))->with('status', 'Post has been created.');

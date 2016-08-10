@@ -25,10 +25,7 @@ class FractalEventTransformerModel extends Fractal\TransformerAbstract
             'end_date'   => is_null($event->end_date) ?'No End Date': $event->end_date->toDateString(),
             'canceled' => $event->is_canceled,
             'eventimage' => ($event->mediafile_id > 0)?$event->mediaFile->filename: null
-                    // 'author_id'  => $event->author_id,
-                    // 'author_name'  => $event->author->full_name,
-                    // 'author_phone'  => $event->author->phone,
-                    // 'author_email'  => $event->author->email
+                    
 
         ];
     }

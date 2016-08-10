@@ -53,7 +53,7 @@ class StoryController extends Controller
     //     $storys =   $this->story->newQuery();
     //         if ($user->hasRole('contributor_1'))
     //         {
-    //             $storys = $storys->where('author_id', $user->id)->get();
+    //
     //               return view('admin.story.role.index', compact('storys'));
     //         } else {
     //             $stype = $request->get('stype');
@@ -148,8 +148,10 @@ class StoryController extends Controller
             $stypes = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
             // return view('admin.story.create', compact('story', 'stypes'));
         }
+        $user = \Auth::user();
         JavaScript::put([
-            'storytype' => $stype
+            'storytype' => $stype,
+            'crntuser' => $user
         ]);
 
         return view('admin.story.form', compact('story', 'stypes','stypelist'));
@@ -206,6 +208,7 @@ class StoryController extends Controller
             }
 
             JavaScript::put([
+                    'cuser' => $user,
                     'stypes' => $stypes,
                     'storytype' => $stype
             ]);
@@ -264,9 +267,8 @@ class StoryController extends Controller
         // $pubEndDate = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
 
         $story = $this->story->create(
-        // ['author_id' => auth()->user()->id] + ['story_type' => $request->input('story_type') ] +  $request->only('title', 'slug', 'subtitle', 'published_at', 'teaser','content')
 
-         ['author_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'teaser','content', 'external_link', 'story_type') + ['start_date' => $pubStartDate] + ['end_date' => $pubEndDate ]
+         ['user_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'teaser','content', 'external_link', 'story_type') + ['start_date' => $pubStartDate] + ['end_date' => $pubEndDate ]
 
         );
                 $storyGroup = $story->storyType->group;

@@ -439,8 +439,7 @@ class EventsController extends ApiController
         // if($validation->passes())
         // {
         //   $event = new Event;
-        //   $event->author_id       = auth()->user()->id;
-        //   $event->title           = $request->get('title');
+    
         //   $event->short_title     = $request->get('short_title');
         //   $event->location        = $request->get('location');
         //   $event->start_date      = \Carbon\Carbon::parse($request->get(start_date));

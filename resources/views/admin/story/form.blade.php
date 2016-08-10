@@ -45,7 +45,7 @@
                             </div>
                         </div> 	<!-- /.box-header -->
                     <div class="box-body">
-                        <story-form authorid="{{$currentUser->id}}" recordexists="{{$story->exists ? true: false}}" inrecord="{{$story->exists ? $storydata: null}}" editid="{{$story->exists ? $story->id : null }}">
+                        <story-form :cuser="{{$currentUser}}" recordexists="{{$story->exists ? true: false}}" inrecord="{{$story->exists ? $storydata: null}}" editid="{{$story->exists ? $story->id : null }}">
                             <input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
                         </story-form>
                   </div><!-- /.box-body -->

@@ -25,33 +25,33 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
-			$user = auth()->user();
-			$announcements = $this->announcement->newQuery();
-			if ($user->hasRole('contributor_1'))
-			{
-				$announcements = $announcements->where('author_id', $user->id)->get();
-				return view('admin.announcement.role.index', compact('announcements'));
-			} else {
+            $user = auth()->user();
+            $announcements = $this->announcement->newQuery();
+            if ($user->hasRole('contributor_1'))
+            {
+                $announcements = $announcements->where('user_id', $user->id)->get();
+                return view('admin.announcement.role.index', compact('announcements'));
+            } else {
 
       $announcements = $this->announcement->get();
 
-			// $announcements->toJson();
+            // $announcements->toJson();
       return view('admin.announcement.index', compact('announcements'));
-			}
+            }
     }
 
-			public function appload() {
-				  $announcements = $this->announcement->first();
+            public function appload() {
+                  $announcements = $this->announcement->first();
 
-					\JavaScript::put([
-							'records' => $announcements
-					]);
-					// $announcements->toJson();
-				//  $announcements->toArray();
-					// $announcements->toJson(JSON_HEX_QUOT);
+                    \JavaScript::put([
+                            'records' => $announcements
+                    ]);
+                    // $announcements->toJson();
+                //  $announcements->toArray();
+                    // $announcements->toJson(JSON_HEX_QUOT);
 
-					return view('admin.announcement.app', compact('announcements'));
-			}
+                    return view('admin.announcement.app', compact('announcements'));
+            }
     /**
      * Show the form for creating a new resource.
      *
@@ -71,14 +71,14 @@ class AnnouncementController extends Controller
     public function store(Request $request)
     {
       $data = [
-        'author_id' => auth()->user()->id,
+        'user_id' => auth()->user()->id,
         'title' => $request->title,
         'announcement' => $request->announcement,
-				'submission_date' => \Carbon\Carbon::now(),
+                'submission_date' => \Carbon\Carbon::now(),
         'start_date' => \Carbon\Carbon::parse($request->start_date),
         'end_date' => \Carbon\Carbon::parse($request->end_date),
         'is_approved' => $request->is_approved,
-				'priority' => $request->priority
+                'priority' => $request->priority
     ];
       $announcement = $this->announcement->create($data);
       flash()->success('Announcement has been created.');
@@ -114,9 +114,9 @@ class AnnouncementController extends Controller
     public function edit($id)
     {
       $announcement = $this->announcement->findOrFail($id);
-			if($announcement->submission_date == '0000-00-00' ){
-				$announcement->submission_date = \Carbon\Carbon::parse($announcement->created_at);
-			}
+            if($announcement->submission_date == '0000-00-00' ){
+                $announcement->submission_date = \Carbon\Carbon::parse($announcement->created_at);
+            }
       return view('admin.announcement.form', compact('announcement'));
     }
 
@@ -137,12 +137,12 @@ class AnnouncementController extends Controller
       $announcement->start_date = \Carbon\Carbon::parse($request->start_date);
       $announcement->end_date = \Carbon\Carbon::parse($request->end_date);
       $announcement->is_promoted = $request->is_promoted;
-			$announcement->priority = $request->priority;
-			if ($announcement->is_approved == 0 && $request->is_approved == 1 ){
-				$announcement->is_approved  = $request->is_approved;
-				$announcement->approved_date = \Carbon\Carbon::now();
-			}
-  		$announcement->archieved = $request->archieved;
+            $announcement->priority = $request->priority;
+            if ($announcement->is_approved == 0 && $request->is_approved == 1 ){
+                $announcement->is_approved  = $request->is_approved;
+                $announcement->approved_date = \Carbon\Carbon::now();
+            }
+          $announcement->archieved = $request->archieved;
       $announcement->save();
 
       //$story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','story_type'))->save();
@@ -150,19 +150,19 @@ class AnnouncementController extends Controller
       return redirect(route('admin.announcement.edit', $announcement->id));
       //return redirect(route('admin.story.edit', $story->id))->with('status', 'Story has been updated.');
     }
-		/**
-		 * Remove the specified resource from storage.
-		 *
-		 * @param  int  $id
-		 * @return \Illuminate\Http\Response
-		 */
-		public function delete(Request $request)
-		{
-			$announcement = $this->announcement->findOrFail($request->get('id'));
-			$announcement->delete();
-			flash()->warning('Announcement has been deleted.');
-			return redirect(route('admin.announcement.index'));//->with('status', 'Story has been deleted.');
-		}
+        /**
+         * Remove the specified resource from storage.
+         *
+         * @param  int  $id
+         * @return \Illuminate\Http\Response
+         */
+        public function delete(Request $request)
+        {
+            $announcement = $this->announcement->findOrFail($request->get('id'));
+            $announcement->delete();
+            flash()->warning('Announcement has been deleted.');
+            return redirect(route('admin.announcement.index'));//->with('status', 'Story has been deleted.');
+        }
     /**
      * Remove the specified resource from storage.
      *

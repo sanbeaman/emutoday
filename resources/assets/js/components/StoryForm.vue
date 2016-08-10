@@ -4,8 +4,6 @@
     <!-- <slot name="author_id" v-model="newevent.author_id"></slot> -->
     <div class="row">
         <div class="col-md-12">
-
-
             <div v-show="formMessage.isOk"  class="callout callout-success">
               <h5>{{formMessage.msg}}</h5>
                 </div>
@@ -34,20 +32,15 @@
             <div class="form-group">
                 <label>Content <i class="fi-star reqstar"></i></label>
                 <p class="help-text" id="content-helptext">Enter the story content</p>
-                <textarea v-if="content"  id="content" name="content" v-ckrte="content" :content.sync="content" :fresh="isFresh"></textarea>
+                <textarea v-if="hasContent" id="content" name="content" v-ckrte="content" :content="content" :fresh="isFresh"></textarea>
                 <p v-if="formErrors.content" class="help-text invalid">Need Content!</p>
             </div>
-            <div class="form-group author-display">
-            <div class="author-name">{{record.author.first_name}} {{record.author.last_name}}</div>
-            <div class="author-info">Contact {{record.author.first_name}} {{record.author.last_name}}, {{record.author.email}}, {{record.author.phone}}</div>
+            <div class="form-group user-display">
+            <div class="user-name">{{currentUser.first_name}} {{currentUser.last_name}}</div>
+            <div class="user-info">Contact {{currentUser.first_name}} {{currentUser.last_name}}, {{currentUser.email}}, {{currentUser.phone}}</div>
             </div><!-- /.frm-group -->
 
-            <div class="form-group ">
-                <label>Author Info</label>
-                <p class="help-text" id="author-info-helptext">Visibible in some cases</p>
-                <input v-model="record.subtitle" v-bind:class="[formErrors.author_info ? 'invalid-input' : '']" name="author-info" type="text">
-                <p v-if="formErrors.subtitle" class="help-text invalid"></p>
-            </div>
+
         </div><!-- /.small-12 columns -->
     </div><!-- /.row -->
     <div class="row">
@@ -70,7 +63,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="form-group">
-                <button v-on:click="submitForm" type="submit" v-bind:class="btnPrimary">Save Story</button>
+                <button v-on:click="submitForm" type="submit" class="btn btn-primary">{{submitBtnLabel}}</button>
             </div>
         </div><!-- /.medium-12 column -->
     </div>
@@ -119,10 +112,6 @@
         font-size: .9rem;
     }
 
-
-
-
-
     fieldset label.radiobtns  {
         display: inline;
         margin: 4px;
@@ -161,7 +150,7 @@ import { getMessage, getRecordState } from '../vuex/getters'
 // import flatpickr from 'flatpickr';
 module.exports  = {
                 props:{
-                    authorid: {default : '0'},
+                    cuser: {default: {}},
                     recordexists: {default: false},
                     editid: {default: ''},
                     inrecord: {default: {}}
@@ -179,66 +168,19 @@ module.exports  = {
                         updateRecord: ({dispatch}, value) => {
                             dispatch('RECORD_STATE', value)
                         },
-
-
                         increment:incrementCounter
                     }
                 },
-                computed: {
-                    recordContent: function() {
-                        return this.record.content
-                    },
 
-                    hasLocalRecordChanged: function() {
-                        var ckval = false
-                        if (this.inrecord.title !== this.record.title){
-                                ckval = true
-                        }
-
-                        if (this.inrecord.content !== this.content ) {
-                                ckval = true
-                        }
-
-                        if (ckval) {
-                            this.updateRecord('edit')
-
-                        }
-                        return ckval
-                    },
-
-                thisRecordState: {
-                    get () {
-                        return this.recordState
-                    },
-                    set (val) {
-                        this.updateRecord(val)
-                    }
-                },
-                    thisMessage: {
-                        get () {
-                            return this.message
-                        },
-                        set (val) {
-                            this.updateMessage(val)
-                        }
-                    },
-                    recordSlug: function(){
-                        if(this.record.title){
-                            return  this.record.title.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '')
-
-                        }
-                    },
-                    hasStartDate: function () {
-                        if (this.record.start_date === undefined || this.record.start_date == '') {
-                            return false
-                        } else {
-                            return true
-                        }
-
-                    }
-                },
               data: function() {
                 return {
+                    currentUser: {
+                        last_name: this.cuser.last_name,
+                        first_name: this.cuser.first_name,
+                        email: this.cuser.email,
+                        phone: this.cuser.phone
+                    },
+                    hasContent: false,
                     isFresh: true,
                     thisRecordState: '',
                     thisMessage: {},
@@ -273,6 +215,63 @@ module.exports  = {
                   formErrors : {}
                 }
               },
+              computed: {
+                  submitBtnLabel: function() {
+                      return (this.recordexists)? 'Update Story' : 'Save Story';
+                  },
+                  recordContent: function() {
+                      return this.record.content
+                  },
+
+
+                  hasLocalRecordChanged: function() {
+                      var ckval = false
+                      if (this.inrecord.title !== this.record.title){
+                              ckval = true
+                      }
+
+                      if (this.inrecord.content !== this.content ) {
+                              ckval = true
+                      }
+
+                      if (ckval) {
+                          this.updateRecord('edit')
+
+                      }
+                      return ckval
+                  },
+
+              thisRecordState: {
+                  get () {
+                      return this.recordState
+                  },
+                  set (val) {
+                      this.updateRecord(val)
+                  }
+              },
+                  thisMessage: {
+                      get () {
+                          return this.message
+                      },
+                      set (val) {
+                          this.updateMessage(val)
+                      }
+                  },
+                  recordSlug: function(){
+                      if(this.record.title){
+                          return  this.record.title.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '')
+
+                      }
+                  },
+                  hasStartDate: function () {
+                      if (this.record.start_date === undefined || this.record.start_date == '') {
+                          return false
+                      } else {
+                          return true
+                      }
+
+                  }
+              },
               watch: {
                 //   'recordState': function(val,oldVal) {
                 //       console.log('new: %s, old: %s', val, oldVal)
@@ -292,15 +291,23 @@ module.exports  = {
                     this.currentDate = moment();
                     console.log('this.currentDate=' + this.currentDate)
                     this.recordState = 'created';
+                    console.log('this.cuser==='+ this.cuser + this.$data)
 
+                    // this.set(currentUser = this.cuser;
                 },
                 ready() {
                     this.recordState = 'ready';
+
+
 
                     if (this.recordexists){
                         console.log('inrecord='+ this.inrecord)
                         //this.parseCurrentRecord();
                          this.fetchCurrentRecord();
+                    } else {
+                        this.hasContent = true;
+                        // this.content = "Enter Story Content";
+                        this.fdate = this.currentDate;
                     }
                 },
 
@@ -356,9 +363,12 @@ module.exports  = {
                                 }).bind(this);
                     },
                     checkOverData: function() {
-                        console.log('this.record'+ this.record.id)
-                        this.content = this.record.content;
-                        this.fdate = this.record.start_date;
+                            this.hasContent = true;
+                            console.log('this.record'+ this.record.id)
+                            this.content = this.record.content;
+                            this.fdate = this.record.start_date;
+
+
                     //    this.addDatePicker();
                     },
                     addDatePicker: function() {
@@ -384,7 +394,7 @@ module.exports  = {
                   // this.newevent.start_date = this.sdate;
                   // this.newevent.end_date = this.edate;
                   // this.newevent.reg_deadline = this.rdate;
-                  this.record.author_id = this.authorid;
+                  this.record.user_id = this.userid;
                   this.record.content = this.content;
                   this.record.slug = this.recordSlug;
                   this.record.start_date = this.fdate;
