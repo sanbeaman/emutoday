@@ -18101,7 +18101,7 @@ exports.default = {
         previewLink: function previewLink() {
             return '/preview/' + this.rte + '/' + this.thisRecordId;
         },
-        linkLink: function linkLink() {
+        listLink: function listLink() {
             return '/admin/story/' + this.rte + '/';
         },
         createNewLink: function createNewLink() {

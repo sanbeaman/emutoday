@@ -99,7 +99,7 @@ export default  {
         previewLink:function() {
             return '/preview/' + this.rte +  '/' + this.thisRecordId;
         },
-        linkLink:function() {
+        listLink:function() {
             return '/admin/story/' + this.rte +  '/'
         },
         createNewLink:function() {
