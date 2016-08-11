@@ -26,7 +26,7 @@
 
         <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/app"><i class="fa fa-rocket"></i> <span>App</span></a></li>
         @endcan
-        @can('story_approve_own', $currentUser)
+        @can('story_approve', $currentUser)
 
         <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/queue"><i class="fa fa-rocket"></i> <span>Queue</span></a></li>
         @endcan

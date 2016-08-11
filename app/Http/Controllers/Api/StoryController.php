@@ -101,7 +101,7 @@ class StoryController extends ApiController
             }
             $fractal = new Manager();
             // $storys = Story::all();
-            $resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryExtraTransformer);
+            $resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformerModel);
             // Turn all of that into a Array string
             return $fractal->createData($resource)->toArray();
         } else {

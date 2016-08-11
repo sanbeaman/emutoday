@@ -5,7 +5,7 @@
             <div id="items-all">
                 <story-pod
                     pid="items-all"
-                    v-for="item in itemsUnapproved "
+                    v-for="item in itemsUnapproved | orderBy 'start_date' 1"
                     @item-change="moveToApproved"
 
                     :item="item"
@@ -19,7 +19,7 @@
         <div id="items-selected">
             <story-pod
                 pid="items-selected"
-                v-for="item in itemsApproved"
+                v-for="item in itemsApproved | orderBy 'start_date' 1 "
                 @item-change="moveToApproved"
 
                 :item="item"
@@ -29,11 +29,11 @@
         </div>
     </div><!-- /.col-md-4 -->
     <div class="col-md-4">
-        <h3>Live</h3>
+        <h3>Live <small>Approved and StartDate is past</small></h3>
         <div id="items-selected">
             <story-pod
                 pid="items-live"
-                v-for="item in itemsLive"
+                v-for="item in itemsLive | orderBy 'start_date' 1"
                 @item-change="moveToApproved"
 
                 :item="item"
@@ -56,6 +56,7 @@
 }
 </style>
 <script>
+var moment = require('moment')
 import StoryPod from './StoryPod.vue'
 // import EventViewContent from './EventViewContent.vue'
 export default  {
@@ -65,7 +66,9 @@ export default  {
     props: [
         'allrecords'
     ],
-
+    created(){
+        // this.currentDate = moment().format();
+    },
 
     ready() {
         // this.resource = this.$resource('/api/announcement/:id');
@@ -75,6 +78,7 @@ export default  {
     },
     data: function() {
         return {
+            currentDate: moment(),
             allitems: [],
             items: [],
             xitems: []
@@ -103,7 +107,7 @@ export default  {
 
             // this.xitems.pop(changeditem);
             console.log('moveToApproved'+ changeditem.priority);
-            changeditem.approved = 1;
+            changeditem.is_approved = 1;
             changeditem.priority = changeditem.priority;
             this.updateRecord(changeditem)
         },
@@ -111,28 +115,59 @@ export default  {
 
             // this.xitems.pop(changeditem);
             console.log('moveToUnApproved'+ changeditem)
-            changeditem.approved = 0;
+            changeditem.is_approved = 0;
 
             this.updateRecord(changeditem)
         },
         filterItemsApproved: function(items) {
             return items.filter(function(item) {
-                return item.approved === 1
+                return moment(item.start_date).isAfter(moment()) && item.is_approved === 1
             });
         },
         filterItemsUnapproved: function(items) {
             return items.filter(function(item) {
-                return item.approved === 0
+                return item.is_approved === 0
             });
         },
         filterItemsLive: function(items) {
             return items.filter(function(item) {
-                return item.live === 1
+                return moment(item.start_date).isSameOrBefore(moment()) && item.is_approved === 1;  // true
+
+                // return moment(item.start_date).isAfter(moment())
+                // return item.live === 1
             });
         },
         movedItemIndex: function(mid){
             return this.xitems.findIndex(item => item.id == mid)
         },
+        updateRecord: function(item){
+            var currentRecordId =  item.id;
+            item.start_date =  moment(item.start_date, "MM-DD-YYYY").format("YYYY-MM-DD")
+
+            var currentRecord = item;
+            this.$http.patch('/api/story/' + item.id , item , {
+                method: 'PATCH'
+            } )
+            .then((response) => {
+                console.log('good?'+ response)
+
+
+
+                //var movedIndex = this.movedItemIndex(movedid);
+                            // this.xitems.pop(movedRecord);
+                        // if (movedRecord.approved == 1) {
+                        //         this.xitems.splice(movedIndex, 1);
+                        //      this.items.push(movedRecord);
+                        //  } else {
+                        //      this.items.splice(movedIndex, 1);
+                        //     this.xitems.push(movedRecord);
+                        //  }
+
+                //console.log('movedIndex==='+ movedIndex)
+            }, (response) => {
+                console.log('bad?'+ response)
+            });
+    },
         // updateRecord: function(item){
         //     var movedid =  item.id;
         //     var movedRecord = item;
