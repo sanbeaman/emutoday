@@ -18051,14 +18051,15 @@ exports.default = {
     vuex: {
         getters: {
             // note that you're passing the function itself, and not the value 'getCount()'
-            counterValue: _getters.getCount,
-            thisMessage: _getters.getMessage,
+            // counterValue: getCount,
+            thisRecordId: _getters.getRecordId,
+            thisRecordIsDirty: _getters.getRecordIsDirty,
             thisRecordState: _getters.getRecordState
 
         }
     },
 
-    props: ['isnotdirty', 'rte', 'formView', 'currentUser', 'role', 'recordId'],
+    props: ['viewtype', 'recordId', 'currentUser', 'role', 'rte'],
     ready: function ready() {
         console.log('BoxTools');
     },
@@ -18067,33 +18068,44 @@ exports.default = {
         return {};
     },
     computed: {
-        isDirty: function isDirty() {
-            if (this.thisRecordState == 'dirty') {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        canCreate: function canCreate() {
-            if (this.formView === 'create') {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        canListView: function canListView() {
-            if (this.formView != 'list') {
+        canSeeListView: function canSeeListView() {
+            if (this.viewType == 'list') {
                 return false;
             } else {
                 return true;
             }
         },
-        canPreview: function canPreview() {
-            if (this.formView === 'edit') {
+        canSeePreviewView: function canSeePreviewView() {
+            if (this.viewType == 'list') {
                 return false;
             } else {
                 return true;
             }
+        },
+        disabledCreate: function disabledCreate() {
+            if (this.thisRecordState == 'new') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        disabledPreview: function disabledPreview() {
+            if (this.thisRecordIsDirty) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+
+        previewLink: function previewLink() {
+            return '/preview/' + this.rte + '/' + this.thisRecordId;
+        },
+        linkLink: function linkLink() {
+            return '/admin/story/' + this.rte + '/';
+        },
+        createNewLink: function createNewLink() {
+            return '/admin/story/' + this.rte + '/setup';
         }
     },
 
@@ -18102,7 +18114,9 @@ exports.default = {
         // 	return
         // },
         viewPreview: function viewPreview(evt) {
-            console.log('this.rte=' + this.rte);
+            var vurl = '/preview/' + this.rte + '/' + this.thisRecordId;
+            console.log(vurl);
+            document.location = vurl;
         },
         viewList: function viewList(evt) {
             var url = '/admin/story/' + this.rte + '/';
@@ -18110,6 +18124,7 @@ exports.default = {
             document.location = url;
         },
         createNew: function createNew(evt) {
+            var url = '/admin/story/' + this.rte + '/setup';
             console.log('this.rte=' + this.rte);
         }
 
@@ -18120,7 +18135,7 @@ exports.default = {
     events: {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"toolbar-row\">\n    <div class=\"toolbar-block\">\n        <span v-if=\"isDirty\" class=\"label label-danger\">Need to Save before leaving</span>\n\n    </div><!-- /.tool-block -->\n    <div class=\"toolbar-block pull-right\">\n        <div class=\"btn-toolbar btn-group-sm \">\n\n            <button id=\"btn-preview-{{id}}\" @click=\"viewPreview\" :disabled=\"canPreview\" class=\"btn bg-orange btn-sm\"><i class=\"fa fa-eye\"></i></button>\n            <button id=\"btn-new-{{id}}\" @click=\"createNew\" :disabled=\"canCreate\" class=\"btn bg-orange btn-sm\"><i class=\"fa fa-plus-square\"></i></button>\n            <button id=\"btn-list-{{id}}\" @click=\"viewList\" :disabled=\"canListView\" class=\"btn bg-orange btn-sm\"><i class=\"fa fa-list-alt\"></i></button>\n        </div><!-- /.btn-toolbar -->\n    </div><!-- /.toolbar-block -->\n</div><!-- /.center-text -->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"toolbar-row\">\n    <div class=\"toolbar-block\">\n        <!-- theRecordID:{{thisRecordId}} theRecordState:{{thisRecordState}} isDirty:{{thisRecordIsDirty}} -->\n    </div><!-- /.tool-block -->\n    <div class=\"toolbar-block pull-right\">\n        <div class=\"btn-toolbar btn-group-sm \">\n\n            <a id=\"btn-preview-{{id}}\" :href=\"previewLink\" :disabled=\"thisRecordIsDirty\" class=\"btn bg-orange btn-sm\"><i class=\"fa fa-eye\"></i></a>\n            <a id=\"btn-new-{{id}}\" :href=\"createNewLink\" :disabled=\"thisRecordIsDirty\" class=\"btn bg-orange btn-sm\"><i class=\"fa fa-plus-square\"></i></a>\n            <a id=\"btn-list-{{id}}\" :href=\"listLink\" :disabled=\"thisRecordIsDirty\" class=\"btn bg-orange btn-sm\"><i class=\"fa fa-list-alt\"></i></a>\n        </div><!-- /.btn-toolbar -->\n    </div><!-- /.toolbar-block -->\n</div><!-- /.center-text -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -18137,7 +18152,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"../vuex/getters":15,"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":7}],10:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\np[_v-e8a84d76] {\n    margin:0;\n}\nlabel[_v-e8a84d76] {\n    display: block;\n    /*margin-bottom: 1.5em;*/\n}\n\nlabel > span[_v-e8a84d76] {\n    display: inline-block;\n    width: 8em;\n    vertical-align: top;\n}\n.valid-titleField[_v-e8a84d76] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.no-input[_v-e8a84d76] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.invalid-input[_v-e8a84d76] {\n    background-color: rgba(236, 88, 64, 0.1);\n    border: 1px dotted red;\n}\n.invalid[_v-e8a84d76] {\n    color: #ff0000;\n}\n.author-display[_v-e8a84d76] {\n    color: #666;\n    font-size: 16px;\n}\n.author-display .author-name[_v-e8a84d76] {\n\n    font-style: italic;\n}\n.author-display .author-info[_v-e8a84d76] {\n    font-size: .9rem;\n}\n\nfieldset label.radiobtns[_v-e8a84d76]  {\n    display: inline;\n    margin: 4px;\n    padding: 2px;\n}\n\n[type='text'][_v-e8a84d76], [type='password'][_v-e8a84d76], [type='date'][_v-e8a84d76], [type='datetime'][_v-e8a84d76], [type='datetime-local'][_v-e8a84d76], [type='month'][_v-e8a84d76], [type='week'][_v-e8a84d76], [type='email'][_v-e8a84d76], [type='number'][_v-e8a84d76], [type='search'][_v-e8a84d76], [type='tel'][_v-e8a84d76], [type='time'][_v-e8a84d76], [type='url'][_v-e8a84d76], [type='color'][_v-e8a84d76],\ntextarea[_v-e8a84d76] {\n    margin: 0;\n    padding: 0;\n    padding-left: 8px;\n    width: 100%;\n}\n[type='file'][_v-e8a84d76], [type='checkbox'][_v-e8a84d76], [type='radio'][_v-e8a84d76] {\n    margin: 0;\n    margin-left: 8px;\n    padding: 0;\n    padding-left: 2px;\n}\n.reqstar[_v-e8a84d76] {\n    font-size: .5rem;\n    color: #E33100;\n    vertical-align:text-top;\n}\n\nbutton.button-primary[_v-e8a84d76]{\n    margin-top: 1rem;\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\np[_v-e8a84d76] {\n    margin:0;\n}\nlabel[_v-e8a84d76] {\n    display: block;\n    /*margin-bottom: 1.5em;*/\n}\n\nlabel > span[_v-e8a84d76] {\n    display: inline-block;\n    width: 8em;\n    vertical-align: top;\n}\n.valid-titleField[_v-e8a84d76] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.no-input[_v-e8a84d76] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.invalid-input[_v-e8a84d76] {\n    background-color: rgba(236, 88, 64, 0.1);\n    border: 1px dotted red;\n}\n.invalid[_v-e8a84d76] {\n    color: #ff0000;\n}\n.user-display[_v-e8a84d76] {\n    color: #666;\n    font-size: 16px;\n}\n.user-display .user-name[_v-e8a84d76] {\n\n    font-style: italic;\n}\n.user-display .user-info[_v-e8a84d76] {\n    font-size: 14px;\n}\n\nfieldset label.radiobtns[_v-e8a84d76]  {\n    display: inline;\n    margin: 4px;\n    padding: 2px;\n}\n\n[type='text'][_v-e8a84d76], [type='password'][_v-e8a84d76], [type='date'][_v-e8a84d76], [type='datetime'][_v-e8a84d76], [type='datetime-local'][_v-e8a84d76], [type='month'][_v-e8a84d76], [type='week'][_v-e8a84d76], [type='email'][_v-e8a84d76], [type='number'][_v-e8a84d76], [type='search'][_v-e8a84d76], [type='tel'][_v-e8a84d76], [type='time'][_v-e8a84d76], [type='url'][_v-e8a84d76], [type='color'][_v-e8a84d76],\ntextarea[_v-e8a84d76] {\n    margin: 0;\n    padding: 0;\n    padding-left: 8px;\n    width: 100%;\n}\n[type='file'][_v-e8a84d76], [type='checkbox'][_v-e8a84d76], [type='radio'][_v-e8a84d76] {\n    margin: 0;\n    margin-left: 8px;\n    padding: 0;\n    padding-left: 2px;\n}\n.reqstar[_v-e8a84d76] {\n    font-size: .5rem;\n    color: #E33100;\n    vertical-align:text-top;\n}\n\nbutton.button-primary[_v-e8a84d76]{\n    margin-top: 1rem;\n}\n\n.form-group[_v-e8a84d76]{\n    margin-bottom: 5px;\n}\n\n.callout[_v-e8a84d76] {\n    margin-bottom: 8px;\n    padding: 8px 30px 8px 15px;\n}\n.save-author[_v-e8a84d76] {\n\n    vertical-align: bottom;\n}\n")
 'use strict';
 
 var _actions = require('../vuex/actions');
@@ -18153,50 +18168,79 @@ module.exports = {
         cuser: { default: {} },
         recordexists: { default: false },
         editid: { default: '' },
-        inrecord: { default: {} }
+        storytype: ''
     },
     vuex: {
         getters: {
-            message: _getters.getMessage,
-            thisRecordState: _getters.getRecordState
+            thisRecordId: _getters.getRecordId,
+            thisRecordState: _getters.getRecordState,
+            thisRecordIsDirty: _getters.getRecordIsDirty
 
         },
         actions: {
-            updateMessage: function updateMessage(_ref, value) {
-                var dispatch = _ref.dispatch;
-
-                dispatch('UPDATE_MESSAGE', value);
-            },
-            updateRecord: function updateRecord(_ref2, value) {
-                var dispatch = _ref2.dispatch;
-
-                dispatch('RECORD_STATE', value);
-            },
-            increment: _actions.incrementCounter
+            updateRecordId: _actions.updateRecordId,
+            updateRecordState: _actions.updateRecordState,
+            updateRecordIsDirty: _actions.updateRecordIsDirty
+            // updateRecordId: ({ dispatch }, value) => {
+            //     dispatch('RECORD_ID', value)
+            // },
+            // updateRecordState: ({dispatch}, value) => {
+            //     dispatch('RECORD_STATE', value)
+            // },
+            // updateRecordIsDirty: ({dispatch}, value) => {
+            //     dispatch('RECORD_IS_DIRTY', value)
+            // }
         }
     },
 
     data: function data() {
         return {
+            ckfullyloaded: false,
+            currentRecordId: null,
             currentUser: {
+                id: this.cuser.id,
                 last_name: this.cuser.last_name,
                 first_name: this.cuser.first_name,
                 email: this.cuser.email,
                 phone: this.cuser.phone
             },
+            needAuthor: false,
+            author: {
+                id: 0,
+                last_name: '',
+                first_name: '',
+                email: '',
+                phone: ''
+            },
+            authorNew: {
+                id: 0,
+                last_name: 'LastName',
+                first_name: 'FirstName',
+                email: '',
+                phone: ''
+            },
             hasContent: false,
             isFresh: true,
-            thisRecordState: '',
-            thisMessage: {},
-            stateOfrecord: '',
             content: '',
             startdatePicker: null,
             date: {},
             currentDate: {},
             recordState: '',
-            record: {
+            recordOld: {
+                id: '',
+                user_id: '',
                 title: '',
-                content: ''
+                story_type: '',
+                content: '',
+                start_date: ''
+            },
+            record: {
+                id: '',
+                user_id: '',
+                title: '',
+                story_type: '',
+                content: '',
+                start_date: ''
             },
             fdate: null,
             dateOptions: {
@@ -18221,42 +18265,45 @@ module.exports = {
         submitBtnLabel: function submitBtnLabel() {
             return this.recordexists ? 'Update Story' : 'Save Story';
         },
-        recordContent: function recordContent() {
-            return this.record.content;
-        },
-
         hasLocalRecordChanged: function hasLocalRecordChanged() {
             var ckval = false;
-            if (this.inrecord.title !== this.record.title) {
+            if (this.recordOld.title !== this.record.title) {
                 ckval = true;
             }
 
-            if (this.inrecord.content !== this.content) {
+            if (this.recordOld.content !== this.content) {
                 ckval = true;
             }
 
             if (ckval) {
-                this.updateRecord('edit');
+                this.updateRecordIsDirty(true);
             }
             return ckval;
         },
-
-        thisRecordState: {
-            get: function get() {
-                return this.recordState;
-            },
-            set: function set(val) {
-                this.updateRecord(val);
-            }
-        },
-        thisMessage: {
-            get: function get() {
-                return this.message;
-            },
-            set: function set(val) {
-                this.updateMessage(val);
-            }
-        },
+        //       recordId: {
+        //           get () {
+        //               return this.recordId
+        //           },
+        //           set (val) {
+        //               this.updateRecordId(val)
+        //           }
+        //       },
+        //       recordIsDirty: {
+        //           get () {
+        //               return this.recordIsDirty
+        //           },
+        //           set (val) {
+        //               this.updateRecordIsDirty(val)
+        //           }
+        //       },
+        //   recordState: {
+        //       get () {
+        //           return this.recordState
+        //       },
+        //       set (val) {
+        //           this.updateRecordState(val)
+        //       }
+        //   },
         recordSlug: function recordSlug() {
             if (this.record.title) {
                 return this.record.title.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '');
@@ -18282,7 +18329,7 @@ module.exports = {
     },
 
     directives: {
-        ckrte: require('../directives/myrte.js'),
+        ckrte: require('../directives/ckrte.js'),
         flatpickr: require('../directives/flatpickr.js')
     },
     created: function created() {
@@ -18294,43 +18341,73 @@ module.exports = {
         // this.set(currentUser = this.cuser;
     },
     ready: function ready() {
-        this.recordState = 'ready';
-
         if (this.recordexists) {
-            console.log('inrecord=' + this.inrecord);
-            //this.parseCurrentRecord();
+            this.currentRecordId = this.editid;
+            console.log('this.recordId >>>>' + this.currentRecordId);
             this.fetchCurrentRecord();
         } else {
             this.hasContent = true;
-            // this.content = "Enter Story Content";
+            this.record.user_id = this.cuser.id;
+            this.record.story_type = this.storytype;
             this.fdate = this.currentDate;
+            this.record.author_id = 0;
+            this.author = this.currentUser;
+            this.recordState = 'new';
         }
     },
 
 
     methods: {
-        parseCurrentRecord: function parseCurrentRecord(rcd) {
-            //  var json=JSON_decode(this.inrecord);
-            //console.log('JSON_decode= ' + JSON.parse(this.inrecord))
-            var storyjson = this.inrecord;
-            //console.log('JSON_parse= ' + JSON_parse(this.inrecord))
-            this.record = storyjson; //this.inrecord
-            //   this.$set('record', this.inrecord)
-
+        onRefresh: function onRefresh() {
+            this.updateRecordId(this.currentRecordId);
+            this.recordState = 'edit';
+            this.recordIsDirty = false;
+            //   this.updateRecordState('edit');
+            this.recordId = this.currentRecordId;
+            this.recordexists = true;
+            this.fetchCurrentRecord();
         },
+        oldRefresh: function oldRefresh() {
+            this.$set('recordOld', this.record);
+            this.$nextTick(function () {
+                console.log('nextTick');
+            });
+        },
+        changeAuthor: function changeAuthor(evt) {
+            if (this.record.author_id == 0) {
+                this.author = this.authorNew;
+            }
+            this.needAuthor = true;
+        },
+        toggleCallout: function toggleCallout(evt) {
+            this.formMessage.isOk = false;
+        },
+
         onBlur: function onBlur(evt) {
-            if (this.recordState != 'dirty') {
-                this.recordState = 'dirty';
-                this.updateRecord('dirty');
+            if (!this.recordIsDirty) {
+                this.recordIsDirty = true;
+                this.updateRecordIsDirty(true);
             }
             console.log('blur');
         },
-        onContentChange: function onContentChange(evt) {
-            if (this.recordState != 'dirty') {
-                this.recordState = 'dirty';
-                this.updateRecord('dirty');
+        onCalendarChange: function onCalendarChange() {
+            this.checkContentChange();
+            console.log('cal change');
+        },
+        onContentChange: function onContentChange() {
+            if (!this.ckfullyloaded) {
+                this.ckfullyloaded = true;
+            } else {
+                this.checkContentChange();
             }
-            console.log('change');
+            console.log('content change');
+        },
+        checkContentChange: function checkContentChange() {
+            if (!this.recordIsDirty) {
+                this.recordIsDirty = true;
+                this.updateRecordIsDirty(true);
+            }
+            console.log('checkContentChange');
         },
         jsonEquals: function jsonEquals(a, b) {
             return JSON.stringify(a) === JSON.stringify(b);
@@ -18338,7 +18415,7 @@ module.exports = {
         fetchCurrentRecord: function fetchCurrentRecord() {
             var _this = this;
 
-            this.$http.get('/api/story/' + this.editid + '/edit').then(function (response) {
+            this.$http.get('/api/story/' + this.currentRecordId + '/edit').then(function (response) {
                 //response.status;
                 console.log('response.status=' + response.status);
                 console.log('response.ok=' + response.ok);
@@ -18346,6 +18423,7 @@ module.exports = {
                 console.log('response.data=' + response.data);
                 // data = response.data;
                 _this.$set('record', response.data.data);
+                _this.$set('recordOld', response.data.data);
                 // this.record = response.data.data;
                 console.log('this.record= ' + _this.record);
 
@@ -18360,41 +18438,70 @@ module.exports = {
         checkOverData: function checkOverData() {
             this.hasContent = true;
             console.log('this.record' + this.record.id);
+            this.currentRecordId = this.record.id;
             this.content = this.record.content;
-            this.fdate = this.record.start_date;
+            console.log('this.record.start_date=' + this.record.start_date);
 
-            //    this.addDatePicker();
+            this.fdate = this.record.start_date;
+            console.log('this.fdate' + this.fdate);
+            if (this.record.author_id != 0) {
+                this.author = this.record.author;
+            } else {
+                this.author = this.currentUser;
+            }
+            this.recordexists = true;
+
+            this.recordState = "edit";
+            // this.updateRecordState("edit");
+            this.recordIsDirty = false;
+            this.updateRecordId(this.currentRecordId);
+            this.updateRecordIsDirty(false);
         },
-        addDatePicker: function addDatePicker() {
-            var self = this;
-            this.startdatePicker = flatpickr(document.getElementById("start-date"), {
-                minDate: "today",
-                enableTime: false,
-                altFormat: "m-d-Y",
-                altInput: true,
-                altInputClass: "form-control",
-                dateFormat: "Y-m-d",
-                onChange: function onChange(dateObject, dateString) {
-                    self.updateRecord('dirty');
-                    self.record.start_date = dateString;
-                    self.startdatePicker.value = dateString;
-                }
-            });
+
+        saveAuthor: function saveAuthor(e) {
+            var _this2 = this;
+
+            e.preventDefault();
+            var method = this.record.author_id == 0 ? 'post' : 'put';
+            var route = this.record.author_id == 0 ? '/api/author/' : '/api/author/' + this.record.author_id;
+
+            //   this.$http.post('/api/story', this.record)
+            this.$http[method](route, this.author).then(function (response) {
+                //response.status;
+                console.log('response.status=' + response.status);
+                console.log('response.ok=' + response.ok);
+                console.log('response.statusText=' + response.statusText);
+                console.log('response.data=' + response.data.message);
+
+                // this.formMessage.msg = response.data.message;
+                _this2.author = response.data.author;
+                // this.formMessage.isOk = response.ok;
+                _this2.needAuthor = false;
+                //this.onRefresh();
+            }, function (response) {
+                //error callback
+                //this.formErrors =  response.data.error.message;
+            }).bind(this);
         },
         submitForm: function submitForm(e) {
-            var _this2 = this;
+            var _this3 = this;
 
             //  console.log('this.eventform=' + this.eventform.$valid);
             e.preventDefault();
             // this.newevent.start_date = this.sdate;
             // this.newevent.end_date = this.edate;
             // this.newevent.reg_deadline = this.rdate;
-            this.record.user_id = this.userid;
+
+            this.record.user_id = this.currentUser.id;
             this.record.content = this.content;
+            this.record.story_type = this.storytype;
             this.record.slug = this.recordSlug;
             this.record.start_date = this.fdate;
+            //   this.record.start_date =  moment(this.fdate,"MM-DD-YYYY").format("YYYY-MM-DD HH:mm:ss");
+            this.record.author_id = this.author.id;
+
             var method = this.recordexists ? 'put' : 'post';
-            var route = this.recordexists ? '/api/story/' + this.record.id : '/api/story/';
+            var route = this.recordexists ? '/api/story/' + this.currentRecordId : '/api/story/';
 
             //   this.$http.post('/api/story', this.record)
             this.$http[method](route, this.record).then(function (response) {
@@ -18404,12 +18511,14 @@ module.exports = {
                 console.log('response.statusText=' + response.statusText);
                 console.log('response.data=' + response.data.message);
 
-                _this2.formMessage.msg = response.data.message;
-                _this2.formMessage.isOk = response.ok;
-                _this2.updateRecord('ready');
+                _this3.formMessage.msg = response.data.message;
+                _this3.currentRecordId = response.data.record_id;
+                _this3.formMessage.isOk = response.ok;
+
+                _this3.onRefresh();
             }, function (response) {
                 //error callback
-                _this2.formErrors = response.data.error.message;
+                _this3.formErrors = response.data.error.message;
             }).bind(this);
         }
     },
@@ -18463,13 +18572,13 @@ module.exports = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form _v-e8a84d76=\"\">\n    <slot name=\"csrf\" _v-e8a84d76=\"\"></slot>\n    <!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div v-show=\"formMessage.isOk\" class=\"callout callout-success\" _v-e8a84d76=\"\">\n              <h5 _v-e8a84d76=\"\">{{formMessage.msg}}</h5>\n                </div>\n            </div><!-- /.small-12 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Title <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-e8a84d76=\"\">Please enter a title ({{titleChars}} characters left)</p>\n                <input v-model=\"record.title\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-e8a84d76=\"\">\tPlease Include a Title!</p>\n            </div>\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Slug <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"slug-helptext\" _v-e8a84d76=\"\">Automatic Readable link for sharing and social media</p>\n                <input v-model=\"recordSlug\" v-bind:class=\"[formErrors.slug ? 'invalid-input' : '']\" name=\"slug\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.slug\" class=\"help-text invalid\" _v-e8a84d76=\"\">needs slug!</p>\n            </div>\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Subtitle</label>\n                <p class=\"help-text\" id=\"subtitle-helptext\" _v-e8a84d76=\"\">Visibible in some cases</p>\n                <input v-model=\"record.subtitle\" v-bind:class=\"[formErrors.subtitle ? 'invalid-input' : '']\" @blur=\"onBlur\" name=\"subtitle\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.subtitle\" class=\"help-text invalid\" _v-e8a84d76=\"\"></p>\n            </div>\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Content <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"content-helptext\" _v-e8a84d76=\"\">Enter the story content</p>\n                <textarea v-if=\"hasContent\" id=\"content\" name=\"content\" v-ckrte=\"content\" :content=\"content\" :fresh=\"isFresh\" _v-e8a84d76=\"\"></textarea>\n                <p v-if=\"formErrors.content\" class=\"help-text invalid\" _v-e8a84d76=\"\">Need Content!</p>\n            </div>\n            <div class=\"form-group user-display\" _v-e8a84d76=\"\">\n            <div class=\"user-name\" _v-e8a84d76=\"\">{{currentUser.first_name}} {{currentUser.last_name}}</div>\n            <div class=\"user-info\" _v-e8a84d76=\"\">Contact {{currentUser.first_name}} {{currentUser.last_name}}, {{currentUser.email}}, {{currentUser.phone}}</div>\n            </div><!-- /.frm-group -->\n\n\n        </div><!-- /.small-12 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <!-- <div class=\"form-group\">\n                    <label for=\"start-date\">Start Date: <i class=\"fi-star reqstar\"></i></label>\n                    <input v-if=\"record.start_date\" id=\"start-date\" name=\"start-date\" class=\"formControl\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.start_date\" />\n                    <p v-if=\"formErrors.start_date\" class=\"help-text invalid\">Need a Start Date</p>\n                </div> -->\n                <!--form-group -->\n        </div><!-- /.small-6 columns -->\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"start-date\" _v-e8a84d76=\"\">Start Date: <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                     <input v-if=\"fdate\" type=\"text\" :value=\"fdate\" :initval=\"fdate\" v-flatpickr=\"fdate\" _v-e8a84d76=\"\">\n                    <p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-e8a84d76=\"\">Need a Start Date</p>\n                </div><!--form-group -->\n        </div><!-- /.small-6 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <button v-on:click=\"submitForm\" type=\"submit\" class=\"btn btn-primary\" _v-e8a84d76=\"\">{{submitBtnLabel}}</button>\n            </div>\n        </div><!-- /.medium-12 column -->\n    </div>\n</form>\n\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form _v-e8a84d76=\"\">\n    <slot name=\"csrf\" _v-e8a84d76=\"\"></slot>\n    <!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div v-show=\"formMessage.isOk\" class=\"alert alert-success alert-dismissible\" _v-e8a84d76=\"\">\n                <button @click.prevent=\"toggleCallout\" class=\"btn btn-sm close\" _v-e8a84d76=\"\"><i class=\"fa fa-times\" _v-e8a84d76=\"\"></i></button>\n        <h5 _v-e8a84d76=\"\">{{formMessage.msg}}</h5>\n            </div>\n\n        </div><!-- /.small-12 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Title <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-e8a84d76=\"\">Please enter a title</p>\n                <input v-model=\"record.title\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-e8a84d76=\"\">\tPlease Include a Title!</p>\n            </div>\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Slug <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"slug-helptext\" _v-e8a84d76=\"\">Automatic Readable link for sharing and social media</p>\n                <input v-model=\"recordSlug\" v-bind:class=\"[formErrors.slug ? 'invalid-input' : '']\" name=\"slug\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.slug\" class=\"help-text invalid\" _v-e8a84d76=\"\">needs slug!</p>\n            </div>\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Subtitle</label>\n                <p class=\"help-text\" id=\"subtitle-helptext\" _v-e8a84d76=\"\">Visibible in some cases</p>\n                <input v-model=\"record.subtitle\" v-bind:class=\"[formErrors.subtitle ? 'invalid-input' : '']\" @blur=\"onBlur\" name=\"subtitle\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.subtitle\" class=\"help-text invalid\" _v-e8a84d76=\"\"></p>\n            </div>\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Content <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"content-helptext\" _v-e8a84d76=\"\">Enter the story content</p>\n                <textarea v-if=\"hasContent\" id=\"content\" name=\"content\" v-ckrte=\"content\" :content=\"content\" :fresh=\"isFresh\" _v-e8a84d76=\"\"></textarea>\n                <p v-if=\"formErrors.content\" class=\"help-text invalid\" _v-e8a84d76=\"\">Need Content!</p>\n            </div>\n            <div class=\"form-group user-display\" _v-e8a84d76=\"\">\n                <div class=\"user-name\" _v-e8a84d76=\"\">{{author.first_name}} {{author.last_name}}</div>\n                <div class=\"user-info\" _v-e8a84d76=\"\">Contact {{author.first_name}} {{author.last_name}}, {{author.email}}, {{author.phone}}</div>\n            </div><!-- /.frm-group -->\n\n\n        </div><!-- /.small-12 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <a v-if=\"!needAuthor\" @click.prevent=\"changeAuthor\" href=\"#\" class=\"btn btn-primary btn-sm\" _v-e8a84d76=\"\">Change Author</a>\n            <div v-if=\"needAuthor\" class=\"form-inline author\" _v-e8a84d76=\"\">\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-last-name\" _v-e8a84d76=\"\">Last Name</label>\n                    <input v-model=\"author.last_name\" type=\"text\" class=\"form-control input-sm\" id=\"author-last-name\" placeholder=\"Last Name\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-first-name\" _v-e8a84d76=\"\">First Name</label>\n                    <input v-model=\"author.first_name\" type=\"text\" class=\"form-control input-sm\" id=\"author-last-name\" placeholder=\"First Name\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-email\" _v-e8a84d76=\"\">Email</label>\n                    <input v-model=\"author.email\" type=\"email\" class=\"form-control input-sm\" id=\"author-email\" placeholder=\"author@emich.edu\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-phone\" _v-e8a84d76=\"\">Phone</label>\n                    <input v-model=\"author.phone\" type=\"phone\" class=\"form-control input-sm\" id=\"author-phone\" placeholder=\"(313)-555-1212\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group save-author\" _v-e8a84d76=\"\">\n                    <button @click.prevent=\"saveAuthor\" href=\"#\" class=\"btn btn-warning btn-sm\" _v-e8a84d76=\"\">Save Author</button>\n                </div>\n            </div>\n        </div><!-- /.col-md-12 -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label for=\"start-date\" _v-e8a84d76=\"\">Start Date: <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <input v-if=\"fdate\" type=\"text\" :value=\"fdate\" :initval=\"fdate\" v-flatpickr=\"fdate\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-e8a84d76=\"\">Need a Start Date</p>\n            </div><!--form-group -->\n        </div><!-- /.small-6 columns -->\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <div class=\"story-type pull-right\" _v-e8a84d76=\"\">\n\n                </div><!-- /.story-type -->\n            </div><!-- /.form-group -->\n        </div><!-- /.small-6 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <!-- <div class=\"form-group\">\n            RecordID:{{thisRecordId}} thisRecordState:{{thisRecordState}} thisRecordIsDirty:{{thisRecordIsDirty}}\n            </div> -->\n        </div><!-- /.col-md-6-->\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <!-- <div class=\"form-group pull-right\">\n                {{record | json}}\n            </div> -->\n        </div><!-- /.col-md-12 -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <button v-on:click=\"submitForm\" type=\"submit\" class=\"btn btn-primary\" _v-e8a84d76=\"\">{{submitBtnLabel}}</button>\n            </div>\n        </div><!-- /.medium-12 column -->\n    </div>\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\np[_v-e8a84d76] {\n    margin:0;\n}\nlabel[_v-e8a84d76] {\n    display: block;\n    /*margin-bottom: 1.5em;*/\n}\n\nlabel > span[_v-e8a84d76] {\n    display: inline-block;\n    width: 8em;\n    vertical-align: top;\n}\n.valid-titleField[_v-e8a84d76] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.no-input[_v-e8a84d76] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.invalid-input[_v-e8a84d76] {\n    background-color: rgba(236, 88, 64, 0.1);\n    border: 1px dotted red;\n}\n.invalid[_v-e8a84d76] {\n    color: #ff0000;\n}\n.author-display[_v-e8a84d76] {\n    color: #666;\n    font-size: 16px;\n}\n.author-display .author-name[_v-e8a84d76] {\n\n    font-style: italic;\n}\n.author-display .author-info[_v-e8a84d76] {\n    font-size: .9rem;\n}\n\nfieldset label.radiobtns[_v-e8a84d76]  {\n    display: inline;\n    margin: 4px;\n    padding: 2px;\n}\n\n[type='text'][_v-e8a84d76], [type='password'][_v-e8a84d76], [type='date'][_v-e8a84d76], [type='datetime'][_v-e8a84d76], [type='datetime-local'][_v-e8a84d76], [type='month'][_v-e8a84d76], [type='week'][_v-e8a84d76], [type='email'][_v-e8a84d76], [type='number'][_v-e8a84d76], [type='search'][_v-e8a84d76], [type='tel'][_v-e8a84d76], [type='time'][_v-e8a84d76], [type='url'][_v-e8a84d76], [type='color'][_v-e8a84d76],\ntextarea[_v-e8a84d76] {\n    margin: 0;\n    padding: 0;\n    padding-left: 8px;\n    width: 100%;\n}\n[type='file'][_v-e8a84d76], [type='checkbox'][_v-e8a84d76], [type='radio'][_v-e8a84d76] {\n    margin: 0;\n    margin-left: 8px;\n    padding: 0;\n    padding-left: 2px;\n}\n.reqstar[_v-e8a84d76] {\n    font-size: .5rem;\n    color: #E33100;\n    vertical-align:text-top;\n}\n\nbutton.button-primary[_v-e8a84d76]{\n    margin-top: 1rem;\n}\n"] = false
+    __vueify_insert__.cache["\np[_v-e8a84d76] {\n    margin:0;\n}\nlabel[_v-e8a84d76] {\n    display: block;\n    /*margin-bottom: 1.5em;*/\n}\n\nlabel > span[_v-e8a84d76] {\n    display: inline-block;\n    width: 8em;\n    vertical-align: top;\n}\n.valid-titleField[_v-e8a84d76] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.no-input[_v-e8a84d76] {\n    background-color: #fefefe;\n    border-color: #cacaca;\n}\n.invalid-input[_v-e8a84d76] {\n    background-color: rgba(236, 88, 64, 0.1);\n    border: 1px dotted red;\n}\n.invalid[_v-e8a84d76] {\n    color: #ff0000;\n}\n.user-display[_v-e8a84d76] {\n    color: #666;\n    font-size: 16px;\n}\n.user-display .user-name[_v-e8a84d76] {\n\n    font-style: italic;\n}\n.user-display .user-info[_v-e8a84d76] {\n    font-size: 14px;\n}\n\nfieldset label.radiobtns[_v-e8a84d76]  {\n    display: inline;\n    margin: 4px;\n    padding: 2px;\n}\n\n[type='text'][_v-e8a84d76], [type='password'][_v-e8a84d76], [type='date'][_v-e8a84d76], [type='datetime'][_v-e8a84d76], [type='datetime-local'][_v-e8a84d76], [type='month'][_v-e8a84d76], [type='week'][_v-e8a84d76], [type='email'][_v-e8a84d76], [type='number'][_v-e8a84d76], [type='search'][_v-e8a84d76], [type='tel'][_v-e8a84d76], [type='time'][_v-e8a84d76], [type='url'][_v-e8a84d76], [type='color'][_v-e8a84d76],\ntextarea[_v-e8a84d76] {\n    margin: 0;\n    padding: 0;\n    padding-left: 8px;\n    width: 100%;\n}\n[type='file'][_v-e8a84d76], [type='checkbox'][_v-e8a84d76], [type='radio'][_v-e8a84d76] {\n    margin: 0;\n    margin-left: 8px;\n    padding: 0;\n    padding-left: 2px;\n}\n.reqstar[_v-e8a84d76] {\n    font-size: .5rem;\n    color: #E33100;\n    vertical-align:text-top;\n}\n\nbutton.button-primary[_v-e8a84d76]{\n    margin-top: 1rem;\n}\n\n.form-group[_v-e8a84d76]{\n    margin-bottom: 5px;\n}\n\n.callout[_v-e8a84d76] {\n    margin-bottom: 8px;\n    padding: 8px 30px 8px 15px;\n}\n.save-author[_v-e8a84d76] {\n\n    vertical-align: bottom;\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -18478,7 +18587,46 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-e8a84d76", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../directives/flatpickr.js":11,"../directives/myrte.js":12,"../vuex/actions":14,"../vuex/getters":15,"moment":2,"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":7}],11:[function(require,module,exports){
+},{"../directives/ckrte.js":11,"../directives/flatpickr.js":12,"../vuex/actions":14,"../vuex/getters":15,"moment":2,"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":7}],11:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+    twoWay: true,
+    priority: 1000,
+    params: ['content'],
+    bind: function bind() {
+
+        console.log(this.setupEditor);
+        this.vm.$nextTick(this.setupEditor.bind(this));
+    },
+    setupEditor: function setUpEditor() {
+        var self = this;
+        CKEDITOR.replace(this.el.id, {
+            filebrowserWindowFeatures: 'resizable=no',
+            filebrowserBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
+            filebrowserImageBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=images',
+            filebrowserUploadUrl: '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=files',
+            filebrowserImageUploadUrl: '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=images'
+        });
+
+        CKEDITOR.instances[this.el.id].setData(this.params.content);
+        CKEDITOR.instances[this.el.id].on('change', function () {
+            self.set(CKEDITOR.instances[self.el.id].getData());
+        });
+    },
+    update: function update(value) {
+        //    $(this.el).val(value).trigger('change')
+        if (!CKEDITOR.instances[this.el.id]) return this.vm.$nextTick(this.update.bind(this, value));
+        //    CKEDITOR.instances[this.el.id].setData(value);
+        this.vm.onContentChange();
+    },
+    unbind: function unbind() {
+        CKEDITOR.instances[this.el.id].destroy();
+        //    $(this.el).off().select2('destroy')
+    }
+};
+
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var _flatpickr = require('flatpickr');
@@ -18503,52 +18651,14 @@ module.exports = {
         this.pickr = (0, _flatpickr2.default)(this.el, options);
     },
     onChange: function onChange(dateObj, dateStr) {
-        this.vm.onContentChange();
-        this.vm.updateRecord('dirty');
+        this.vm.onCalendarChange();
+
         this.set(dateStr);
         // this.set($(this).val())
     }
 };
 
-},{"flatpickr":1}],12:[function(require,module,exports){
-'use strict';
-
-module.exports = {
-    twoWay: true,
-    priority: 1000,
-    params: ['content'],
-    bind: function bind() {
-
-        console.log(this.setupEditor);
-        this.vm.$nextTick(this.setupEditor.bind(this));
-    },
-    setupEditor: function setUpEditor() {
-        var vm = this;
-        CKEDITOR.replace(this.el.id, {
-            filebrowserWindowFeatures: 'resizable=no',
-            filebrowserBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
-            filebrowserImageBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=images',
-            filebrowserUploadUrl: '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=files',
-            filebrowserImageUploadUrl: '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=images'
-        });
-
-        CKEDITOR.instances[this.el.id].setData(this.params.content);
-        CKEDITOR.instances[this.el.id].on('change', function () {
-            vm.set(CKEDITOR.instances[vm.el.id].getData());
-        });
-    },
-    update: function update(value) {
-        //    $(this.el).val(value).trigger('change')
-        if (!CKEDITOR.instances[this.el.id]) return this.vm.$nextTick(this.update.bind(this, value));
-        CKEDITOR.instances[this.el.id].setData(value);
-    },
-    unbind: function unbind() {
-        CKEDITOR.instances[this.el.id].destroy();
-        //    $(this.el).off().select2('destroy')
-    }
-};
-
-},{}],13:[function(require,module,exports){
+},{"flatpickr":1}],13:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
@@ -18599,17 +18709,17 @@ Object.defineProperty(exports, "__esModule", {
 // An action will receive the store as the first argument.
 // Since we are only interested in the dispatch (and optionally the state)
 // we can pull those two parameters using the ES6 destructuring feature
-var incrementCounter = exports.incrementCounter = function incrementCounter(_ref) {
+var updateRecordId = exports.updateRecordId = function updateRecordId(_ref, value) {
   var dispatch = _ref.dispatch;
   var state = _ref.state;
 
-  dispatch('INCREMENT', 1);
+  dispatch('RECORD_ID', value);
 };
-var sendMessage = exports.sendMessage = function sendMessage(_ref2, value) {
+var updateRecordIsDirty = exports.updateRecordIsDirty = function updateRecordIsDirty(_ref2, value) {
   var dispatch = _ref2.dispatch;
   var state = _ref2.state;
 
-  dispatch('UPDATE_MESSAGE', value);
+  dispatch('RECORD_IS_DIRTY', value);
 };
 var updateRecordState = exports.updateRecordState = function updateRecordState(_ref3, value) {
   var dispatch = _ref3.dispatch;
@@ -18624,19 +18734,18 @@ var updateRecordState = exports.updateRecordState = function updateRecordState(_
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getCount = getCount;
 // This getter is a function which just returns the count
 // With ES6 you can also write it as:
 // export const getCount = state => state.count
-var getMessage = exports.getMessage = function getMessage(state) {
-  return state.message;
+var getRecordId = exports.getRecordId = function getRecordId(state) {
+  return state.recordId;
+};
+var getRecordIsDirty = exports.getRecordIsDirty = function getRecordIsDirty(state) {
+  return state.recordIsDirty;
 };
 var getRecordState = exports.getRecordState = function getRecordState(state) {
   return state.recordState;
 };
-function getCount(state) {
-  return state.count;
-}
 
 },{}],16:[function(require,module,exports){
 'use strict';
@@ -18659,18 +18768,18 @@ _vue2.default.use(_vuex2.default);
 
 var state = {
     // When the app starts, count is set to 0
-    count: 0,
-    message: 'hi',
+    recordId: 0,
+    recordIsDirty: false,
     recordState: 'init'
 };
 var mutations = {
     // A mutation receives the current state as the first argument
     // You can make any modifications you want inside this function
-    INCREMENT: function INCREMENT(state, amount) {
-        state.count = state.count + amount;
+    RECORD_ID: function RECORD_ID(state, id) {
+        state.recordId = id;
     },
-    UPDATE_MESSAGE: function UPDATE_MESSAGE(state, message) {
-        state.message = message;
+    RECORD_IS_DIRTY: function RECORD_IS_DIRTY(state, tf) {
+        state.recordIsDirty = tf;
     },
     RECORD_STATE: function RECORD_STATE(state, value) {
         state.recordState = value;

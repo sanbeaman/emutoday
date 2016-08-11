@@ -2,15 +2,14 @@
 
 <div class="toolbar-row">
     <div class="toolbar-block">
-        <span v-if="isDirty" class="label label-danger">Need to Save before leaving</span>
-
+        <!-- theRecordID:{{thisRecordId}} theRecordState:{{thisRecordState}} isDirty:{{thisRecordIsDirty}} -->
     </div><!-- /.tool-block -->
     <div class="toolbar-block pull-right">
         <div class="btn-toolbar btn-group-sm ">
 
-            <button id="btn-preview-{{id}}" @click="viewPreview" :disabled="canPreview" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></button>
-            <button id="btn-new-{{id}}" @click="createNew" :disabled="canCreate" class="btn bg-orange btn-sm"><i class="fa fa-plus-square"></i></button>
-            <button id="btn-list-{{id}}" @click="viewList" :disabled="canListView" class="btn bg-orange btn-sm"><i class="fa fa-list-alt"></i></button>
+            <a id="btn-preview-{{id}}" :href="previewLink"  :disabled="thisRecordIsDirty" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
+            <a id="btn-new-{{id}}" :href="createNewLink" :disabled="thisRecordIsDirty" class="btn bg-orange btn-sm"><i class="fa fa-plus-square"></i></a>
+            <a id="btn-list-{{id}}" :href="listLink"  :disabled="thisRecordIsDirty" class="btn bg-orange btn-sm"><i class="fa fa-list-alt"></i></a>
         </div><!-- /.btn-toolbar -->
     </div><!-- /.toolbar-block -->
 </div><!-- /.center-text -->
@@ -35,26 +34,26 @@ text-align: right;
 }
 </style>
 <script>
-import { getCount, getMessage, getRecordState } from '../vuex/getters'
+import { getRecordId, getRecordIsDirty, getRecordState } from '../vuex/getters'
 
 export default  {
     vuex: {
         getters: {
             // note that you're passing the function itself, and not the value 'getCount()'
-            counterValue: getCount,
-            thisMessage: getMessage,
-            thisRecordState: getRecordState
+            // counterValue: getCount,
+            thisRecordId: getRecordId,
+            thisRecordIsDirty: getRecordIsDirty,
+            thisRecordState: getRecordState,
 
         },
     },
 
     props: [
-        'isnotdirty',
-        'rte',
-        'formView',
+        'viewtype',
+        'recordId',
         'currentUser',
         'role',
-        'recordId'
+        'rte'
     ],
     ready() {
         console.log('BoxTools')
@@ -65,36 +64,46 @@ export default  {
         }
     },
     computed: {
-        isDirty: function() {
-            if(this.thisRecordState == 'dirty'){
+        canSeeListView:function(){
+            if(this.viewType == 'list'){
+                return false
+            }else {
+                return true
+            }
+
+        },
+        canSeePreviewView:function(){
+            if(this.viewType == 'list'){
+                return false
+            }else {
+                return true
+            }
+
+        },
+        disabledCreate: function() {
+            if(this.thisRecordState == 'new'){
                 return true
             } else {
                 return false
             }
         },
-        canCreate: function() {
-            if(this.formView === 'create'){
-                return true
+
+        disabledPreview: function() {
+            if(this.thisRecordIsDirty){
+            return true
             } else {
-                return false
+            return false
             }
-
-
         },
-        canListView: function() {
-            if(this.formView != 'list' ){
-                return false
-            } else {
-                return true
-            }
 
+        previewLink:function() {
+            return '/preview/' + this.rte +  '/' + this.thisRecordId;
         },
-        canPreview: function() {
-            if(this.formView === 'edit'){
-                return false
-            } else {
-                return true
-            }
+        linkLink:function() {
+            return '/admin/story/' + this.rte +  '/'
+        },
+        createNewLink:function() {
+            return '/admin/story/' + this.rte +  '/setup'
         },
     },
 
@@ -103,7 +112,10 @@ export default  {
         // 	return
         // },
         viewPreview: function(evt) {
-            console.log('this.rte='+ this.rte)
+            var vurl = '/preview/' + this.rte +  '/' + this.thisRecordId;
+            console.log(vurl);
+            document.location = vurl;
+
         },
         viewList: function(evt) {
             var url = '/admin/story/' + this.rte +  '/'
@@ -111,6 +123,7 @@ export default  {
             document.location = url;
         },
         createNew: function(evt) {
+            var url = '/admin/story/' + this.rte +  '/setup'
             console.log('this.rte='+ this.rte)
         },
 

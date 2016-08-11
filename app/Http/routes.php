@@ -70,7 +70,7 @@ Route::group(['prefix' => 'api'], function() {
     Route::post('story/delete', ['as' => 'api.story.delete', 'uses' => 'Api\StoryController@delete']);
 
     Route::resource('story', 'Api\StoryController');
-
+    Route::resource('author', 'Api\AuthorController');
     //  Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
     //  Route::get('announcement/{announcement}', ['as' => 'api_announcement_get', 'uses' => 'Api\AnnouncementController@edit']);
     Route::get('announcement/listall', ['as' => 'api.announcement.listall', 'uses' => 'Api\AnnouncementController@listall']);
@@ -171,9 +171,8 @@ Route::group(['middleware' => ['web']], function() {
         Route::get('magazine/article', function() {
             return view('admin.magazine.articles');
         });
-        Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryController@articleSetup']);
         Route::get('magazine/article/{story}/edit', ['as' => 'admin_magazine_article_edit', 'uses' => 'Admin\StoryController@edit']);
-        Route::get('magazine/article/{story}', ['as' => 'admin_magazine_article_preview', 'uses' => 'Admin\StoryController@show']);
+        // Route::get('magazine/article/{story}', ['as' => 'admin_magazine_article_preview', 'uses' => 'Admin\StoryController@show']);
 
 
         Route::get('magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
@@ -197,19 +196,28 @@ Route::group(['middleware' => ['web']], function() {
         // Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
         // Route::get('story/indexList', ['as' => 'admin.story.indexList', 'uses' => 'Admin\StoryController@indexList']);
 
-        Route::get('story/queue', ['as' => 'admin.story.queue', 'uses' => 'Admin\StoryController@queue']);
+        /**
+         *
+         * Routes related to stories organized by storyType
+         *
+         * (story/{stype} or magazine/article)
+         */
+         Route::get('story/app', ['as' => 'admin_story_app', 'uses' => 'Admin\StoryController@app']);
+
+         Route::get('story/queue', ['as' => 'admin_story_queue', 'uses' => 'Admin\StoryController@queue']);
+
+        Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryTypeController@articleSetup']);
+
+        Route::get('story/{stype}', ['as' => 'admin_storytype_list', 'uses' => 'Admin\StoryTypeController@list']);
+        Route::get('story/{stype}/setup', ['as' => 'admin_storytype_setup', 'uses' => 'Admin\StoryTypeController@storyTypeSetUp']);
+        Route::get('story/{stype}/{story}/edit', ['as' => 'admin_storytype_edit', 'uses' => 'Admin\StoryTypeController@storyTypeEdit']);
+        // Route::get('story/{stype}/{story}/preview', ['as' => 'admin_storytype_preview', 'uses' => 'Admin\StoryTypeController@storyTypePreview']);
+
         // Route::get('story/appload', ['as' => 'api.story.appload', 'uses' => 'Admin\StoryController@appLoad']);
-
-        Route::get('story/{stype}', ['as' => 'admin.story.list', 'uses' => 'Admin\StoryController@list']);
-        Route::get('story/{stype}/setup', ['as' => 'admin_story_type_setup', 'uses' => 'Admin\StoryController@storyTypeSetUp']);
-
-        Route::get('story/{stype}/{story}/edit', ['as' => 'admin_story_type_edit', 'uses' => 'Admin\StoryController@storyTypeEdit']);
-        Route::get('story/{stype}/{story}/preview', ['as' => 'admin_story_type_preview', 'uses' => 'Admin\StoryController@storyTypePreview']);
 
         // Route::get('admin/story/create/{stype}/', ['as' => 'admin_story_create', 'uses' => 'Admin\StoryController@create']);
         Route::get('story/{story}/confirm', ['as' => 'admin.story.confirm', 'uses' => 'Admin\StoryController@confirm']);
-        // Route::get('admin/storyType/{storyType?}', ['as' => 'admin.storyType', 'uses' => 'Admin\StoryController@build']);
-        // Route::get('admin/storyType/story/{story}', ['as' => 'admin.storyType.story', 'uses' => 'Admin\StoryController@build']);
+
         Route::post('story/{id}/addnewimage','Admin\StoryController@addNewImage');
         Route::post('story/{id}/addimage', 'Admin\StoryController@addImage');
         Route::post('story/{id}/promoteStory', 'Admin\StoryController@promoteStory');

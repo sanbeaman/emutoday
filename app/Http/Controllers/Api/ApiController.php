@@ -84,7 +84,14 @@ protected $statusCode = 200;
             ]
         ]);
     }
+    public function respondCreatedWithId($message, $record_id)
+    {
 
+        return $this->setStatusCode(201)->respond([
+          'message' => $message,
+          'record_id' => $record_id
+        ]);
+    }
     public function respondCreated($message)
     {
 

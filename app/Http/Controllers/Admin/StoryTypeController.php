@@ -19,15 +19,158 @@ use emutoday\Http\Requests;
 use DB;
 use JavaScript;
 
-class StoryController extends Controller
+class StoryTypeController extends Controller
 {
     private $story;
 
-    public function __construct(Story $story, StoryTransformer $storyTransformer)
+    public function __construct(Story $story, StoryType $storyType, StoryTransformer $storyTransformer)
     {
         $this->story = $story;
+        $this->storyType = $storyType;
         $this->storyTransformer = $storyTransformer;
     }
+
+    public function list($stype)
+    {
+        //$storys = $this->story->where('story_type', $stype)->get();
+        $stypelist = \emutoday\StoryType::where('level', 1)->pluck('name','shortname');
+        $stypes = $stype;
+        \JavaScript::put([
+            'stype' => $stype,
+            'storyTypeList' => $stypelist
+        ]);
+        return view('admin.story.index', compact('stype', 'stypes'));
+        // return view('admin.story.index', compact('stype'));
+
+    }
+
+    /**
+    * [storyTypeSetUp description]
+    * @param  [type] $stype [description]
+    * @return [type]        [description]
+    */
+    public function storyTypeSetUp($stype)
+    {
+        $story = new Story;
+
+        $user = \Auth::user();
+        if ($user->hasRole('contributor_1')){
+            // dd($user->id);
+            $stypelist = 'news';
+            $stype = 'news';
+            $stypes = 'news';
+        } else {
+            $stypelist = \emutoday\StoryType::where('level', 1)->pluck('name','shortname');
+
+        }
+
+        // $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+
+        if($stype == 'story') {
+            $stypes = $stypelist;
+
+        } else {
+            $stypes = $stype;
+            $story->story_type = $stypes;
+        }
+
+        JavaScript::put([
+            'cuser' => $user,
+            'stypes' => $stypes,
+            'storytype' => $stype
+        ]);
+
+        return view('admin.story.form', compact('story','stypes','stypelist'));
+
+    }
+
+    // Route::get('story/{stype}/{story}/edit', ['as' => 'admin_story_type_edit', 'uses' => 'Admin\StoryController@storyTypeEdit']);
+
+    public function storyTypeEdit($stype, Story $story)
+    {
+
+        $stypes = $stype;
+        $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+
+        $tags = \emutoday\Tag::lists('name', 'id');
+
+        if ($stype == 'emutoday'){
+            $stype = 'story';
+        }
+        $storyGroup = $story->storyType->group;
+        $stypes = $stype;
+        $story->story_type = $stype;
+        // dd($storyGroup);
+        $imagetypeNames = Imagetype::ofGroup($storyGroup)->get()->keyBy('id');
+        $currentStoryImages = $story->storyImages->pluck('image_type','imagetype_id');
+        $leftOverImages = $imagetypeNames->diffKeys($currentStoryImages);
+        // dd($leftOverImages);
+        $requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
+        $otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
+
+        $storyasarray = $this->storyTransformer->transform($story);
+
+        $storydata = json_encode($storyasarray);
+
+        // return $this->respond([
+        // 				'data' => $this->storyTransformer->transformCollection($storys->all())
+        // 		]);
+        // }
+        // $storyj = $story->toJson();
+        JavaScript::put([
+            'story' => $story,
+            'stype' => $stype,
+            'storytype' => $story->story_type,
+            'is_featured' => $story->is_featured,
+        ]);
+
+        return view('admin.story.form', compact('story', 'stypes','storydata', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
+
+    }
+
+
+    // public function storyTypePreview($stype, Story $story)
+    // {
+    //
+    //     return redirect()->route('emutoday_preview',['stype'=> $stype, 'id' => $story->id]);
+    //
+    // }
+    /**
+    * Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryController@articleSetup']);
+    * @return [type]        [Direct route for creating a magazine article]
+    */
+    public function articleSetup()
+    {
+        $story = new Story;
+        $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+        $stypes = 'article';
+        $story->story_type = $stypes;
+        JavaScript::put([
+            'storytype' => $stypes
+        ]);
+
+        return view('admin.story.form', compact('story', 'stypes','stypelist'));
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function store(Requests\StoreStoryRequest $request)
     {
         $pubStartDate = $request->start_date;
@@ -153,17 +296,9 @@ public function queue(Story $story) {
     \JavaScript::put([
         'records' => $storys
     ]);
-    return view('admin.story.queue', compact('storys'));
-}
-
-public function app(Story $story) {
-    $storys = $this->story;
-
-    \JavaScript::put([
-        'records' => $storys
-    ]);
     return view('admin.story.app', compact('storys'));
 }
+
 public function addImage($id)
 {
     $story = $this->story->findOrFail($id);
@@ -352,127 +487,6 @@ public function edit($id)
 
 }
 
-public function list($stype)
-{
-    //$storys = $this->story->where('story_type', $stype)->get();
-    $stypes = $stype;
-    \JavaScript::put([
-        'stype' => $stype
-    ]);
-    return view('admin.story.index', compact('stype', 'stypes'));
-    // return view('admin.story.index', compact('stype'));
-
-}
-
-/**
-* [storyTypeSetUp description]
-* @param  [type] $stype [description]
-* @return [type]        [description]
-*/
-public function storyTypeSetUp($stype)
-{
-    $story = new Story;
-
-    $user = \Auth::user();
-    if ($user->hasRole('contributor_1')){
-        // dd($user->id);
-        $stypelist = 'news';
-
-    } else {
-        $stypelist = \emutoday\StoryType::where('level', 1)->pluck('name','shortname');
-
-    }
-
-    // $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-
-    if($stype == 'story') {
-        $stypes = $stypelist;
-
-    } else {
-        $stypes = $stype;
-        $story->story_type = $stypes;
-    }
-
-    JavaScript::put([
-        'cuser' => $user,
-        'stypes' => $stypes,
-        'storytype' => $stype
-    ]);
-
-    return view('admin.story.form', compact('story','stypes','stypelist'));
-
-}
-
-// Route::get('story/{stype}/{story}/edit', ['as' => 'admin_story_type_edit', 'uses' => 'Admin\StoryController@storyTypeEdit']);
-
-public function storyTypeEdit($stype, Story $story)
-{
-
-    $stypes = $stype;
-    $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-
-    $tags = \emutoday\Tag::lists('name', 'id');
-
-    if ($stype == 'emutoday'){
-        $stype = 'story';
-    }
-    $storyGroup = $story->storyType->group;
-    $stypes = $stype;
-    $story->story_type = $stype;
-    // dd($storyGroup);
-    $imagetypeNames = Imagetype::ofGroup($storyGroup)->get()->keyBy('id');
-    $currentStoryImages = $story->storyImages->pluck('image_type','imagetype_id');
-    $leftOverImages = $imagetypeNames->diffKeys($currentStoryImages);
-    // dd($leftOverImages);
-    $requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
-    $otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
-
-    $storyasarray = $this->storyTransformer->transform($story);
-
-    $storydata = json_encode($storyasarray);
-
-    // return $this->respond([
-    // 				'data' => $this->storyTransformer->transformCollection($storys->all())
-    // 		]);
-    // }
-    // $storyj = $story->toJson();
-    JavaScript::put([
-        'story' => $story,
-        'stype' => $stype,
-        'storytype' => $story->story_type,
-        'is_featured' => $story->is_featured,
-    ]);
-
-    return view('admin.story.form', compact('story', 'stypes','storydata', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
-
-}
-
-
-public function storyTypePreview($stype, Story $story)
-{
-    // $ruteurl = "/emu-today/".$stype."/".$story->id;
-    // return redirect(route('admin.story.edit', $story->id));
-    return redirect()->route('emutoday_preview',['stype'=> $stype, 'id' => $story->id]);
-    // return view('public.story.main', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
-
-}
-/**
-* Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryController@articleSetup']);
-* @return [type]        [Direct route for creating a magazine article]
-*/
-public function articleSetup()
-{
-    $story = new Story;
-    $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-    $stypes = 'article';
-    $story->story_type = $stypes;
-    JavaScript::put([
-        'storytype' => $stypes
-    ]);
-
-    return view('admin.story.form', compact('story', 'stypes','stypelist'));
-
-}
 
 private function syncTags(Story $story, array $tags)
 {

@@ -72,6 +72,15 @@ class Story extends Model
     }
 
     /**
+     * [author description]
+     * @return [type] [description]
+     */
+    public function author()
+    {
+        return $this->belongsTo(Author::class);
+    }
+
+    /**
      * [storyImages description]
      * @return [type] [description]
      */

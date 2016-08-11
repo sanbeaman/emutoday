@@ -1,7 +1,7 @@
 <style>
 
     div.backcover {
-        opacity:0.2;
+        opacity:0.1;
         filter: alpha(opacity=10);
         background-color:#ffffff;
         width:100%;

@@ -195,8 +195,10 @@ class StoryController extends ApiController
     //  if (! Input::get('title') or ! Input::get('location'))
     $validation = \Validator::make( Input::all(), [
                     'title'           => 'required',
-                    'start_date'      => 'required|date',
-                    'content'     => 'required'
+                    'start_date'      => 'required',
+                    'story_type'    => 'required',
+                    'content'     => 'required',
+                    'user_id'   => 'required'
             ]);
 
      if( $validation->fails() )
@@ -211,11 +213,18 @@ class StoryController extends ApiController
         $story->slug           	= $request->get('slug');
         $story->subtitle           	= $request->get('subtitle');
         $story->teaser           	= $request->get('teaser');
+        $story->story_type      = $request->get('story_type');
+        $story->user_id         = $request->get('user_id');
         $story->content     	= $request->get('content');
-        $story->start_date      	= \Carbon\Carbon::parse($request->get('start_date'));
+        $story->start_date      = \Carbon\Carbon::parse($request->get('start_date'));
+        $story->author_id       = $request->get('author_id', 0);
+
+
+
         if($story->save()) {
+                $record_id  = $story->id;
                 return $this->setStatusCode(201)
-                    ->respondCreated('Story successfully created!!!!!!!!!!');
+                    ->respondCreatedWithId('Story successfully created!', $record_id);
                 }
             }
 
@@ -292,7 +301,8 @@ class StoryController extends ApiController
      //  if (! Input::get('title') or ! Input::get('location'))
      $validation = \Validator::make( Input::all(), [
                      'title'           => 'required',
-                     'start_date'      => 'required|date',
+                     'start_date'      => 'required',
+                     'user_id'   => 'required',
                      'content'     => 'required'
              ]);
 
@@ -315,15 +325,17 @@ class StoryController extends ApiController
          $story->content     	    = $request->get('content');
          $story->is_approved     	= $request->get('is_approved', 0);
 
+
         $story->is_promoted          = $request->get('is_promoted', 0);
         $story->is_featured    	= $request->get('is_featured', 0);
        $story->is_live          = $request->get('is_live', 0);
        $story->is_archived         = $request->get('is_archived', 0);
-         $story->start_date      	= \Carbon\Carbon::parse($request->get('start_date'));
+         $story->start_date      	= $request->get('start_date');
           $story->end_date      	= \Carbon\Carbon::parse($request->get('end_date', null));
          if($story->save()) {
+             $record_id = $story->id;
                  return $this->setStatusCode(201)
-                     ->respondCreated('Story successfully Updated!!!!!!!!!!');
+                     ->respondCreatedWithId('Story successfully Updated!!!!!!!!!!', $record_id);
                  }
              }
 

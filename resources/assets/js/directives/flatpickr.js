@@ -15,8 +15,8 @@ module.exports = {
         this.pickr = flatpickr(this.el, options )
     },
     onChange: function(dateObj, dateStr) {
-         this.vm.onContentChange();
-        this.vm.updateRecord('dirty');
+         this.vm.onCalendarChange();
+
         this.set(dateStr)
         // this.set($(this).val())
     }

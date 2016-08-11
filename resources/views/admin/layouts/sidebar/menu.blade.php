@@ -23,9 +23,14 @@
     <a href="#"><i class="fa fa-file-text-o"></i> <span>Stories</span> <i class="fa fa-angle-left pull-right"></i></a>
     <ul class="treeview-menu">
         @can('story_promote', $currentUser)
+
+        <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/app"><i class="fa fa-rocket"></i> <span>App</span></a></li>
+        @endcan
+        @can('story_approve_own', $currentUser)
+
         <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/queue"><i class="fa fa-rocket"></i> <span>Queue</span></a></li>
         @endcan
-        <li class="{{ set_active('admin/story*') }}"><a href="/admin/story"><i class="fa fa-list"></i> <span>List All</span></a></li>
+        <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/all"><i class="fa fa-list"></i> <span>List All</span></a></li>
 
         <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/news/setup"><i class="fa fa-plus-square"></i><span>New Story</span></a></li>
     </ul>

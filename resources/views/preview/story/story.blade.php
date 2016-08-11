@@ -11,7 +11,7 @@
     @parent
 @endsection
 @section('bodytop')
-    @include('preview.includes.previewstory')
+    @include('preview.includes.previewstory',['stype'=> $story->story_type, 'recordid' => $story->id] )
 @endsection
 @section('offcanvaslist')
     @include('preview.includes.offcanvaslist')
@@ -64,8 +64,14 @@
                                 {!! $story->content !!}
                             </textarea> --}}
                         </div>
-            <div class="story-author">{{ $story->author->name }}</div>
+        @if($story->author_id == 0)
+            <div class="story-author">{{ $story->user->full_name }}</div>
+            <p class="news-contacts">Contact {{ $story->user->email }}</p>
+        @else
+            <div class="story-author">{{ $story->author->last_name }}</div>
             <p class="news-contacts">Contact {{ $story->author->email }}</p>
+
+        @endif
           </div>
           <!-- Page Side Bar Column -->
           <div class="large-3 medium-4 small-12 columns featurepadding">
@@ -86,7 +92,7 @@
                     <div class="medium-6 columns">
                         <div class="button-group">
                                 {!! Form::submit('Update Story', ['class' => 'button']) !!}
-                                <a class="secondary button" href="{{URL::previous()}}">Cancel</a>
+                                <a class="secondary button" href="{{route('admin_storytype_edit', ['stype' => $story->story_type, 'story'=> $story->story_type])}}">Cancel</a>
 
                         </div><!-- /.button-group -->
 

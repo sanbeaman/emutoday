@@ -24,7 +24,8 @@ class FractalStoryTransformerModel extends Fractal\TransformerAbstract
             'featured' =>  $story->is_featured,
             'live' =>  $story->is_live,
             'archived' =>  $story->is_archived,
-            'start_date'   => $story->start_date->format('m-d-Y')
+            'start_date'   => $story->start_date->format('m-d-Y'),
+            'author' => ($story->author_id == 0)? null:$story->author
         ];
     }
 }
