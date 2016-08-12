@@ -3,7 +3,7 @@
     <!-- tables inside this DIV could have drag-able content -->
     <!-- left container -->
     <div class="row">
-        {{-- <div id="left" class="col-md-6">
+        <div id="left" class="col-md-6">
             <table id="table1">
                 <colgroup>
                     <col width="50"/>
@@ -19,11 +19,15 @@
 
                     @if($story->is_featured)
                             <td class="redips-mark drag-{{$story->id}}x">
-                                <div id="drag-{{$story->id}}x" class="redips-drag frontstory-btn" data-imgtype="front" data-imgname="{{$story->images()->ofType('front')->first()->filename}}"></a>{{$story->id}}</div>
+                                <div id="drag-{{$story->id}}x"
+                                    class="redips-drag frontstory-btn"
+                                    data-imgtype="front" data-imgname="{{$story->images()->ofType('front')->first()->filename}}">
+                                {{$story->id}}</div>
                             </td>
                         @else
                             <td class="redips-mark drag-{{$story->id}}">
-                                <div id="drag-{{$story->id}}" class="redips-drag smallstory-btn" data-imgtype="small" data-imgname="{{$story->images()->ofType('small')->first()->filename}}"></a>{{$story->id}}</div>
+                                <div id="drag-{{$story->id}}"
+                                    class="redips-drag smallstory-btn" data-imgtype="small" data-imgname="{{$story->images()->ofType('small')->first()->filename}}">{{$story->id}}</div>
                             </td>
                         @endif
 
@@ -36,7 +40,7 @@
                 </tr>
         @endforeach
     </table>
-</div> --}}
+</div>
 
         <!-- right container -->
         <div id="right" class="col-md-6">
