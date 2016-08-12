@@ -30,7 +30,7 @@
 
         <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/queue"><i class="fa fa-rocket"></i> <span>Queue</span></a></li>
         @endcan
-        <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/all"><i class="fa fa-list"></i> <span>List All</span></a></li>
+        {{-- <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/all"><i class="fa fa-list"></i> <span>List All</span></a></li> --}}
 
         <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/news/setup"><i class="fa fa-plus-square"></i><span>New Story</span></a></li>
     </ul>
