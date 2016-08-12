@@ -27,12 +27,11 @@
                             </td>
                         @else
                             <td class="redips-mark drag-{{$story->id}}">
-                                {{-- <div id="drag-{{$story->id}}"
+                                <div id="drag-{{$story->id}}"
                                     class="redips-drag smallstory-btn"
-                                    data-imgtype="small" data-imgname="{{$story->images()->ofType('small')->first()->filename}}"> --}}
-{{$story->images()->ofType('small')->first()->filename}}
+                                    data-imgtype="small" data-imgname="{{$story->images()->ofType('small')->first()->filename}}">
                                     {{$story->id}}
-                                {{-- </div> --}}
+                                </div>
                             </td>
                         @endif
 
