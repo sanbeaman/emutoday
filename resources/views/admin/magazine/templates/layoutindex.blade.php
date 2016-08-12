@@ -1,3 +1,4 @@
+{{-- For Magazie Builder --}}
 <div id="redips-drag">
     <!-- tables inside this DIV could have drag-able content -->
     <!-- left container -->

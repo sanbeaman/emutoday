@@ -7,13 +7,13 @@ use Carbon\Carbon;
 
 class UserPresenter extends Presenter
 {
-	public function avatarUrl()
-	{
-		dd($mediafile = $this->mediaFiles->first());
+    public function avatarUrl()
+    {
+        // dd($mediafile = $this->mediaFiles->first());
 
-		return $mediafile->path . $mediafile->name . '.' . $mediafile->ext;
+        return $mediafile->path . $mediafile->name . '.' . $mediafile->ext;
 
-	}
+    }
 
     public function lastLoginDifference()
     {

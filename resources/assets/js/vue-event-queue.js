@@ -6,13 +6,15 @@ Vue.use(VueResource);
 var CSRFToken = document.querySelector('meta[name="_token"]').getAttribute('content');
 Vue.http.headers.common['X-CSRF-TOKEN'] = CSRFToken;
 
-var moment = require('moment');
+import moment from 'moment';
+import EventQueue from './components/EventQueue.vue'
+// var moment = require('moment');
 
 
 new Vue({
     el: '#vue-event-queue',
     components: {
-      EventQueue: require('./components/EventQueue.vue')
+      EventQueue
     },
         // http: {
         //         headers: {

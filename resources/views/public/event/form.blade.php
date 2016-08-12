@@ -84,5 +84,6 @@
 
 @section('scriptsfooter')
     @parent
+
     <script type="text/javascript" src="/js/vue-event-form.js"></script>
 @endsection

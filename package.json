@@ -30,6 +30,7 @@
     "moment-timezone": "^0.5.4",
     "motion-ui": "^1.2.2",
     "select2": "^4.0.3",
+    "vanilla-text-mask": "^0.16.2",
     "vue-awesome": "^0.3.0",
     "vue-bulma": "0.0.35",
     "vue-bulma-datepicker": "^2.0.1",

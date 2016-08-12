@@ -1,5 +1,4 @@
 <template>
-
     <form>
         <slot name="csrf"></slot>
         <!-- <slot name="author_id" v-model="newevent.author_id"></slot> -->
@@ -8,7 +7,6 @@
                 <div v-show="formMessage.isOk"  class="callout success">
                     <h5>{{formMessage.msg}}</h5>
                 </div>
-
                 <div class="form-group">
     <label>Title <i class="fi-star reqstar"></i></label>
     <p class="help-text" id="title-helptext">Please enter a title ({{titleChars}} characters left)</p>
@@ -166,14 +164,17 @@
     <div v-bind:class="md12col">
         <div class="form-group">
             <label>Related Link: <em>(ex. http://www.emich.edu/calendar)</em>
-                <input v-model="newevent.related_link_1" v-bind:class="[formErrors.related_link_1 ? 'invalid-input' : '']" name="related-link-1" type="text">
-            </label>
+                <label for="link_text_1">Link Text</label><input v-model="linkText1"  name="link_text_1" type="text">
+                <label for="link_url_1">Link Text</label><input v-model="linkUrl1"  name="link_url_1" type="text">
+            </label>{{relatedLink1}}
             <label>Related Link: <em>(ex. http://www.emich.edu/calendar)</em>
-                <input v-model="newevent.related_link_2" v-bind:class="[formErrors.related_link_2 ? 'invalid-input' : '']" name="related-link-2" type="text">
-            </label>
+                <label for="link_text_2">Link Text</label><input v-model="linkText2"  name="link_text_2" type="text">
+                <label for="link_url_2">Link Text</label><input v-model="linkUrl2"  name="link_url_2" type="text">
+            </label>{{relatedLink2}}
             <label>Related Link: <em>(ex. http://www.emich.edu/calendar)</em>
-                <input v-model="newevent.related_link_1" v-bind:class="[formErrors.related_link_1 ? 'invalid-input' : '']" name="related-link-1" type="text">
-            </label>
+                <label for="link_text_3">Link Text</label><input v-model="linkText3"  name="link_text_3" type="text">
+                <label for="link_url_3">Link Text</label><input v-model="linkUrl3"  name="link_url_3" type="text">
+            </label>{{relatedLink3}}
         </div>
     </div><!-- /.md12col -->
 </div><!-- /.row -->
@@ -200,13 +201,13 @@
                 <div v-show="hasCost" class="form-group">
                     <div class="input-group">
                         <span class="input-group-label">$</span>
-                        <input v-model="newevent.cost" v-bind:class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="text">
+                        <input v-model="newevent.cost" v-bind:class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="number">
                     </div><!-- /. input-group -->
                 </div>
                 <div v-else class="form-group">
                     <div class="input-group">
                         <span class="input-group-label">$</span>
-                        <input v-model="newevent.cost" v-bind:class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="text" readonly="readonly">
+                        <input v-model="newevent.cost" v-bind:class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="number" readonly="readonly">
                     </div><!-- /. input-group -->
                 </div>
             </div><!-- /.md8col -->
@@ -302,7 +303,7 @@
 <div class="row">
     <div v-bind:class="md12col">
         <div class="form-group">
-            <button v-on:click="submitForm" type="submit" class="button button-primary">Submit For Approval</button>
+            <button id="btn-event" v-on:click="submitForm" type="submit" v-bind:class="btnPrimary">Submit For Approval</button>
         </div>
     </form>
 </div><!-- /.md12col -->
@@ -323,6 +324,24 @@ label > span {
     width: 8em;
     vertical-align: top;
 }
+/*input[type='text'], [type='password'],
+[type='date'], [type='datetime'],
+[type='datetime-local'], [type='month'],
+[type='week'], [type='email'],
+[type='number'], [type='search'],
+[type='tel'], [type='time'],
+[type='url'], [type='color'],
+textarea {
+    marging-bottom: 0;
+}*/
+
+.input-group input[type='text'] {
+    marging-bottom: 0;
+}
+
+input[type='number'] {
+    marging-bottom: 0;
+}
 .valid-titleField {
     background-color: #fefefe;
     border-color: #cacaca;
@@ -338,73 +357,30 @@ label > span {
 .invalid {
     color: #ff0000;
 }
-
-
-fieldset label.radiobtns  {
-    display: inline;
-    margin: 4px;
-    padding: 2px;
-}
-
-[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'],
-textarea {
-    margin: 0;
-    padding: 0;
-    padding-left: 8px;
-    width: 100%;
-}
-[type='file'], [type='checkbox'], [type='radio'] {
-    margin: 0;
-    margin-left: 8px;
-    padding: 0;
-    padding-left: 2px;
-}
 .reqstar {
     font-size: .5rem;
     color: #E33100;
     vertical-align:text-top;
 }
-button.button-primary {
-    margin-top: 1rem;
-}
 
-
-input[type='email'],
-input[type='number'],
-input[type='password'],
-input[type='search'],
-input[type='tel'],
-input[type='text'],
-input[type='url'],
-textarea,
 select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background-color: transparent;
-    border: 0.1rem solid #d1d1d1;
-    border-radius: 0.4rem;
-    box-shadow: none;
-    height: 3.8rem;
-    padding: 0.6rem 1rem;
-    width: 100%;
+    margin: 0;
 }
-input[type='email']:focus,
-input[type='number']:focus,
-input[type='password']:focus,
-input[type='search']:focus,
-input[type='tel']:focus,
-input[type='text']:focus,
-input[type='url']:focus,
-textarea:focus,
-select:focus {
-    border: 0.1rem solid #9b4dca;
-    outline: 0;
+
+[type='submit'], [type='button'] {
+    margin-top: 0.8rem;
+}
+input[type="number"]{
+    margin: 0;
+}
+input[type="text"]{
+    margin: 0;
 }
 
 </style>
 
 <script>
+
 import flatpickr from 'flatpickr';
 module.exports  = {
     props:{
@@ -415,6 +391,12 @@ module.exports  = {
     },
     data: function() {
         return {
+            linkText1: '',
+            linkUrl1: '',
+            linkText2: '',
+            linkUrl2: '',
+            linkText3: '',
+            linkUrl3:'',
             startdatePicker:null,
             enddatePicker:null,
             starttimePicker:null,
@@ -472,6 +454,7 @@ module.exports  = {
         }
     },
     ready: function() {
+        this.newevent.user_id = this.authorid;
         var self = this;
 
 
@@ -571,7 +554,7 @@ module.exports  = {
             return (this.framework == 'foundation'? 'button button-primary':'btn btn-primary')
         },
         formGroup: function() {
-            return (this.framework == 'foundation'? '':'form-group')
+            return (this.framework == 'foundation'? 'form-group':'form-group')
         },
         computedLocation: function() {
             if (this.zbuildings) {
@@ -608,8 +591,6 @@ module.exports  = {
         },
         titleChars: function() {
             var str = this.newevent.title;
-
-
             console.log(str.length);
             var cclength = str.length;
             return this.totalChars.title - cclength;
@@ -628,7 +609,22 @@ module.exports  = {
         },
         hasEndTime: function() {
             return (this.newevent.all_day == 1 || this.newevent.no_end_time == 1)?false : true;
-        }
+        },
+        relatedLink1: function() {
+            if (this.linkUrl1 || this.linkText1) {
+                return '<a href="'+ this.linkUrl1 +'">'+ this.linkText1 +'</a>'
+            }
+        },
+        relatedLink2: function() {
+            if (this.linkUrl2 || this.linkText2) {
+                return '<a href="'+ this.linkUrl2 +'">'+ this.linkText2 +'</a>'
+            }
+        },
+        relatedLink3: function() {
+            if (this.linkUrl3 || this.linkText3) {
+                return '<a href="'+ this.linkUrl3 +'">'+ this.linkText3 +'</a>'
+            }
+        },
 
     },
     methods: {
@@ -693,6 +689,7 @@ module.exports  = {
             // this.newevent.end_date = this.edate;
             // this.newevent.reg_deadline = this.rdate;
             this.newevent.author_id = this.authorid;
+            this.newevent.related_link_1 = this.relatedLink1;
             if(this.newevent.on_campus == true) {
                 this.newevent.location = this.computedLocation;
             } else {

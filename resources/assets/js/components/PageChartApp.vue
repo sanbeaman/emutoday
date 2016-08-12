@@ -1,34 +1,19 @@
 <template>
-    <div class="col-md-12">
-        <div class="box">
-            <div class="box-header with-border">
 
-
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-
-                    <vue-chart
+                <div class="panel-body">
+                <vue-chart
                         :packages="gpackages"
                         :chart-type="chartType"
                         :columns="columns"
                         :rows="rowsLoad"
                         :options="options"
                        ></vue-chart>
+            </div>
 
-
-
-
-            </div><!-- /.box-body -->
-            <div class="box-footer">
-
-            </div><!-- /.box-footer -->
-        </div>
-    </div>
 </template>
 <style scoped>
 .box-body {
-    height: 800px;
+    /*height: 800px;*/
 }
 </style>
 <script>
@@ -43,9 +28,12 @@ var moment = require('moment')
        ],
        ready: function() {
            console.log('gcols= '+ this.gcols )
+           this.fetchAllRecords()
        },
        data: function () {
               return {
+                  newRows:[],
+                  alldata:[],
                   gpackages:
                       ['timeline','gantt']
                   ,
@@ -103,10 +91,12 @@ var moment = require('moment')
        computed: {
            rowsLoad: function () {
                var result = new Array();
-               var json_data = JSON.parse(this.gcols)
-                return json_data.map(function(item,index){
-                    var ddid = item.title;
-                    var ddtitle = (item.title === null)? item.uri : item.title;
+            //    var json_data = JSON.parse(this.alldata)
+                let newdata =  this.alldata;
+
+                return newdata.map(function(item,index){
+                    var ddid = item.id;
+                    var ddtitle = item.uri;
 
                     var ddsdate =  moment(item.start_date);
                     var newsdate = new Date(ddsdate.year(),ddsdate.month(),ddsdate.date())
@@ -116,12 +106,44 @@ var moment = require('moment')
 
                     return item
                 });
-
-            //    return  this.formatReturn(this.gcols)
+                console.log('newdata'+ newdata)
+                // return  this.formatReturn(this.gcols)
            },
        },
 
-       methods : {
+       methods :  {
+       fetchAllRecords: function() {
+           this.$http.get('/api/page/appLoad')
+
+           .then((response) =>{
+               //response.status;
+               console.log('response.status=' + response.status);
+               console.log('response.ok=' + response.ok);
+               console.log('response.statusText=' + response.statusText);
+               console.log('response.data=' + response.data);
+               // data = response.data;
+               //
+               // this.$set('allitems', response.data.data)
+               this.$set('alldata', response.data.data)
+            //    this.allitems = response.data.data;
+
+
+               this.checkOverDataFilter();
+           }, (response) => {
+               //error callback
+               console.log("ERRORS");
+
+               //  this.formErrors =  response.data.error.message;
+
+           }).bind(this);
+       },
+       checkOverDataFilter:function() {
+           console.log('newRows= ' + this.alldata);
+
+       },
+
+
+
          formatReturn: function (items) {
              var itemsArray = [];
              for (item in items) {

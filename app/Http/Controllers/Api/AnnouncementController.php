@@ -131,11 +131,11 @@ class AnnouncementController extends ApiController
             //
         //  if (! Input::get('title') or ! Input::get('location'))
         $validation = \Validator::make( Input::all(), [
-                                                                    'title'           => 'required',
-                                                                    'start_date'      => 'required|date',
-                                                                    'end_date'        => 'required|date',
-                                                                    'announcement'     => 'required|max:255'
-                                                            ]);
+                    'title'           => 'required',
+                    'start_date'      => 'required|date',
+                    'end_date'        => 'required|date',
+                    'announcement'     => 'required|max:255'
+            ]);
 
          if( $validation->fails() )
          {
@@ -287,7 +287,7 @@ class AnnouncementController extends ApiController
         public function updateItem($id, Request $request)
         {
             $announcement = Announcement::findOrFail($id);
-            $announcement->is_approved = $request->get('approved');
+            $announcement->is_approved = $request->get('is_approved');
             $announcement->priority = $request->get('priority');
             $announcement->approved_date 			= \Carbon\Carbon::now();
             if($announcement->save()) {

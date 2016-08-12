@@ -186,6 +186,8 @@ checkAndSetStoryPositions = function() {
             // srcCell = document.getElementById('drag-'+ sop[sindex].id);
             // tarCell = document.getElementById('emuhome' + sop[sindex].pivot.page_position);
         }
+        console.log('sop[sindex].id='+sop[sindex].id);
+
         //console.log('srcCell= '+ srcCell + ' tarCell= '+ tarCell);
         //srcCell.style.color = "red";
 

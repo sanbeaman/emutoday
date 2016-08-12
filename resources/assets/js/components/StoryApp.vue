@@ -56,7 +56,8 @@
 }
 </style>
 <script>
-var moment = require('moment')
+
+import moment from 'moment'
 import StoryPod from './StoryPod.vue'
 // import EventViewContent from './EventViewContent.vue'
 export default  {

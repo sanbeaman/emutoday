@@ -12,9 +12,9 @@
                             <span class="item-featured-icon" :class="archivedIcon"></span>
                         </div><!-- /.pull-left -->
                         <div class=" form-inline pull-right">
-<div class="form-group">
-    <label>approved:</label>
-</div><!-- /.form-group -->
+                            <div class="form-group">
+                                <label>approved:</label>
+                            </div><!-- /.form-group -->
                             <div class="form-group">
 
                                 <vui-flip-switch id="switch-{{item.id}}"
@@ -231,7 +231,8 @@
         }*/
 </style>
 <script>
-var moment = require('moment')
+
+import moment from 'moment'
 import VuiFlipSwitch from './VuiFlipSwitch.vue'
 
 module.exports  = {

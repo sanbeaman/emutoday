@@ -19,11 +19,7 @@ var redipsInit,
     getId,				// returns id of element in opposite table
             // needed for enable/disable element synchronization (used in enableRows)
     // pos = {},
-    editArticle,
-    arraysEqual,
-    original_story_ids = [],
     story_ids = [],
-    mainrecord_id,
     rd = REDIPS.drag;
     console.log('rd3');
 // redips initialization
@@ -33,8 +29,6 @@ redipsInit = function () {
 
     // initialization
     rd.init();
-    original_story_ids = JSvars.original_story_ids;
-    mainrecord_id = JSvars.mainrecordid;
     // enable shift animation
     //rd.shift.animation = true;
     // save initial DIV positions to "pos" object (it should go after initialization)
@@ -53,7 +47,7 @@ redipsInit = function () {
         showContent();
     };
     // when DIV element is double clicked return it to the initial position
-    rd.event.dblClicked = function (e) {
+    rd.event.dblClicked = function () {
         // set dblclicked DIV id
         var id = rd.obj.id;
         // move DIV element to initial position
@@ -183,27 +177,19 @@ reset = function () {
         }
     }
 };
-editArticle = function(btn)
-{
-    console.log('btn='+ btn);
-};
 // get content (DIV elements in TD)
 getContent = function (id) {
     var td = document.getElementById(id),
         content = '',
-        imgname,imgtype,imgurl,firstInRow,
-        cn, i, cnid, tbl;
+        imgname,imgtype,imgurl,
+        cn, i;
     // TD can contain many DIV elements
     for (i = 0; i < td.childNodes.length; i++) {
         // set reference to the child node
         cn = td.childNodes[i];
-        //console.log('>'+ cn.id);
-
         // childNode should be DIV with containing "drag" class name
         if (cn.nodeName === 'DIV' && cn.className.indexOf('drag') > -1) { // and yes, it should be uppercase
             // append DIV id to the result string
-            cnid = cn.id;
-            console.log('cnid='+ cnid);
             content += cn.id + '_';
             imgname = cn.dataset.imgname;
             imgtype = 'dd' + cn.dataset.imgtype;
@@ -218,66 +204,21 @@ getContent = function (id) {
     // if (content.substr(0, content.length - 1) === 'x') {
     // 	content = content.substr(0, content.length - 1);
     // }
-    var tddivid,tdid,viewtd,editbtn;
     if (content.length === 0){
         content = 0;
-        tddivid = td.id;
-        console.log("td.id" + td.id)
-        if (tddivid.replace('emuhome','') == 0){
-            td.style.backgroundColor =  "#00a7d0";
-        } else {
-            td.style.backgroundColor =  "#001F3F";
-        }
+        td.style.backgroundColor = 'red';
         td.style.backgroundImage = '';
-        tdid = tddivid.replace('emuhome','storyview');
-        viewtd = document.getElementById(tdid);
-        viewtd.style.backgroundImage = '';
-        viewtd.style.verticalAlign = "top"
-        while (viewtd.firstChild) {
-            viewtd.removeChild(viewtd.firstChild);
-        }
-
     } else {
         content = content.replace('drag-','');
-        td.style.backgroundColor = '#cccccc';
-
-
-
-
-
-        //find parent table element
-        tddivid = td.id;
-        tdid = tddivid.replace('emuhome','storyview');
-        console.log('tdid'+tdid);
-
-        viewtd = document.getElementById(tdid);
-        if(!viewtd.hasChildNodes())
-        {
-            viewtd.style.backgroundImage = imgurl;
-            viewtd.style.backgroundRepeat = 'no-repeat';
-            viewtd.style.backgroundPosition  = "center top";
-            viewtd.style.verticalAlign = "top"
-            editbtn = document.createElement("a");
-            editbtn.setAttribute("type", "button");
-            editbtn.classList.add("btn", "bg-orange", "btn-xs", "btn-edit");
-            editbtn.setAttribute("data-id", content);
-            editbtn.style.marginTop = 0;
-
-
-
-            editbtn.innerHTML = "<i class='fa fa-pencil'></i>";
-
-            viewtd.appendChild(editbtn);
+        td.style.backgroundColor = 'blue';
+        td.style.backgroundImage = imgurl;
+        td.style.backgroundRepeat = 'no-repeat';
+        td.onclick = function(){
+            var storypath = '/admin/story/'+ content +'/edit';
+            location.assign(storypath);
         }
 
-        // td.style.backgroundImage = imgurl;
-        // td.style.backgroundRepeat = 'no-repeat';
-        // td.onclick = function(){
-        //     var storypath = '/admin/story/'+ content +'/edit';
-        //     location.assign(storypath);
-        // }
-
-
+        
         console.log('content='+ content);
     }
     //
@@ -377,103 +318,7 @@ if (!Array.prototype.indexOf) {
         }
         return -1;
     };
-
-};
-
-
-arraysEqual = function(a, b) {
-  if (a === b) return true;
-  if (a == null || b == null) return false;
-  if (a.length != b.length) return false;
-
-  // If you don't care about the order of the elements inside
-  // the array, you should sort both arrays here.
-
-  for (var i = 0; i < a.length; ++i) {
-      console.log('a[i] ' + a[i] + ' b[i]' + b[i]);
-    if (a[i] != b[i]) return false;
-  }
-  return true;
-};
-
-
-$('#table2 table').on('click', '.fa-pencil', function (ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
-    // var data = table.row( $(this).parents('tr') ).data();
-    //$( "div" ).data( "role" ) === "page";
-    var parentBtnData = $(this).parent().data();
-    var parentBtnId = parentBtnData['id'];
-    console.log('parentBtnId====='+parentBtnData['id']);
-    var dataid = mainrecord_id;
-    var modal_message;
-    var canSave = false;
-    var skipModal = false;
-
-    console.log('original_story_ids=' + original_story_ids);
-    console.log('story_ids=' + story_ids);
-
-    var itempath = '/admin/story/'+ parentBtnId +'/edit';
-
-    if (arraysEqual(original_story_ids,story_ids)) {
-        console.log('arrays are equal');
-        skipModal = true;
-    } else {
-        skipModal = false;
-        console.log('arrays are NOTTTTTTTTT equal');
-    }
-
-
-
-    if(story_ids.indexOf(0) >= 0) {
-        modal_message = "You need to select the correct number of stories before saving";
-        canSave = false;
-    } else {
-        canSave = true;
-        modal_message = "Before leaving page we need to save";
-    }
-
-    var datastring = story_ids.toString();
-    var recordid = 'Record ID: '+ dataid;
-    var datatitle = "Before You Leave!";
-
-    var modal;
-    if (skipModal) {
-        window.location.href = itempath;
-    } else {
-        modal = $('#myModal').modal('show');
-         modal.find('.modal-title').text(datatitle)
-         modal.find('.modal-body').text(modal_message)
-         modal.find('#story-ids').val(datastring);
-        // modal.find('#modal-confirm-title').html('Delete Magazine');
-        // modal.find('#record-info').html(datatitle);
-        // modal.find('#record-id').html(recordid);
-        modal.find('#hidden-id').val(dataid);
-        var saveasbtn = document.getElementById("main-save-as");
-            if (canSave){
-                saveasbtn.disabled =false;
-                saveasbtn.addEventListener("click", function(e){
-                    var sids =  story_ids.toString();
-                    console.log(sids);
-                    e.preventDefault();
-                    e.stopPropagation();   //this prevented it from submitting twice i a row
-                    $.ajax({
-                               url: '/api/page/saveas/'+mainrecord_id,
-                               type: 'PATCH',
-                               data: {story_ids: sids},
-                               success: function(res) {
-                                   console.log('success');
-                                   //         location.assign(articlepath);
-                                   window.location.href = itempath;
-
-                               }
-                       });
-                });
-            } else {
-                saveasbtn.disabled = true;
-            }
-        }
-});
+}
 
 // add onload event listener
 if (window.addEventListener) {

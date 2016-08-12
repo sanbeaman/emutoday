@@ -13,11 +13,11 @@ Vue.use(VueResource);
 //
 //
 // Vue.component('autocomplete', autocomplete)
-
+import EventFormUniversal from './components/EventFormUniversal.vue'
 new Vue({
     el: '#vue-event-form',
     components: {
-      EventForm: require('./components/EventFormUniversal.vue')
+      EventForm:EventFormUniversal
 
     },
     ready() {

@@ -16568,6 +16568,14 @@ var _vueResource = require('vue-resource');
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _EventQueue = require('./components/EventQueue.vue');
+
+var _EventQueue2 = _interopRequireDefault(_EventQueue);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Vue = require('vue');
@@ -16577,12 +16585,13 @@ Vue.use(_vueResource2.default);
 var CSRFToken = document.querySelector('meta[name="_token"]').getAttribute('content');
 Vue.http.headers.common['X-CSRF-TOKEN'] = CSRFToken;
 
-var moment = require('moment');
+// var moment = require('moment');
+
 
 new Vue({
     el: '#vue-event-queue',
     components: {
-        EventQueue: require('./components/EventQueue.vue')
+        EventQueue: _EventQueue2.default
     },
     // http: {
     //         headers: {

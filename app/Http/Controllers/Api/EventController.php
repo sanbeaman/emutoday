@@ -36,6 +36,9 @@ class EventController extends ApiController
   function __construct()
   {
         // $this->middleware('auth');
+    //     $this->middleware('web', ['only' => [
+    //        'store'
+    //    ]]);
   }
 
   public function queue()
@@ -218,7 +221,7 @@ class EventController extends ApiController
          if($validation->passes())
          {
            $event = new Event;
-             $event->user_id       	= $request->get('user_id');
+             $event->user_id       	=
            $event->title           	= $request->get('title');
            $event->short_title     	= $request->get('short_title');
             // $templocation = $request->get('location');serialize($templocation);
@@ -319,7 +322,7 @@ class EventController extends ApiController
                 // if($validation->passes())
                 // {
                 //   $event = new Event;
-            
+
                 //   $event->title           = $request->get('title');
                 //   $event->short_title     = $request->get('short_title');
                 //   $event->location        = $request->get('location');

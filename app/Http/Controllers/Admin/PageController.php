@@ -80,8 +80,11 @@ class PageController extends Controller
         //            'jsis' => 'foobar',
         //            'pagejson' => $pageJson
         //        ]);
-
-        return view('admin.page.index', compact('pages'));
+        $pgselect = \DB::table('pages')->select('id', 'uri','start_date', 'end_date')->get();
+        $strys = \DB::table('storys')->select('id', 'title', 'start_date', 'end_date')->get();
+        $pgs = collect($pgselect)->toJson();
+    
+        return view('admin.page.index',compact('pages','pgs','strys'));
     }
 
     public function create(Page $page)
@@ -126,28 +129,35 @@ class PageController extends Controller
     public function edit($id)
     {
         $page = $this->page->findOrFail($id);
-        // $storyImages = $this->storyImage->get();
-        // $storysWithHero = $this->storys->whereHas('storyImages', function ($query) {
-        //     $query->where('image_type', 'imagehero');
-        // })->get();
-        // $storyimgs = $this->storyImage->where('image_type','front')
-                // 																		->orWhere('image_type', 'small')
-                // 																		->orderBy('updated_at', 'desc')->get();
-        // $storys =  $this->story->where('story_type', '!=', 'news')->orderBy('updated_at', 'desc')->get();
-                $storys = Story::where([
+            $storys = Story::where([
                                 ['story_type','!=' ,'news'],
                                 ['is_approved',1],
                     ])->with('images')->get();
-
+            $storyimgs = $this->storyImage->where([
+                                                ['group','!=','news'],
+                                                ['image_type', 'small'],
+                                                ])
+                                                ->orderBy('updated_at', 'desc')->get();
                 $connectedStorys = $page->storys()->get();
 
+                $original_story_ids = $connectedStorys->pluck('id');
+
+                // original_story_ids = JSvars.original_story_ids;
+                // mainrecord_id = JSvars.mainrecordid;
         JavaScript::put([
-            'jsis' => 'foobar',
-            'storysonpage' => $connectedStorys->toArray()
+            'mainrecordid' => $page->id,
+            'original_story_ids'=> $original_story_ids,
+            'storysonpage' => $connectedStorys->toArray(),
+            'storyimgs' => $storyimgs->toArray(),
+            'storys' => $storys->toArray()
         ]);
         // return view('admin.page.form', compact('page', 'storys'));
+        //return view('admin.magazine.edit', compact('page', 'storys'));
+        //
+        // dd($original_story_ids);
+        return view('admin.page.edit', compact('page', 'storys','storyimgs'));
 
-         return view('admin.page.edit', compact('page', 'storys'));
+        //  return view('admin.page.edit', compact('page', 'storys'));
 
     }
 

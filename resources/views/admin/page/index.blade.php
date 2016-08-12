@@ -27,26 +27,15 @@
                     <div class="box-header with-border">
                         <h3 class="box-title">Page Timeline</h3>
                         @include('admin.layouts.components.boxtools', ['rte' => 'page', 'path' => 'admin/page'])
-
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <vue-chart-app>
-                            <vue-chart
-                               chart-type="BarChart"
-                               :chart-events="chartEvents"
-                               :columns="columns"
-                               :rows="rows"
-                               :options="options"
-                           ></vue-chart>
-
-
-                        </vue-chart-app>
-
+                        <div id="vue-chart-app">
+                                <page-chart-app gcols="{{$pgs}}">
+                            {{-- <page-chart-app gcols="{{json_encode($pgs)}}"> --}}
+                            </page-chart-app>
+                        </div>
                     </div><!-- /.box-body -->
-                    <div class="box-footer">
-
-                    </div><!-- /.box-footer -->
                 </div>
                 <!-- /.box -->
             </div><!-- /.col-md-12 -->

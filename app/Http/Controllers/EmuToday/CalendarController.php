@@ -75,6 +75,12 @@ class CalendarController extends Controller
         return $startdate->day;
       //  return substr($item['account_id'], -3);
     });
+    // $featuredevents =  Event::where('mediafile_id', '>', 0)->orderBy('priority', 'dsc')->get();
+    $featuredevents =  Event::where([
+        ['is_approved', 1],
+        ['mediafile_id', '>', 0]
+        ] )->orderBy('priority', 'dsc')->get();
+        // dd($featuredevents);
     JavaScript::put([
         'jsis' => 'hi',
         'varYearUnit' => $varYearUnit,
@@ -87,7 +93,7 @@ class CalendarController extends Controller
         'dayInMonth' => $dayInMonth,
         'groupedevents' => $groupedevents,
       ]);
-    return view('public.calendar.index', compact('events', 'cd','totalDaysInArray', 'monthArray', 'dayInMonth', 'varYearUnit', 'varMonthUnit', 'varDayUnit'));
+    return view('public.calendar.index', compact('events', 'featuredevents', 'cd','totalDaysInArray', 'monthArray', 'dayInMonth', 'varYearUnit', 'varMonthUnit', 'varDayUnit'));
   }
 
   public function show()

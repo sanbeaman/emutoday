@@ -16041,11 +16041,11 @@ exports.insert = function (css) {
 
 },{}],7:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n#items-unapproved .box[_v-5abfa5c6] {\n\tmargin-bottom: 4px;\n}\n#items-approved .box[_v-5abfa5c6] {\n\tmargin-bottom: 4px;\n\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n\n#items-unapproved .box[_v-5abfa5c6] {\n    margin-bottom: 4px;\n}\n\n#items-approved .box[_v-5abfa5c6] {\n    margin-bottom: 4px;\n}\n\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
 var _AnnouncementListForm = require('./AnnouncementListForm.vue');
@@ -16056,225 +16056,253 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // import EventViewContent from './EventViewContent.vue'
 exports.default = {
-	components: {
-		AnnouncementListForm: _AnnouncementListForm2.default
-	},
-	props: ['annrecords'],
+    components: {
+        AnnouncementListForm: _AnnouncementListForm2.default
+    },
+    props: ['annrecords'],
 
-	ready: function ready() {
-		// this.resource = this.$resource('/api/announcement/:id');
-		// this.fetchAllRecords();
-		this.fetchUnapprovedRecords();
-	},
+    ready: function ready() {
+        // this.resource = this.$resource('/api/announcement/:id');
+        this.fetchAllRecords();
+        // this.fetchUnapprovedRecords();
+    },
 
-	data: function data() {
-		return {
-			resource: {},
-			allitems: [],
-			items: [],
-			xitems: [],
-			objs: {}
-		};
-	},
+    data: function data() {
+        return {
+            resource: {},
+            allitems: [],
+            items: [],
+            xitems: [],
+            objs: {}
+        };
+    },
 
-	computed: {
-		itemsApproved: function itemsApproved() {
-			return this.itemyes(this.allitems);
-		},
-		itemsUnapproved: function itemsUnapproved() {
-			return this.itemno(this.allitems);
-		},
-		itemsApprovedPriority: function itemsApprovedPriority() {
-			return this.itemno(this.allitems);
-		}
+    computed: {
+        itemsApproved: function itemsApproved() {
+            return this.filterItemsApproved(this.allitems);
+        },
+        itemsUnapproved: function itemsUnapproved() {
+            return this.filterItemsUnapproved(this.allitems);
+        },
+        itemsLive: function itemsLive() {
+            return this.filterItemsLive(this.allitems);
+        }
 
-	},
+        // itemsApproved: function() {
+        //     return this.itemyes(this.allitems);
+        // },
+        // itemsUnapproved: function() {
+        //     return this.itemno(this.allitems);
+        // },
+        // itemsApprovedPriority: function() {
+        //     return this.itemno(this.allitems);
+        // }
 
-	methods: {
-		// checkIndexWithValue: function (chitem){
-		// 	return
-		// },
 
-		moveToApproved: function moveToApproved(changeditem) {
+    },
 
-			// this.xitems.pop(changeditem);
-			console.log('moveToApproved' + changeditem.priority);
-			changeditem.approved = 1;
-			changeditem.priority = changeditem.priority;
-			this.updateRecord(changeditem);
-		},
-		moveToUnApproved: function moveToUnApproved(changeditem) {
+    methods: {
+        // checkIndexWithValue: function (chitem){
+        // 	return
+        // },
+        filterItemsApproved: function filterItemsApproved(items) {
+            return items.filter(function (item) {
+                return moment(item.start_date).isAfter(moment()) && item.is_approved === 1;
+            });
+        },
+        filterItemsUnapproved: function filterItemsUnapproved(items) {
+            return items.filter(function (item) {
+                return item.is_approved === 0;
+            });
+        },
+        filterItemsLive: function filterItemsLive(items) {
+            return items.filter(function (item) {
+                return moment(item.start_date).isSameOrBefore(moment()) && item.is_approved === 1; // true
 
-			// this.xitems.pop(changeditem);
-			console.log('moveToUnApproved' + changeditem);
-			changeditem.approved = 0;
+                // return moment(item.start_date).isAfter(moment())
+                // return item.live === 1
+            });
+        },
+        moveToApproved: function moveToApproved(changeditem) {
 
-			this.updateRecord(changeditem);
-		},
-		itemyes: function itemyes(items) {
-			return items.filter(function (item) {
-				return item.approved === 1;
-			});
-		},
-		itemno: function itemno(items) {
-			return items.filter(function (item) {
-				return item.approved === 0;
-			});
-		},
-		itemsByPriority: function itemsByPriority(items) {
-			return items.sort(function (item) {
-				return item.approved === 0;
-			});
-		},
-		movedItemIndex: function movedItemIndex(mid) {
-			return this.xitems.findIndex(function (item) {
-				return item.id == mid;
-			});
-		},
-		updateRecord: function updateRecord(item) {
-			var _this = this;
+            // this.xitems.pop(changeditem);
+            console.log('moveToApproved' + changeditem.priority);
+            changeditem.is_approved = 1;
+            changeditem.priority = changeditem.priority;
+            this.updateRecord(changeditem);
+        },
+        moveToUnApproved: function moveToUnApproved(changeditem) {
 
-			var movedid = item.id;
-			var movedRecord = item;
-			this.$http.patch('/api/announcement/updateItem/' + item.id, item, {
-				method: 'PATCH'
+            // this.xitems.pop(changeditem);
+            console.log('moveToUnApproved' + changeditem);
+            changeditem.is_approved = 0;
 
-			}).then(function (response) {
-				console.log('good?' + response);
-				var movedIndex = _this.movedItemIndex(movedid);
-				// this.xitems.pop(movedRecord);
-				if (movedRecord.approved == 1) {
-					_this.xitems.splice(movedIndex, 1);
-					_this.items.push(movedRecord);
-				} else {
-					_this.items.splice(movedIndex, 1);
-					_this.xitems.push(movedRecord);
-				}
+            this.updateRecord(changeditem);
+        },
+        itemyes: function itemyes(items) {
+            return items.filter(function (item) {
+                return item.is_approved === 1;
+            });
+        },
+        itemno: function itemno(items) {
+            return items.filter(function (item) {
+                return item.is_approved === 0;
+            });
+        },
+        itemsByPriority: function itemsByPriority(items) {
+            return items.sort(function (item) {
+                return item.is_approved === 0;
+            });
+        },
+        movedItemIndex: function movedItemIndex(mid) {
+            return this.xitems.findIndex(function (item) {
+                return item.id == mid;
+            });
+        },
+        updateRecord: function updateRecord(item) {
+            var _this = this;
 
-				console.log('movedIndex===' + movedIndex);
-			}, function (response) {
-				console.log('bad?' + response);
-			});
-		},
-		// getRequestType: function () {
-		//     var method = this.el.querySelector('input[name="_method"]');
-		//
-		//     return (method ? method.value : this.el.method).toLowerCase();
-		// },
-		fetchUnapprovedRecords: function fetchUnapprovedRecords() {
-			var _this2 = this;
+            var movedid = item.id;
+            var movedRecord = item;
+            this.$http.patch('/api/announcement/updateItem/' + item.id, item, {
+                method: 'PATCH'
 
-			this.$http.get('/api/announcement/unapprovedItems').then(function (response) {
-				console.log('response.status=' + response.status);
-				console.log('response.ok=' + response.ok);
-				console.log('response.statusText=' + response.statusText);
-				console.log('response.data=' + response.data);
+            }).then(function (response) {
+                console.log('good?' + response);
+                var movedIndex = _this.movedItemIndex(movedid);
+                // this.xitems.pop(movedRecord);
+                if (movedRecord.is_approved == 1) {
+                    _this.xitems.splice(movedIndex, 1);
+                    _this.items.push(movedRecord);
+                } else {
+                    _this.items.splice(movedIndex, 1);
+                    _this.xitems.push(movedRecord);
+                }
 
-				_this2.$set('xitems', response.data.data);
+                console.log('movedIndex===' + movedIndex);
+            }, function (response) {
+                console.log('bad?' + response);
+            });
+        },
+        // getRequestType: function () {
+        //     var method = this.el.querySelector('input[name="_method"]');
+        //
+        //     return (method ? method.value : this.el.method).toLowerCase();
+        // },
+        fetchUnapprovedRecords: function fetchUnapprovedRecords() {
+            var _this2 = this;
 
-				_this2.fetchApprovedRecords();
-			}, function (response) {
-				//error callback
-				console.log("ERRORS");
+            this.$http.get('/api/announcement/unapprovedItems').then(function (response) {
+                console.log('response.status=' + response.status);
+                console.log('response.ok=' + response.ok);
+                console.log('response.statusText=' + response.statusText);
+                console.log('response.data=' + response.data);
 
-				//  this.formErrors =  response.data.error.message;
-			}).bind(this);
-		},
-		fetchApprovedRecords: function fetchApprovedRecords() {
-			var _this3 = this;
+                _this2.$set('xitems', response.data.data);
 
-			this.$http.get('/api/announcement/approvedItems').then(function (response) {
-				//response.status;
-				console.log('response.status=' + response.status);
-				console.log('response.ok=' + response.ok);
-				console.log('response.statusText=' + response.statusText);
-				console.log('response.data=' + response.data);
-				// data = response.data;
-				//
-				_this3.$set('items', response.data.data);
+                _this2.fetchApprovedRecords();
+            }, function (response) {
+                //error callback
+                console.log("ERRORS");
 
-				// this.allitems = response.data.data;
-				// console.log('this.record= ' + this.record);
+                //  this.formErrors =  response.data.error.message;
+            }).bind(this);
+        },
+        fetchApprovedRecords: function fetchApprovedRecords() {
+            var _this3 = this;
 
-				_this3.checkOverDataFilter();
-			}, function (response) {
-				//error callback
-				console.log("ERRORS");
+            this.$http.get('/api/announcement/approvedItems').then(function (response) {
+                //response.status;
+                console.log('response.status=' + response.status);
+                console.log('response.ok=' + response.ok);
+                console.log('response.statusText=' + response.statusText);
+                console.log('response.data=' + response.data);
+                // data = response.data;
+                //
+                _this3.$set('items', response.data.data);
 
-				//  this.formErrors =  response.data.error.message;
-			}).bind(this);
-		},
-		fetchAllRecords: function fetchAllRecords() {
-			var _this4 = this;
+                // this.allitems = response.data.data;
+                // console.log('this.record= ' + this.record);
 
-			this.$http.get('/api/announcement/listall').then(function (response) {
-				//response.status;
-				console.log('response.status=' + response.status);
-				console.log('response.ok=' + response.ok);
-				console.log('response.statusText=' + response.statusText);
-				console.log('response.data=' + response.data);
-				// data = response.data;
-				//
-				_this4.$set('allitems', response.data.data);
+                _this3.checkOverDataFilter();
+            }, function (response) {
+                //error callback
+                console.log("ERRORS");
 
-				// this.allitems = response.data.data;
-				// console.log('this.record= ' + this.record);
+                //  this.formErrors =  response.data.error.message;
+            }).bind(this);
+        },
+        fetchAllRecords: function fetchAllRecords() {
+            var _this4 = this;
 
-				_this4.checkOverDataFilter();
-			}, function (response) {
-				//error callback
-				console.log("ERRORS");
+            this.$http.get('/api/announcement/listall').then(function (response) {
+                //response.status;
+                console.log('response.status=' + response.status);
+                console.log('response.ok=' + response.ok);
+                console.log('response.statusText=' + response.statusText);
+                console.log('response.data=' + response.data);
+                // data = response.data;
+                //
+                _this4.$set('allitems', response.data.data);
 
-				//  this.formErrors =  response.data.error.message;
-			}).bind(this);
-		},
-		checkOverData: function checkOverData() {
-			console.log('this.items=' + this.allitems);
-			for (var i = 0; i < this.allitems.length; i++) {
-				if (this.allitems[i].approved == 1) {
-					this.items.push(this.allitems.splice(i, 1));
-				} else {
-					this.xitems.push(this.allitems.splice(i, 1));
-				}
-			}
-		},
-		checkOverDataFilter: function checkOverDataFilter() {
-			console.log('items=' + this.items);
-			// var unapprovedItems = this.allitems.filter(function(item) {
-			// 	return item.approved === 0
-			// });
-			//
-			// this.xitems = unapprovedItems;
-			//
-			//
-			// var approvedItems = this.allitems.filter(function(item) {
-			// 	return item.approved === 1
-			// });
-			//
-			// this.items = approvedItems.sort(function(a,b){
-			// 	return parseFloat(b.priority) - parseFloat(a.priority);
-			// });
-		}
-	},
+                // this.allitems = response.data.data;
+                // console.log('this.record= ' + this.record);
 
-	// the `events` option simply calls `$on` for you
-	// when the instance is created
-	events: {
-		// 'child-msg': function (msg) {
-		//   // `this` in event callbacks are automatically bound
-		//   // to the instance that registered it
-		//   this.messages.push(msg)
-		// }
-	}
+                _this4.checkOverDataFilter();
+            }, function (response) {
+                //error callback
+                console.log("ERRORS");
+
+                //  this.formErrors =  response.data.error.message;
+            }).bind(this);
+        },
+        checkOverData: function checkOverData() {
+            console.log('this.items=' + this.allitems);
+            // for (var i = 0; i < this.allitems.length; i++) {
+            //     if (this.allitems[i].approved == 1) {
+            //         this.items.push(this.allitems.splice(i, 1));
+            //     } else {
+            //         this.xitems.push(this.allitems.splice(i, 1));
+            //     }
+            // }
+        },
+        checkOverDataFilter: function checkOverDataFilter() {
+            console.log('items=' + this.items);
+            // var unapprovedItems = this.allitems.filter(function(item) {
+            // 	return item.is_approved === 0
+            // });
+            //
+            // this.xitems = unapprovedItems;
+            //
+            //
+            // var approvedItems = this.allitems.filter(function(item) {
+            // 	return item.is_approved === 1
+            // });
+            //
+            // this.items = approvedItems.sort(function(a,b){
+            // 	return parseFloat(b.priority) - parseFloat(a.priority);
+            // });
+        }
+    },
+
+    // the `events` option simply calls `$on` for you
+    // when the instance is created
+    events: {
+        // 'child-msg': function (msg) {
+        //   // `this` in event callbacks are automatically bound
+        //   // to the instance that registered it
+        //   this.messages.push(msg)
+        // }
+    }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-5abfa5c6=\"\">\n\t\t\t<div class=\"col-md-6\" _v-5abfa5c6=\"\">\n\t\t\t<h3 _v-5abfa5c6=\"\">Unapproved Announcements</h3>\n\t\t\t\t<div id=\"items-unapproved\" _v-5abfa5c6=\"\">\n\t\t\t\t\t<announcement-list-form pid=\"items-unapproved\" v-for=\"item in xitems\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"unapproved-list\" _v-5abfa5c6=\"\">\n\t\t\t\t</announcement-list-form>\n\t\t\t\t</div>\n\t\t\t</div><!-- /.col-md-6 -->\n\t\t\t<div class=\"col-md-6\" _v-5abfa5c6=\"\">\n\t\t\t\t\t<h3 _v-5abfa5c6=\"\">Approved Announcements</h3>\n\t\t\t\t<div id=\"items-approved\" _v-5abfa5c6=\"\">\n\t\t\t\t\t<announcement-list-form pid=\"items-approved\" v-for=\"item in items | orderBy 'priority' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"approved-list\" _v-5abfa5c6=\"\">\n\t\t\t\t</announcement-list-form>\n\t\t\t\t\t</div>\n\t\t\t</div><!-- /.col-md-6 -->\n</div><!-- ./row -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<div class=\"row\" _v-5abfa5c6=\"\">\n    <div class=\"col-md-4\" _v-5abfa5c6=\"\">\n        <h3 _v-5abfa5c6=\"\">Unapproved</h3>\n        <div id=\"items-unapproved\" _v-5abfa5c6=\"\">\n            <announcement-list-form pid=\"items-unapproved\" v-for=\"item in itemsUnapproved | orderBy 'start_date' 1\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"unapproved-list\" _v-5abfa5c6=\"\">\n            </announcement-list-form>\n        </div>\n    </div>\n    <!-- /.col-md-6 -->\n    <div class=\"col-md-4\" _v-5abfa5c6=\"\">\n        <h3 _v-5abfa5c6=\"\">Approved</h3>\n        <div id=\"items-approved\" _v-5abfa5c6=\"\">\n            <announcement-list-form pid=\"items-approved\" v-for=\"item in itemsApproved | orderBy 'start_date' 1 \" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"approved-list\" _v-5abfa5c6=\"\">\n            </announcement-list-form>\n        </div>\n    </div>\n    <div class=\"col-md-4\" _v-5abfa5c6=\"\">\n        <h3 _v-5abfa5c6=\"\">Live</h3>\n        <div id=\"items-approved\" _v-5abfa5c6=\"\">\n            <announcement-list-form pid=\"items-live\" v-for=\"item in itemsLive | orderBy 'priority' -1\" :item=\"item\" :index=\"$index\" :is=\"live-list\" _v-5abfa5c6=\"\">\n            </announcement-list-form>\n        </div>\n    </div>\n    <!-- /.col-md-6 -->\n</div>\n<!-- ./row -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n#items-unapproved .box[_v-5abfa5c6] {\n\tmargin-bottom: 4px;\n}\n#items-approved .box[_v-5abfa5c6] {\n\tmargin-bottom: 4px;\n\n}\n"] = false
+    __vueify_insert__.cache["\n\n#items-unapproved .box[_v-5abfa5c6] {\n    margin-bottom: 4px;\n}\n\n#items-approved .box[_v-5abfa5c6] {\n    margin-bottom: 4px;\n}\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -16285,102 +16313,133 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"./AnnouncementListForm.vue":8,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.onoffswitch[_v-74bad2ad] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-74bad2ad] {\n    display: none;\n}\n.onoffswitch-label[_v-74bad2ad] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-74bad2ad] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-74bad2ad]:before, .onoffswitch-inner[_v-74bad2ad]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-74bad2ad]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-74bad2ad]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-74bad2ad] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-74bad2ad] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-74bad2ad] {\n    right: 0px;\n}\n\nselect.form-control[_v-74bad2ad] {\n\theight:22px;\n\tborder: 1px solid #999999;\n}\n\n\nh6[_v-74bad2ad] {\n\tmargin-top: 0;\n\tmargin-bottom: 0;\n}\n.form-group[_v-74bad2ad] {\n\t/*border: 1px solid red;*/\n}\n.form-group label[_v-74bad2ad]{\n\tmargin-bottom: 0;\n}\n.box.box-solid.box-default[_v-74bad2ad] {\n\tborder: 1px solid #999999;\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-74bad2ad] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-74bad2ad] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-74bad2ad] {\n    padding: 3px;\n}\n\nbutton.footer-btn[_v-74bad2ad] {\n    border-color: #1B1B1B;\n\n}\n\nh5.box-footer[_v-74bad2ad] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-74bad2ad] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-74bad2ad] {\n    color: #1B1B1B;\n}\n.emutoday[_v-74bad2ad] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-74bad2ad] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.external[_v-74bad2ad]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.news[_v-74bad2ad]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-74bad2ad]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-74bad2ad] {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-74bad2ad] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n\n.onoffswitch[_v-74bad2ad] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-74bad2ad] {\n    display: none;\n}\n.onoffswitch-label[_v-74bad2ad] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-74bad2ad] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-74bad2ad]:before, .onoffswitch-inner[_v-74bad2ad]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-74bad2ad]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-74bad2ad]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-74bad2ad] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-74bad2ad] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-74bad2ad] {\n    right: 0px;\n}\n\nselect.form-control[_v-74bad2ad] {\n    height:22px;\n    border: 1px solid #999999;\n}\nh6[_v-74bad2ad] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-74bad2ad] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-74bad2ad] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-74bad2ad]{\n    margin-bottom: 0;\n}\n\n.box-footer[_v-74bad2ad] {\n    padding-top: 4px;\n    padding-bottom: 4px;\n\n}\n.box.box-solid.box-default[_v-74bad2ad] {\n    border: 1px solid #999999;\n}\n")
 'use strict';
 
-var moment = require('moment');
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _VuiFlipSwitch = require('./VuiFlipSwitch.vue');
+
+var _VuiFlipSwitch2 = _interopRequireDefault(_VuiFlipSwitch);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-	props: ['item', 'pid'],
-	data: function data() {
-		return {
-			options: [{ text: '0', value: 0 }, { text: '1', value: 1 }, { text: '2', value: 2 }, { text: '3', value: 3 }, { text: '4', value: 4 }, { text: '5', value: 5 }, { text: '6', value: 6 }, { text: '7', value: 7 }, { text: '8', value: 8 }, { text: '9', value: 9 }, { text: '10', value: 10 }, { text: '99', value: 99 }],
-			showBody: false,
-			currentDate: {},
-			record: {
-				user_id: '',
-				title: '',
-				announcement: '',
-				start_date: ''
-			}
-		};
-	},
-	created: function created() {
-		// this.currentDate = moment();
-		// console.log('this.currentDate=' + this.currentDate)
-	},
-	ready: function ready() {
-		//ready function
-	},
-	computed: {},
-	methods: {
-		toggleBody: function toggleBody(ev) {
-			if (this.showBody == false) {
-				this.showBody = true;
-			} else {
-				this.showBody = false;
-			}
-			console.log('toggleBody' + this.showBody);
-		},
-		doThis: function doThis(ev) {
-			this.$emit('item-change', this.item);
-			console.log('ev ' + ev + 'this.item.id= ' + this.item.priority);
-		}
+    props: ['item', 'pid'],
+    data: function data() {
+        return {
+            options: [{ text: '0', value: 0 }, { text: '1', value: 1 }, { text: '2', value: 2 }, { text: '3', value: 3 }, { text: '4', value: 4 }, { text: '5', value: 5 }, { text: '6', value: 6 }, { text: '7', value: 7 }, { text: '8', value: 8 }, { text: '9', value: 9 }, { text: '10', value: 10 }, { text: '99', value: 99 }],
+            showBody: false,
+            currentDate: {},
+            record: {
+                user_id: '',
+                title: '',
+                announcement: '',
+                start_date: ''
+            }
+        };
+    },
+    created: function created() {
+        // this.currentDate = moment();
+        // console.log('this.currentDate=' + this.currentDate)
+    },
+    ready: function ready() {
+        //ready function
+    },
+    computed: {
+        timefromNow: function timefromNow() {
+            return (0, _moment2.default)(this.item.start_date).fromNow();
+        },
+        isApproved: function isApproved() {
+            return this.item.is_approved;
+        },
+        itemEditPath: function itemEditPath() {
+            return '/admin/story/' + this.item.id + '/edit';
+        },
+        itemPreviewPath: function itemPreviewPath() {
+            return '/preview/story/' + this.item.id;
+        }
 
-	},
-	watch: {
-		'isapproved': function isapproved(val, oldVal) {
-			if (val != oldVal) {
-				console.log('val change');
-			}
-		}
-	},
-	directives: {
-		// mydatedropper: require('../directives/mydatedropper.js')
-		// dtpicker: require('../directives/dtpicker.js')
-	},
-	components: {
-		// listselect2: require('./ListSelect2.vue')
-		// autocomplete: require('./vue-autocomplete.vue'),
-		// 'datepicker': require('../vendor/datepicker.vue'),
+    },
+    methods: {
+        editItem: function editItem(ev) {
 
-	},
-	filters: {
-		momentPretty: {
-			read: function read(val) {
-				console.log('read-val' + val);
+            window.location.href = this.itemEditPath;
+        },
+        previewItem: function previewItem(ev) {
+            window.location.href = this.itemPreviewPath;
+        },
+        toggleBody: function toggleBody(ev) {
+            if (this.showBody == false) {
+                this.showBody = true;
+            } else {
+                this.showBody = false;
+            }
+            console.log('toggleBody' + this.showBody);
+        },
+        doThis: function doThis(ev) {
+            this.$emit('item-change', this.item);
+            console.log('ev ' + ev + 'this.item.id= ' + this.item.priority);
+        }
 
-				return val ? moment(val).format('MM-DD-YYYY') : '';
-			},
-			write: function write(val, oldVal) {
-				console.log('write-val' + val + '--' + oldVal);
+    },
+    watch: {
+        'isapproved': function isapproved(val, oldVal) {
+            if (val != oldVal) {
+                console.log('val change');
+            }
+        }
+    },
+    directives: {
+        // mydatedropper: require('../directives/mydatedropper.js')
+        // dtpicker: require('../directives/dtpicker.js')
+    },
+    components: {
+        VuiFlipSwitch: _VuiFlipSwitch2.default
 
-				return moment(val).format('YYYY-MM-DD');
-			}
-		}
-	},
-	events: {
+        // listselect2: require('./ListSelect2.vue')
+        // autocomplete: require('./vue-autocomplete.vue'),
+        // 'datepicker': require('../vendor/datepicker.vue'),
 
-		// 'building-change':function(name) {
-		// 	this.newbuilding = '';
-		// 	this.newbuilding = name;
-		// 	console.log(this.newbuilding);
-		// },
-		// 'categories-change':function(list) {
-		// 	this.categories = '';
-		// 	this.categories = list;
-		// 	console.log(this.categories);
-		// }
-	}
+    },
+    filters: {
+        momentPretty: {
+            read: function read(val) {
+                console.log('read-val' + val);
+
+                return val ? (0, _moment2.default)(val).format('MM-DD-YYYY') : '';
+            },
+            write: function write(val, oldVal) {
+                console.log('write-val' + val + '--' + oldVal);
+
+                return (0, _moment2.default)(val).format('YYYY-MM-DD');
+            }
+        }
+    },
+    events: {
+
+        // 'building-change':function(name) {
+        // 	this.newbuilding = '';
+        // 	this.newbuilding = name;
+        // 	console.log(this.newbuilding);
+        // },
+        // 'categories-change':function(list) {
+        // 	this.categories = '';
+        // 	this.categories = list;
+        // 	console.log(this.categories);
+        // }
+    }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n\t<div class=\"box box-default box-solid\" _v-74bad2ad=\"\">\n      <div class=\"box-header with-border\" _v-74bad2ad=\"\">\n\t\t\t\t<div class=\"row\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t<a v-on:click=\"toggleBody\" href=\"#\" _v-74bad2ad=\"\">\n\t\t\t\t\t<div class=\"col-md-7\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t<h4 class=\"box-title\" _v-74bad2ad=\"\">{{item.title}}</h4>\n\t\t\t\t\t</div><!-- /.col-md-7-->\n\t\t\t\t</a>\n\t\t\t\t\t<div class=\"col-md-5\" _v-74bad2ad=\"\">\n\t\t\t\t\t<form class=\"form-inline pull-right\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t<!-- <div class=\"form-group\">\n\t\t\t\t\t\t\t<button v-on:click.prevent=\"doThis\" class=\"btn btn-sm\">BTN</button>\n\t\t\t\t\t\t</div> -->\n\t\t\t\t\t\t<!-- /.form-group -->\n\t\t\t\t  <div class=\"form-group\" _v-74bad2ad=\"\">\n\t\t\t\t    <label class=\"sr-only\" for=\"priority-number\" _v-74bad2ad=\"\">Priority</label>\n\t\t\t\t\t\t<select id=\"priority-{{item.id}}\" v-model=\"item.priority\" class=\"form-control\" number=\"\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t\t<option v-for=\"option in options\" v-bind:value=\"option.value\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t\t\t{{option.text}}\n\t\t\t\t\t\t\t</option>\n\t\t\t\t\t\t</select>\n\t\t\t\t  </div>\n\t\t\t\t  <div class=\"form-group\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t<div class=\"onoffswitch \" _v-74bad2ad=\"\">\n\t\t\t\t\t\t\t<input id=\"smitch-{{item.id}}\" v-on:click=\"doThis\" v-model=\"item.approved\" type=\"checkbox\" name=\"onoffswitch\" class=\"onoffswitch-checkbox\" _v-74bad2ad=\"\">\n\n\t\t\t\t\t\t\t<label class=\"onoffswitch-label\" for=\"smitch-{{item.id}}\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t\t\t\t<span class=\"onoffswitch-inner\" _v-74bad2ad=\"\"></span>\n\t\t\t\t\t\t\t\t\t<span class=\"onoffswitch-switch\" _v-74bad2ad=\"\"></span>\n\t\t\t\t\t\t\t</label>\n\t\t\t\t\t\t</div>\n\t\t\t\t    </div>\n\t\t\t\t\t</form>\n\t\t\t\t</div><!-- /.col-md-6 -->\n\t\t\t</div><!-- /.row -->\n\t  </div>  <!-- /.box-header -->\n\n\n        <div v-if=\"showBody\" class=\"box-body\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t<p _v-74bad2ad=\"\">{{item.announcement}}</p>\n\t\t\t\t\t\t<div class=\"announcement-info\" _v-74bad2ad=\"\">\n\t\t\t\t\t\t\tSubmitted On: {{item.submission_date}}<br _v-74bad2ad=\"\">\n\t\t\t\t\t\t\tBy: {{item.author_name}}<br _v-74bad2ad=\"\">\n\t\t\t\t\t\t\t{{item.author_email}} {{item.author_phone}}<br _v-74bad2ad=\"\">\n\t\t\t\t\t\t\tDates: {{item.start_date}} - {{item.end_date}}\n\n\t\t\t\t\t\t</div>\n\n      </div><!-- /.box-body -->\n\t\t\t<div class=\"box-footer list-footer\" _v-74bad2ad=\"\">\n\t\t\t\t<h6 _v-74bad2ad=\"\">Submitted On: {{item.submission_date}}, By: {{item.author_name}}, Dates: {{item.start_date}} - {{item.end_date}}</h6>\n\n\t\t\t</div><!-- /.box-footer -->\n\n\t</div><!-- /.box- -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n  <div class=\"box box-default box-solid\" _v-74bad2ad=\"\">\n    <div class=\"box-header with-border\" _v-74bad2ad=\"\">\n        <div class=\"row\" _v-74bad2ad=\"\">\n            <div class=\"col-sm-12\" _v-74bad2ad=\"\">\n                <form class=\"form-inline pull-right\" _v-74bad2ad=\"\">\n                  <div class=\"form-group\" _v-74bad2ad=\"\">\n                    <label class=\"sr-only\" for=\"priority-number\" _v-74bad2ad=\"\">Priority</label>\n                        <select id=\"priority-{{item.id}}\" v-model=\"item.priority\" class=\"form-control\" number=\"\" _v-74bad2ad=\"\">\n                            <option v-for=\"option in options\" v-bind:value=\"option.value\" _v-74bad2ad=\"\">\n                                {{option.text}}\n                            </option>\n                        </select>\n                  </div>\n                  <div class=\"form-group\" _v-74bad2ad=\"\">\n                          <label _v-74bad2ad=\"\">approved:</label>\n                      </div><!-- /.form-group -->\n                     <div class=\"form-group\" _v-74bad2ad=\"\">\n                          <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"doThis\" :value=\"isApproved\" _v-74bad2ad=\"\">\n                          </vui-flip-switch>\n                      </div>\n                  </form>\n              </div><!-- /.col-md-12 -->\n          </div><!-- /.row -->\n        <div class=\"row\" _v-74bad2ad=\"\">\n          <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-74bad2ad=\"\">\n            <div class=\"col-sm-12\" _v-74bad2ad=\"\">\n                <h6 class=\"box-title\" _v-74bad2ad=\"\">{{item.title}}</h6>\n            </div><!-- /.col-md-12 -->\n          </a>\n        </div><!-- /.row -->\n\n    </div>  <!-- /.box-header -->\n\n\n      <div v-if=\"showBody\" class=\"box-body\" _v-74bad2ad=\"\">\n                      <p _v-74bad2ad=\"\">{{item.announcement}}</p>\n                      <div class=\"announcement-info\" _v-74bad2ad=\"\">\n                          Submitted On: {{item.submission_date}}<br _v-74bad2ad=\"\">\n                          By: {{item.user_name}}<br _v-74bad2ad=\"\">\n                          {{item.user_email}} {{item.user_phone}}<br _v-74bad2ad=\"\">\n                          Dates: {{item.start_date}} - {{item.end_date}}\n\n                      </div>\n\n    </div><!-- /.box-body -->\n    <div class=\"box-footer list-footer\" _v-74bad2ad=\"\">\n        <div class=\"row\" _v-74bad2ad=\"\">\n            <div class=\"col-sm-7\" _v-74bad2ad=\"\">\n                <h5 _v-74bad2ad=\"\">Live {{timefromNow}}</h5>\n            </div><!-- /.col-md-7 -->\n            <div class=\"col-sm-5\" _v-74bad2ad=\"\">\n                <div class=\"btn-group pull-right\" _v-74bad2ad=\"\">\n                        <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-74bad2ad=\"\"><i class=\"fa fa-pencil\" _v-74bad2ad=\"\"></i></button>\n                        <!-- <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\"><i class=\"fa fa-eye\"></i></button> -->\n                </div><!-- /.btn-toolbar -->\n\n            </div><!-- /.col-md-7 -->\n        </div><!-- /.row -->\n    </div><!-- /.box-footer -->\n</div><!-- /.box- -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.onoffswitch[_v-74bad2ad] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-74bad2ad] {\n    display: none;\n}\n.onoffswitch-label[_v-74bad2ad] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-74bad2ad] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-74bad2ad]:before, .onoffswitch-inner[_v-74bad2ad]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-74bad2ad]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-74bad2ad]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-74bad2ad] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-74bad2ad] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-74bad2ad] {\n    right: 0px;\n}\n\nselect.form-control[_v-74bad2ad] {\n\theight:22px;\n\tborder: 1px solid #999999;\n}\n\n\nh6[_v-74bad2ad] {\n\tmargin-top: 0;\n\tmargin-bottom: 0;\n}\n.form-group[_v-74bad2ad] {\n\t/*border: 1px solid red;*/\n}\n.form-group label[_v-74bad2ad]{\n\tmargin-bottom: 0;\n}\n.box.box-solid.box-default[_v-74bad2ad] {\n\tborder: 1px solid #999999;\n}\n"] = false
+    __vueify_insert__.cache["\n.box[_v-74bad2ad] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-74bad2ad] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-74bad2ad] {\n    padding: 3px;\n}\n\nbutton.footer-btn[_v-74bad2ad] {\n    border-color: #1B1B1B;\n\n}\n\nh5.box-footer[_v-74bad2ad] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-74bad2ad] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-74bad2ad] {\n    color: #1B1B1B;\n}\n.emutoday[_v-74bad2ad] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-74bad2ad] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.external[_v-74bad2ad]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.news[_v-74bad2ad]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-74bad2ad]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-74bad2ad] {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-74bad2ad] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n\n.onoffswitch[_v-74bad2ad] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-74bad2ad] {\n    display: none;\n}\n.onoffswitch-label[_v-74bad2ad] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-74bad2ad] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-74bad2ad]:before, .onoffswitch-inner[_v-74bad2ad]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-74bad2ad]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-74bad2ad]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-74bad2ad] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-74bad2ad] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-74bad2ad] {\n    right: 0px;\n}\n\nselect.form-control[_v-74bad2ad] {\n    height:22px;\n    border: 1px solid #999999;\n}\nh6[_v-74bad2ad] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-74bad2ad] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-74bad2ad] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-74bad2ad]{\n    margin-bottom: 0;\n}\n\n.box-footer[_v-74bad2ad] {\n    padding-top: 4px;\n    padding-bottom: 4px;\n\n}\n.box.box-solid.box-default[_v-74bad2ad] {\n    border: 1px solid #999999;\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -16389,12 +16448,62 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-74bad2ad", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],9:[function(require,module,exports){
+},{"./VuiFlipSwitch.vue":9,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],9:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.vuiflipswitch {\n    position: relative; width: 36px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.vuiflipswitch-checkbox {\n    display: none;\n}\n.vuiflipswitch-label {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 1px solid #666666; border-radius: 4px;\n}\n.vuiflipswitch-inner {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.vuiflipswitch-inner:before, .vuiflipswitch-inner:after {\n    display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;\n    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.vuiflipswitch-inner:before {\n    content: \"Y\";\n    padding-left: 5px;\n    background-color: #EEEEEE; color: #605CA8;\n}\n.vuiflipswitch-inner:after {\n    content: \"N\";\n    padding-right: 5px;\n    background-color: #EEEEEE; color: #666666;\n    text-align: right;\n}\n.vuiflipswitch-switch {\n    display: block;\n    width: 16px;\n    margin: 0;\n    background: #666666;\n    position: absolute; top: 0; bottom: 0;\n    /*right: 16px;*/\n    /*border: 2px solid #666666; */\n    border-radius: 4px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-inner {\n    margin-left: 0;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-switch {\n    right: 0px;\n    background-color: #605CA8;\n}\nselect.form-control {\n    height:22px;\n    border: 1px solid #666666;\n}\n\n\nh6 {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group {\n    /*border: 1px solid red;*/\n}\n.form-group label{\n    margin-bottom: 0;\n}\n.box.box-solid.box-default {\n    border: 1px solid #666666;\n}\n")
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    props: {
+        disabled: Boolean,
+        checked: [Boolean, Number],
+        value: Number
+    },
+    ready: function ready() {
+        this.value == !!this.checked;
+    },
+
+    data: function data() {
+        return {
+            // compval: $('#slct').val()
+        };
+    },
+    methods: {},
+    events: {}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"vuiflipswitch\">\n    <input v-model=\"value\" type=\"checkbox\" name=\"vuiflipswitch\" class=\"vuiflipswitch-checkbox\" :disabled=\"disabled\" lazy=\"\">\n    <label class=\"vuiflipswitch-label\" :class=\"{checked:value}\">\n            <span class=\"vuiflipswitch-inner\"></span>\n            <span class=\"vuiflipswitch-switch\"></span>\n    </label>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.vuiflipswitch {\n    position: relative; width: 36px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.vuiflipswitch-checkbox {\n    display: none;\n}\n.vuiflipswitch-label {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 1px solid #666666; border-radius: 4px;\n}\n.vuiflipswitch-inner {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.vuiflipswitch-inner:before, .vuiflipswitch-inner:after {\n    display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;\n    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.vuiflipswitch-inner:before {\n    content: \"Y\";\n    padding-left: 5px;\n    background-color: #EEEEEE; color: #605CA8;\n}\n.vuiflipswitch-inner:after {\n    content: \"N\";\n    padding-right: 5px;\n    background-color: #EEEEEE; color: #666666;\n    text-align: right;\n}\n.vuiflipswitch-switch {\n    display: block;\n    width: 16px;\n    margin: 0;\n    background: #666666;\n    position: absolute; top: 0; bottom: 0;\n    /*right: 16px;*/\n    /*border: 2px solid #666666; */\n    border-radius: 4px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-inner {\n    margin-left: 0;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-switch {\n    right: 0px;\n    background-color: #605CA8;\n}\nselect.form-control {\n    height:22px;\n    border: 1px solid #666666;\n}\n\n\nh6 {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group {\n    /*border: 1px solid red;*/\n}\n.form-group label{\n    margin-bottom: 0;\n}\n.box.box-solid.box-default {\n    border: 1px solid #666666;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-83bd83d2", module.exports)
+  } else {
+    hotAPI.update("_v-83bd83d2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],10:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _AnnouncementApp = require('./components/AnnouncementApp.vue');
+
+var _AnnouncementApp2 = _interopRequireDefault(_AnnouncementApp);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16402,8 +16511,8 @@ var Vue = require('vue');
 
 Vue.use(_vueResource2.default);
 
-var moment = require('moment');
-// import Validator from 'easiest-js-validator';
+// var moment = require('moment');
+
 // Vue.http.headers.common['X_CSRF-TOKEN'] = document.querySelector('input[name="_token"]').value;
 // var vueForm = require('vue-form');
 // Vue.use(vueForm);
@@ -16420,22 +16529,22 @@ var moment = require('moment');
 // })
 
 new Vue({
-  el: '#vue-announcement-app',
-  components: {
-    AnnouncementApp: require('./components/AnnouncementApp.vue')
-  },
-  http: {
-    headers: {
-      // You could also store your token in a global object,
-      // and reference it here. APP.token
-      'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-    }
-  },
-  ready: function ready() {
-    console.log('new Vue AnnouncementApp ready');
-  }
+        el: '#vue-announcement-app',
+        components: {
+                AnnouncementApp: _AnnouncementApp2.default
+        },
+        http: {
+                headers: {
+                        // You could also store your token in a global object,
+                        // and reference it here. APP.token
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                }
+        },
+        ready: function ready() {
+                console.log('new Vue AnnouncementApp ready');
+        }
 });
 
-},{"./components/AnnouncementApp.vue":7,"moment":1,"vue":5,"vue-resource":4}]},{},[9]);
+},{"./components/AnnouncementApp.vue":7,"moment":1,"vue":5,"vue-resource":4}]},{},[10]);
 
 //# sourceMappingURL=vue-announcement-app.js.map

@@ -32,10 +32,14 @@ class EventPresenter extends Presenter
       return date_format($this->start_date, 'D F j\\, Y');
     }
 
+    public function eventFeaturedDateString(){
+
+      return date_format($this->start_date, 'M d');
+    }
     //From 10:00 AM to 5:00 PM
     public function displayTimeRange()
     {
-      return 'From ' . $this->start_time . 'to ' . $this->end_time;
+      return 'From ' . $this->start_time . ' to ' . $this->end_time;
     }
 
 }

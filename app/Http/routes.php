@@ -87,8 +87,10 @@ Route::group(['prefix' => 'api'], function() {
     Route::patch('magazine/saveas/{id}', 'Api\MagazineController@saveAs');
     Route::resource('magazine', 'Api\MagazineController');
 
+    Route::get('page/appLoad', ['as' => 'api.page.appload', 'uses' => 'Api\PageController@appLoad']);
     Route::get('page', ['as' => 'api.page', 'uses' => 'Api\PageController@index']);
     Route::post('page/delete', ['as' => 'api.page.delete', 'uses' => 'Api\PageController@delete']);
+    Route::patch('page/saveas/{id}', 'Api\PageController@saveAs');
 
     Route::resource('page', 'Api\PageController');
 

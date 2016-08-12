@@ -16048,13 +16048,15 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
 var _StoryPod = require('./StoryPod.vue');
 
 var _StoryPod2 = _interopRequireDefault(_StoryPod);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var moment = require('moment');
 
 // import EventViewContent from './EventViewContent.vue'
 exports.default = {
@@ -16073,7 +16075,7 @@ exports.default = {
 
     data: function data() {
         return {
-            currentDate: moment(),
+            currentDate: (0, _moment2.default)(),
             allitems: [],
             items: [],
             xitems: []
@@ -16116,7 +16118,7 @@ exports.default = {
         },
         filterItemsApproved: function filterItemsApproved(items) {
             return items.filter(function (item) {
-                return moment(item.start_date).isAfter(moment()) && item.is_approved === 1;
+                return (0, _moment2.default)(item.start_date).isAfter((0, _moment2.default)()) && item.is_approved === 1;
             });
         },
         filterItemsUnapproved: function filterItemsUnapproved(items) {
@@ -16126,7 +16128,7 @@ exports.default = {
         },
         filterItemsLive: function filterItemsLive(items) {
             return items.filter(function (item) {
-                return moment(item.start_date).isSameOrBefore(moment()) && item.is_approved === 1; // true
+                return (0, _moment2.default)(item.start_date).isSameOrBefore((0, _moment2.default)()) && item.is_approved === 1; // true
 
                 // return moment(item.start_date).isAfter(moment())
                 // return item.live === 1
@@ -16139,7 +16141,7 @@ exports.default = {
         },
         updateRecord: function updateRecord(item) {
             var currentRecordId = item.id;
-            item.start_date = moment(item.start_date, "MM-DD-YYYY").format("YYYY-MM-DD");
+            item.start_date = (0, _moment2.default)(item.start_date, "MM-DD-YYYY").format("YYYY-MM-DD");
 
             var currentRecord = item;
             this.$http.patch('/api/story/' + item.id, item, {
@@ -16320,14 +16322,15 @@ var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    color: #1B1B1B;\n}\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n")
 'use strict';
 
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
 var _VuiFlipSwitch = require('./VuiFlipSwitch.vue');
 
 var _VuiFlipSwitch2 = _interopRequireDefault(_VuiFlipSwitch);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var moment = require('moment');
-
 
 module.exports = {
     props: ['item', 'pid'],
@@ -16356,7 +16359,7 @@ module.exports = {
     },
     computed: {
         timefromNow: function timefromNow() {
-            return moment(this.item.start_date).fromNow();
+            return (0, _moment2.default)(this.item.start_date).fromNow();
         },
         isApproved: function isApproved() {
             return this.item.is_approved;
@@ -16501,12 +16504,12 @@ module.exports = {
             read: function read(val) {
                 console.log('read-val' + val);
 
-                return val ? moment(val).format('MM-DD-YYYY') : '';
+                return val ? (0, _moment2.default)(val).format('MM-DD-YYYY') : '';
             },
             write: function write(val, oldVal) {
                 console.log('write-val' + val + '--' + oldVal);
 
-                return moment(val).format('YYYY-MM-DD');
+                return (0, _moment2.default)(val).format('YYYY-MM-DD');
             }
         }
     },
@@ -16525,7 +16528,7 @@ module.exports = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"box box-solid {{item.group}}\" _v-2522fd54=\"\">\n\n            <div class=\"box-header with-border\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <div class=\"pull-left\" _v-2522fd54=\"\">\n                            <span class=\"item-type-icon\" :class=\"typeIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"promotedIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"featuredIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"homeIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"archivedIcon\" _v-2522fd54=\"\"></span>\n                        </div><!-- /.pull-left -->\n                        <div class=\" form-inline pull-right\" _v-2522fd54=\"\">\n<div class=\"form-group\" _v-2522fd54=\"\">\n    <label _v-2522fd54=\"\">approved:</label>\n</div><!-- /.form-group -->\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n\n                                <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"doThis\" :value=\"isApproved\" _v-2522fd54=\"\">\n                                </vui-flip-switch>\n                            </div>\n                        </div><!-- /.pull-right -->\n                    </div><!-- /.col-md-12-->\n                </div><!-- /.row -->\n                <div class=\"row\" _v-2522fd54=\"\">\n                        <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <h6 class=\"box-title\" _v-2522fd54=\"\">{{item.title}}</h6>\n                    </div><!-- /.col-md-12 -->\n  </a>\n                </div><!-- /.row -->\n\n        </div>  <!-- /.box-header -->\n\n      <div v-if=\"showBody\" class=\"box-body\" _v-2522fd54=\"\">\n            <p _v-2522fd54=\"\">ID: {{item.id}}</p>\n            <p _v-2522fd54=\"\">Type: {{item.type}}</p>\n            <p _v-2522fd54=\"\">Title: {{item.title}}</p>\n            <p _v-2522fd54=\"\">Approved: {{item.is_approved}}</p>\n            <p _v-2522fd54=\"\">Promoted: {{item.is_promoted}}</p>\n            <p _v-2522fd54=\"\">Featured: {{item.is_featured}}</p>\n            <p _v-2522fd54=\"\">Live: {{item.is_live}}</p>\n            <p _v-2522fd54=\"\">Archived: {{item.is_archived}}</p>\n            <p _v-2522fd54=\"\">Tags: {{item.tags | json}}</p>\n            <p _v-2522fd54=\"\">Start Date: {{item.start_date}}</p>\n\n      </div><!-- /.box-body -->\n            <div class=\"box-footer list-footer\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-sm-7\" _v-2522fd54=\"\">\n                        <h5 _v-2522fd54=\"\">Live {{timefromNow}}</h5>\n                    </div><!-- /.col-md-7 -->\n                    <div class=\"col-sm-5\" _v-2522fd54=\"\">\n                        <div class=\"btn-group pull-right\" _v-2522fd54=\"\">\n                                <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-pencil\" _v-2522fd54=\"\"></i></button>\n                                <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-eye\" _v-2522fd54=\"\"></i></button>\n                        </div><!-- /.btn-toolbar -->\n\n                    </div><!-- /.col-md-7 -->\n                </div><!-- /.row -->\n\n\n            </div><!-- /.box-footer -->\n\n    </div><!-- /.box- -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"box box-solid {{item.group}}\" _v-2522fd54=\"\">\n\n          <div class=\"box-header with-border\" _v-2522fd54=\"\">\n              <div class=\"row\" _v-2522fd54=\"\">\n                  <div class=\"col-md-12\" _v-2522fd54=\"\">\n                      <div class=\"pull-left\" _v-2522fd54=\"\">\n                          <span class=\"item-type-icon\" :class=\"typeIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"promotedIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"featuredIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"homeIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"archivedIcon\" _v-2522fd54=\"\"></span>\n                      </div><!-- /.pull-left -->\n                      <div class=\" form-inline pull-right\" _v-2522fd54=\"\">\n                          <div class=\"form-group\" _v-2522fd54=\"\">\n                              <label _v-2522fd54=\"\">approved:</label>\n                          </div><!-- /.form-group -->\n                          <div class=\"form-group\" _v-2522fd54=\"\">\n\n                              <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"doThis\" :value=\"isApproved\" _v-2522fd54=\"\">\n                              </vui-flip-switch>\n                          </div>\n                      </div><!-- /.pull-right -->\n                  </div><!-- /.col-md-12-->\n              </div><!-- /.row -->\n              <div class=\"row\" _v-2522fd54=\"\">\n                      <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-2522fd54=\"\">\n                  <div class=\"col-md-12\" _v-2522fd54=\"\">\n                      <h6 class=\"box-title\" _v-2522fd54=\"\">{{item.title}}</h6>\n                  </div><!-- /.col-md-12 -->\n</a>\n              </div><!-- /.row -->\n\n      </div>  <!-- /.box-header -->\n\n    <div v-if=\"showBody\" class=\"box-body\" _v-2522fd54=\"\">\n          <p _v-2522fd54=\"\">ID: {{item.id}}</p>\n          <p _v-2522fd54=\"\">Type: {{item.type}}</p>\n          <p _v-2522fd54=\"\">Title: {{item.title}}</p>\n          <p _v-2522fd54=\"\">Approved: {{item.is_approved}}</p>\n          <p _v-2522fd54=\"\">Promoted: {{item.is_promoted}}</p>\n          <p _v-2522fd54=\"\">Featured: {{item.is_featured}}</p>\n          <p _v-2522fd54=\"\">Live: {{item.is_live}}</p>\n          <p _v-2522fd54=\"\">Archived: {{item.is_archived}}</p>\n          <p _v-2522fd54=\"\">Tags: {{item.tags | json}}</p>\n          <p _v-2522fd54=\"\">Start Date: {{item.start_date}}</p>\n\n    </div><!-- /.box-body -->\n          <div class=\"box-footer list-footer\" _v-2522fd54=\"\">\n              <div class=\"row\" _v-2522fd54=\"\">\n                  <div class=\"col-sm-7\" _v-2522fd54=\"\">\n                      <h5 _v-2522fd54=\"\">Live {{timefromNow}}</h5>\n                  </div><!-- /.col-md-7 -->\n                  <div class=\"col-sm-5\" _v-2522fd54=\"\">\n                      <div class=\"btn-group pull-right\" _v-2522fd54=\"\">\n                              <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-pencil\" _v-2522fd54=\"\"></i></button>\n                              <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-eye\" _v-2522fd54=\"\"></i></button>\n                      </div><!-- /.btn-toolbar -->\n\n                  </div><!-- /.col-md-7 -->\n              </div><!-- /.row -->\n\n\n          </div><!-- /.box-footer -->\n\n  </div><!-- /.box- -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

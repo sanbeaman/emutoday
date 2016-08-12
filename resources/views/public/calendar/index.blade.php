@@ -20,62 +20,8 @@
                       </div>
 
                       <div class="row large-up-5 medium-up-3 show-for-medium" data-equalizer>
-                        <div class="column">
-                          <div class="date-tag">Jul 22</div>
-                          <img class="topic-image" src="/assets/imgs/calendar/baseball.png" alt="calendar-feature"/>
-                          <div class="calendar-content">
-                            <div class="calendar-text-content" data-equalizer-watch>
-                              <h6>TRUEMU night at Comerica Park</h6>
-                              <p>From 7:00 PM to 10:00 PM</p>
-                              <p>Comerica Park </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="column">
-                          <div class="date-tag">Jul 25</div>
-                          <img  class="topic-image" src="/assets/imgs/calendar/saturn.png" alt="calendar-feature"/>
-                          <div class="calendar-content">
-                            <div class="calendar-text-content" data-equalizer-watch>
-                              <h6>Saturn: Jewel of the Heavens</h6>
-                              <p>From 7:00 PM to 10:00 PM</p>
-                              <p>MJ Science Complex - 402</p>
-                            </div>
+                          @each('public.calendar.partials.featuredevent', $featuredevents, 'fevent')
 
-                          </div>
-                        </div>
-                        <div class="column">
-                          <div class="date-tag">Jul 28</div>
-                          <img  class="topic-image" src="/assets/imgs/calendar/nursing.png" alt="calendar-feature"/>
-                          <div class="calendar-content">
-                            <div class="calendar-text-content" data-equalizer-watch>
-                              <h6>Learn about the BS in Nursing</h6>
-                              <p>From 3:30 PM to 4:30 PM</p>
-                              <p>Marshall Building - 108</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="column">
-                          <div class="date-tag">Jul 31</div>
-                          <img  class="topic-image" src="/assets/imgs/calendar/horse.png" alt="calendar-feature"/>
-                          <div class="calendar-content">
-                            <div class="calendar-text-content" data-equalizer-watch>
-                              <h6>The Gala of the Royal Horses</h6>
-                              <p>From 7:00 PM to 9:00 PM</p>
-                              <p>Convocation Center - Arena</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="column">
-                          <div class="date-tag">Sep 10</div>
-                          <img  class="topic-image" src="/assets/imgs/calendar/note.png" alt="calendar-feature"/>
-                          <div class="calendar-content">
-                            <div class="calendar-text-content" data-equalizer-watch>
-                              <h6>Campus Jam </h6>
-                              <p>From 5:00 PM to 10:00 PM</p>
-                              <p>Student Center Patio</p>
-                            </div>
-                          </div>
-                        </div>
                       </div><!-- row event block grid end -->
                     </div> <!--end of five events bar-->
 
