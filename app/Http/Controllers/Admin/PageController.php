@@ -115,7 +115,7 @@ class PageController extends Controller
         // return view('admin.page.form', compact('page', 'storys'));
         //return view('admin.magazine.edit', compact('page', 'storys'));
         //
-        dd($page,$storys,$storyimgs);
+        // dd($page,$storys,$storyimgs);
         return view('admin.page.edit', compact('page', 'storys','storyimgs'));
 
         //  return view('admin.page.edit', compact('page', 'storys'));
