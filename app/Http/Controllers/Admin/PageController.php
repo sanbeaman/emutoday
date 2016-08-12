@@ -22,31 +22,14 @@ class PageController extends Controller
         $this->story = $story;
         $this->storyImage = $storyImage;
     }
-    // dataTable.addColumn({ type: 'string', id: 'President' });
-    // dataTable.addColumn({ type: 'date', id: 'Start' });
-    // dataTable.addColumn({ type: 'date', id: 'End' });
-    // dataTable.addRows([
-    //     JSvars.pagearray
-     //  [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ],
-     //  [ 'Adams',      new Date(1797, 2, 4),  new Date(1801, 2, 4) ],
-     //  [ 'Jefferson',  new Date(1801, 2, 4),  new Date(1809, 2, 4) ]
+
 
      public function appLoad(){
          $pages = $this->page->orderBy('updated_at', 'desc')->get();
 
          $pgs = \DB::table('pages')->select('id', 'uri','start_date', 'end_date')->get();
          $strys = \DB::table('storys')->select('id', 'title', 'start_date', 'end_date')->get();
-        //   $flattened = $pages->map(function ($item, $key) {
-        //       $id = $item['id'];
-        //       $sdate = $item['start_date'];//->toDateString();
-        //       $edate = $item['end_date'];
-        //       return array_map($id,$sdate->toDateString(),$edate->toDateString());
-        //   });
 
-        //  $flattened = $pages->flatMap(function ($values) {
-        //      return array_map('strtoupper', $values);
-        //  });
-        //  $pagelist = $flattened;
          JavaScript::put([
              'jsis' => 'foobar',
              'pagearray' => $pgs,
@@ -57,33 +40,11 @@ class PageController extends Controller
     public function index()
     {
         $pages = $this->page->orderBy('updated_at', 'desc')->get();
-        // $cols = [
-        //     {id: 'id', label: 'ID', type: 'string'},
-        //     {id: 'start', label: 'StartDate', type: 'date'},
-        //     {id: 'end', label: 'EndDate', type: 'date'}
-        // ];
-        // $colarray = array();
-        // $pagesForGraph = $pages->map(function($item, $key) use ($colarray){
-        //
-        //     $colitem = "{c:[{v:".$item['id']."},{v:".$item['start_date']."},{v:".$item['end_date']."}]}";
-        //     array_push($colarray,$colitem);
-        //     return $colitem;
-        // });
-        // // $flatPageForGraph = $pagesForGraph->flatten();
-        //     dd($colarray);
-        // $pageJson = "{cols:[{id: 'id', label: 'ID', type: 'string'},{id: 'start', label: 'StartDate', type: 'date'},{id: 'end', label: 'EndDate', type: 'date'}],rows:". $pagesForGraph  ."}";
-        //
-        //
-        //        dd($pageJson);
-        //
-        //        JavaScript::put([
-        //            'jsis' => 'foobar',
-        //            'pagejson' => $pageJson
-        //        ]);
+
         $pgselect = \DB::table('pages')->select('id', 'uri','start_date', 'end_date')->get();
         $strys = \DB::table('storys')->select('id', 'title', 'start_date', 'end_date')->get();
         $pgs = collect($pgselect)->toJson();
-    
+
         return view('admin.page.index',compact('pages','pgs','strys'));
     }
 
@@ -154,7 +115,7 @@ class PageController extends Controller
         // return view('admin.page.form', compact('page', 'storys'));
         //return view('admin.magazine.edit', compact('page', 'storys'));
         //
-        // dd($original_story_ids);
+        dd($page,$storys,$storyimgs);
         return view('admin.page.edit', compact('page', 'storys','storyimgs'));
 
         //  return view('admin.page.edit', compact('page', 'storys'));

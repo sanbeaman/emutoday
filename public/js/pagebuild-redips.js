@@ -68,9 +68,6 @@ redipsInit = function () {
 
     checkAndSetStoryPositions();
 };
-
-
-
 // show TD content
 showContent = function () {
     // get content of TD cells in right table

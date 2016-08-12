@@ -33181,6 +33181,10 @@ var _vueResource = require('vue-resource');
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
+var _PageChartApp = require('./components/PageChartApp.vue');
+
+var _PageChartApp2 = _interopRequireDefault(_PageChartApp);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Vue = require('vue');
@@ -33192,10 +33196,10 @@ Vue.use(VueCharts);
 new Vue({
   el: '#vue-chart-app',
   components: {
-    PageChartApp: require('./components/PageChartApp.vue')
+    PageChartApp: _PageChartApp2.default
   },
   ready: function ready() {
-    alert('vue ready');
+    console.log('vue ready');
   }
 });
 
