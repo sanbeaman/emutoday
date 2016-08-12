@@ -3,7 +3,7 @@
     <!-- tables inside this DIV could have drag-able content -->
     <!-- left container -->
     <div class="row">
-        <div id="left" class="col-md-6">
+        {{-- <div id="left" class="col-md-6">
             <table id="table1">
                 <colgroup>
                     <col width="50"/>
@@ -36,7 +36,7 @@
                 </tr>
         @endforeach
     </table>
-</div>
+</div> --}}
 
         <!-- right container -->
         <div id="right" class="col-md-6">
