@@ -149,20 +149,22 @@ public function imageUpload(Request $request)
 
 public function queue(Story $story) {
     $storys = $this->story;
+    $stypes  = collect(\emutoday\StoryType::select('name','shortname')->get());
 
     \JavaScript::put([
         'records' => $storys
     ]);
-    return view('admin.story.queue', compact('storys'));
+    return view('admin.story.queue', compact('storys', 'stypes'));
 }
 
 public function app(Story $story) {
     $storys = $this->story;
+    $stypes  = collect(\emutoday\StoryType::select('name','shortname')->get());
 
     \JavaScript::put([
         'records' => $storys
     ]);
-    return view('admin.story.app', compact('storys'));
+    return view('admin.story.app', compact('storys', 'stypes'));
 }
 public function addImage($id)
 {

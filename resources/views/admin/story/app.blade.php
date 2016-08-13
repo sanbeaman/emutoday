@@ -19,7 +19,7 @@
     @endsection
 @section('content')
     <div id="vue-story-app">
-            <story-app>
+            <story-app stypes="{{$stypes}}">
             </story-app>
     </div><!-- /.vue-story-app -->
 

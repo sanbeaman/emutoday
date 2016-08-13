@@ -3,12 +3,13 @@ var Vue = require('vue');
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
 
-var moment = require('moment');
+import moment from 'moment';
+import StoryApp from './components/StoryApp.vue';
 
 new Vue({
     el: '#vue-story-app',
     components: {
-      StoryApp: require('./components/StoryApp.vue')
+      StoryApp
     },
         http: {
                 headers: {

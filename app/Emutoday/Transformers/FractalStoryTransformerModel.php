@@ -16,7 +16,7 @@ class FractalStoryTransformerModel extends Fractal\TransformerAbstract
             'user' => $story->user,
             'author_id' => $story->author_id,
             'author_info' => $story->author_info,
-            'type'   => $story->story_type,
+            'story_type'   => $story->story_type,
             'group'  => $story->storyGroup->group,
             'title'    =>  $story->title,
             'slug'    =>  $story->slug,

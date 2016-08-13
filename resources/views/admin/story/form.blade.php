@@ -38,14 +38,20 @@
                 <div class="box box-primary">
                         <div class="box-header with-border">
                             <div id="vue-box-tools">
-                                <box-tools v-ref:boxtools rte="{{$stypes}}" viewtype="form"
+                                <box-tools v-ref:boxtools rte="{{$stype}}" viewtype="form"
                                 :current-user="{{$currentUser}}"
                                 :record-id="{{$story->exists ? $story->id: null}}"
                                 ></box-tools>
                             </div>
                         </div> 	<!-- /.box-header -->
                     <div class="box-body">
-                        <story-form :cuser="{{$currentUser}}" recordexists="{{$story->exists ? true: false}}" storytype="{{$stypes}}" editid="{{$story->exists ? $story->id : null }}">
+                        <story-form
+                            :cuser="{{$currentUser}}"
+                            recordexists="{{$story->exists ? true: false}}"
+
+                            stypes="{{$stypes}}"
+
+                            editid="{{$story->exists ? $story->id : null }}">
                             <input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
                         </story-form>
                   </div><!-- /.box-body -->

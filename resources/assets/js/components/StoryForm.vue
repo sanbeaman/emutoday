@@ -100,7 +100,24 @@
             </div><!-- /.col-md-12 -->
         </div><!-- /.row -->
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
+                <template v-if="singleStype">
+                    <input v-model="record.story_type" :value="s_types" type="text" disabled="disabled" />
+                </template>
+                <template v-else>
+                    <label>Story Type</label>
+                        <select v-model="record.story_type">
+                            <option v-for="stype in s_types" v-bind:value="stype.shortname">
+                             {{ stype.name }}
+                         </option>
+                    </select>
+                </template>
+
+                <!-- <div class="form-group pull-right">
+                    {{record | json}}
+                </div> -->
+            </div><!-- /.col-md-6 -->
+            <div class="col-md-6">
                 <div class="form-group">
                     <button v-on:click="submitForm" type="submit" class="btn btn-primary">{{submitBtnLabel}}</button>
                 </div>
@@ -193,8 +210,8 @@
 </style>
 
 <script>
-var moment = require('moment')
-// import Datepicker from 'vue-bulma-datepicker'
+// var moment = require('moment')
+import moment from 'moment'
 import { updateRecordId, updateRecordIsDirty, updateRecordState} from '../vuex/actions'
 import { getRecordId, getRecordState, getRecordIsDirty } from '../vuex/getters'
 // import flatpickr from 'flatpickr';
@@ -203,7 +220,12 @@ module.exports  = {
                     cuser: {default: {}},
                     recordexists: {default: false},
                     editid: {default: ''},
-                    storytype: ''
+                    stypes: {default: {}}
+                    // stypelist: {},
+                    // stypelist1: {},
+                    // stypelist2: {}
+                    // storytype1: {default: {}},
+                    // storytype: {default: {}}
                 },
                 vuex: {
                     getters: {
@@ -230,6 +252,7 @@ module.exports  = {
 
               data: function() {
                 return {
+                    singleStype:'',
                     ckfullyloaded: false,
                     currentRecordId: null,
                     currentUser: {
@@ -299,6 +322,30 @@ module.exports  = {
                 }
               },
               computed: {
+                  s_types:function(){
+                     // var data = localStorage[key];
+                        try {
+                            this.singleStype = false;
+                            return JSON.parse(this.stypes);
+                        } catch(e) {
+                            this.singleStype = true;
+                            // this.record.story_type = this.stypes;
+                            return this.stypes;
+                        }
+                  },
+                //   s_typelist:function() {
+                //       return JSON.parse(this.stypelist);
+                  //
+                //   },
+                //   s_typelist1:function(){
+                //       return JSON.parse(this.stypelist1);
+                //   },
+                //   s_typelist2:function(){
+                //       return JSON.parse(this.stypelist2);
+                //   },
+                //   stype_list: function(){
+                //       return this.storytype;
+                //   },
                   submitBtnLabel: function() {
                       return (this.recordexists)? 'Update Story' : 'Save Story';
                   },
@@ -374,21 +421,19 @@ module.exports  = {
               },
                 created: function () {
                     this.currentDate = moment();
-                    console.log('this.currentDate=' + this.currentDate)
                     this.recordState = 'created';
-                    console.log('this.cuser==='+ this.cuser + this.$data)
-
-                    // this.set(currentUser = this.cuser;
                 },
                 ready() {
                     if (this.recordexists){
                         this.currentRecordId = this.editid;
-                        console.log('this.recordId >>>>'+     this.currentRecordId )
+                        console.log('this.recordId >>>>'+     this.currentRecordId );
+                        this.singleStype = true;
                         this.fetchCurrentRecord();
                     } else {
                         this.hasContent = true;
                         this.record.user_id = this.cuser.id;
-                        this.record.story_type = this.storytype;
+                        //this.stype_list = this.storytype;
+                        //this.record.story_type = this.storytype;
                         this.fdate = this.currentDate;
                         this.record.author_id = 0;
                         this.author = this.currentUser;
@@ -456,15 +501,15 @@ module.exports  = {
 
                             .then((response) =>{
                                     //response.status;
-                                    console.log('response.status=' + response.status);
-                                    console.log('response.ok=' + response.ok);
-                                    console.log('response.statusText=' + response.statusText);
-                                    console.log('response.data=' + response.data);
+                                    // console.log('response.status=' + response.status);
+                                    // console.log('response.ok=' + response.ok);
+                                    // console.log('response.statusText=' + response.statusText);
+                                    // console.log('response.data=' + response.data);
                                     // data = response.data;
                                     this.$set('record', response.data.data)
                                     this.$set('recordOld', response.data.data)
                                     // this.record = response.data.data;
-                                    console.log('this.record= ' + this.record);
+                                    // console.log('this.record= ' + this.record);
 
                                     this.checkOverData();
                                 }, (response) => {
@@ -477,10 +522,10 @@ module.exports  = {
                     },
                     checkOverData: function() {
                             this.hasContent = true;
-                            console.log('this.record'+ this.record.id)
+                            // console.log('this.record'+ this.record.id)
                             this.currentRecordId = this.record.id;
                             this.content = this.record.content;
-                            console.log('this.record.start_date='+ this.record.start_date)
+                            // console.log('this.record.start_date='+ this.record.start_date)
 
 
                             this.fdate = this.record.start_date;
@@ -534,7 +579,7 @@ module.exports  = {
 
                   this.record.user_id = this.currentUser.id;
                   this.record.content = this.content;
-                  this.record.story_type = this.storytype;
+                //   this.record.story_type = this.storytype;
                   this.record.slug = this.recordSlug;
                 this.record.start_date = this.fdate;
                 //   this.record.start_date =  moment(this.fdate,"MM-DD-YYYY").format("YYYY-MM-DD HH:mm:ss");
@@ -548,10 +593,10 @@ module.exports  = {
 
                             .then((response) =>{
                                     //response.status;
-                                    console.log('response.status=' + response.status);
-                                    console.log('response.ok=' + response.ok);
-                                    console.log('response.statusText=' + response.statusText);
-                                    console.log('response.data=' + response.data.message);
+                                    // console.log('response.status=' + response.status);
+                                    // console.log('response.ok=' + response.ok);
+                                    // console.log('response.statusText=' + response.statusText);
+                                    // console.log('response.data=' + response.data.message);
 
                                  this.formMessage.msg = response.data.message;
                                 this.currentRecordId = response.data.record_id;

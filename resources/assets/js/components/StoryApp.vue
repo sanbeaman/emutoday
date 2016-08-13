@@ -1,11 +1,20 @@
 <template>
     <div class="row">
         <div class="col-md-4">
+            <div v-if="singleStype" class="form-group">
+              <label class="sr-only" for="story-type">Type</label>
+                  <select id="story-type" v-model="storytype" class="form-control">
+                      <option v-for="stype in s_types" v-bind:value="stype.shortname">
+                          {{stype.name}}
+                      </option>
+                  </select>
+            </div>
             <h3>Unapproved</h3>
-            <div id="items-all">
+
+            <div id="items-unapproved">
                 <story-pod
-                    pid="items-all"
-                    v-for="item in itemsUnapproved | orderBy 'start_date' 1"
+                    pid="items-unapproved"
+                    v-for="item in items_unapproved | orderBy 'start_date' 1 | filterBy storytype in 'story_type'"
                     @item-change="moveToApproved"
 
                     :item="item"
@@ -16,10 +25,10 @@
     </div><!-- /.col-md-4 -->
     <div class="col-md-4">
         <h3>Approved</h3>
-        <div id="items-selected">
+        <div id="items-approved">
             <story-pod
-                pid="items-selected"
-                v-for="item in itemsApproved | orderBy 'start_date' 1 "
+                pid="items-approved"
+                v-for="item in items_approved | orderBy 'start_date' 1 "
                 @item-change="moveToApproved"
 
                 :item="item"
@@ -30,10 +39,10 @@
     </div><!-- /.col-md-4 -->
     <div class="col-md-4">
         <h3>Live <small>Approved and StartDate is past</small></h3>
-        <div id="items-selected">
+        <div id="items-live">
             <story-pod
                 pid="items-live"
-                v-for="item in itemsLive | orderBy 'start_date' 1"
+                v-for="item in items_live | orderBy 'start_date' 1"
                 @item-change="moveToApproved"
 
                 :item="item"
@@ -54,6 +63,10 @@
     margin-bottom: 4px;
 
 }
+#items-live .box {
+    margin-bottom: 4px;
+
+}
 </style>
 <script>
 
@@ -65,7 +78,7 @@ export default  {
         StoryPod
     },
     props: [
-        'allrecords'
+        'allrecords','stypes'
     ],
     created(){
         // this.currentDate = moment().format();
@@ -79,13 +92,37 @@ export default  {
     },
     data: function() {
         return {
+            singleStype: false,
+            // storytypes: [
+            //     { type: 'news'},
+            //     { type: 'student'},
+            //     { type: 'emutoday'},
+            //     { type: 'article'},
+            //     { type: 'external'}
+            // ],
+             storytype:'',
+            changestorytype:'',
             currentDate: moment(),
             allitems: [],
             items: [],
-            xitems: []
+            xitems: [],
+            items_unapproved: [],
+            items_approved: [],
+            items_live: []
         }
     },
     computed: {
+        s_types:function(){
+           // var data = localStorage[key];
+              try {
+                  this.singleStype = false;
+                  return JSON.parse(this.stypes);
+              } catch(e) {
+                  this.singleStype = true;
+                  // this.record.story_type = this.stypes;
+                  return this.stypes;
+              }
+        },
         itemsApproved:function() {
             return  this.filterItemsApproved(this.allitems);
         },
@@ -101,9 +138,18 @@ export default  {
         // checkIndexWithValue: function (chitem){
         // 	return
         // },
-        customFilterFunction: function () {
-            return 'emutoday in type'
+        // customFilterFunc: function (val) {
+        //         console.log('val' + val.type)
+        //         return val.group === 'news'
+        //
+        // },
+        filterTheList:function() {
+            let self = this;
+            this.items_unapproved = this.items_unapproved.filter(function (item) {
+                return item.story_type ==  self.storytype;
+            })
         },
+
         moveToApproved: function(changeditem){
 
             // this.xitems.pop(changeditem);
@@ -248,15 +294,15 @@ export default  {
 
             .then((response) =>{
                 //response.status;
-                console.log('response.status=' + response.status);
-                console.log('response.ok=' + response.ok);
-                console.log('response.statusText=' + response.statusText);
-                console.log('response.data=' + response.data);
+                // console.log('response.status=' + response.status);
+                // console.log('response.ok=' + response.ok);
+                // console.log('response.statusText=' + response.statusText);
+                // console.log('response.data=' + response.data);
                 // data = response.data;
                 //
-                // this.$set('allitems', response.data.data)
+                this.$set('allitems', response.data.data)
 
-                this.allitems = response.data.data;
+            //    this.allitems = response.data.data;
                 // console.log('this.record= ' + this.record);
 
                 this.checkOverDataFilter();
@@ -279,8 +325,40 @@ export default  {
             // }
 
         },
+
         checkOverDataFilter: function() {
+            let self = this;
             console.log('items=' + this.allitems)
+
+            this.allitems.forEach(function(item) {
+            if (item.is_approved === 1) {
+                if (moment(item.start_date).isSameOrBefore(moment())) {
+                    self.items_live.push(item)
+                } else {
+                    self.items_approved.push(item)
+                }
+            } else {
+                self.items_unapproved.push(item)
+            }
+        });
+        console.log('items_unapproved'+ this.items_unapproved.length )
+
+        console.log('items_approved'+ this.items_approved.length )
+        // function separate_evens_from_odds(value) {
+        // 	if ( value % 2 ) {
+        // 		odd_numbers.push(value);
+        // 	}
+        // 	else {
+        // 		even_numbers.push(value);
+        // 	}
+        // }
+
+        // var array_of_numbers = [5, 7, 1, 9, 8, 5];
+        //
+        // array_of_numbers.forEach(separate_evens_from_odds);
+        //
+        // console.log(even_numbers); //[8]
+        // console.log(odd_numbers); //[5, 7, 1, 9, 5]
             // var unapprovedItems = this.allitems.filter(function(item) {
             // 	return item.approved === 0
             // });

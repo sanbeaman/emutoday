@@ -85,6 +85,7 @@ class StoryController extends ApiController
         }
     }
 
+
     // this.$http.get('/api/story/appLoad')
     public function appLoad()
     {
@@ -319,7 +320,7 @@ class StoryController extends ApiController
          $story->slug           	= $request->get('slug');
          $story->subtitle           = $request->get('subtitle');
          $story->teaser           	= $request->get('teaser');
-         $story->story_type         = $request->get('type');
+         $story->story_type         = $request->get('story_type');
          $story->author_id        = $request->get('author_id',0);
          $story->author_info        = $request->get('author_info', null);
          $story->content     	    = $request->get('content');

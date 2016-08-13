@@ -52,7 +52,12 @@ class StoryTypeController extends Controller
     public function storyTypeSetUp($stype)
     {
         $story = new Story;
+        $stypelist = \emutoday\StoryType::where('level', 1)->pluck('name','shortname')->all();
+        //$stypelist = \emutoday\StoryType::all();
+        $stypes  = collect(\emutoday\StoryType::select('name','shortname')->get());
+    //    $stypelist2 = collect(\emutoday\StoryType::select('name','shortname')->get())->toJson();
 
+        // dd($stypelist,$stypelist1);
         $user = \Auth::user();
         if ($user->hasRole('contributor_1')){
             // dd($user->id);
@@ -60,27 +65,24 @@ class StoryTypeController extends Controller
             $stype = 'news';
             $stypes = 'news';
         } else {
-            $stypelist = \emutoday\StoryType::where('level', 1)->pluck('name','shortname');
+            if($stype == 'new') {
+                $stypelist =  $stypelist;
+                $stypes = $stypes;
+            } else {
+                $stypes = $stype;
+                $stypelist =  $stypelist;
+            }
 
         }
-
-        // $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-
-        if($stype == 'story') {
-            $stypes = $stypelist;
-
-        } else {
-            $stypes = $stype;
-            $story->story_type = $stypes;
-        }
-
         JavaScript::put([
             'cuser' => $user,
             'stypes' => $stypes,
-            'storytype' => $stype
+            'storytype' => $stype,
+            'stypelist' => $stypelist
         ]);
+        // dd($stypelist,$stypelist1,$stypelist2,$stypelist3);
 
-        return view('admin.story.form', compact('story','stypes','stypelist'));
+        return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ));
 
     }
 

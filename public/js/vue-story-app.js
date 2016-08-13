@@ -16041,7 +16041,7 @@ exports.insert = function (css) {
 
 },{}],7:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n\n\n#items-unapproved .box[_v-0e037730] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n\n\n#items-unapproved .box[_v-0e037730] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n#items-live .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16063,7 +16063,7 @@ exports.default = {
     components: {
         StoryPod: _StoryPod2.default
     },
-    props: ['allrecords'],
+    props: ['allrecords', 'stypes'],
     created: function created() {
         // this.currentDate = moment().format();
     },
@@ -16075,13 +16075,37 @@ exports.default = {
 
     data: function data() {
         return {
+            singleStype: false,
+            // storytypes: [
+            //     { type: 'news'},
+            //     { type: 'student'},
+            //     { type: 'emutoday'},
+            //     { type: 'article'},
+            //     { type: 'external'}
+            // ],
+            storytype: '',
+            changestorytype: '',
             currentDate: (0, _moment2.default)(),
             allitems: [],
             items: [],
-            xitems: []
+            xitems: [],
+            items_unapproved: [],
+            items_approved: [],
+            items_live: []
         };
     },
     computed: {
+        s_types: function s_types() {
+            // var data = localStorage[key];
+            try {
+                this.singleStype = false;
+                return JSON.parse(this.stypes);
+            } catch (e) {
+                this.singleStype = true;
+                // this.record.story_type = this.stypes;
+                return this.stypes;
+            }
+        },
         itemsApproved: function itemsApproved() {
             return this.filterItemsApproved(this.allitems);
         },
@@ -16097,9 +16121,18 @@ exports.default = {
         // checkIndexWithValue: function (chitem){
         // 	return
         // },
-        customFilterFunction: function customFilterFunction() {
-            return 'emutoday in type';
+        // customFilterFunc: function (val) {
+        //         console.log('val' + val.type)
+        //         return val.group === 'news'
+        //
+        // },
+        filterTheList: function filterTheList() {
+            var self = this;
+            this.items_unapproved = this.items_unapproved.filter(function (item) {
+                return item.story_type == self.storytype;
+            });
         },
+
         moveToApproved: function moveToApproved(changeditem) {
 
             // this.xitems.pop(changeditem);
@@ -16243,15 +16276,15 @@ exports.default = {
 
             this.$http.get('/api/story/appLoad').then(function (response) {
                 //response.status;
-                console.log('response.status=' + response.status);
-                console.log('response.ok=' + response.ok);
-                console.log('response.statusText=' + response.statusText);
-                console.log('response.data=' + response.data);
+                // console.log('response.status=' + response.status);
+                // console.log('response.ok=' + response.ok);
+                // console.log('response.statusText=' + response.statusText);
+                // console.log('response.data=' + response.data);
                 // data = response.data;
                 //
-                // this.$set('allitems', response.data.data)
+                _this.$set('allitems', response.data.data);
 
-                _this.allitems = response.data.data;
+                //    this.allitems = response.data.data;
                 // console.log('this.record= ' + this.record);
 
                 _this.checkOverDataFilter();
@@ -16272,8 +16305,40 @@ exports.default = {
             //     }
             // }
         },
+
         checkOverDataFilter: function checkOverDataFilter() {
+            var self = this;
             console.log('items=' + this.allitems);
+
+            this.allitems.forEach(function (item) {
+                if (item.is_approved === 1) {
+                    if ((0, _moment2.default)(item.start_date).isSameOrBefore((0, _moment2.default)())) {
+                        self.items_live.push(item);
+                    } else {
+                        self.items_approved.push(item);
+                    }
+                } else {
+                    self.items_unapproved.push(item);
+                }
+            });
+            console.log('items_unapproved' + this.items_unapproved.length);
+
+            console.log('items_approved' + this.items_approved.length);
+            // function separate_evens_from_odds(value) {
+            // 	if ( value % 2 ) {
+            // 		odd_numbers.push(value);
+            // 	}
+            // 	else {
+            // 		even_numbers.push(value);
+            // 	}
+            // }
+
+            // var array_of_numbers = [5, 7, 1, 9, 8, 5];
+            //
+            // array_of_numbers.forEach(separate_evens_from_odds);
+            //
+            // console.log(even_numbers); //[8]
+            // console.log(odd_numbers); //[5, 7, 1, 9, 5]
             // var unapprovedItems = this.allitems.filter(function(item) {
             // 	return item.approved === 0
             // });
@@ -16302,13 +16367,13 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-0e037730=\"\">\n        <div class=\"col-md-4\" _v-0e037730=\"\">\n            <h3 _v-0e037730=\"\">Unapproved</h3>\n            <div id=\"items-all\" _v-0e037730=\"\">\n                <story-pod pid=\"items-all\" v-for=\"item in itemsUnapproved | orderBy 'start_date' 1\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-unapproved\" _v-0e037730=\"\">\n                </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h3 _v-0e037730=\"\">Approved</h3>\n        <div id=\"items-selected\" _v-0e037730=\"\">\n            <story-pod pid=\"items-selected\" v-for=\"item in itemsApproved | orderBy 'start_date' 1 \" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-approved\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h3 _v-0e037730=\"\">Live <small _v-0e037730=\"\">Approved and StartDate is past</small></h3>\n        <div id=\"items-selected\" _v-0e037730=\"\">\n            <story-pod pid=\"items-live\" v-for=\"item in itemsLive | orderBy 'start_date' 1\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-live\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n</div><!-- ./row -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-0e037730=\"\">\n        <div class=\"col-md-4\" _v-0e037730=\"\">\n            <div v-if=\"singleStype\" class=\"form-group\" _v-0e037730=\"\">\n              <label class=\"sr-only\" for=\"story-type\" _v-0e037730=\"\">Type</label>\n                  <select id=\"story-type\" v-model=\"storytype\" class=\"form-control\" _v-0e037730=\"\">\n                      <option v-for=\"stype in s_types\" v-bind:value=\"stype.shortname\" _v-0e037730=\"\">\n                          {{stype.name}}\n                      </option>\n                  </select>\n            </div>\n            <h3 _v-0e037730=\"\">Unapproved</h3>\n\n            <div id=\"items-unapproved\" _v-0e037730=\"\">\n                <story-pod pid=\"items-unapproved\" v-for=\"item in items_unapproved | orderBy 'start_date' 1 | filterBy storytype in 'story_type'\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-unapproved\" _v-0e037730=\"\">\n                </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h3 _v-0e037730=\"\">Approved</h3>\n        <div id=\"items-approved\" _v-0e037730=\"\">\n            <story-pod pid=\"items-approved\" v-for=\"item in items_approved | orderBy 'start_date' 1 \" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-approved\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h3 _v-0e037730=\"\">Live <small _v-0e037730=\"\">Approved and StartDate is past</small></h3>\n        <div id=\"items-live\" _v-0e037730=\"\">\n            <story-pod pid=\"items-live\" v-for=\"item in items_live | orderBy 'start_date' 1\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-live\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n</div><!-- ./row -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n\n\n#items-unapproved .box[_v-0e037730] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n"] = false
+    __vueify_insert__.cache["\n\n\n#items-unapproved .box[_v-0e037730] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n#items-live .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -16319,7 +16384,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"./StoryPod.vue":8,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    color: #1B1B1B;\n}\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    color: #1B1B1B;\n}\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n")
 'use strict';
 
 var _moment = require('moment');
@@ -16342,7 +16407,7 @@ module.exports = {
             record: {
                 user_id: '',
                 title: '',
-                type: '',
+                story_type: '',
                 start_date: ''
             }
 
@@ -16355,7 +16420,7 @@ module.exports = {
     ready: function ready() {
         //ready function
         // this.record = this.props.item;
-        console.log('type' + this.item.type);
+        console.log('type' + this.item.story_type);
     },
     computed: {
         timefromNow: function timefromNow() {
@@ -16428,7 +16493,7 @@ module.exports = {
             return featuredicon;
         },
         typeIcon: function typeIcon() {
-            switch (this.item.type) {
+            switch (this.item.story_type) {
                 case 'emutoday':
                 case 'story':
                     faicon = 'fa-file-image-o';
@@ -16528,13 +16593,13 @@ module.exports = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"box box-solid {{item.group}}\" _v-2522fd54=\"\">\n\n          <div class=\"box-header with-border\" _v-2522fd54=\"\">\n              <div class=\"row\" _v-2522fd54=\"\">\n                  <div class=\"col-md-12\" _v-2522fd54=\"\">\n                      <div class=\"pull-left\" _v-2522fd54=\"\">\n                          <span class=\"item-type-icon\" :class=\"typeIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"promotedIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"featuredIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"homeIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"archivedIcon\" _v-2522fd54=\"\"></span>\n                      </div><!-- /.pull-left -->\n                      <div class=\" form-inline pull-right\" _v-2522fd54=\"\">\n                          <div class=\"form-group\" _v-2522fd54=\"\">\n                              <label _v-2522fd54=\"\">approved:</label>\n                          </div><!-- /.form-group -->\n                          <div class=\"form-group\" _v-2522fd54=\"\">\n\n                              <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"doThis\" :value=\"isApproved\" _v-2522fd54=\"\">\n                              </vui-flip-switch>\n                          </div>\n                      </div><!-- /.pull-right -->\n                  </div><!-- /.col-md-12-->\n              </div><!-- /.row -->\n              <div class=\"row\" _v-2522fd54=\"\">\n                      <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-2522fd54=\"\">\n                  <div class=\"col-md-12\" _v-2522fd54=\"\">\n                      <h6 class=\"box-title\" _v-2522fd54=\"\">{{item.title}}</h6>\n                  </div><!-- /.col-md-12 -->\n</a>\n              </div><!-- /.row -->\n\n      </div>  <!-- /.box-header -->\n\n    <div v-if=\"showBody\" class=\"box-body\" _v-2522fd54=\"\">\n          <p _v-2522fd54=\"\">ID: {{item.id}}</p>\n          <p _v-2522fd54=\"\">Type: {{item.type}}</p>\n          <p _v-2522fd54=\"\">Title: {{item.title}}</p>\n          <p _v-2522fd54=\"\">Approved: {{item.is_approved}}</p>\n          <p _v-2522fd54=\"\">Promoted: {{item.is_promoted}}</p>\n          <p _v-2522fd54=\"\">Featured: {{item.is_featured}}</p>\n          <p _v-2522fd54=\"\">Live: {{item.is_live}}</p>\n          <p _v-2522fd54=\"\">Archived: {{item.is_archived}}</p>\n          <p _v-2522fd54=\"\">Tags: {{item.tags | json}}</p>\n          <p _v-2522fd54=\"\">Start Date: {{item.start_date}}</p>\n\n    </div><!-- /.box-body -->\n          <div class=\"box-footer list-footer\" _v-2522fd54=\"\">\n              <div class=\"row\" _v-2522fd54=\"\">\n                  <div class=\"col-sm-7\" _v-2522fd54=\"\">\n                      <h5 _v-2522fd54=\"\">Live {{timefromNow}}</h5>\n                  </div><!-- /.col-md-7 -->\n                  <div class=\"col-sm-5\" _v-2522fd54=\"\">\n                      <div class=\"btn-group pull-right\" _v-2522fd54=\"\">\n                              <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-pencil\" _v-2522fd54=\"\"></i></button>\n                              <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-eye\" _v-2522fd54=\"\"></i></button>\n                      </div><!-- /.btn-toolbar -->\n\n                  </div><!-- /.col-md-7 -->\n              </div><!-- /.row -->\n\n\n          </div><!-- /.box-footer -->\n\n  </div><!-- /.box- -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"box box-solid {{item.group}}\" _v-2522fd54=\"\">\n\n          <div class=\"box-header with-border\" _v-2522fd54=\"\">\n              <div class=\"row\" _v-2522fd54=\"\">\n                  <div class=\"col-md-12\" _v-2522fd54=\"\">\n                      <div class=\"pull-left\" _v-2522fd54=\"\">\n                          <span class=\"item-type-icon\" :class=\"typeIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"promotedIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"featuredIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"homeIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"archivedIcon\" _v-2522fd54=\"\"></span>\n                      </div><!-- /.pull-left -->\n                      <div class=\" form-inline pull-right\" _v-2522fd54=\"\">\n                          <div class=\"form-group\" _v-2522fd54=\"\">\n                              <label _v-2522fd54=\"\">approved:</label>\n                          </div><!-- /.form-group -->\n                          <div class=\"form-group\" _v-2522fd54=\"\">\n\n                              <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"doThis\" :value=\"isApproved\" _v-2522fd54=\"\">\n                              </vui-flip-switch>\n                          </div>\n                      </div><!-- /.pull-right -->\n                  </div><!-- /.col-md-12-->\n              </div><!-- /.row -->\n              <div class=\"row\" _v-2522fd54=\"\">\n                      <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-2522fd54=\"\">\n                  <div class=\"col-md-12\" _v-2522fd54=\"\">\n                      <h6 class=\"box-title\" _v-2522fd54=\"\">{{item.title}}</h6>\n                  </div><!-- /.col-md-12 -->\n</a>\n              </div><!-- /.row -->\n\n      </div>  <!-- /.box-header -->\n\n    <div v-if=\"showBody\" class=\"box-body\" _v-2522fd54=\"\">\n          <p _v-2522fd54=\"\">ID: {{item.id}}</p>\n          <p _v-2522fd54=\"\">Type: {{item.story_type}}</p>\n          <p _v-2522fd54=\"\">Title: {{item.title}}</p>\n          <p _v-2522fd54=\"\">Approved: {{item.is_approved}}</p>\n          <p _v-2522fd54=\"\">Promoted: {{item.is_promoted}}</p>\n          <p _v-2522fd54=\"\">Featured: {{item.is_featured}}</p>\n          <p _v-2522fd54=\"\">Live: {{item.is_live}}</p>\n          <p _v-2522fd54=\"\">Archived: {{item.is_archived}}</p>\n          <p _v-2522fd54=\"\">Tags: {{item.tags | json}}</p>\n          <p _v-2522fd54=\"\">Start Date: {{item.start_date}}</p>\n\n    </div><!-- /.box-body -->\n          <div class=\"box-footer list-footer\" _v-2522fd54=\"\">\n              <div class=\"row\" _v-2522fd54=\"\">\n                  <div class=\"col-sm-7\" _v-2522fd54=\"\">\n                      <h5 _v-2522fd54=\"\">Live {{timefromNow}}</h5>\n                  </div><!-- /.col-md-7 -->\n                  <div class=\"col-sm-5\" _v-2522fd54=\"\">\n                      <div class=\"btn-group pull-right\" _v-2522fd54=\"\">\n                              <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-pencil\" _v-2522fd54=\"\"></i></button>\n                              <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-eye\" _v-2522fd54=\"\"></i></button>\n                      </div><!-- /.btn-toolbar -->\n\n                  </div><!-- /.col-md-7 -->\n              </div><!-- /.row -->\n\n\n          </div><!-- /.box-footer -->\n\n  </div><!-- /.box- -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    color: #1B1B1B;\n}\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n"] = false
+    __vueify_insert__.cache["\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    color: #1B1B1B;\n}\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -16592,18 +16657,24 @@ var _vueResource = require('vue-resource');
 
 var _vueResource2 = _interopRequireDefault(_vueResource);
 
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _StoryApp = require('./components/StoryApp.vue');
+
+var _StoryApp2 = _interopRequireDefault(_StoryApp);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Vue = require('vue');
 
 Vue.use(_vueResource2.default);
 
-var moment = require('moment');
-
 new Vue({
         el: '#vue-story-app',
         components: {
-                StoryApp: require('./components/StoryApp.vue')
+                StoryApp: _StoryApp2.default
         },
         http: {
                 headers: {

@@ -37,7 +37,7 @@
 
       <div v-if="showBody" class="box-body">
             <p>ID: {{item.id}}</p>
-            <p>Type: {{item.type}}</p>
+            <p>Type: {{item.story_type}}</p>
             <p>Title: {{item.title}}</p>
             <p>Approved: {{item.is_approved}}</p>
             <p>Promoted: {{item.is_promoted}}</p>
@@ -105,12 +105,12 @@
             background-color: #FED85D;
             border: 1px solid #FED85D
         }
-        .external  {
+        .news  {
             color: #1B1B1B;
             background-color: #cccccc;
             border: 1px solid #cccccc;
         }
-        .news  {
+        .external  {
             color: #1B1B1B;
             background-color: #C9A0DC;
             border: 1px solid #C9A0DC;
@@ -248,7 +248,7 @@ module.exports  = {
                         record: {
                             user_id : '',
                             title: '',
-                            type: '',
+                            story_type: '',
                             start_date: ''
                         }
 
@@ -261,7 +261,7 @@ module.exports  = {
                 ready: function() {
                     //ready function
                     // this.record = this.props.item;
-                    console.log('type'+ this.item.type);
+                    console.log('type'+ this.item.story_type);
                 },
               computed: {
                   timefromNow:function() {
@@ -337,7 +337,7 @@ module.exports  = {
                       return featuredicon
                   },
                   typeIcon: function() {
-                      switch (this.item.type) {
+                      switch (this.item.story_type) {
                           case 'emutoday':
                           case 'story':
                           faicon = 'fa-file-image-o'

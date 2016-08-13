@@ -7,7 +7,7 @@
     <div class="toolbar-block pull-right">
         <div class="btn-toolbar btn-group-sm ">
 
-            <a id="btn-preview-{{id}}" :href="previewLink"  :disabled="thisRecordIsDirty" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
+            <a id="btn-preview-{{id}}" :href="previewLink"  :disabled="disabledPreview" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
             <a id="btn-new-{{id}}" :href="createNewLink" :disabled="thisRecordIsDirty" class="btn bg-orange btn-sm"><i class="fa fa-plus-square"></i></a>
             <a id="btn-list-{{id}}" :href="listLink"  :disabled="thisRecordIsDirty" class="btn bg-orange btn-sm"><i class="fa fa-list-alt"></i></a>
         </div><!-- /.btn-toolbar -->
@@ -92,7 +92,12 @@ export default  {
             if(this.thisRecordIsDirty){
             return true
             } else {
-            return false
+                if (this.thisRecordId === 0 || this.thisRecordId === undefined) {
+                    return true
+                } else {
+                    return false
+                }
+
             }
         },
 
