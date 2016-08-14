@@ -1,20 +1,47 @@
 <template>
+    <!-- <div class="row">
+        <div class="col-md-12">
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group btn-group-xs" role="group">
+                    <label>Filter: </label>
+                </div>
+                <div class="btn-group btn-group-xs" role="group" aria-label="typeFiltersLabel" data-toggle="buttons" v-iconradio="storytype">
+                     <template v-for="item in storyTypeIcons">
+                         <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="{{item.name}}"><input type="radio" autocomplete="off" value="{{item.shortname}}" /><span class="item-type-icon-shrt" :class="typeIcon(item.shortname)"></span></label>
+                    </template>
+              </div>
+
+
+</div>
+        </div>
+
+    </div> -->
+    <!-- /.row -->
     <div class="row">
         <div class="col-md-4">
-            <div v-if="singleStype" class="form-group">
+            <!-- <div v-if="singleStype" class="form-group">
               <label class="sr-only" for="story-type">Type</label>
                   <select id="story-type" v-model="storytype" class="form-control">
                       <option v-for="stype in s_types" v-bind:value="stype.shortname">
                           {{stype.name}}
                       </option>
                   </select>
-            </div>
-            <h3>Unapproved</h3>
-
+            </div> -->
+            <h4>Unapproved<p>{{storytype}}</p></h4>
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group btn-group-xs" role="group">
+                    <label>Filter: </label>
+                </div>
+                <div class="btn-group btn-group-xs" role="group" aria-label="typeFiltersLabel" data-toggle="buttons" v-iconradio="items_unapproved_filter_storytype">
+                     <template v-for="item in storyTypeIcons">
+                         <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="{{item.name}}"><input type="radio" autocomplete="off" value="{{item.shortname}}" /><span class="item-type-icon-shrt" :class="typeIcon(item.shortname)"></span></label>
+                    </template>
+              </div>
+          </div>
             <div id="items-unapproved">
                 <story-pod
                     pid="items-unapproved"
-                    v-for="item in items_unapproved | orderBy 'start_date' 1 | filterBy storytype in 'story_type'"
+                    v-for="item in items_unapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByStoryType items_unapproved_filter_storytype"
                     @item-change="moveToApproved"
 
                     :item="item"
@@ -24,11 +51,21 @@
         </div>
     </div><!-- /.col-md-4 -->
     <div class="col-md-4">
-        <h3>Approved</h3>
+        <h4>Approved</h4>
+        <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group btn-group-xs" role="group">
+                <label>Filter: </label>
+            </div>
+            <div class="btn-group btn-group-xs" role="group" aria-label="typeFiltersLabel" data-toggle="buttons" v-iconradio="items_approved_filter_storytype">
+                 <template v-for="item in storyTypeIcons">
+                     <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="{{item.name}}"><input type="radio" autocomplete="off" value="{{item.shortname}}" /><span class="item-type-icon-shrt" :class="typeIcon(item.shortname)"></span></label>
+                </template>
+          </div>
+      </div>
         <div id="items-approved">
             <story-pod
                 pid="items-approved"
-                v-for="item in items_approved | orderBy 'start_date' 1 "
+                v-for="item in items_approved | orderBy 'start_date' 1 | filterBy filterApprovedByStoryType items_approved_filter_storytype"
                 @item-change="moveToApproved"
 
                 :item="item"
@@ -36,13 +73,26 @@
                 :is="items-approved">
             </story-pod>
         </div>
+
+
+
     </div><!-- /.col-md-4 -->
     <div class="col-md-4">
-        <h3>Live <small>Approved and StartDate is past</small></h3>
+        <h4>Live <small>Approved and StartDate is past</small></h4>
+        <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group btn-group-xs" role="group">
+                <label>Filter: </label>
+            </div>
+            <div class="btn-group btn-group-xs" role="group" aria-label="typeFiltersLabel" data-toggle="buttons" v-iconradio="items_live_filter_storytype">
+                 <template v-for="item in storyTypeIcons">
+                     <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="{{item.name}}"><input type="radio" autocomplete="off" value="{{item.shortname}}" /><span class="item-type-icon-shrt" :class="typeIcon(item.shortname)"></span></label>
+                </template>
+          </div>
+      </div>
         <div id="items-live">
             <story-pod
                 pid="items-live"
-                v-for="item in items_live | orderBy 'start_date' 1"
+                v-for="item in items_live | orderBy 'start_date' 1 | filterBy filterLiveByStoryType"
                 @item-change="moveToApproved"
 
                 :item="item"
@@ -55,7 +105,24 @@
 </template>
 <style scoped>
 
+h4 {
+    margin-top: 3px;
+    font-size: 18px;
+}
+.btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+    background-color: #605ca8;
+    color: #ffffff;
 
+}
+.btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+    color: #ffffff;
+
+}
+
+span.item-type-icon:active, span.item-type-icon.active{
+    background-color: #605ca8;
+    color: #ffffff;
+}
 #items-unapproved .box {
     margin-bottom: 4px;
 }
@@ -72,10 +139,12 @@
 
 import moment from 'moment'
 import StoryPod from './StoryPod.vue'
+import IconToggleBtn from './IconToggleBtn.vue'
+import iconradio from '../directives/iconradio.js'
 // import EventViewContent from './EventViewContent.vue'
 export default  {
     components: {
-        StoryPod
+        StoryPod,IconToggleBtn
     },
     props: [
         'allrecords','stypes'
@@ -87,6 +156,7 @@ export default  {
     ready() {
         // this.resource = this.$resource('/api/announcement/:id');
         this.fetchAllRecords();
+
         // this.fetchUnapprovedRecords();
 
     },
@@ -100,18 +170,25 @@ export default  {
             //     { type: 'article'},
             //     { type: 'external'}
             // ],
-             storytype:'',
+            storytype:'',
+            items_unapproved_filter_storytype: '',
+            items_approved_filter_storytype: '',
+            items_live_filter_storytype: '',
+            storytype_approved: '',
             changestorytype:'',
             currentDate: moment(),
             allitems: [],
             items: [],
             xitems: [],
+            items_unapproved_filtered: [],
             items_unapproved: [],
             items_approved: [],
-            items_live: []
+            items_live: [],
+            currentTypesFilter: [],
         }
     },
     computed: {
+
         s_types:function(){
            // var data = localStorage[key];
               try {
@@ -122,6 +199,14 @@ export default  {
                   // this.record.story_type = this.stypes;
                   return this.stypes;
               }
+        },
+        storyTypeIcons:function() {
+            this.s_types.push({
+                name: 'all',
+                shortname: ''
+            })
+
+            return this.s_types;
         },
         itemsApproved:function() {
             return  this.filterItemsApproved(this.allitems);
@@ -134,7 +219,89 @@ export default  {
         }
     },
 
+
     methods : {
+        filerStoryTypeCustom: function (value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.storytype)
+            if (this.storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.storytype;
+            }
+
+            // return  moment(value).format("ddd")
+        },
+        filterUnapprovedByStoryType: function (value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype)
+            if (this.items_unapproved_filter_storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.items_unapproved_filter_storytype;
+            }
+        },
+        filterApprovedByStoryType: function (value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.items_approved_filter_storytype)
+            if (this.items_approved_filter_storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.items_approved_filter_storytype;
+            }
+        },
+        filterUnapprovedByStoryType: function (value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype)
+            if (this.items_unapproved_filter_storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.items_unapproved_filter_storytype;
+            }
+        },
+        filterLiveByStoryType: function (value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.items_live_filter_storytype)
+            if (this.items_live_filter_storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.items_live_filter_storytype;
+            }
+        },
+        storyTypeFilter:function (val, arg){
+            if (val == '' || val == 'all'){
+                return val.storytype !== '';
+            } else {
+                return val.storytype === arg;
+            }
+
+
+        },
+
+        typeIcon: function(sname) {
+            switch (sname) {
+                case 'emutoday':
+                case 'story':
+                faicon = 'fa-file-image-o'
+                break
+                case 'news':
+                faicon = 'fa-file-text-o'
+                break
+                case 'student':
+                faicon = 'fa-graduation-cap'
+                break
+                case 'external':
+                faicon = 'fa-file-o'
+                break
+                case 'article':
+                faicon = 'fa-newspaper-o'
+                break
+                case '':
+                faicon = 'fa-asterisk'
+                break
+                default:
+                faicon = 'fa-file-o'
+                break
+            }
+
+            return 'fa '+ faicon + ' fa-fw'
+
+        },
         // checkIndexWithValue: function (chitem){
         // 	return
         // },
@@ -143,11 +310,46 @@ export default  {
         //         return val.group === 'news'
         //
         // },
+        addTypeToFilter: function(typeshortname){
+            let tsnindex = this.currentTypesFilter.indexOf(typeshortname);
+            if (tsnindex < 0) {
+                this.currentTypeFilter.$set(tsnindex, typeshortname);
+            }
+        },
+        toggleTypeToFilter: function(filtertype){
+            self.storytype = filtertype.shortname;
+
+        //     console.log(filtertype)
+        //     let tsnindex;
+        //     tsnindex = this.currentTypesFilter.indexOf(filtertype.shortname);
+        //     if (tsnindex < 0) {
+        //             this.currentTypesFilter.push(filtertype.shortname);
+        //     } else {
+        //         this.currentTypesFilter.$remove(tsnindex);
+        //     }
+        // console.log('this.currentTypesFilter.length'+ this.currentTypesFilter.length)
+        // this.filterHideType();
+        },
+        setFilter: function(ev) {
+
+        },
         filterTheList:function() {
             let self = this;
             this.items_unapproved = this.items_unapproved.filter(function (item) {
                 return item.story_type ==  self.storytype;
             })
+        },
+        filterHideType:function() {
+            let self = this;
+            this.items_unapproved.forEach(function(item, index){
+                for(var i= 0, l = self.currentTypesFilter.length; i< l; i++){
+                    if(item.story_type == self.currentTypesFilter[i]){
+                        console.log('item.story_type'+item.story_type+ 'self.currentTypesFilter'+ self.currentTypesFilter[i])
+                        self.items_unapproved.splice(index,1);
+                        break;
+                    }
+                }
+            });
         },
 
         moveToApproved: function(changeditem){
@@ -198,108 +400,16 @@ export default  {
             .then((response) => {
                 console.log('good?'+ response)
 
-
-
-                //var movedIndex = this.movedItemIndex(movedid);
-                            // this.xitems.pop(movedRecord);
-                        // if (movedRecord.approved == 1) {
-                        //         this.xitems.splice(movedIndex, 1);
-                        //      this.items.push(movedRecord);
-                        //  } else {
-                        //      this.items.splice(movedIndex, 1);
-                        //     this.xitems.push(movedRecord);
-                        //  }
-
-                //console.log('movedIndex==='+ movedIndex)
             }, (response) => {
                 console.log('bad?'+ response)
             });
     },
-        // updateRecord: function(item){
-        //     var movedid =  item.id;
-        //     var movedRecord = item;
-        //     this.$http.patch('/api/announcement/updateItem/' + item.id , item , {
-        //         method: 'PATCH'
-        //
-        //     } )
-        //     .then((response) => {
-        //         console.log('good?'+ response)
-        //         var movedIndex = this.movedItemIndex(movedid);
-        //         // this.xitems.pop(movedRecord);
-        //         if (movedRecord.approved == 1) {
-        //             this.xitems.splice(movedIndex, 1);
-        //             this.items.push(movedRecord);
-        //         } else {
-        //             this.items.splice(movedIndex, 1);
-        //             this.xitems.push(movedRecord);
-        //         }
-        //
-        //         console.log('movedIndex==='+ movedIndex)
-        //     }, (response) => {
-        //         console.log('bad?'+ response)
-        //     });
-        // },
-        // getRequestType: function () {
-        //     var method = this.el.querySelector('input[name="_method"]');
-        //
-        //     return (method ? method.value : this.el.method).toLowerCase();
-        // },
-        // fetchUnapprovedRecords: function(){
-        //     this.$http.get('/api/announcement/unapprovedItems')
-        //
-        //     .then((response) =>{
-        //         console.log('response.status=' + response.status);
-        //         console.log('response.ok=' + response.ok);
-        //         console.log('response.statusText=' + response.statusText);
-        //         console.log('response.data=' + response.data);
-        //
-        //         this.$set('xitems', response.data.data)
-        //
-        //         this.fetchApprovedRecords();
-        //     }, (response) => {
-        //         //error callback
-        //         console.log("ERRORS");
-        //
-        //         //  this.formErrors =  response.data.error.message;
-        //
-        //     }).bind(this);
-        // },
-        // fetchApprovedRecords: function() {
-        //     this.$http.get('/api/announcement/approvedItems')
-        //
-        //     .then((response) =>{
-        //         //response.status;
-        //         console.log('response.status=' + response.status);
-        //         console.log('response.ok=' + response.ok);
-        //         console.log('response.statusText=' + response.statusText);
-        //         console.log('response.data=' + response.data);
-        //         // data = response.data;
-        //         //
-        //         this.$set('items', response.data.data)
-        //
-        //         // this.allitems = response.data.data;
-        //         // console.log('this.record= ' + this.record);
-        //
-        //         this.checkOverDataFilter();
-        //     }, (response) => {
-        //         //error callback
-        //         console.log("ERRORS");
-        //
-        //         //  this.formErrors =  response.data.error.message;
-        //
-        //     }).bind(this);
-        // },
+
         fetchAllRecords: function() {
             this.$http.get('/api/story/appLoad')
 
             .then((response) =>{
-                //response.status;
-                // console.log('response.status=' + response.status);
-                // console.log('response.ok=' + response.ok);
-                // console.log('response.statusText=' + response.statusText);
-                // console.log('response.data=' + response.data);
-                // data = response.data;
-                //
+
                 this.$set('allitems', response.data.data)
 
             //    this.allitems = response.data.data;
@@ -314,17 +424,11 @@ export default  {
 
             }).bind(this);
         },
-        checkOverData: function() {
-            console.log('this.items='+ this.allitems)
-            // for (var i=0; i < this.allitems.length; i++ ) {
-            //     if( this.allitems[i].approved == 1) {
-            //         this.items.push(this.allitems.splice(i,1));
-            //     } else {
-            //         this.xitems.push(this.allitems.splice(i,1));
-            //     }
-            // }
-
-        },
+        // checkOverData: function() {
+        //     console.log('this.items='+ this.allitems)
+        //
+        //
+        // },
 
         checkOverDataFilter: function() {
             let self = this;
@@ -341,51 +445,24 @@ export default  {
                 self.items_unapproved.push(item)
             }
         });
+        // this.$set('items_unapproved_filtered',this.items_unapproved )
+
         console.log('items_unapproved'+ this.items_unapproved.length )
 
         console.log('items_approved'+ this.items_approved.length )
-        // function separate_evens_from_odds(value) {
-        // 	if ( value % 2 ) {
-        // 		odd_numbers.push(value);
-        // 	}
-        // 	else {
-        // 		even_numbers.push(value);
-        // 	}
-        // }
 
-        // var array_of_numbers = [5, 7, 1, 9, 8, 5];
-        //
-        // array_of_numbers.forEach(separate_evens_from_odds);
-        //
-        // console.log(even_numbers); //[8]
-        // console.log(odd_numbers); //[5, 7, 1, 9, 5]
-            // var unapprovedItems = this.allitems.filter(function(item) {
-            // 	return item.approved === 0
-            // });
-            //
-            // this.xitems = unapprovedItems;
-            //
-            //
-            // var approvedItems = this.allitems.filter(function(item) {
-            // 	return item.approved === 1
-            // });
-            //
-            // this.items = approvedItems.sort(function(a,b){
-            // 	return parseFloat(b.priority) - parseFloat(a.priority);
-            // });
 
         }
     },
+    filters: {
 
+    },
+    directives: {
+        iconradio
+    },
 
-    // the `events` option simply calls `$on` for you
-    // when the instance is created
     events: {
-        // 'child-msg': function (msg) {
-        //   // `this` in event callbacks are automatically bound
-        //   // to the instance that registered it
-        //   this.messages.push(msg)
-        // }
+
     }
 }
 </script>

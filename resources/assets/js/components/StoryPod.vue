@@ -1,7 +1,13 @@
 <template>
-    <div class="box box-solid {{item.group}}">
+    <div>
 
-            <div class="box-header with-border">
+
+    <div v-show="itemMsgStatus.show" class="callout callout-{{itemMsgStatus.level}}">
+         <span class="Alert__close" @click="itemMsgStatus.show = false">X</span>
+        <h5>{{itemMsgStatus.msg}}</h5>
+    </div>
+    <div class="box box-solid {{item.group}}">
+        <div class="box-header with-border">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="pull-left">
@@ -18,7 +24,7 @@
                             <div class="form-group">
 
                                 <vui-flip-switch id="switch-{{item.id}}"
-                                    v-on:click="doThis"
+                                    v-on:click="approveItem"
                                     :value="isApproved" >
                                 </vui-flip-switch>
                             </div>
@@ -66,6 +72,7 @@
             </div><!-- /.box-footer -->
 
     </div><!-- /.box- -->
+</div>
 </template>
 <style scoped>
         .box {
@@ -93,8 +100,35 @@
 
         }
         h6.box-title {
+            font-size: 16px;
             color: #1B1B1B;
         }
+        .callout {
+            position: relative;
+            background: #ddd;
+            padding: 1em;
+            margin: 0;
+        }
+        .callout .callout-danger {
+            background: #ff0000;
+            color:#000000;
+            /*border: 1px solid #000000;*/
+        }
+
+        .callout .callout-success {
+            background: #00ff00;
+            color:#000000;
+            /*border: 1px solid #000000;*/
+        }
+
+        .Alert__close {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
         .emutoday {
 
             background-color: #76D7EA;
@@ -121,7 +155,7 @@
             border: 1px solid #29AB87;
         }
         .item-type-icon {
-            color: #1B1B1B;
+            /*color: #1B1B1B;*/
             /*position:absolute;
             top: 5px;
             left: 5px;*/
@@ -242,7 +276,8 @@ module.exports  = {
                 ],
               data: function() {
                 return {
-
+                        response_msg: '',
+                        response_approval: '',
                         showBody: false,
                         currentDate: {},
                         record: {
@@ -250,6 +285,11 @@ module.exports  = {
                             title: '',
                             story_type: '',
                             start_date: ''
+                        },
+                        itemMsgStatus: {
+                            show: false,
+                            level: '',
+                            msg: ''
                         }
 
                 }
@@ -261,7 +301,7 @@ module.exports  = {
                 ready: function() {
                     //ready function
                     // this.record = this.props.item;
-                    console.log('type'+ this.item.story_type);
+                    //console.log('type'+ this.item.story_type);
                 },
               computed: {
                   timefromNow:function() {
@@ -385,6 +425,42 @@ module.exports  = {
                     //     this.$emit('item-change',this.item);
                     //     console.log('ev ' + ev + 'this.item.id= '+  this.item.priority)
                     // },
+                    approveItem: function(ev){
+
+                        if (this.item.is_approved === 1){
+                            this.item.xIs_approved = 0;
+                        } else {
+                            this.item.xIs_approved = 1;
+                        }
+
+                        this.updateRecordStatus();
+
+
+
+                    },
+                    updateRecordStatus: function(){
+                        // this.item.is_approved = (this.is_approved === 0)?1:0;
+                        let self = this
+                        this.$http.patch('/api/story/updateQueue' , this.item , {
+                            method: 'PATCH'
+                        } )
+                        .then((response) => {
+                            console.log('good?'+ response)
+                            self.response_approval = response.data.isapproved;
+                            self.item.is_approved = (self.response_approval == 1)?1:0;
+
+                            // self.itemMsgStatus.show = true;
+                            // self.itemMsgStatus.level = 'success';
+                            // self.itemMsgStatus.msg = response.data.msg;
+
+                        }, (response) => {
+                            console.log('bad?'+ response)
+
+                            self.itemMsgStatus.show = true;
+                            self.itemMsgStatus.level = 'danger';
+                            self.itemMsgStatus.msg = response.data.error.message;
+                        });
+                },
                     doThis: function(ev) {
                         this.item.is_approved = (this.is_approved === 0)?1:0;
                        this.$emit('item-change',this.item);

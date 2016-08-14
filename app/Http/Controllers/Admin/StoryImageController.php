@@ -40,6 +40,28 @@ class StoryImageController extends Controller
         //return redirect(route('backend.users.index'))->with('status', 'User has been created.');
     }
 
+    public function addNewStoryImage(Request $request)
+    {
+        $story_id = $request->story_id;
+        $story = $this->story->findOrFail($story_id);
+        $stype = $story->story_type;
+        $storyGroup = $story->storyType->group;
+        $story->storyImages()->create([
+            'imagetype_id'=> $request->img_id,
+            'group'=> $storyGroup,
+            'image_type'=> $request->img_type,
+            'image_name'=> 'img' . $story->id . '_' . $request->img_type
+
+        ]);
+        // if($request->img_type == 'front') {
+        //     $story->is_featured = 1;
+        //     $story->save();
+        // }
+        flash()->success('New Image Added.');
+        return redirect(route('admin_storytype_edit', ['stype' => $stype, 'story'=> $story]));
+
+        // return redirect(route('admin.story.edit', $story->id));
+    }
 
     public function update($id, Requests\StoryImage_UpdateRequest $request)
     {
@@ -87,8 +109,12 @@ class StoryImageController extends Controller
     //  $storyImage->is_active = 1;
         $storyImage->save();
         $story = $storyImage->story;
-        flash()->success('Image has been upadted.');
-        return redirect(route('admin.story.edit', $story->id ));
+        $stype = $story->story_type;
+        flash()->success('Image has been updated.');
+
+        return redirect(route('admin_storytype_edit', ['stype' => $stype, 'story'=> $story]));
+
+        // return redirect(route('admin.story.edit', $story->id ));
     }
 
     public function edit($id)

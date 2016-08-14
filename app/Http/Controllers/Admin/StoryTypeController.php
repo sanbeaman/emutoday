@@ -86,13 +86,14 @@ class StoryTypeController extends Controller
 
     }
 
-    // Route::get('story/{stype}/{story}/edit', ['as' => 'admin_story_type_edit', 'uses' => 'Admin\StoryController@storyTypeEdit']);
+    // Route::get('story/{stype}/{story}/edit', ['as' => 'admin_storytype_edit', 'uses' => 'Admin\StoryController@storyTypeEdit']);
 
     public function storyTypeEdit($stype, Story $story)
     {
-
-        $stypes = $stype;
+        $user = \Auth::user();
+        //$stypes = $stype;
         $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+        $stypes  = collect(\emutoday\StoryType::select('name','shortname')->get());
 
         $tags = \emutoday\Tag::lists('name', 'id');
 
@@ -100,25 +101,7 @@ class StoryTypeController extends Controller
             $stype = 'story';
         }
         $storyGroup = $story->storyType->group;
-        $stypes = $stype;
-        $story->story_type = $stype;
-        // dd($storyGroup);
-        $imagetypeNames = Imagetype::ofGroup($storyGroup)->get()->keyBy('id');
-        $currentStoryImages = $story->storyImages->pluck('image_type','imagetype_id');
-        $leftOverImages = $imagetypeNames->diffKeys($currentStoryImages);
-        // dd($leftOverImages);
-        $requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
-        $otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
 
-        $storyasarray = $this->storyTransformer->transform($story);
-
-        $storydata = json_encode($storyasarray);
-
-        // return $this->respond([
-        // 				'data' => $this->storyTransformer->transformCollection($storys->all())
-        // 		]);
-        // }
-        // $storyj = $story->toJson();
         JavaScript::put([
             'story' => $story,
             'stype' => $stype,
@@ -126,7 +109,106 @@ class StoryTypeController extends Controller
             'is_featured' => $story->is_featured,
         ]);
 
-        return view('admin.story.form', compact('story', 'stypes','storydata', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
+        if ($user->hasRole('contributor_1')){
+            // dd($user->id);
+            $stypelist = 'news';
+            $stype = 'news';
+            $stypes = 'news';
+        } else {
+
+            // dd($story->storyImages->where('is_active',1)->count());
+            $currentRequiredImages = null;
+            $currentOtherImages = null;
+            $stillNeedTheseImgs = null;
+
+            $imagetypeNames = Imagetype::ofGroup($storyGroup)->get()->keyBy('id');
+            // dd($imagetypeNames->count());
+            // $requiredImageKeys = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
+
+            $requiredImageListCollection = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
+            $otherImageListCollection = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
+
+            // List out the  required image types  needed
+            $requiredImageList = Imagetype::ofGroup($storyGroup)->isRequired(1)->pluck('type', 'id');
+            $requiredImageListArray = $requiredImageList->toArray();
+
+            // List out all the possible other image types
+            $otherImageList = Imagetype::ofGroup($storyGroup)->isRequired(0)->pluck('type', 'id');
+            $otherImageListArray = $otherImageList->toArray();
+
+            //create array of requireed images to compare with actual iamges
+            $requiredImageCollect = Imagetype::ofGroup($storyGroup)->isRequired(1)->pluck('id');//keyBy('id');
+            $requiredImageKeyArray = $requiredImageCollect->toArray();
+
+            $currentRequiredImages = $story->storyImages->whereIn('imagetype_id',$requiredImageKeyArray);
+
+            $remainingRequiredImagesNeeded = $requiredImageList->count() - $currentRequiredImages->count();
+
+            // dd($imagetypeNames,$requiredImageList,$requiredImageListArray,$requiredImageCollect,$requiredImageKeyArray);
+            $stillNeedTheseImgs = null;
+
+            if($remainingRequiredImagesNeeded > 0) {
+                $currentRequiredImagesIdsList = $currentRequiredImages->pluck('imagetype_id');
+                $currentRequiredImagesIdsListArray = $currentRequiredImagesIdsList->toArray();
+
+                $stillNeedTheseImgs = $requiredImageListCollection->except($currentRequiredImagesIdsListArray);
+
+
+                $currentOtherImages = null;
+
+                // dd($stillneedthese);
+                // dd('$remainingRequiredImagesNeeded='. $remainingRequiredImagesNeeded);
+                return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
+
+            } else {
+
+                $otherImageCollect = Imagetype::ofGroup($storyGroup)->isRequired(0)->pluck('id');//keyBy('id');
+                $otherImageKeyArray = $otherImageCollect->toArray();
+
+                $currentOtherImages = $story->storyImages->whereIn('imagetype_id',$otherImageKeyArray);
+
+                $remainingOtherImagesNeeded = $otherImageCollect->count() - $currentOtherImages->count();
+
+                // dd('$remainingOtherImagesNeeded=' . $remainingOtherImagesNeeded);
+
+                if ($remainingOtherImagesNeeded > 0) {
+                        $currentOtherImagesIdsList = $currentOtherImages->pluck('imagetype_id');
+                        $currentOtherImagesIdsListArray = $currentOtherImagesIdsList->toArray();
+                        $stillNeedTheseImgs = $otherImageListCollection->except($currentOtherImagesIdsListArray);
+
+                        return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
+
+
+                } else {
+                    $stillNeedTheseImgs = null;
+                    return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
+
+                }
+
+            }
+
+            // dd('$currentRequiredImages===='. $currentRequiredImages . '  $currentOtherImages===' . $currentOtherImages  . '   $stillneedthese===='.$stillneedthese);
+
+            // $otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
+
+            // $leftOverImages = $imagetypeNames->diffKeys($currentStoryImages);
+            //$currentRequiredImages = $imagetypeNames->only($requiredImages);
+        //    $currentOtherImages = $imagetypeNames->only($otherImages);
+
+        }
+        $currentRequiredImages = null;
+        $currentOtherImages = null;
+        $stillNeedTheseImgs = null;
+        return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
+
+        //  dd($currentStoryImagesReal,$imagetypeNames,$currentStoryImages,$leftOverImages,$requiredImages,$otherImages, $currentRequiredImages,$currentOtherImages);
+
+
+            // return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
+
+            // return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'requiredImages','otherImages', 'leftOverImages'));
+
+        // return view('admin.story.form', compact('story', 'stypes','storydata', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
 
     }
 

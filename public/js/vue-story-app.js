@@ -16041,12 +16041,76 @@ exports.insert = function (css) {
 
 },{}],7:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n\n\n#items-unapproved .box[_v-0e037730] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n#items-live .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.item-type-icon {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.default = {
+
+    props: ['item'],
+
+    created: function created() {},
+    ready: function ready() {
+        // this.$emit('set-filter', this.item.shortname);
+    },
+
+    computed: {
+        typeIcon: function typeIcon() {
+            switch (this.item.shortname) {
+                case 'emutoday':
+                case 'story':
+                    faicon = 'fa-file-image-o';
+                    break;
+                case 'news':
+                    faicon = 'fa-file-text-o';
+                    break;
+                case 'student':
+                    faicon = 'fa-graduation-cap';
+                    break;
+                case 'external':
+                    faicon = 'fa-file-o';
+                    break;
+                case 'article':
+                    faicon = 'fa-newspaper-o';
+                    break;
+                default:
+                    faicon = 'fa-file-o';
+                    break;
+            }
+
+            return 'fa ' + faicon + ' fa-fw';
+        }
+
+    }
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n   <label class=\"btn btn-default btn-xs\">\n  <input type=\"radio\" name=\"options\" id=\"{{$index}}\" autocomplete=\"off\"><span class=\"item-type-icon\" :class=\"typeIcon\"></span>\n</label>\n\n   <!-- <button type=\"button\" class=\"btn btn-default\"><span class=\"item-type-icon\" :class=\"typeIcon\"></span></button> -->\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.item-type-icon {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-b6edda4a", module.exports)
+  } else {
+    hotAPI.update("_v-b6edda4a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n\nh4[_v-0e037730] {\n    margin-top: 3px;\n    font-size: 18px;\n}\n.btn-default[_v-0e037730]:active, .btn-default.active[_v-0e037730], .open > .dropdown-toggle.btn-default[_v-0e037730] {\n    background-color: #605ca8;\n    color: #ffffff;\n\n}\n.btn-default[_v-0e037730]:active, .btn-default.active[_v-0e037730], .open > .dropdown-toggle.btn-default[_v-0e037730] {\n    color: #ffffff;\n\n}\n\nspan.item-type-icon[_v-0e037730]:active, span.item-type-icon.active[_v-0e037730]{\n    background-color: #605ca8;\n    color: #ffffff;\n}\n#items-unapproved .box[_v-0e037730] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n#items-live .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _methods;
 
 var _moment = require('moment');
 
@@ -16056,12 +16120,22 @@ var _StoryPod = require('./StoryPod.vue');
 
 var _StoryPod2 = _interopRequireDefault(_StoryPod);
 
+var _IconToggleBtn = require('./IconToggleBtn.vue');
+
+var _IconToggleBtn2 = _interopRequireDefault(_IconToggleBtn);
+
+var _iconradio = require('../directives/iconradio.js');
+
+var _iconradio2 = _interopRequireDefault(_iconradio);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 // import EventViewContent from './EventViewContent.vue'
 exports.default = {
     components: {
-        StoryPod: _StoryPod2.default
+        StoryPod: _StoryPod2.default, IconToggleBtn: _IconToggleBtn2.default
     },
     props: ['allrecords', 'stypes'],
     created: function created() {
@@ -16070,6 +16144,7 @@ exports.default = {
     ready: function ready() {
         // this.resource = this.$resource('/api/announcement/:id');
         this.fetchAllRecords();
+
         // this.fetchUnapprovedRecords();
     },
 
@@ -16084,17 +16159,24 @@ exports.default = {
             //     { type: 'external'}
             // ],
             storytype: '',
+            items_unapproved_filter_storytype: '',
+            items_approved_filter_storytype: '',
+            items_live_filter_storytype: '',
+            storytype_approved: '',
             changestorytype: '',
             currentDate: (0, _moment2.default)(),
             allitems: [],
             items: [],
             xitems: [],
+            items_unapproved_filtered: [],
             items_unapproved: [],
             items_approved: [],
-            items_live: []
+            items_live: [],
+            currentTypesFilter: []
         };
     },
     computed: {
+
         s_types: function s_types() {
             // var data = localStorage[key];
             try {
@@ -16105,6 +16187,14 @@ exports.default = {
                 // this.record.story_type = this.stypes;
                 return this.stypes;
             }
+        },
+        storyTypeIcons: function storyTypeIcons() {
+            this.s_types.push({
+                name: 'all',
+                shortname: ''
+            });
+
+            return this.s_types;
         },
         itemsApproved: function itemsApproved() {
             return this.filterItemsApproved(this.allitems);
@@ -16117,263 +16207,212 @@ exports.default = {
         }
     },
 
-    methods: {
-        // checkIndexWithValue: function (chitem){
-        // 	return
-        // },
-        // customFilterFunc: function (val) {
-        //         console.log('val' + val.type)
-        //         return val.group === 'news'
-        //
-        // },
-        filterTheList: function filterTheList() {
-            var self = this;
-            this.items_unapproved = this.items_unapproved.filter(function (item) {
-                return item.story_type == self.storytype;
-            });
+    methods: (_methods = {
+        filerStoryTypeCustom: function filerStoryTypeCustom(value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.storytype);
+            if (this.storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.storytype;
+            }
+
+            // return  moment(value).format("ddd")
         },
-
-        moveToApproved: function moveToApproved(changeditem) {
-
-            // this.xitems.pop(changeditem);
-            console.log('moveToApproved' + changeditem.priority);
-            changeditem.is_approved = 1;
-            changeditem.priority = changeditem.priority;
-            this.updateRecord(changeditem);
+        filterUnapprovedByStoryType: function filterUnapprovedByStoryType(value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype);
+            if (this.items_unapproved_filter_storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.items_unapproved_filter_storytype;
+            }
         },
-        moveToUnApproved: function moveToUnApproved(changeditem) {
-
-            // this.xitems.pop(changeditem);
-            console.log('moveToUnApproved' + changeditem);
-            changeditem.is_approved = 0;
-
-            this.updateRecord(changeditem);
-        },
-        filterItemsApproved: function filterItemsApproved(items) {
-            return items.filter(function (item) {
-                return (0, _moment2.default)(item.start_date).isAfter((0, _moment2.default)()) && item.is_approved === 1;
-            });
-        },
-        filterItemsUnapproved: function filterItemsUnapproved(items) {
-            return items.filter(function (item) {
-                return item.is_approved === 0;
-            });
-        },
-        filterItemsLive: function filterItemsLive(items) {
-            return items.filter(function (item) {
-                return (0, _moment2.default)(item.start_date).isSameOrBefore((0, _moment2.default)()) && item.is_approved === 1; // true
-
-                // return moment(item.start_date).isAfter(moment())
-                // return item.live === 1
-            });
-        },
-        movedItemIndex: function movedItemIndex(mid) {
-            return this.xitems.findIndex(function (item) {
-                return item.id == mid;
-            });
-        },
-        updateRecord: function updateRecord(item) {
-            var currentRecordId = item.id;
-            item.start_date = (0, _moment2.default)(item.start_date, "MM-DD-YYYY").format("YYYY-MM-DD");
-
-            var currentRecord = item;
-            this.$http.patch('/api/story/' + item.id, item, {
-                method: 'PATCH'
-            }).then(function (response) {
-                console.log('good?' + response);
-
-                //var movedIndex = this.movedItemIndex(movedid);
-                // this.xitems.pop(movedRecord);
-                // if (movedRecord.approved == 1) {
-                //         this.xitems.splice(movedIndex, 1);
-                //      this.items.push(movedRecord);
-                //  } else {
-                //      this.items.splice(movedIndex, 1);
-                //     this.xitems.push(movedRecord);
-                //  }
-
-                //console.log('movedIndex==='+ movedIndex)
-            }, function (response) {
-                console.log('bad?' + response);
-            });
-        },
-        // updateRecord: function(item){
-        //     var movedid =  item.id;
-        //     var movedRecord = item;
-        //     this.$http.patch('/api/announcement/updateItem/' + item.id , item , {
-        //         method: 'PATCH'
-        //
-        //     } )
-        //     .then((response) => {
-        //         console.log('good?'+ response)
-        //         var movedIndex = this.movedItemIndex(movedid);
-        //         // this.xitems.pop(movedRecord);
-        //         if (movedRecord.approved == 1) {
-        //             this.xitems.splice(movedIndex, 1);
-        //             this.items.push(movedRecord);
-        //         } else {
-        //             this.items.splice(movedIndex, 1);
-        //             this.xitems.push(movedRecord);
-        //         }
-        //
-        //         console.log('movedIndex==='+ movedIndex)
-        //     }, (response) => {
-        //         console.log('bad?'+ response)
-        //     });
-        // },
-        // getRequestType: function () {
-        //     var method = this.el.querySelector('input[name="_method"]');
-        //
-        //     return (method ? method.value : this.el.method).toLowerCase();
-        // },
-        // fetchUnapprovedRecords: function(){
-        //     this.$http.get('/api/announcement/unapprovedItems')
-        //
-        //     .then((response) =>{
-        //         console.log('response.status=' + response.status);
-        //         console.log('response.ok=' + response.ok);
-        //         console.log('response.statusText=' + response.statusText);
-        //         console.log('response.data=' + response.data);
-        //
-        //         this.$set('xitems', response.data.data)
-        //
-        //         this.fetchApprovedRecords();
-        //     }, (response) => {
-        //         //error callback
-        //         console.log("ERRORS");
-        //
-        //         //  this.formErrors =  response.data.error.message;
-        //
-        //     }).bind(this);
-        // },
-        // fetchApprovedRecords: function() {
-        //     this.$http.get('/api/announcement/approvedItems')
-        //
-        //     .then((response) =>{
-        //         //response.status;
-        //         console.log('response.status=' + response.status);
-        //         console.log('response.ok=' + response.ok);
-        //         console.log('response.statusText=' + response.statusText);
-        //         console.log('response.data=' + response.data);
-        //         // data = response.data;
-        //         //
-        //         this.$set('items', response.data.data)
-        //
-        //         // this.allitems = response.data.data;
-        //         // console.log('this.record= ' + this.record);
-        //
-        //         this.checkOverDataFilter();
-        //     }, (response) => {
-        //         //error callback
-        //         console.log("ERRORS");
-        //
-        //         //  this.formErrors =  response.data.error.message;
-        //
-        //     }).bind(this);
-        // },
-        fetchAllRecords: function fetchAllRecords() {
-            var _this = this;
-
-            this.$http.get('/api/story/appLoad').then(function (response) {
-                //response.status;
-                // console.log('response.status=' + response.status);
-                // console.log('response.ok=' + response.ok);
-                // console.log('response.statusText=' + response.statusText);
-                // console.log('response.data=' + response.data);
-                // data = response.data;
-                //
-                _this.$set('allitems', response.data.data);
-
-                //    this.allitems = response.data.data;
-                // console.log('this.record= ' + this.record);
-
-                _this.checkOverDataFilter();
-            }, function (response) {
-                //error callback
-                console.log("ERRORS");
-
-                //  this.formErrors =  response.data.error.message;
-            }).bind(this);
-        },
-        checkOverData: function checkOverData() {
-            console.log('this.items=' + this.allitems);
-            // for (var i=0; i < this.allitems.length; i++ ) {
-            //     if( this.allitems[i].approved == 1) {
-            //         this.items.push(this.allitems.splice(i,1));
-            //     } else {
-            //         this.xitems.push(this.allitems.splice(i,1));
-            //     }
-            // }
-        },
-
-        checkOverDataFilter: function checkOverDataFilter() {
-            var self = this;
-            console.log('items=' + this.allitems);
-
-            this.allitems.forEach(function (item) {
-                if (item.is_approved === 1) {
-                    if ((0, _moment2.default)(item.start_date).isSameOrBefore((0, _moment2.default)())) {
-                        self.items_live.push(item);
-                    } else {
-                        self.items_approved.push(item);
-                    }
-                } else {
-                    self.items_unapproved.push(item);
-                }
-            });
-            console.log('items_unapproved' + this.items_unapproved.length);
-
-            console.log('items_approved' + this.items_approved.length);
-            // function separate_evens_from_odds(value) {
-            // 	if ( value % 2 ) {
-            // 		odd_numbers.push(value);
-            // 	}
-            // 	else {
-            // 		even_numbers.push(value);
-            // 	}
-            // }
-
-            // var array_of_numbers = [5, 7, 1, 9, 8, 5];
-            //
-            // array_of_numbers.forEach(separate_evens_from_odds);
-            //
-            // console.log(even_numbers); //[8]
-            // console.log(odd_numbers); //[5, 7, 1, 9, 5]
-            // var unapprovedItems = this.allitems.filter(function(item) {
-            // 	return item.approved === 0
-            // });
-            //
-            // this.xitems = unapprovedItems;
-            //
-            //
-            // var approvedItems = this.allitems.filter(function(item) {
-            // 	return item.approved === 1
-            // });
-            //
-            // this.items = approvedItems.sort(function(a,b){
-            // 	return parseFloat(b.priority) - parseFloat(a.priority);
-            // });
+        filterApprovedByStoryType: function filterApprovedByStoryType(value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.items_approved_filter_storytype);
+            if (this.items_approved_filter_storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.items_approved_filter_storytype;
+            }
         }
+    }, _defineProperty(_methods, 'filterUnapprovedByStoryType', function filterUnapprovedByStoryType(value) {
+        console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype);
+        if (this.items_unapproved_filter_storytype === '') {
+            return value.story_type !== '';
+        } else {
+            return value.story_type === this.items_unapproved_filter_storytype;
+        }
+    }), _defineProperty(_methods, 'filterLiveByStoryType', function filterLiveByStoryType(value) {
+        console.log('value' + value.story_type + 'stmodel=' + this.items_live_filter_storytype);
+        if (this.items_live_filter_storytype === '') {
+            return value.story_type !== '';
+        } else {
+            return value.story_type === this.items_live_filter_storytype;
+        }
+    }), _defineProperty(_methods, 'storyTypeFilter', function storyTypeFilter(val, arg) {
+        if (val == '' || val == 'all') {
+            return val.storytype !== '';
+        } else {
+            return val.storytype === arg;
+        }
+    }), _defineProperty(_methods, 'typeIcon', function typeIcon(sname) {
+        switch (sname) {
+            case 'emutoday':
+            case 'story':
+                faicon = 'fa-file-image-o';
+                break;
+            case 'news':
+                faicon = 'fa-file-text-o';
+                break;
+            case 'student':
+                faicon = 'fa-graduation-cap';
+                break;
+            case 'external':
+                faicon = 'fa-file-o';
+                break;
+            case 'article':
+                faicon = 'fa-newspaper-o';
+                break;
+            case '':
+                faicon = 'fa-asterisk';
+                break;
+            default:
+                faicon = 'fa-file-o';
+                break;
+        }
+
+        return 'fa ' + faicon + ' fa-fw';
+    }), _defineProperty(_methods, 'addTypeToFilter', function addTypeToFilter(typeshortname) {
+        var tsnindex = this.currentTypesFilter.indexOf(typeshortname);
+        if (tsnindex < 0) {
+            this.currentTypeFilter.$set(tsnindex, typeshortname);
+        }
+    }), _defineProperty(_methods, 'toggleTypeToFilter', function toggleTypeToFilter(filtertype) {
+        self.storytype = filtertype.shortname;
+
+        //     console.log(filtertype)
+        //     let tsnindex;
+        //     tsnindex = this.currentTypesFilter.indexOf(filtertype.shortname);
+        //     if (tsnindex < 0) {
+        //             this.currentTypesFilter.push(filtertype.shortname);
+        //     } else {
+        //         this.currentTypesFilter.$remove(tsnindex);
+        //     }
+        // console.log('this.currentTypesFilter.length'+ this.currentTypesFilter.length)
+        // this.filterHideType();
+    }), _defineProperty(_methods, 'setFilter', function setFilter(ev) {}), _defineProperty(_methods, 'filterTheList', function filterTheList() {
+        var self = this;
+        this.items_unapproved = this.items_unapproved.filter(function (item) {
+            return item.story_type == self.storytype;
+        });
+    }), _defineProperty(_methods, 'filterHideType', function filterHideType() {
+        var self = this;
+        this.items_unapproved.forEach(function (item, index) {
+            for (var i = 0, l = self.currentTypesFilter.length; i < l; i++) {
+                if (item.story_type == self.currentTypesFilter[i]) {
+                    console.log('item.story_type' + item.story_type + 'self.currentTypesFilter' + self.currentTypesFilter[i]);
+                    self.items_unapproved.splice(index, 1);
+                    break;
+                }
+            }
+        });
+    }), _defineProperty(_methods, 'moveToApproved', function moveToApproved(changeditem) {
+
+        // this.xitems.pop(changeditem);
+        console.log('moveToApproved' + changeditem.priority);
+        changeditem.is_approved = 1;
+        changeditem.priority = changeditem.priority;
+        this.updateRecord(changeditem);
+    }), _defineProperty(_methods, 'moveToUnApproved', function moveToUnApproved(changeditem) {
+
+        // this.xitems.pop(changeditem);
+        console.log('moveToUnApproved' + changeditem);
+        changeditem.is_approved = 0;
+
+        this.updateRecord(changeditem);
+    }), _defineProperty(_methods, 'filterItemsApproved', function filterItemsApproved(items) {
+        return items.filter(function (item) {
+            return (0, _moment2.default)(item.start_date).isAfter((0, _moment2.default)()) && item.is_approved === 1;
+        });
+    }), _defineProperty(_methods, 'filterItemsUnapproved', function filterItemsUnapproved(items) {
+        return items.filter(function (item) {
+            return item.is_approved === 0;
+        });
+    }), _defineProperty(_methods, 'filterItemsLive', function filterItemsLive(items) {
+        return items.filter(function (item) {
+            return (0, _moment2.default)(item.start_date).isSameOrBefore((0, _moment2.default)()) && item.is_approved === 1; // true
+
+            // return moment(item.start_date).isAfter(moment())
+            // return item.live === 1
+        });
+    }), _defineProperty(_methods, 'movedItemIndex', function movedItemIndex(mid) {
+        return this.xitems.findIndex(function (item) {
+            return item.id == mid;
+        });
+    }), _defineProperty(_methods, 'updateRecord', function updateRecord(item) {
+        var currentRecordId = item.id;
+        item.start_date = (0, _moment2.default)(item.start_date, "MM-DD-YYYY").format("YYYY-MM-DD");
+
+        var currentRecord = item;
+        this.$http.patch('/api/story/' + item.id, item, {
+            method: 'PATCH'
+        }).then(function (response) {
+            console.log('good?' + response);
+        }, function (response) {
+            console.log('bad?' + response);
+        });
+    }), _defineProperty(_methods, 'fetchAllRecords', function fetchAllRecords() {
+        var _this = this;
+
+        this.$http.get('/api/story/appLoad').then(function (response) {
+
+            _this.$set('allitems', response.data.data);
+
+            //    this.allitems = response.data.data;
+            // console.log('this.record= ' + this.record);
+
+            _this.checkOverDataFilter();
+        }, function (response) {
+            //error callback
+            console.log("ERRORS");
+
+            //  this.formErrors =  response.data.error.message;
+        }).bind(this);
+    }), _defineProperty(_methods, 'checkOverDataFilter', function checkOverDataFilter() {
+        var self = this;
+        console.log('items=' + this.allitems);
+
+        this.allitems.forEach(function (item) {
+            if (item.is_approved === 1) {
+                if ((0, _moment2.default)(item.start_date).isSameOrBefore((0, _moment2.default)())) {
+                    self.items_live.push(item);
+                } else {
+                    self.items_approved.push(item);
+                }
+            } else {
+                self.items_unapproved.push(item);
+            }
+        });
+        // this.$set('items_unapproved_filtered',this.items_unapproved )
+
+        console.log('items_unapproved' + this.items_unapproved.length);
+
+        console.log('items_approved' + this.items_approved.length);
+    }), _methods),
+    filters: {},
+    directives: {
+        iconradio: _iconradio2.default
     },
 
-    // the `events` option simply calls `$on` for you
-    // when the instance is created
-    events: {
-        // 'child-msg': function (msg) {
-        //   // `this` in event callbacks are automatically bound
-        //   // to the instance that registered it
-        //   this.messages.push(msg)
-        // }
-    }
+    events: {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-0e037730=\"\">\n        <div class=\"col-md-4\" _v-0e037730=\"\">\n            <div v-if=\"singleStype\" class=\"form-group\" _v-0e037730=\"\">\n              <label class=\"sr-only\" for=\"story-type\" _v-0e037730=\"\">Type</label>\n                  <select id=\"story-type\" v-model=\"storytype\" class=\"form-control\" _v-0e037730=\"\">\n                      <option v-for=\"stype in s_types\" v-bind:value=\"stype.shortname\" _v-0e037730=\"\">\n                          {{stype.name}}\n                      </option>\n                  </select>\n            </div>\n            <h3 _v-0e037730=\"\">Unapproved</h3>\n\n            <div id=\"items-unapproved\" _v-0e037730=\"\">\n                <story-pod pid=\"items-unapproved\" v-for=\"item in items_unapproved | orderBy 'start_date' 1 | filterBy storytype in 'story_type'\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-unapproved\" _v-0e037730=\"\">\n                </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h3 _v-0e037730=\"\">Approved</h3>\n        <div id=\"items-approved\" _v-0e037730=\"\">\n            <story-pod pid=\"items-approved\" v-for=\"item in items_approved | orderBy 'start_date' 1 \" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-approved\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h3 _v-0e037730=\"\">Live <small _v-0e037730=\"\">Approved and StartDate is past</small></h3>\n        <div id=\"items-live\" _v-0e037730=\"\">\n            <story-pod pid=\"items-live\" v-for=\"item in items_live | orderBy 'start_date' 1\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-live\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n</div><!-- ./row -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <!-- <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"btn-toolbar\" role=\"toolbar\">\n                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                    <label>Filter: </label>\n                </div>\n                <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"storytype\">\n                     <template v-for=\"item in storyTypeIcons\">\n                         <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" /><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\"></span></label>\n                    </template>\n              </div>\n\n\n</div>\n        </div>\n\n    </div> -->\n    <!-- /.row -->\n    <div class=\"row\" _v-0e037730=\"\">\n        <div class=\"col-md-4\" _v-0e037730=\"\">\n            <!-- <div v-if=\"singleStype\" class=\"form-group\">\n              <label class=\"sr-only\" for=\"story-type\">Type</label>\n                  <select id=\"story-type\" v-model=\"storytype\" class=\"form-control\">\n                      <option v-for=\"stype in s_types\" v-bind:value=\"stype.shortname\">\n                          {{stype.name}}\n                      </option>\n                  </select>\n            </div> -->\n            <h4 _v-0e037730=\"\">Unapproved<p _v-0e037730=\"\">{{storytype}}</p></h4>\n            <div class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n                <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                    <label _v-0e037730=\"\">Filter: </label>\n                </div>\n                <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_unapproved_filter_storytype\" _v-0e037730=\"\">\n                     <template v-for=\"item in storyTypeIcons\">\n                         <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                    </template>\n              </div>\n          </div>\n            <div id=\"items-unapproved\" _v-0e037730=\"\">\n                <story-pod pid=\"items-unapproved\" v-for=\"item in items_unapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByStoryType items_unapproved_filter_storytype\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-unapproved\" _v-0e037730=\"\">\n                </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h4 _v-0e037730=\"\">Approved</h4>\n        <div class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n            <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                <label _v-0e037730=\"\">Filter: </label>\n            </div>\n            <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_approved_filter_storytype\" _v-0e037730=\"\">\n                 <template v-for=\"item in storyTypeIcons\">\n                     <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                </template>\n          </div>\n      </div>\n        <div id=\"items-approved\" _v-0e037730=\"\">\n            <story-pod pid=\"items-approved\" v-for=\"item in items_approved | orderBy 'start_date' 1 | filterBy filterApprovedByStoryType items_approved_filter_storytype\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-approved\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n\n\n\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h4 _v-0e037730=\"\">Live <small _v-0e037730=\"\">Approved and StartDate is past</small></h4>\n        <div class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n            <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                <label _v-0e037730=\"\">Filter: </label>\n            </div>\n            <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_live_filter_storytype\" _v-0e037730=\"\">\n                 <template v-for=\"item in storyTypeIcons\">\n                     <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                </template>\n          </div>\n      </div>\n        <div id=\"items-live\" _v-0e037730=\"\">\n            <story-pod pid=\"items-live\" v-for=\"item in items_live | orderBy 'start_date' 1 | filterBy filterLiveByStoryType\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-live\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n</div><!-- ./row -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n\n\n#items-unapproved .box[_v-0e037730] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n#items-live .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n"] = false
+    __vueify_insert__.cache["\n\nh4[_v-0e037730] {\n    margin-top: 3px;\n    font-size: 18px;\n}\n.btn-default[_v-0e037730]:active, .btn-default.active[_v-0e037730], .open > .dropdown-toggle.btn-default[_v-0e037730] {\n    background-color: #605ca8;\n    color: #ffffff;\n\n}\n.btn-default[_v-0e037730]:active, .btn-default.active[_v-0e037730], .open > .dropdown-toggle.btn-default[_v-0e037730] {\n    color: #ffffff;\n\n}\n\nspan.item-type-icon[_v-0e037730]:active, span.item-type-icon.active[_v-0e037730]{\n    background-color: #605ca8;\n    color: #ffffff;\n}\n#items-unapproved .box[_v-0e037730] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n#items-live .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -16382,9 +16421,9 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-0e037730", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./StoryPod.vue":8,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
+},{"../directives/iconradio.js":11,"./IconToggleBtn.vue":7,"./StoryPod.vue":9,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],9:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    color: #1B1B1B;\n}\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n.callout[_v-2522fd54] {\n    position: relative;\n    background: #ddd;\n    padding: 1em;\n    margin: 0;\n}\n.callout .callout-danger[_v-2522fd54] {\n    background: #ff0000;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.callout .callout-success[_v-2522fd54] {\n    background: #00ff00;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.Alert__close[_v-2522fd54] {\n    position: absolute;\n    top: 1em;\n    right: 1em;\n    font-weight: bold;\n    cursor: pointer;\n}\n\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    /*color: #1B1B1B;*/\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n")
 'use strict';
 
 var _moment = require('moment');
@@ -16401,7 +16440,8 @@ module.exports = {
     props: ['item', 'pid'],
     data: function data() {
         return {
-
+            response_msg: '',
+            response_approval: '',
             showBody: false,
             currentDate: {},
             record: {
@@ -16409,6 +16449,11 @@ module.exports = {
                 title: '',
                 story_type: '',
                 start_date: ''
+            },
+            itemMsgStatus: {
+                show: false,
+                level: '',
+                msg: ''
             }
 
         };
@@ -16420,7 +16465,7 @@ module.exports = {
     ready: function ready() {
         //ready function
         // this.record = this.props.item;
-        console.log('type' + this.item.story_type);
+        //console.log('type'+ this.item.story_type);
     },
     computed: {
         timefromNow: function timefromNow() {
@@ -16539,6 +16584,37 @@ module.exports = {
         //     this.$emit('item-change',this.item);
         //     console.log('ev ' + ev + 'this.item.id= '+  this.item.priority)
         // },
+        approveItem: function approveItem(ev) {
+
+            if (this.item.is_approved === 1) {
+                this.item.xIs_approved = 0;
+            } else {
+                this.item.xIs_approved = 1;
+            }
+
+            this.updateRecordStatus();
+        },
+        updateRecordStatus: function updateRecordStatus() {
+            // this.item.is_approved = (this.is_approved === 0)?1:0;
+            var self = this;
+            this.$http.patch('/api/story/updateQueue', this.item, {
+                method: 'PATCH'
+            }).then(function (response) {
+                console.log('good?' + response);
+                self.response_approval = response.data.isapproved;
+                self.item.is_approved = self.response_approval == 1 ? 1 : 0;
+
+                // self.itemMsgStatus.show = true;
+                // self.itemMsgStatus.level = 'success';
+                // self.itemMsgStatus.msg = response.data.msg;
+            }, function (response) {
+                console.log('bad?' + response);
+
+                self.itemMsgStatus.show = true;
+                self.itemMsgStatus.level = 'danger';
+                self.itemMsgStatus.msg = response.data.error.message;
+            });
+        },
         doThis: function doThis(ev) {
             this.item.is_approved = this.is_approved === 0 ? 1 : 0;
             this.$emit('item-change', this.item);
@@ -16593,13 +16669,13 @@ module.exports = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"box box-solid {{item.group}}\" _v-2522fd54=\"\">\n\n          <div class=\"box-header with-border\" _v-2522fd54=\"\">\n              <div class=\"row\" _v-2522fd54=\"\">\n                  <div class=\"col-md-12\" _v-2522fd54=\"\">\n                      <div class=\"pull-left\" _v-2522fd54=\"\">\n                          <span class=\"item-type-icon\" :class=\"typeIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"promotedIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"featuredIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"homeIcon\" _v-2522fd54=\"\"></span>\n                          <span class=\"item-featured-icon\" :class=\"archivedIcon\" _v-2522fd54=\"\"></span>\n                      </div><!-- /.pull-left -->\n                      <div class=\" form-inline pull-right\" _v-2522fd54=\"\">\n                          <div class=\"form-group\" _v-2522fd54=\"\">\n                              <label _v-2522fd54=\"\">approved:</label>\n                          </div><!-- /.form-group -->\n                          <div class=\"form-group\" _v-2522fd54=\"\">\n\n                              <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"doThis\" :value=\"isApproved\" _v-2522fd54=\"\">\n                              </vui-flip-switch>\n                          </div>\n                      </div><!-- /.pull-right -->\n                  </div><!-- /.col-md-12-->\n              </div><!-- /.row -->\n              <div class=\"row\" _v-2522fd54=\"\">\n                      <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-2522fd54=\"\">\n                  <div class=\"col-md-12\" _v-2522fd54=\"\">\n                      <h6 class=\"box-title\" _v-2522fd54=\"\">{{item.title}}</h6>\n                  </div><!-- /.col-md-12 -->\n</a>\n              </div><!-- /.row -->\n\n      </div>  <!-- /.box-header -->\n\n    <div v-if=\"showBody\" class=\"box-body\" _v-2522fd54=\"\">\n          <p _v-2522fd54=\"\">ID: {{item.id}}</p>\n          <p _v-2522fd54=\"\">Type: {{item.story_type}}</p>\n          <p _v-2522fd54=\"\">Title: {{item.title}}</p>\n          <p _v-2522fd54=\"\">Approved: {{item.is_approved}}</p>\n          <p _v-2522fd54=\"\">Promoted: {{item.is_promoted}}</p>\n          <p _v-2522fd54=\"\">Featured: {{item.is_featured}}</p>\n          <p _v-2522fd54=\"\">Live: {{item.is_live}}</p>\n          <p _v-2522fd54=\"\">Archived: {{item.is_archived}}</p>\n          <p _v-2522fd54=\"\">Tags: {{item.tags | json}}</p>\n          <p _v-2522fd54=\"\">Start Date: {{item.start_date}}</p>\n\n    </div><!-- /.box-body -->\n          <div class=\"box-footer list-footer\" _v-2522fd54=\"\">\n              <div class=\"row\" _v-2522fd54=\"\">\n                  <div class=\"col-sm-7\" _v-2522fd54=\"\">\n                      <h5 _v-2522fd54=\"\">Live {{timefromNow}}</h5>\n                  </div><!-- /.col-md-7 -->\n                  <div class=\"col-sm-5\" _v-2522fd54=\"\">\n                      <div class=\"btn-group pull-right\" _v-2522fd54=\"\">\n                              <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-pencil\" _v-2522fd54=\"\"></i></button>\n                              <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-eye\" _v-2522fd54=\"\"></i></button>\n                      </div><!-- /.btn-toolbar -->\n\n                  </div><!-- /.col-md-7 -->\n              </div><!-- /.row -->\n\n\n          </div><!-- /.box-footer -->\n\n  </div><!-- /.box- -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div _v-2522fd54=\"\">\n\n\n    <div v-show=\"itemMsgStatus.show\" class=\"callout callout-{{itemMsgStatus.level}}\" _v-2522fd54=\"\">\n         <span class=\"Alert__close\" @click=\"itemMsgStatus.show = false\" _v-2522fd54=\"\">X</span>\n        <h5 _v-2522fd54=\"\">{{itemMsgStatus.msg}}</h5>\n    </div>\n    <div class=\"box box-solid {{item.group}}\" _v-2522fd54=\"\">\n        <div class=\"box-header with-border\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <div class=\"pull-left\" _v-2522fd54=\"\">\n                            <span class=\"item-type-icon\" :class=\"typeIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"promotedIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"featuredIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"homeIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"archivedIcon\" _v-2522fd54=\"\"></span>\n                        </div><!-- /.pull-left -->\n                        <div class=\" form-inline pull-right\" _v-2522fd54=\"\">\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n                                <label _v-2522fd54=\"\">approved:</label>\n                            </div><!-- /.form-group -->\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n\n                                <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"approveItem\" :value=\"isApproved\" _v-2522fd54=\"\">\n                                </vui-flip-switch>\n                            </div>\n                        </div><!-- /.pull-right -->\n                    </div><!-- /.col-md-12-->\n                </div><!-- /.row -->\n                <div class=\"row\" _v-2522fd54=\"\">\n                        <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <h6 class=\"box-title\" _v-2522fd54=\"\">{{item.title}}</h6>\n                    </div><!-- /.col-md-12 -->\n  </a>\n                </div><!-- /.row -->\n\n        </div>  <!-- /.box-header -->\n\n      <div v-if=\"showBody\" class=\"box-body\" _v-2522fd54=\"\">\n            <p _v-2522fd54=\"\">ID: {{item.id}}</p>\n            <p _v-2522fd54=\"\">Type: {{item.story_type}}</p>\n            <p _v-2522fd54=\"\">Title: {{item.title}}</p>\n            <p _v-2522fd54=\"\">Approved: {{item.is_approved}}</p>\n            <p _v-2522fd54=\"\">Promoted: {{item.is_promoted}}</p>\n            <p _v-2522fd54=\"\">Featured: {{item.is_featured}}</p>\n            <p _v-2522fd54=\"\">Live: {{item.is_live}}</p>\n            <p _v-2522fd54=\"\">Archived: {{item.is_archived}}</p>\n            <p _v-2522fd54=\"\">Tags: {{item.tags | json}}</p>\n            <p _v-2522fd54=\"\">Start Date: {{item.start_date}}</p>\n\n      </div><!-- /.box-body -->\n            <div class=\"box-footer list-footer\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-sm-7\" _v-2522fd54=\"\">\n                        <h5 _v-2522fd54=\"\">Live {{timefromNow}}</h5>\n                    </div><!-- /.col-md-7 -->\n                    <div class=\"col-sm-5\" _v-2522fd54=\"\">\n                        <div class=\"btn-group pull-right\" _v-2522fd54=\"\">\n                                <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-pencil\" _v-2522fd54=\"\"></i></button>\n                                <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-eye\" _v-2522fd54=\"\"></i></button>\n                        </div><!-- /.btn-toolbar -->\n\n                    </div><!-- /.col-md-7 -->\n                </div><!-- /.row -->\n\n\n            </div><!-- /.box-footer -->\n\n    </div><!-- /.box- -->\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    color: #1B1B1B;\n}\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    color: #1B1B1B;\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n"] = false
+    __vueify_insert__.cache["\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n.callout[_v-2522fd54] {\n    position: relative;\n    background: #ddd;\n    padding: 1em;\n    margin: 0;\n}\n.callout .callout-danger[_v-2522fd54] {\n    background: #ff0000;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.callout .callout-success[_v-2522fd54] {\n    background: #00ff00;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.Alert__close[_v-2522fd54] {\n    position: absolute;\n    top: 1em;\n    right: 1em;\n    font-weight: bold;\n    cursor: pointer;\n}\n\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    /*color: #1B1B1B;*/\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -16608,7 +16684,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2522fd54", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./VuiFlipSwitch.vue":9,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],9:[function(require,module,exports){
+},{"./VuiFlipSwitch.vue":10,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],10:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.vuiflipswitch {\n    position: relative; width: 36px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.vuiflipswitch-checkbox {\n    display: none;\n}\n.vuiflipswitch-label {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 1px solid #666666; border-radius: 4px;\n}\n.vuiflipswitch-inner {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.vuiflipswitch-inner:before, .vuiflipswitch-inner:after {\n    display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;\n    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.vuiflipswitch-inner:before {\n    content: \"Y\";\n    padding-left: 5px;\n    background-color: #EEEEEE; color: #605CA8;\n}\n.vuiflipswitch-inner:after {\n    content: \"N\";\n    padding-right: 5px;\n    background-color: #EEEEEE; color: #666666;\n    text-align: right;\n}\n.vuiflipswitch-switch {\n    display: block;\n    width: 16px;\n    margin: 0;\n    background: #666666;\n    position: absolute; top: 0; bottom: 0;\n    /*right: 16px;*/\n    /*border: 2px solid #666666; */\n    border-radius: 4px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-inner {\n    margin-left: 0;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-switch {\n    right: 0px;\n    background-color: #605CA8;\n}\nselect.form-control {\n    height:22px;\n    border: 1px solid #666666;\n}\n\n\nh6 {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group {\n    /*border: 1px solid red;*/\n}\n.form-group label{\n    margin-bottom: 0;\n}\n.box.box-solid.box-default {\n    border: 1px solid #666666;\n}\n")
 "use strict";
@@ -16650,7 +16726,52 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-83bd83d2", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],10:[function(require,module,exports){
+},{"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],11:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+    twoWay: true,
+    bind: function bind() {
+        var self = this;
+        var btns = $(self.el).find('.btn');
+
+        btns.each(function () {
+            $(this).on('click', function () {
+                var v = $(this).find('input').get(0).value;
+                self.set(v);
+            });
+        });
+    },
+    update: function update() {
+        var value = this._watcher.value;
+        if (value) {
+            this.set(value);
+
+            var btns = $(this.el).find('.btn');
+            btns.each(function () {
+                $(this).removeClass('active');
+                $(this).removeClass('bg-purple');
+
+                var v = $(this).find('input').get(0).value;
+                //   $(this).find('span').removeClass('prpstyle');
+                if (v === value) {
+
+                    $(this).addClass('active');
+                    $(this).addClass('bg-purple');
+                }
+            });
+        } else {
+            var input = $(this.el).find('.active input').get(0);
+            if (input) {
+
+                this.set(input.value);
+                console.log('input.value=' + input.value);
+            }
+        }
+    }
+};
+
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var _vueResource = require('vue-resource');
@@ -16688,6 +16809,6 @@ new Vue({
         }
 });
 
-},{"./components/StoryApp.vue":7,"moment":1,"vue":5,"vue-resource":4}]},{},[10]);
+},{"./components/StoryApp.vue":8,"moment":1,"vue":5,"vue-resource":4}]},{},[12]);
 
 //# sourceMappingURL=vue-story-app.js.map

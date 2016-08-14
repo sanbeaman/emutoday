@@ -92,6 +92,14 @@ protected $statusCode = 200;
           'record_id' => $record_id
         ]);
     }
+    public function respondUpdatedWithData($message, $data)
+    {
+
+        return $this->setStatusCode(201)->respond([
+          'message' => $message,
+          'newdata' => $data
+        ]);
+    }
     public function respondCreated($message)
     {
 

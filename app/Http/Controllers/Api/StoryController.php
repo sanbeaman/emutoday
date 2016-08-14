@@ -187,48 +187,40 @@ class StoryController extends ApiController
     }
     public function store(Request $request)
     {
-        //return some kind of Response
-        // 400  'bad request'
-        // 403 Forbidden
-        //
-        // 422 'unprocessable entity'
-        //
-    //  if (! Input::get('title') or ! Input::get('location'))
-    $validation = \Validator::make( Input::all(), [
-                    'title'           => 'required',
-                    'start_date'      => 'required',
-                    'story_type'    => 'required',
-                    'content'     => 'required',
-                    'user_id'   => 'required'
-            ]);
 
-     if( $validation->fails() )
-     {
-         return $this->setStatusCode(422)
-                                 ->respondWithError($validation->errors()->getMessages());
-     }
-     if($validation->passes())
-    {
-        $story = new Story;
-        $story->title           	= $request->get('title');
-        $story->slug           	= $request->get('slug');
-        $story->subtitle           	= $request->get('subtitle');
-        $story->teaser           	= $request->get('teaser');
-        $story->story_type      = $request->get('story_type');
-        $story->user_id         = $request->get('user_id');
-        $story->content     	= $request->get('content');
-        $story->start_date      = \Carbon\Carbon::parse($request->get('start_date'));
-        $story->author_id       = $request->get('author_id', 0);
+        //  if (! Input::get('title') or ! Input::get('location'))
+        $validation = \Validator::make( Input::all(), [
+            'title'           => 'required',
+            'start_date'      => 'required',
+            'story_type'    => 'required',
+            'content'     => 'required',
+            'user_id'   => 'required' ]);
 
-
-
-        if($story->save()) {
-                $record_id  = $story->id;
-                return $this->setStatusCode(201)
-                    ->respondCreatedWithId('Story successfully created!', $record_id);
+             if( $validation->fails() )
+                 {
+                     return $this->setStatusCode(422)
+                                             ->respondWithError($validation->errors()->getMessages());
+                 }
+             if($validation->passes())
+                {
+                $story = new Story;
+                $story->title       = $request->get('title');
+                $story->slug        = $request->get('slug');
+                $story->subtitle    = $request->get('subtitle');
+                $story->teaser      = $request->get('teaser');
+                $story->story_type  = $request->get('story_type');
+                $story->user_id     = $request->get('user_id');
+                $story->content     = $request->get('content');
+                $story->start_date  = \Carbon\Carbon::parse($request->get('start_date'));
+                $story->author_id   = $request->get('author_id', 0);
+                if($story->save()) {
+                    $stype = $story->story_type;
+                        return redirect(route('admin_storytype_edit', ['stype' => $stype, 'story'=> $story]));
+                    }
+                            // $record_id  = $story->id;
+                            // return $this->setStatusCode(201)
+                            //     ->respondCreatedWithId('Story successfully created!', $record_id);
                 }
-            }
-
     }
     /**
      * Store a newly created resource in storage.
@@ -339,6 +331,47 @@ class StoryController extends ApiController
                      ->respondCreatedWithId('Story successfully Updated!!!!!!!!!!', $record_id);
                  }
              }
+
+     }
+     public function updateQueue(Request $request)
+     {
+        $isGood = false;
+        $msg = '';
+        $story = $this->story->findOrFail($request->get('id'));
+        if($request->get('xIs_approved') === 1) {
+            if ($story->story_type === 'news'){
+                 $story->is_approved = 1;
+                 $isGood =true;
+                 $msg = 'story approved!';
+            } else {
+                if ($story->is_promoted === 1) {
+                      $story->is_approved = 1;
+                      $isGood =true;
+                      $msg = 'story approved!';
+                } else {
+                     $isGood =false;
+                     $msg = 'Story needs to be promoted before approved';
+                }
+            }
+        } elseif ($request->get('xIs_approved') === 0) {
+            $story->is_approved = 0;
+            $isGood =true;
+            $msg = 'story is now unapproved!';
+         } else {
+             $isGood =false;
+             $msg = 'unknown error';
+         }
+
+         if ($isGood) {
+             if($story->save()) {
+                 return $this->setStatusCode(201)
+                 ->respond([ 'isapproved' => $story->is_approved, 'msg'=> $msg]);
+             }
+         } else {
+             return $this->setStatusCode(422)
+            ->respondWithError([$msg]);
+
+         }
 
      }
 

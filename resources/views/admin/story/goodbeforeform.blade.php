@@ -59,10 +59,9 @@
             </div><!-- /.id="vue-story-form-wrapper" -->
         </div><!-- /.col-md-6 -->
         <div class="col-md-5">
-            @can('admin', $currentUser)
+                @can('admin', $currentUser)
                 @if($story->exists)
-                    @if($story->story_type == 'news')
-                            {{-- the story_type 'news' does not have images  --}}
+                        @if($story->story_type == 'news')
                                 <div class="box box-warning">
                                     <div class="box-header with-border">
                                         <form action="promoteStory" method="POST">
@@ -72,53 +71,20 @@
                                         </form>
                                     </div>
                                 </div>
-                    @else
-                        {{-- the following story_types may have images  --}}
-                            @if($currentRequiredImages !== null)
-                                {{-- display the appropriate for for the required images --}}
-                                @if ($currentRequiredImages->count() > 0)
-                                    {{-- there is at least 1 requireed image in the collection
-                                        so loop thru the required images collection and display form --}}
-                                    @foreach($currentRequiredImages as $currentRequiredImage)
-                                        @if($currentRequiredImage->image_type == 'small')
-                                            @include('admin.storyimages.subviews.smallimage',['storyImage' => $currentRequiredImage, 'story_id' => $story->id ])
-                                        @elseif($currentRequiredImage->image_type == 'story')
-                                            @include('admin.storyimages.subviews.storyimage',['storyImage' => $currentRequiredImage, 'story_id' => $story->id ])
-                                        @else
-                                            @include('admin.storyimages.subviews.otherimage',['storyImage' => $currentRequiredImage, 'story_id' => $story->id ])
-                                        @endif
-                                    @endforeach
-                                @endif
+                        @else
+                            @if ($requiredImages->count() > 0)
+                                @foreach($requiredImages as $requiredImage)
+                                    {{$requiredImage->name}}
+                                @endforeach
+
+                            @endif
+                            @if ($otherImages->count() > 0)
+                                @foreach($otherImages as $otherImage)
+                                    {{$otherImage->name}}
+                                @endforeach
                             @endif
 
-                            @if($currentOtherImages !== null)
-
-                                @if($currentOtherImages->count() > 0)
-
-                                    @foreach($currentOtherImages as $currentOtherImage)
-                                        @if($currentOtherImage->image_type == 'front')
-                                            @include('admin.storyimages.subviews.frontimage',['storyImage' => $currentOtherImage, 'story_id' => $story->id ])
-                                        @else
-                                            @include('admin.storyimages.subviews.otherimage',['storyImage' => $currentOtherImage, 'story_id' => $story->id ])
-
-                                        @endif
-                                    @endforeach
-                                @endif
-                            @endif
-                            @if($stillNeedTheseImgs !== null)
-                                
-                                @if($stillNeedTheseImgs->count() > 0)
-                                    @foreach($stillNeedTheseImgs as $stillNeedTheseImg)
-                                        @include('admin.storyimages.subviews.addstoryimage',['otherImage' => $stillNeedTheseImg, 'story_id' => $story->id ])
-                                    @endforeach
-                                @endif
-                            @endif
-                    @endif
-                @endif
-            @endcan
-
-
-                            {{-- @if ($story->storyImages()->count() > 0)
+                            @if ($story->storyImages()->count() > 0)
                                     @foreach($story->storyImages as $storyImage)
                                         @if($storyImage->image_type == 'small')
                                             @include('admin.storyimages.subviews.smallimage',['storyImage' => $storyImage, 'story_id' => $story->id ])
@@ -130,15 +96,17 @@
                                             @include('admin.storyimages.subviews.otherimage',['storyImage' => $storyImage, 'story_id' => $story->id ])
                                         @endif
                                     @endforeach
-                            @endif --}}
-                            {{-- @if ($leftOverImages->count() > 0)
+                            @endif
+                            @if ($leftOverImages->count() > 0)
                                     @foreach($leftOverImages as $leftOverImage)
                                             @include('admin.story.subviews.addstoryimage',['otherImage' => $leftOverImage, 'story_id' => $story->id ])
                                     @endforeach
 
-                                @endif --}}
-                        {{-- @endif --}}
+                                @endif
+                        @endif
 
+                    @endif
+                @endcan
 
 
 

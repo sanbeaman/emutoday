@@ -174,9 +174,11 @@ public function addImage($id)
     return redirect(route('admin.story.edit', $story->id));
 }
 
-public function addNewImage($id, Request $request)
+public function addNewStoryImage(Request $request)
 {
-    $story = $this->story->findOrFail($id);
+    $story_id = $request->story_id;
+    $story = $this->story->findOrFail($story_id);
+    $stype = $story->story_type;
     $storyGroup = $story->storyType->group;
     $story->storyImages()->create([
         'imagetype_id'=> $request->img_id,
@@ -185,13 +187,39 @@ public function addNewImage($id, Request $request)
         'image_name'=> 'img' . $story->id . '_' . $request->img_type
 
     ]);
-    if($request->img_type == 'front') {
-        $story->is_featured = 1;
-        $story->save();
-    }
+    // if($request->img_type == 'front') {
+    //     $story->is_featured = 1;
+    //     $story->save();
+    // }
     flash()->success('New Image Added.');
-    return redirect(route('admin.story.edit', $story->id));
+    return redirect(route('admin_storytype_edit', ['stype' => $stype, 'story'=> $story]));
+
+    // return redirect(route('admin.story.edit', $story->id));
 }
+public function addNewImage($id, Request $request)
+{
+
+    $story = $this->story->findOrFail($id);
+    $stype = $story->story_type;
+    $storyGroup = $story->storyType->group;
+    $story->storyImages()->create([
+        'imagetype_id'=> $request->img_id,
+        'group'=> $storyGroup,
+        'image_type'=> $request->img_type,
+        'image_name'=> 'img' . $story->id . '_' . $request->img_type
+
+    ]);
+    // if($request->img_type == 'front') {
+    //     $story->is_featured = 1;
+    //     $story->save();
+    // }
+    flash()->success('New Image Added.');
+    return redirect(route('admin_storytype_edit', ['stype' => $stype, 'story'=> $story]));
+
+    // return redirect(route('admin.story.edit', $story->id));
+}
+
+
 public function promoteStory($id, Request $request)
 {
     $story = $this->story->findOrFail($id);

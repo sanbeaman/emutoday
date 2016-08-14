@@ -69,6 +69,9 @@ Route::group(['prefix' => 'api'], function() {
     Route::get('story', ['as' => 'api.story', 'uses' => 'Api\StoryController@index']);
     Route::post('story/delete', ['as' => 'api.story.delete', 'uses' => 'Api\StoryController@delete']);
 
+    Route::patch('story/updateQueue', ['as' => 'story_update_queue', 'uses' => 'Api\StoryController@updateQueue']);
+
+
     Route::resource('story', 'Api\StoryController');
     Route::resource('author', 'Api\AuthorController');
     //  Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
@@ -213,6 +216,9 @@ Route::group(['middleware' => ['web']], function() {
         Route::get('story/{stype}', ['as' => 'admin_storytype_list', 'uses' => 'Admin\StoryTypeController@list']);
         Route::get('story/{stype}/setup', ['as' => 'admin_storytype_setup', 'uses' => 'Admin\StoryTypeController@storyTypeSetUp']);
         Route::get('story/{stype}/{story}/edit', ['as' => 'admin_storytype_edit', 'uses' => 'Admin\StoryTypeController@storyTypeEdit']);
+
+        Route::post('story/{stype}/{story}/addNewStoryImage','Admin\StoryController@addNewStoryImage');
+
         // Route::get('story/{stype}/{story}/preview', ['as' => 'admin_storytype_preview', 'uses' => 'Admin\StoryTypeController@storyTypePreview']);
 
         // Route::get('story/appload', ['as' => 'api.story.appload', 'uses' => 'Admin\StoryController@appLoad']);
