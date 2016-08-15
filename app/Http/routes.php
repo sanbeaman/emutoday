@@ -163,6 +163,8 @@ Route::group(['middleware' => ['web']], function() {
         Route::get('page/{page}', ['as' => 'preview_hub', 'uses' => 'PreviewController@hub']);
         Route::get('magazine/{magazine}', ['as' => 'preview_magazine', 'uses' => 'PreviewController@magazine']);
 
+        Route::get('story/{stype}/{story}', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
+
         Route::get('{stype}/{story}', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
 
     });

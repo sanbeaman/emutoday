@@ -11,12 +11,14 @@ module.exports = {
      setupEditor: function setUpEditor() {
          var self = this;
          CKEDITOR.replace(this.el.id, {
-             filebrowserWindowFeatures: 'resizable=no',
-             filebrowserBrowseUrl : '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
-             filebrowserImageBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=images',
-             filebrowserUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=files',
-             filebrowserImageUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=images'
+             customConfig: '/themes/ckeditor_config.js'
          });
+        //      filebrowserWindowFeatures: 'resizable=no',
+        //      filebrowserBrowseUrl : '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
+        //      filebrowserImageBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=images',
+        //      filebrowserUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=files',
+        //      filebrowserImageUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=images'
+        //  });
 
          CKEDITOR.instances[this.el.id].setData(this.params.content);
          CKEDITOR.instances[this.el.id].on('change', function () {

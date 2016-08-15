@@ -105,7 +105,7 @@ export default  {
             return '/preview/' + this.rte +  '/' + this.thisRecordId;
         },
         listLink:function() {
-            return '/admin/story/' + this.rte +  '/'
+            return '/admin/story/queue';
         },
         createNewLink:function() {
             return '/admin/story/' + this.rte +  '/setup'

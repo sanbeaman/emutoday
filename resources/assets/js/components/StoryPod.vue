@@ -311,10 +311,10 @@ module.exports  = {
                       return this.item.is_approved;
                   },
                   itemEditPath: function(){
-                      return '/admin/story/'+ this.item.id + '/edit'
+                      return '/admin/story/'+ this.item.story_type+'/'+this.item.id + '/edit'
                   },
                   itemPreviewPath: function(){
-                      return '/preview/story/'+ this.item.id
+                      return '/preview/story/'+ this.item.story_type+'/'+this.item.id
                   },
                   typeClass: function() {
 
@@ -445,10 +445,11 @@ module.exports  = {
                             method: 'PATCH'
                         } )
                         .then((response) => {
-                            console.log('good?'+ response)
+                            console.log('StoryPodgood?'+ response)
                             self.response_approval = response.data.isapproved;
                             self.item.is_approved = (self.response_approval == 1)?1:0;
 
+                            self.$emit('item-change',self.item);
                             // self.itemMsgStatus.show = true;
                             // self.itemMsgStatus.level = 'success';
                             // self.itemMsgStatus.msg = response.data.msg;

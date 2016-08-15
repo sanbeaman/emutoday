@@ -401,6 +401,7 @@ $('#table2 table').on('click', '.fa-pencil', function (ev) {
     //$( "div" ).data( "role" ) === "page";
     var parentBtnData = $(this).parent().data();
     var parentBtnId = parentBtnData['id'];
+    var parentBtnStype = parentBtnData['stype'];
     console.log('parentBtnId====='+parentBtnData['id']);
     var dataid = mainrecord_id;
     var modal_message;
@@ -410,7 +411,7 @@ $('#table2 table').on('click', '.fa-pencil', function (ev) {
     console.log('original_story_ids=' + original_story_ids);
     console.log('story_ids=' + story_ids);
 
-    var itempath = '/admin/story/'+ parentBtnId +'/edit';
+    var itempath = '/admin/story/'+parentBtnStype+ '/' + parentBtnId +'/edit';
 
     if (arraysEqual(original_story_ids,story_ids)) {
         console.log('arrays are equal');

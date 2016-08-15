@@ -44,6 +44,7 @@ class StoryTypeController extends Controller
 
     }
 
+    
     /**
     * [storyTypeSetUp description]
     * @param  [type] $stype [description]
@@ -187,29 +188,11 @@ class StoryTypeController extends Controller
 
             }
 
-            // dd('$currentRequiredImages===='. $currentRequiredImages . '  $currentOtherImages===' . $currentOtherImages  . '   $stillneedthese===='.$stillneedthese);
-
-            // $otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
-
-            // $leftOverImages = $imagetypeNames->diffKeys($currentStoryImages);
-            //$currentRequiredImages = $imagetypeNames->only($requiredImages);
-        //    $currentOtherImages = $imagetypeNames->only($otherImages);
-
         }
         $currentRequiredImages = null;
         $currentOtherImages = null;
         $stillNeedTheseImgs = null;
         return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
-
-        //  dd($currentStoryImagesReal,$imagetypeNames,$currentStoryImages,$leftOverImages,$requiredImages,$otherImages, $currentRequiredImages,$currentOtherImages);
-
-
-            // return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
-
-            // return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'requiredImages','otherImages', 'leftOverImages'));
-
-        // return view('admin.story.form', compact('story', 'stypes','storydata', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
-
     }
 
 
@@ -237,65 +220,47 @@ class StoryTypeController extends Controller
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public function store(Requests\StoreStoryRequest $request)
-    {
-        $pubStartDate = $request->start_date;
-        $pubEndDate = $request->end_date;
-        // $pubStartDate = $request->start_date == null ?\Carbon\Carbon::now() : \Carbon\Carbon::parse($request->start_date) ;
-        // $pubEndDate = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
-
-        $story = $this->story->create(
-
-        ['user_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'teaser','content', 'external_link', 'story_type') + ['start_date' => $pubStartDate] + ['end_date' => $pubEndDate ]
-
-    );
-    $storyGroup = $story->storyType->group;
-
-    if($storyGroup != 'news') {
-
-        $requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
-        $otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
-        $stypelist = StoryType::where('level', 1)->lists('name','shortname');
-        $stypes = $story->story_type;
-
-        foreach ($requiredImages as $img) {
-            $story->storyImages()->create([
-                'imagetype_id'=> $img->id,
-                'group'=> $storyGroup,
-                'image_type'=> $img->type,
-                'image_name'=> 'img' . $story->id . '_' . $img->type
-            ]);
-        }
-    }
-    if($story->story_type == 'article'){
-        flash()->success('Article has been created.');
-        return redirect(route('admin_magazine_article_edit', $story->id));
-
-    } else {
-        flash()->success('Story has been created.');
-        return redirect(route('admin.story.edit', $story->id));
-    }
-
-
-}
+//     public function store(Requests\StoreStoryRequest $request)
+//     {
+//         $pubStartDate = $request->start_date;
+//         $pubEndDate = $request->end_date;
+//         // $pubStartDate = $request->start_date == null ?\Carbon\Carbon::now() : \Carbon\Carbon::parse($request->start_date) ;
+//         // $pubEndDate = $request->end_date == null ? null:  \Carbon\Carbon::parse($request->end_date);
+//
+//         $story = $this->story->create(
+//
+//         ['user_id' => auth()->user()->id] + $request->only('title', 'slug', 'subtitle', 'teaser','content', 'external_link', 'story_type') + ['start_date' => $pubStartDate] + ['end_date' => $pubEndDate ]
+//
+//     );
+//     $storyGroup = $story->storyType->group;
+//
+//     if($storyGroup != 'news') {
+//
+//         $requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
+//         $otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
+//         $stypelist = StoryType::where('level', 1)->lists('name','shortname');
+//         $stypes = $story->story_type;
+//
+//         foreach ($requiredImages as $img) {
+//             $story->storyImages()->create([
+//                 'imagetype_id'=> $img->id,
+//                 'group'=> $storyGroup,
+//                 'image_type'=> $img->type,
+//                 'image_name'=> 'img' . $story->id . '_' . $img->type
+//             ]);
+//         }
+//     }
+//     if($story->story_type == 'article'){
+//         flash()->success('Article has been created.');
+//         return redirect(route('admin_magazine_article_edit', $story->id));
+//
+//     } else {
+//         flash()->success('Story has been created.');
+//         return redirect(route('admin.story.edit', $story->id));
+//     }
+//
+//
+// }
 
 public function index(){
     $stypes = \emutoday\StoryType::all()->pluck('group','group');

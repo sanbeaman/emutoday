@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div v-show="formMessage.isOk"  class="alert alert-success alert-dismissible">
                     <button @click.prevent="toggleCallout" class="btn btn-sm close"><i class="fa fa-times"></i></button>
-            <h5>{{formMessage.msg}}</h5>
+                    <h5>{{formMessage.msg}}</h5>
                 </div>
 
             </div><!-- /.small-12 columns -->
@@ -19,12 +19,20 @@
                     <input v-model="record.title" v-bind:class="[formErrors.title ? 'invalid-input' : '']"  name="title" type="text">
                     <p v-if="formErrors.title" class="help-text invalid">	Please Include a Title!</p>
                 </div>
+            </div>
+        </div><!-- /.row -->
+        <div class="row">
+        <div class="col-md-12">
                 <div class="form-group">
                     <label>Slug <i class="fi-star reqstar"></i></label>
                     <p class="help-text" id="slug-helptext">Automatic Readable link for sharing and social media</p>
                     <input v-model="recordSlug" v-bind:class="[formErrors.slug ? 'invalid-input' : '']"  name="slug" type="text">
                     <p v-if="formErrors.slug" class="help-text invalid">needs slug!</p>
                 </div>
+        </div><!-- /.col-md-12 -->
+        </div>
+        <div class="row">
+                <div class="col-md-12">
                 <div class="form-group">
                     <label>Subtitle</label>
                     <p class="help-text" id="subtitle-helptext">Visibible in some cases</p>
@@ -34,15 +42,13 @@
                 <div class="form-group">
                     <label>Content <i class="fi-star reqstar"></i></label>
                     <p class="help-text" id="content-helptext">Enter the story content</p>
-                    <textarea v-if="hasContent" id="content" name="content" v-ckrte="content" :content="content" :fresh="isFresh"></textarea>
+                    <textarea v-if="hasContent" id="content" name="content" v-ckrte="content" :content="content" :fresh="isFresh" rows="200"></textarea>
                     <p v-if="formErrors.content" class="help-text invalid">Need Content!</p>
                 </div>
                 <div class="form-group user-display">
                     <div class="user-name">{{author.first_name}} {{author.last_name}}</div>
                     <div class="user-info">Contact {{author.first_name}} {{author.last_name}}, {{author.email}}, {{author.phone}}</div>
                 </div><!-- /.frm-group -->
-
-
             </div><!-- /.small-12 columns -->
         </div><!-- /.row -->
         <div class="row">
@@ -252,6 +258,9 @@ module.exports  = {
 
               data: function() {
                 return {
+                    newform: false,
+                    response_record_id:'',
+                    response_stype: '',
                     singleStype:'',
                     ckfullyloaded: false,
                     currentRecordId: null,
@@ -428,8 +437,10 @@ module.exports  = {
                         this.currentRecordId = this.editid;
                         console.log('this.recordId >>>>'+     this.currentRecordId );
                         this.singleStype = true;
+                        this.newform = false;
                         this.fetchCurrentRecord();
                     } else {
+                        this.newform = true;
                         this.hasContent = true;
                         this.record.user_id = this.cuser.id;
                         //this.stype_list = this.storytype;
@@ -442,7 +453,14 @@ module.exports  = {
                 },
 
               methods: {
+                  nowOnReload:function() {
+                      let newurl = '/admin/story/' + this.response_stype +'/'+ this.response_record_id+'/edit';
+                      console.log(newurl);
+                      document.location = newurl;
+                  },
                   onRefresh: function() {
+
+
                       this.updateRecordId(this.currentRecordId);
                       this.recordState = 'edit';
                       this.recordIsDirty = false;
@@ -497,6 +515,7 @@ module.exports  = {
                       return JSON.stringify(a) === JSON.stringify(b);
                   },
                     fetchCurrentRecord: function() {
+
                         this.$http.get('/api/story/'+ this.currentRecordId +'/edit')
 
                             .then((response) =>{
@@ -579,14 +598,20 @@ module.exports  = {
 
                   this.record.user_id = this.currentUser.id;
                   this.record.content = this.content;
-                //   this.record.story_type = this.storytype;
+                  //   this.record.story_type = this.storytype;
                   this.record.slug = this.recordSlug;
                 this.record.start_date = this.fdate;
                 //   this.record.start_date =  moment(this.fdate,"MM-DD-YYYY").format("YYYY-MM-DD HH:mm:ss");
                   this.record.author_id = this.author.id;
-
+                  let tempid;
+                  if (typeof this.currentRecordId != 'undefined'){
+                      tempid = this.currentRecordId;
+                  } else {
+                      tempid =this.record.id;
+                  }
+                  console.log('tempid'+tempid);
                   let method = (this.recordexists) ? 'put' : 'post'
-                  let route =  (this.recordexists) ? '/api/story/' + this.currentRecordId : '/api/story/';
+                  let route =  (this.recordexists) ? '/api/story/' + tempid : '/api/story/';
 
                 //   this.$http.post('/api/story', this.record)
                   this.$http[method](route, this.record)
@@ -599,10 +624,21 @@ module.exports  = {
                                     // console.log('response.data=' + response.data.message);
 
                                  this.formMessage.msg = response.data.message;
-                                this.currentRecordId = response.data.record_id;
+                                this.currentRecordId = response.data.newdata.record_id;
                                  this.formMessage.isOk = response.ok;
+                                //  console.log('goooooo'+response.newdata.record_id);
+                                  console.log('newdta'+response.data.newdata.record_id);
+                                this.response_record_id = response.data.newdata.record_id;
+                                this.response_stype = response.data.newdata.stype;
+                                if (this.newform) {
+                                    this.nowOnReload();
+                                } else {
+                                        this.onRefresh();
 
-                                this.onRefresh();
+                                }
+
+
+
 
                                 }, (response) => {
                                     //error callback

@@ -28,7 +28,7 @@
                   </select>
             </div> -->
             <h4>Unapproved<p>{{storytype}}</p></h4>
-            <div class="btn-toolbar" role="toolbar">
+            <div v-show="checkRole" class="btn-toolbar" role="toolbar">
                 <div class="btn-group btn-group-xs" role="group">
                     <label>Filter: </label>
                 </div>
@@ -37,7 +37,7 @@
                          <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="{{item.name}}"><input type="radio" autocomplete="off" value="{{item.shortname}}" /><span class="item-type-icon-shrt" :class="typeIcon(item.shortname)"></span></label>
                     </template>
               </div>
-          </div>
+            </div>
             <div id="items-unapproved">
                 <story-pod
                     pid="items-unapproved"
@@ -52,7 +52,7 @@
     </div><!-- /.col-md-4 -->
     <div class="col-md-4">
         <h4>Approved</h4>
-        <div class="btn-toolbar" role="toolbar">
+        <div v-show="checkRole" class="btn-toolbar" role="toolbar">
             <div class="btn-group btn-group-xs" role="group">
                 <label>Filter: </label>
             </div>
@@ -79,7 +79,7 @@
     </div><!-- /.col-md-4 -->
     <div class="col-md-4">
         <h4>Live <small>Approved and StartDate is past</small></h4>
-        <div class="btn-toolbar" role="toolbar">
+        <div v-show="checkRole" class="btn-toolbar" role="toolbar">
             <div class="btn-group btn-group-xs" role="group">
                 <label>Filter: </label>
             </div>
@@ -92,7 +92,7 @@
         <div id="items-live">
             <story-pod
                 pid="items-live"
-                v-for="item in items_live | orderBy 'start_date' 1 | filterBy filterLiveByStoryType"
+                v-for="item in itemsLive | orderBy 'start_date' 1 | filterBy filterLiveByStoryType"
                 @item-change="moveToApproved"
 
                 :item="item"
@@ -147,7 +147,7 @@ export default  {
         StoryPod,IconToggleBtn
     },
     props: [
-        'allrecords','stypes'
+        'allrecords','stypes','cuser','role'
     ],
     created(){
         // this.currentDate = moment().format();
@@ -189,6 +189,13 @@ export default  {
     },
     computed: {
 
+        checkRole:function() {
+            if (this.role === 'admin' || this.role === 'admin_super'){
+                return true
+            } else {
+                return false
+            }
+        },
         s_types:function(){
            // var data = localStorage[key];
               try {
@@ -208,14 +215,14 @@ export default  {
 
             return this.s_types;
         },
-        itemsApproved:function() {
-            return  this.filterItemsApproved(this.allitems);
-        },
-        itemsUnapproved:function() {
-            return  this.filterItemsUnapproved(this.allitems);
-        },
+        // itemsApproved:function() {
+        //     return  this.filterItemsApproved(this.allitems);
+        // },
+        // itemsUnapproved:function() {
+        //     return  this.filterItemsUnapproved(this.allitems);
+        // },
         itemsLive:function() {
-            return  this.filterItemsLive(this.allitems);
+            return  this.filterItemsLive(this.items_approved);
         }
     },
 
@@ -351,14 +358,23 @@ export default  {
                 }
             });
         },
-
+        movedItemIndex: function(mid) {
+            return this.items_unapproved.findIndex(item => item.id == mid)
+        },
         moveToApproved: function(changeditem){
+            let movedid =  changeditem.id;
+            let movedRecord = changeditem;
+            let movedIndex = this.movedItemIndex(movedid);
 
-            // this.xitems.pop(changeditem);
-            console.log('moveToApproved'+ changeditem.priority);
-            changeditem.is_approved = 1;
-            changeditem.priority = changeditem.priority;
-            this.updateRecord(changeditem)
+            // var movedIndex = this.items_unapproved.findIndex(item => item.id == mid)
+            console.log('movedid'+movedid +  'movedIndex'+movedIndex)
+            if (movedRecord.is_approved === 1) {
+                this.items_unapproved.splice(movedIndex, 1);
+                this.items_approved.push(movedRecord);
+            } else {
+                this.items_approved.splice(movedIndex, 1);
+                this.items_unapproved.push(movedRecord);
+            }
         },
         moveToUnApproved: function(changeditem){
 
@@ -368,16 +384,16 @@ export default  {
 
             this.updateRecord(changeditem)
         },
-        filterItemsApproved: function(items) {
-            return items.filter(function(item) {
-                return moment(item.start_date).isAfter(moment()) && item.is_approved === 1
-            });
-        },
-        filterItemsUnapproved: function(items) {
-            return items.filter(function(item) {
-                return item.is_approved === 0
-            });
-        },
+        // filterItemsApproved: function(items) {
+        //     return items.filter(function(item) {
+        //         return moment(item.start_date).isAfter(moment()) && item.is_approved === 1
+        //     });
+        // },
+        // filterItemsUnapproved: function(items) {
+        //     return items.filter(function(item) {
+        //         return item.is_approved === 0
+        //     });
+        // },
         filterItemsLive: function(items) {
             return items.filter(function(item) {
                 return moment(item.start_date).isSameOrBefore(moment()) && item.is_approved === 1;  // true
@@ -436,14 +452,18 @@ export default  {
 
             this.allitems.forEach(function(item) {
             if (item.is_approved === 1) {
-                if (moment(item.start_date).isSameOrBefore(moment())) {
-                    self.items_live.push(item)
-                } else {
-                    self.items_approved.push(item)
-                }
+                self.items_approved.push(item)
             } else {
                 self.items_unapproved.push(item)
             }
+            //     if (moment(item.start_date).isSameOrBefore(moment())) {
+            //         self.items_live.push(item)
+            //     } else {
+            //         self.items_approved.push(item)
+            //     }
+            // } else {
+            //     self.items_unapproved.push(item)
+            // }
         });
         // this.$set('items_unapproved_filtered',this.items_unapproved )
 

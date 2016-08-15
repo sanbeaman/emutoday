@@ -214,14 +214,20 @@ class StoryController extends ApiController
                 $story->start_date  = \Carbon\Carbon::parse($request->get('start_date'));
                 $story->author_id   = $request->get('author_id', 0);
                 if($story->save()) {
-                    $stype = $story->story_type;
-                        return redirect(route('admin_storytype_edit', ['stype' => $stype, 'story'=> $story]));
-                    }
-                            // $record_id  = $story->id;
-                            // return $this->setStatusCode(201)
-                            //     ->respondCreatedWithId('Story successfully created!', $record_id);
+                    $record_id  = $story->id;
+                    return $this->setStatusCode(201)
+                    ->respondSavedWithData('Story successfully created!',[ 'record_id' => $story->id, 'stype'=> $story->story_type] );
+
+
+                        // return $this->setStatusCode(201)
+                        //     ->respondCreatedWithId('Story successfully created!', $record_id);
                 }
+            }
     }
+
+    // $stype = $story->story_type;
+    //     return redirect(route('admin_storytype_edit', ['stype' => $stype, 'story'=> $story]));
+    // }
     /**
      * Store a newly created resource in storage.
      *
@@ -327,10 +333,12 @@ class StoryController extends ApiController
           $story->end_date      	= \Carbon\Carbon::parse($request->get('end_date', null));
          if($story->save()) {
              $record_id = $story->id;
-                 return $this->setStatusCode(201)
-                     ->respondCreatedWithId('Story successfully Updated!!!!!!!!!!', $record_id);
-                 }
+
+             return $this->setStatusCode(201)
+             ->respondSavedWithData('Story successfully created!',[ 'record_id' => $story->id, 'stype'=> $story->story_type] );
+
              }
+         }
 
      }
      public function updateQueue(Request $request)

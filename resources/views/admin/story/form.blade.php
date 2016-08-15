@@ -30,8 +30,13 @@
 
 
         @section('content')
-        <div  class="row">
+        <div class="row">
+            @if($currentUser->roles->first()->name == 'contributor_1')
+                <div class="col-md-10">
+            @else
             <div class="col-md-7">
+
+            @endif
                 <div id="vue-story-form-wrapper">
 
 
@@ -58,9 +63,10 @@
               </div><!-- /.box -->
             </div><!-- /.id="vue-story-form-wrapper" -->
         </div><!-- /.col-md-6 -->
-        <div class="col-md-5">
+
             @can('admin', $currentUser)
-                @if($story->exists)
+                <div class="col-md-5">
+                    @if($story->exists)
                     @if($story->story_type == 'news')
                             {{-- the story_type 'news' does not have images  --}}
                                 <div class="box box-warning">
@@ -106,7 +112,7 @@
                                 @endif
                             @endif
                             @if($stillNeedTheseImgs !== null)
-                                
+
                                 @if($stillNeedTheseImgs->count() > 0)
                                     @foreach($stillNeedTheseImgs as $stillNeedTheseImg)
                                         @include('admin.storyimages.subviews.addstoryimage',['otherImage' => $stillNeedTheseImg, 'story_id' => $story->id ])

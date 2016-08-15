@@ -21,6 +21,7 @@
                             <td class="redips-mark drag-{{$story->id}}x">
                                 <div id="drag-{{$story->id}}x"
                                     class="redips-drag frontstory-btn"
+                                    data-stype="{{$story->story_type}}"
                                     data-imgtype="front" data-imgname="{{$story->images()->ofType('front')->first()->filename}}">
                                     {{$story->id}}
                                 </div>
@@ -29,6 +30,7 @@
                             <td class="redips-mark drag-{{$story->id}}">
                                 <div id="drag-{{$story->id}}"
                                     class="redips-drag smallstory-btn"
+                                    data-stype="{{$story->story_type}}"
                                     data-imgtype="small" data-imgname="{{$story->images()->ofType('small')->first()->filename}}">
                                     {{$story->id}}
                                 </div>

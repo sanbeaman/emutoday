@@ -100,6 +100,14 @@ protected $statusCode = 200;
           'newdata' => $data
         ]);
     }
+    public function respondSavedWithData($message, $data)
+    {
+
+        return $this->setStatusCode(201)->respond([
+          'message' => $message,
+          'newdata' => $data
+        ]);
+    }
     public function respondCreated($message)
     {
 

@@ -18106,7 +18106,7 @@ exports.default = {
             return '/preview/' + this.rte + '/' + this.thisRecordId;
         },
         listLink: function listLink() {
-            return '/admin/story/' + this.rte + '/';
+            return '/admin/story/queue';
         },
         createNewLink: function createNewLink() {
             return '/admin/story/' + this.rte + '/setup';
@@ -18207,6 +18207,9 @@ module.exports = {
 
     data: function data() {
         return {
+            newform: false,
+            response_record_id: '',
+            response_stype: '',
             singleStype: '',
             ckfullyloaded: false,
             currentRecordId: null,
@@ -18378,8 +18381,10 @@ module.exports = {
             this.currentRecordId = this.editid;
             console.log('this.recordId >>>>' + this.currentRecordId);
             this.singleStype = true;
+            this.newform = false;
             this.fetchCurrentRecord();
         } else {
+            this.newform = true;
             this.hasContent = true;
             this.record.user_id = this.cuser.id;
             //this.stype_list = this.storytype;
@@ -18393,7 +18398,13 @@ module.exports = {
 
 
     methods: {
+        nowOnReload: function nowOnReload() {
+            var newurl = '/admin/story/' + this.response_stype + '/' + this.response_record_id + '/edit';
+            console.log(newurl);
+            document.location = newurl;
+        },
         onRefresh: function onRefresh() {
+
             this.updateRecordId(this.currentRecordId);
             this.recordState = 'edit';
             this.recordIsDirty = false;
@@ -18535,9 +18546,15 @@ module.exports = {
             this.record.start_date = this.fdate;
             //   this.record.start_date =  moment(this.fdate,"MM-DD-YYYY").format("YYYY-MM-DD HH:mm:ss");
             this.record.author_id = this.author.id;
-
+            var tempid = void 0;
+            if (typeof this.currentRecordId != 'undefined') {
+                tempid = this.currentRecordId;
+            } else {
+                tempid = this.record.id;
+            }
+            console.log('tempid' + tempid);
             var method = this.recordexists ? 'put' : 'post';
-            var route = this.recordexists ? '/api/story/' + this.currentRecordId : '/api/story/';
+            var route = this.recordexists ? '/api/story/' + tempid : '/api/story/';
 
             //   this.$http.post('/api/story', this.record)
             this.$http[method](route, this.record).then(function (response) {
@@ -18548,10 +18565,17 @@ module.exports = {
                 // console.log('response.data=' + response.data.message);
 
                 _this3.formMessage.msg = response.data.message;
-                _this3.currentRecordId = response.data.record_id;
+                _this3.currentRecordId = response.data.newdata.record_id;
                 _this3.formMessage.isOk = response.ok;
-
-                _this3.onRefresh();
+                //  console.log('goooooo'+response.newdata.record_id);
+                console.log('newdta' + response.data.newdata.record_id);
+                _this3.response_record_id = response.data.newdata.record_id;
+                _this3.response_stype = response.data.newdata.stype;
+                if (_this3.newform) {
+                    _this3.nowOnReload();
+                } else {
+                    _this3.onRefresh();
+                }
             }, function (response) {
                 //error callback
                 _this3.formErrors = response.data.error.message;
@@ -18610,7 +18634,7 @@ module.exports = {
 
 // var moment = require('moment')
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form _v-e8a84d76=\"\">\n    <slot name=\"csrf\" _v-e8a84d76=\"\"></slot>\n    <!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div v-show=\"formMessage.isOk\" class=\"alert alert-success alert-dismissible\" _v-e8a84d76=\"\">\n                <button @click.prevent=\"toggleCallout\" class=\"btn btn-sm close\" _v-e8a84d76=\"\"><i class=\"fa fa-times\" _v-e8a84d76=\"\"></i></button>\n        <h5 _v-e8a84d76=\"\">{{formMessage.msg}}</h5>\n            </div>\n\n        </div><!-- /.small-12 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Title <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-e8a84d76=\"\">Please enter a title</p>\n                <input v-model=\"record.title\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-e8a84d76=\"\">\tPlease Include a Title!</p>\n            </div>\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Slug <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"slug-helptext\" _v-e8a84d76=\"\">Automatic Readable link for sharing and social media</p>\n                <input v-model=\"recordSlug\" v-bind:class=\"[formErrors.slug ? 'invalid-input' : '']\" name=\"slug\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.slug\" class=\"help-text invalid\" _v-e8a84d76=\"\">needs slug!</p>\n            </div>\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Subtitle</label>\n                <p class=\"help-text\" id=\"subtitle-helptext\" _v-e8a84d76=\"\">Visibible in some cases</p>\n                <input v-model=\"record.subtitle\" v-bind:class=\"[formErrors.subtitle ? 'invalid-input' : '']\" @blur=\"onBlur\" name=\"subtitle\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.subtitle\" class=\"help-text invalid\" _v-e8a84d76=\"\"></p>\n            </div>\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Content <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"content-helptext\" _v-e8a84d76=\"\">Enter the story content</p>\n                <textarea v-if=\"hasContent\" id=\"content\" name=\"content\" v-ckrte=\"content\" :content=\"content\" :fresh=\"isFresh\" _v-e8a84d76=\"\"></textarea>\n                <p v-if=\"formErrors.content\" class=\"help-text invalid\" _v-e8a84d76=\"\">Need Content!</p>\n            </div>\n            <div class=\"form-group user-display\" _v-e8a84d76=\"\">\n                <div class=\"user-name\" _v-e8a84d76=\"\">{{author.first_name}} {{author.last_name}}</div>\n                <div class=\"user-info\" _v-e8a84d76=\"\">Contact {{author.first_name}} {{author.last_name}}, {{author.email}}, {{author.phone}}</div>\n            </div><!-- /.frm-group -->\n\n\n        </div><!-- /.small-12 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <a v-if=\"!needAuthor\" @click.prevent=\"changeAuthor\" href=\"#\" class=\"btn btn-primary btn-sm\" _v-e8a84d76=\"\">Change Author</a>\n            <div v-if=\"needAuthor\" class=\"form-inline author\" _v-e8a84d76=\"\">\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-last-name\" _v-e8a84d76=\"\">Last Name</label>\n                    <input v-model=\"author.last_name\" type=\"text\" class=\"form-control input-sm\" id=\"author-last-name\" placeholder=\"Last Name\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-first-name\" _v-e8a84d76=\"\">First Name</label>\n                    <input v-model=\"author.first_name\" type=\"text\" class=\"form-control input-sm\" id=\"author-last-name\" placeholder=\"First Name\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-email\" _v-e8a84d76=\"\">Email</label>\n                    <input v-model=\"author.email\" type=\"email\" class=\"form-control input-sm\" id=\"author-email\" placeholder=\"author@emich.edu\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-phone\" _v-e8a84d76=\"\">Phone</label>\n                    <input v-model=\"author.phone\" type=\"phone\" class=\"form-control input-sm\" id=\"author-phone\" placeholder=\"(313)-555-1212\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group save-author\" _v-e8a84d76=\"\">\n                    <button @click.prevent=\"saveAuthor\" href=\"#\" class=\"btn btn-warning btn-sm\" _v-e8a84d76=\"\">Save Author</button>\n                </div>\n            </div>\n        </div><!-- /.col-md-12 -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label for=\"start-date\" _v-e8a84d76=\"\">Start Date: <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <input v-if=\"fdate\" type=\"text\" :value=\"fdate\" :initval=\"fdate\" v-flatpickr=\"fdate\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-e8a84d76=\"\">Need a Start Date</p>\n            </div><!--form-group -->\n        </div><!-- /.small-6 columns -->\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <div class=\"story-type pull-right\" _v-e8a84d76=\"\">\n\n                </div><!-- /.story-type -->\n            </div><!-- /.form-group -->\n        </div><!-- /.small-6 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <!-- <div class=\"form-group\">\n            RecordID:{{thisRecordId}} thisRecordState:{{thisRecordState}} thisRecordIsDirty:{{thisRecordIsDirty}}\n            </div> -->\n        </div><!-- /.col-md-6-->\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <!-- <div class=\"form-group pull-right\">\n                {{record | json}}\n            </div> -->\n        </div><!-- /.col-md-12 -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <template v-if=\"singleStype\">\n                <input v-model=\"record.story_type\" :value=\"s_types\" type=\"text\" disabled=\"disabled\" _v-e8a84d76=\"\">\n            </template>\n            <template v-else=\"\">\n                <label _v-e8a84d76=\"\">Story Type</label>\n                    <select v-model=\"record.story_type\" _v-e8a84d76=\"\">\n                        <option v-for=\"stype in s_types\" v-bind:value=\"stype.shortname\" _v-e8a84d76=\"\">\n                         {{ stype.name }}\n                     </option>\n                </select>\n            </template>\n\n            <!-- <div class=\"form-group pull-right\">\n                {{record | json}}\n            </div> -->\n        </div><!-- /.col-md-6 -->\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <button v-on:click=\"submitForm\" type=\"submit\" class=\"btn btn-primary\" _v-e8a84d76=\"\">{{submitBtnLabel}}</button>\n            </div>\n        </div><!-- /.medium-12 column -->\n    </div>\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form _v-e8a84d76=\"\">\n    <slot name=\"csrf\" _v-e8a84d76=\"\"></slot>\n    <!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div v-show=\"formMessage.isOk\" class=\"alert alert-success alert-dismissible\" _v-e8a84d76=\"\">\n                <button @click.prevent=\"toggleCallout\" class=\"btn btn-sm close\" _v-e8a84d76=\"\"><i class=\"fa fa-times\" _v-e8a84d76=\"\"></i></button>\n                <h5 _v-e8a84d76=\"\">{{formMessage.msg}}</h5>\n            </div>\n\n        </div><!-- /.small-12 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Title <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-e8a84d76=\"\">Please enter a title</p>\n                <input v-model=\"record.title\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-e8a84d76=\"\">\tPlease Include a Title!</p>\n            </div>\n        </div>\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n    <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Slug <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"slug-helptext\" _v-e8a84d76=\"\">Automatic Readable link for sharing and social media</p>\n                <input v-model=\"recordSlug\" v-bind:class=\"[formErrors.slug ? 'invalid-input' : '']\" name=\"slug\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.slug\" class=\"help-text invalid\" _v-e8a84d76=\"\">needs slug!</p>\n            </div>\n    </div><!-- /.col-md-12 -->\n    </div>\n    <div class=\"row\" _v-e8a84d76=\"\">\n            <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Subtitle</label>\n                <p class=\"help-text\" id=\"subtitle-helptext\" _v-e8a84d76=\"\">Visibible in some cases</p>\n                <input v-model=\"record.subtitle\" v-bind:class=\"[formErrors.subtitle ? 'invalid-input' : '']\" @blur=\"onBlur\" name=\"subtitle\" type=\"text\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.subtitle\" class=\"help-text invalid\" _v-e8a84d76=\"\"></p>\n            </div>\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label _v-e8a84d76=\"\">Content <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <p class=\"help-text\" id=\"content-helptext\" _v-e8a84d76=\"\">Enter the story content</p>\n                <textarea v-if=\"hasContent\" id=\"content\" name=\"content\" v-ckrte=\"content\" :content=\"content\" :fresh=\"isFresh\" rows=\"200\" _v-e8a84d76=\"\"></textarea>\n                <p v-if=\"formErrors.content\" class=\"help-text invalid\" _v-e8a84d76=\"\">Need Content!</p>\n            </div>\n            <div class=\"form-group user-display\" _v-e8a84d76=\"\">\n                <div class=\"user-name\" _v-e8a84d76=\"\">{{author.first_name}} {{author.last_name}}</div>\n                <div class=\"user-info\" _v-e8a84d76=\"\">Contact {{author.first_name}} {{author.last_name}}, {{author.email}}, {{author.phone}}</div>\n            </div><!-- /.frm-group -->\n        </div><!-- /.small-12 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-12\" _v-e8a84d76=\"\">\n            <a v-if=\"!needAuthor\" @click.prevent=\"changeAuthor\" href=\"#\" class=\"btn btn-primary btn-sm\" _v-e8a84d76=\"\">Change Author</a>\n            <div v-if=\"needAuthor\" class=\"form-inline author\" _v-e8a84d76=\"\">\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-last-name\" _v-e8a84d76=\"\">Last Name</label>\n                    <input v-model=\"author.last_name\" type=\"text\" class=\"form-control input-sm\" id=\"author-last-name\" placeholder=\"Last Name\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-first-name\" _v-e8a84d76=\"\">First Name</label>\n                    <input v-model=\"author.first_name\" type=\"text\" class=\"form-control input-sm\" id=\"author-last-name\" placeholder=\"First Name\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-email\" _v-e8a84d76=\"\">Email</label>\n                    <input v-model=\"author.email\" type=\"email\" class=\"form-control input-sm\" id=\"author-email\" placeholder=\"author@emich.edu\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group\" _v-e8a84d76=\"\">\n                    <label for=\"author-phone\" _v-e8a84d76=\"\">Phone</label>\n                    <input v-model=\"author.phone\" type=\"phone\" class=\"form-control input-sm\" id=\"author-phone\" placeholder=\"(313)-555-1212\" _v-e8a84d76=\"\">\n                </div>\n                <div class=\"form-group save-author\" _v-e8a84d76=\"\">\n                    <button @click.prevent=\"saveAuthor\" href=\"#\" class=\"btn btn-warning btn-sm\" _v-e8a84d76=\"\">Save Author</button>\n                </div>\n            </div>\n        </div><!-- /.col-md-12 -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <label for=\"start-date\" _v-e8a84d76=\"\">Start Date: <i class=\"fi-star reqstar\" _v-e8a84d76=\"\"></i></label>\n                <input v-if=\"fdate\" type=\"text\" :value=\"fdate\" :initval=\"fdate\" v-flatpickr=\"fdate\" _v-e8a84d76=\"\">\n                <p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-e8a84d76=\"\">Need a Start Date</p>\n            </div><!--form-group -->\n        </div><!-- /.small-6 columns -->\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <div class=\"story-type pull-right\" _v-e8a84d76=\"\">\n\n                </div><!-- /.story-type -->\n            </div><!-- /.form-group -->\n        </div><!-- /.small-6 columns -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <!-- <div class=\"form-group\">\n            RecordID:{{thisRecordId}} thisRecordState:{{thisRecordState}} thisRecordIsDirty:{{thisRecordIsDirty}}\n            </div> -->\n        </div><!-- /.col-md-6-->\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <!-- <div class=\"form-group pull-right\">\n                {{record | json}}\n            </div> -->\n        </div><!-- /.col-md-12 -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-e8a84d76=\"\">\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <template v-if=\"singleStype\">\n                <input v-model=\"record.story_type\" :value=\"s_types\" type=\"text\" disabled=\"disabled\" _v-e8a84d76=\"\">\n            </template>\n            <template v-else=\"\">\n                <label _v-e8a84d76=\"\">Story Type</label>\n                    <select v-model=\"record.story_type\" _v-e8a84d76=\"\">\n                        <option v-for=\"stype in s_types\" v-bind:value=\"stype.shortname\" _v-e8a84d76=\"\">\n                         {{ stype.name }}\n                     </option>\n                </select>\n            </template>\n\n            <!-- <div class=\"form-group pull-right\">\n                {{record | json}}\n            </div> -->\n        </div><!-- /.col-md-6 -->\n        <div class=\"col-md-6\" _v-e8a84d76=\"\">\n            <div class=\"form-group\" _v-e8a84d76=\"\">\n                <button v-on:click=\"submitForm\" type=\"submit\" class=\"btn btn-primary\" _v-e8a84d76=\"\">{{submitBtnLabel}}</button>\n            </div>\n        </div><!-- /.medium-12 column -->\n    </div>\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -18640,12 +18664,14 @@ module.exports = {
     setupEditor: function setUpEditor() {
         var self = this;
         CKEDITOR.replace(this.el.id, {
-            filebrowserWindowFeatures: 'resizable=no',
-            filebrowserBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
-            filebrowserImageBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=images',
-            filebrowserUploadUrl: '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=files',
-            filebrowserImageUploadUrl: '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=images'
+            customConfig: '/themes/ckeditor_config.js'
         });
+        //      filebrowserWindowFeatures: 'resizable=no',
+        //      filebrowserBrowseUrl : '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
+        //      filebrowserImageBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=images',
+        //      filebrowserUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=files',
+        //      filebrowserImageUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=images'
+        //  });
 
         CKEDITOR.instances[this.el.id].setData(this.params.content);
         CKEDITOR.instances[this.el.id].on('change', function () {
