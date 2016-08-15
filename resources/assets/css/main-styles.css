@@ -81,8 +81,8 @@ color: #0f654a;
 }
 /*TRUEMU*/
 span.truemu{
-	color: #036937;
-	font-weight: 600;
+    color: #036937;
+    font-weight: 600;
 }
 span.truemu::before{
     color: #c1d82e;
@@ -242,22 +242,22 @@ ul.social-icons li img{
 #tier1-nav .icon-menu {
 text-transform: uppercase;
 
-	font-size: 1rem;
-	padding: 0 0.3rem;
-	margin-top: 1.3rem;
+    font-size: 1rem;
+    padding: 0 0.3rem;
+    margin-top: 1.3rem;
 }
 
 #tier1-nav .icon-menu span {
-	padding-left: 0.3rem;
+    padding-left: 0.3rem;
 
 }
 
 #tier1-nav .icon-menu span a {
-	color: #000;
+    color: #000;
 
 }
 #tier1-nav .icon-menu span a:hover {
-	color: #0f654a;
+    color: #0f654a;
 
 }
 
@@ -310,12 +310,12 @@ text-transform: uppercase;
 
 
 .tier2-menu {
-	text-transform: uppercase;
-	  font-size: .8rem;
-	background-color: rgba(0, 0, 0, 0.7);
+    text-transform: uppercase;
+      font-size: .8rem;
+    background-color: rgba(0, 0, 0, 0.7);
 }
 .tier2-menu  a {
-		color: #ffffff;
+        color: #ffffff;
 }
 .tier2-menu  a:hover {
   color: #7afe19;
@@ -341,15 +341,15 @@ text-transform: uppercase;
 
 
 .tier3-menu {
-	text-transform: uppercase;
-	  font-size: .8rem;
-	  background-color: #fff;
+    text-transform: uppercase;
+      font-size: .8rem;
+      background-color: #fff;
 }
 .tier3-menu  a {
-		  color: #333;
+          color: #333;
 }
 .tier3-menu  a:hover {
-	color: #0f654a;
+    color: #0f654a;
 }
 
 
@@ -547,7 +547,7 @@ div.featured-content-block + div.featured-content-block {
     background-color: #1e9744;
 }
 .featured-content-block span.truemu{
-	color: #ffffff;
+    color: #ffffff;
 }
 .featured-content-block a{
     color:#333;
@@ -795,7 +795,7 @@ ul.accordion li{
   font-size: 1.0rem;
   line-height: 1.6;
   text-decoration: none;
-
+  border: 0 solid #e6e6e6;
 }
 /*.accordian-title {
     border-top: 1px dotted #ccc;

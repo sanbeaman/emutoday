@@ -18,7 +18,7 @@
         <div id="story-content" class="row">
           <!-- Story Content Column -->
           <div class="large-9 medium-8 small-12 columns">
-            <div class="addthis"><img src="/assets/imgs/icons/fake-addthis.png" /></div>
+              @include('public.vendor.addthis')
             <h3>{{ $story->title }}</h3>
             <h5>{{ $story->subtitle }}</h5>
             @if(isset($mainStoryImage))
@@ -31,15 +31,19 @@
             <div id="story-content-edit">
               {!! $story->content !!}
             </div>
-            <div class="story-author">{{ $story->user->name }}</div>
-            <p class="news-contacts">Contact {{ $story->user->email }}</p>
+            @if($story->author)
+                <div class="story-author">{{ $story->author->name }}</div>
+                <p class="news-contacts">Contact {{ $story->author->email }}</p>
+            @else
+                <div class="story-author">{{ $story->user->name }}</div>
+                <p class="news-contacts">Contact {{ $story->user->email }}</p>
+            @endif
+
           </div>
           <!-- Page Side Bar Column -->
           <div class="large-3 medium-4 small-12 columns featurepadding">
             @include('public.layouts.components.sideblock', ['sidetitle' => 'Featured Stories','storytype'=> 'story', 'sideitems' => $sideStoryBlurbs])
                         @include('public.layouts.components.sideblock', ['sidetitle' => "<span class='truemu'>EMU</span> student profiles",'storytype'=> 'student', 'sideitems' => $sideStudentBlurbs])
-
-
                     </div>
 
 
@@ -50,7 +54,12 @@
   </div>
 
 @endsection
-
+    @section('footer-vendor')
+        @parent
+    @endsection
+    @section('footer-plugin')
+        @parent
+    @endsection
 @section('footer')
   @parent
 
