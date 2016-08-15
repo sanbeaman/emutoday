@@ -438,6 +438,7 @@ module.exports  = {
                         console.log('this.recordId >>>>'+     this.currentRecordId );
                         this.singleStype = true;
                         this.newform = false;
+                        // this.record.user_id = this.cuser.id;
                         this.fetchCurrentRecord();
                     } else {
                         this.newform = true;
