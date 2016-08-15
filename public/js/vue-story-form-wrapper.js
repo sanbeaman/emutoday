@@ -18386,12 +18386,17 @@ module.exports = {
         } else {
             this.newform = true;
             this.hasContent = true;
+
             this.record.user_id = this.cuser.id;
+            console.log('tthis.record.user_id' + this.record.user_id);
+
             //this.stype_list = this.storytype;
             //this.record.story_type = this.storytype;
             this.fdate = this.currentDate;
-            this.record.author_id = 0;
+
             this.author = this.currentUser;
+            this.author.id = 0;
+            this.record.author_id = 0;
             this.recordState = 'new';
         }
     },
@@ -18538,8 +18543,8 @@ module.exports = {
             // this.newevent.start_date = this.sdate;
             // this.newevent.end_date = this.edate;
             // this.newevent.reg_deadline = this.rdate;
-
-            this.record.user_id = this.currentUser.id;
+            this.record.user_id = this.cuser.id;
+            // this.record.user_id = this.currentUser.id;
             this.record.content = this.content;
             //   this.record.story_type = this.storytype;
             this.record.slug = this.recordSlug;

@@ -64,14 +64,23 @@
                                 {!! $story->content !!}
                             </textarea> --}}
                         </div>
-        @if($story->author_id == 0)
+{{--
+                @if($story->author_id === 0)
+                <div class="story-author">{{ $story->author->name }}</div>
+                <p class="news-contacts">Contact {{ $story->author->email }}</p>
+            @else
+                <div class="story-author">{{ $story->user->name }}</div>
+                <p class="news-contacts">Contact {{ $story->user->email }}</p>
+            @endif --}}
+
+        {{--    @if($story->author) @if($story->author_id == 0)
             <div class="story-author">{{ $story->user->full_name }}</div>
             <p class="news-contacts">Contact {{ $story->user->email }}</p>
         @else
             <div class="story-author">{{ $story->author->last_name }}</div>
             <p class="news-contacts">Contact {{ $story->author->email }}</p>
 
-        @endif
+        @endif --}}
           </div>
           <!-- Page Side Bar Column -->
           <div class="large-3 medium-4 small-12 columns featurepadding">
@@ -85,9 +94,16 @@
                     @endif
 @endif
                     </div>
+                </div>
 
+                <div class="row">
+                    <div class="medium-8 columns">
 
-        </div>
+                    </div><!-- /.medium-8 columns -->
+                    <div class="medium-4 columns">
+                        <h6 class="subheader text-right">Start Date: {{$story->start_date}}</h6>
+                    </div><!-- /.medium-4 columns -->
+                </div><!-- /.row -->
                 <div class="row">
                     <div class="medium-6 columns">
                         <div class="button-group">
