@@ -617,6 +617,7 @@ module.exports  = {
                       tempid =this.record.id;
                   }
                   console.log('tempid'+tempid);
+                  console.log('this.recordexists'+this.recordexists);
                   let method = (this.recordexists) ? 'put' : 'post'
                   let route =  (this.recordexists) ? '/api/story/' + tempid : '/api/story/';
 

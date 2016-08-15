@@ -188,6 +188,7 @@ class StoryController extends ApiController
     public function store(Request $request)
     {
 
+
         //  if (! Input::get('title') or ! Input::get('location'))
         $validation = \Validator::make( Input::all(), [
             'title'           => 'required',
@@ -291,13 +292,7 @@ class StoryController extends ApiController
      */
      public function update(Request $request, $id)
      {
-         //return some kind of Response
-         // 400  'bad request'
-         // 403 Forbidden
-         //
-         // 422 'unprocessable entity'
-         //
-     //  if (! Input::get('title') or ! Input::get('location'))
+    $story = $this->story->findOrFail($id);
      $validation = \Validator::make( Input::all(), [
                      'title'           => 'required',
                      'start_date'      => 'required',
@@ -312,7 +307,7 @@ class StoryController extends ApiController
       }
       if($validation->passes())
      {
-         $story = new Story;
+        //  $story = new Story;
          $story->user_id       	= $request->get('user_id');
          $story->title           	= $request->get('title');
          $story->slug           	= $request->get('slug');
