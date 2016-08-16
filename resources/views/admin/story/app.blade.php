@@ -19,8 +19,12 @@
     @endsection
 @section('content')
     <div id="vue-story-app">
-            <story-app stypes="{{$stypes}}">
+        <div id="vue-story-app">
+            <story-app stypes="{{$stypes}}" cuser="{{$currentUser}}" role="{{$currentUser->roles->first()->name}}">
             </story-app>
+        </div><!-- /.vue-story-app -->
+            {{-- <story-app stypes="{{$stypes}}">
+            </story-app> --}}
     </div><!-- /.vue-story-app -->
 
 @endsection

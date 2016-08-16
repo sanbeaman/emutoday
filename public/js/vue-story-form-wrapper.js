@@ -18059,7 +18059,7 @@ exports.default = {
         }
     },
 
-    props: ['viewtype', 'recordId', 'currentUser', 'role', 'rte'],
+    props: ['viewtype', 'recordId', 'currentUser', 'role', 'stype', 'sroute'],
     ready: function ready() {
         console.log('BoxTools');
     },
@@ -18103,13 +18103,17 @@ exports.default = {
         },
 
         previewLink: function previewLink() {
-            return '/preview/' + this.rte + '/' + this.thisRecordId;
+            return '/preview/' + this.sroute + '/' + this.stype + '/' + this.thisRecordId;
         },
         listLink: function listLink() {
-            return '/admin/story/queue';
+            if (this.sroute === 'magazine') {
+                return '/admin/' + this.sroute + '/' + this.stype + '/queue';
+            } else {
+                return '/admin/' + this.sroute + '/queue';
+            }
         },
         createNewLink: function createNewLink() {
-            return '/admin/story/' + this.rte + '/setup';
+            return '/admin/' + this.sroute + '/' + this.stype + '/setup';
         }
     },
 
@@ -18117,20 +18121,21 @@ exports.default = {
         // checkIndexWithValue: function (chitem){
         // 	return
         // },
-        viewPreview: function viewPreview(evt) {
-            var vurl = '/preview/' + this.rte + '/' + this.thisRecordId;
-            console.log(vurl);
-            document.location = vurl;
-        },
-        viewList: function viewList(evt) {
-            var url = '/admin/story/' + this.rte + '/';
-            console.log(url);
-            document.location = url;
-        },
-        createNew: function createNew(evt) {
-            var url = '/admin/story/' + this.rte + '/setup';
-            console.log('this.rte=' + this.rte);
-        }
+        // viewPreview: function(evt) {
+        //     var vurl = '/preview/' + this.rte +  '/' + this.thisRecordId;
+        //     console.log(vurl);
+        //     document.location = vurl;
+        //
+        // },
+        // viewList: function(evt) {
+        //     var url = '/admin/story/' + this.rte +  '/'
+        //     console.log(url);
+        //     document.location = url;
+        // },
+        // createNew: function(evt) {
+        //     var url = '/admin/story/' + this.rte +  '/setup'
+        //     console.log('this.rte='+ this.rte)
+        // },
 
     },
 
@@ -18549,7 +18554,10 @@ module.exports = {
             this.record.content = this.content;
             //   this.record.story_type = this.storytype;
             this.record.slug = this.recordSlug;
-            this.record.start_date = this.fdate;
+            if ((0, _moment2.default)(this.fdate).isValid()) {
+                this.record.start_date = this.fdate;
+            }
+            //this.record.start_date = this.fdate;
             //   this.record.start_date =  moment(this.fdate,"MM-DD-YYYY").format("YYYY-MM-DD HH:mm:ss");
             this.record.author_id = this.author.id;
             var tempid = void 0;
@@ -18559,6 +18567,7 @@ module.exports = {
                 tempid = this.record.id;
             }
             console.log('tempid' + tempid);
+            console.log('this.recordexists' + this.recordexists);
             var method = this.recordexists ? 'put' : 'post';
             var route = this.recordexists ? '/api/story/' + tempid : '/api/story/';
 

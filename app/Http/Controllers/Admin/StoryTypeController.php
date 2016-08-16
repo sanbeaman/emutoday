@@ -44,7 +44,7 @@ class StoryTypeController extends Controller
 
     }
 
-    
+
     /**
     * [storyTypeSetUp description]
     * @param  [type] $stype [description]
@@ -52,6 +52,7 @@ class StoryTypeController extends Controller
     */
     public function storyTypeSetUp($stype)
     {
+        $sroute = 'story';
         $story = new Story;
         $stypelist = \emutoday\StoryType::where('level', 1)->pluck('name','shortname')->all();
         //$stypelist = \emutoday\StoryType::all();
@@ -83,7 +84,7 @@ class StoryTypeController extends Controller
         ]);
         // dd($stypelist,$stypelist1,$stypelist2,$stypelist3);
 
-        return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ));
+        return view('admin.story.form', compact('story','sroute','stype' ,'stypes', 'stypelist' ));
 
     }
 
@@ -91,6 +92,14 @@ class StoryTypeController extends Controller
 
     public function storyTypeEdit($stype, Story $story)
     {
+        $urlprev = \URL::previous();
+
+        if(str_contains($urlprev, 'magazine')) {
+            $sroute = 'magazine';
+        } else {
+            $sroute = 'story';
+        }
+
         $user = \Auth::user();
         //$stypes = $stype;
         $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
@@ -109,7 +118,7 @@ class StoryTypeController extends Controller
             'storytype' => $story->story_type,
             'is_featured' => $story->is_featured,
         ]);
-
+        // $sroute = 'story';
         if ($user->hasRole('contributor_1')){
             // dd($user->id);
             $stypelist = 'news';
@@ -159,7 +168,9 @@ class StoryTypeController extends Controller
 
                 // dd($stillneedthese);
                 // dd('$remainingRequiredImagesNeeded='. $remainingRequiredImagesNeeded);
-                return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
+
+
+                return view('admin.story.form', compact('story','sroute','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
 
             } else {
 
@@ -177,12 +188,12 @@ class StoryTypeController extends Controller
                         $currentOtherImagesIdsListArray = $currentOtherImagesIdsList->toArray();
                         $stillNeedTheseImgs = $otherImageListCollection->except($currentOtherImagesIdsListArray);
 
-                        return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
+                        return view('admin.story.form', compact('story','sroute','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
 
 
                 } else {
                     $stillNeedTheseImgs = null;
-                    return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
+                    return view('admin.story.form', compact('story','sroute','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
 
                 }
 
@@ -192,7 +203,8 @@ class StoryTypeController extends Controller
         $currentRequiredImages = null;
         $currentOtherImages = null;
         $stillNeedTheseImgs = null;
-        return view('admin.story.form', compact('story','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
+
+        return view('admin.story.form', compact('story','sroute','stype' ,'stypes', 'stypelist' ,'currentRequiredImages','currentOtherImages', 'stillNeedTheseImgs'));
     }
 
 
@@ -210,13 +222,14 @@ class StoryTypeController extends Controller
     {
         $story = new Story;
         $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+        $sroute = 'magazine';
         $stypes = 'article';
         $story->story_type = $stypes;
         JavaScript::put([
             'storytype' => $stypes
         ]);
 
-        return view('admin.story.form', compact('story', 'stypes','stypelist'));
+        return view('admin.story.form', compact('story','sroute','stypes','stypelist'));
 
     }
 
@@ -282,6 +295,7 @@ public function index(){
 public function create($stype)
 {
     $story = new Story;
+    $sroute = 'story';
     if ($stype != 'story' ) {
         if ($stype == 'external'){
             return view('admin.story.external', compact('story', 'stype'));
@@ -292,9 +306,9 @@ public function create($stype)
         $stypes = $stype;
         $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
 
-        return view('admin.story.form', compact('story', 'stypes','stypelist'));
+        return view('admin.story.form', compact('story','sroute', 'stypes','stypelist'));
 
-        // return view('admin.story.form', compact('story', 'storyTypes'));
+
     }
 
 }
@@ -339,14 +353,14 @@ public function imageUpload(Request $request)
     $file->move($uploadDestination, $fileName);
 }
 
-public function queue(Story $story) {
-    $storys = $this->story;
-
-    \JavaScript::put([
-        'records' => $storys
-    ]);
-    return view('admin.story.app', compact('storys'));
-}
+// public function queue(Story $story) {
+//     $storys = $this->story;
+//
+//     \JavaScript::put([
+//         'records' => $storys
+//     ]);
+//     return view('admin.story.app', compact('storys'));
+// }
 
 public function addImage($id)
 {
@@ -401,7 +415,6 @@ public function promoteStory($id, Request $request)
 
 
     flash()->success('Story has been Promoted.');
-    // return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages'));
 
     return redirect(route('admin.story.edit', $story->id));
 
@@ -486,6 +499,7 @@ public function confirm($id)
 public function edit($id)
 {
     $story = $this->story->findOrFail($id);
+    $sroute = 'story';
     if ($story->story_type == 'emutoday'){
         $story->story_type = 'story';
     }
@@ -518,7 +532,7 @@ public function edit($id)
 
 
         // return view('admin.story.role.form', compact('story', 'stypes', 'tags'));
-        return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
+        return view('admin.story.form', compact('story','sroute', 'stypes', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
 
     } else {
         $storyGroup = $story->storyGroup->group;
@@ -528,9 +542,8 @@ public function edit($id)
         // dd($leftOverImages);
         $requiredImages = Imagetype::ofGroup($storyGroup)->isRequired(1)->get();
         $otherImages = Imagetype::ofGroup($storyGroup)->isRequired(0)->get();
-        return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
+        return view('admin.story.form', compact('story','sroute', 'stypes', 'tags','stypelist','requiredImages','otherImages', 'leftOverImages'));
 
-        // return view('admin.story.form', compact('story', 'stypes', 'tags','stypelist',''));
     }
 
 

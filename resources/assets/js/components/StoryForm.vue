@@ -607,7 +607,10 @@ module.exports  = {
                   this.record.content = this.content;
                   //   this.record.story_type = this.storytype;
                   this.record.slug = this.recordSlug;
-                this.record.start_date = this.fdate;
+                  if (moment(this.fdate).isValid()){
+                      this.record.start_date = this.fdate;
+                  }
+                //this.record.start_date = this.fdate;
                 //   this.record.start_date =  moment(this.fdate,"MM-DD-YYYY").format("YYYY-MM-DD HH:mm:ss");
                   this.record.author_id = this.author.id;
                   let tempid;

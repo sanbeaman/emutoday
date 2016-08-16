@@ -16103,340 +16103,6 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n\nh4[_v-0e037730] {\n    margin-top: 3px;\n    font-size: 18px;\n}\n.btn-default[_v-0e037730]:active, .btn-default.active[_v-0e037730], .open > .dropdown-toggle.btn-default[_v-0e037730] {\n    background-color: #605ca8;\n    color: #ffffff;\n\n}\n.btn-default[_v-0e037730]:active, .btn-default.active[_v-0e037730], .open > .dropdown-toggle.btn-default[_v-0e037730] {\n    color: #ffffff;\n\n}\n\nspan.item-type-icon[_v-0e037730]:active, span.item-type-icon.active[_v-0e037730]{\n    background-color: #605ca8;\n    color: #ffffff;\n}\n#items-unapproved .box[_v-0e037730] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n#items-live .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n")
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _methods;
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _StoryPod = require('./StoryPod.vue');
-
-var _StoryPod2 = _interopRequireDefault(_StoryPod);
-
-var _IconToggleBtn = require('./IconToggleBtn.vue');
-
-var _IconToggleBtn2 = _interopRequireDefault(_IconToggleBtn);
-
-var _iconradio = require('../directives/iconradio.js');
-
-var _iconradio2 = _interopRequireDefault(_iconradio);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-// import EventViewContent from './EventViewContent.vue'
-exports.default = {
-    components: {
-        StoryPod: _StoryPod2.default, IconToggleBtn: _IconToggleBtn2.default
-    },
-    props: ['allrecords', 'stypes', 'cuser', 'role'],
-    created: function created() {
-        // this.currentDate = moment().format();
-    },
-    ready: function ready() {
-        // this.resource = this.$resource('/api/announcement/:id');
-        this.fetchAllRecords();
-
-        // this.fetchUnapprovedRecords();
-    },
-
-    data: function data() {
-        return {
-            singleStype: false,
-            // storytypes: [
-            //     { type: 'news'},
-            //     { type: 'student'},
-            //     { type: 'emutoday'},
-            //     { type: 'article'},
-            //     { type: 'external'}
-            // ],
-            storytype: '',
-            items_unapproved_filter_storytype: '',
-            items_approved_filter_storytype: '',
-            items_live_filter_storytype: '',
-            storytype_approved: '',
-            changestorytype: '',
-            currentDate: (0, _moment2.default)(),
-            allitems: [],
-            items: [],
-            xitems: [],
-            items_unapproved_filtered: [],
-            items_unapproved: [],
-            items_approved: [],
-            items_live: [],
-            currentTypesFilter: []
-        };
-    },
-    computed: {
-
-        checkRole: function checkRole() {
-            if (this.role === 'admin' || this.role === 'admin_super') {
-                return true;
-            } else {
-                return false;
-            }
-        },
-        s_types: function s_types() {
-            // var data = localStorage[key];
-            try {
-                this.singleStype = false;
-                return JSON.parse(this.stypes);
-            } catch (e) {
-                this.singleStype = true;
-                // this.record.story_type = this.stypes;
-                return this.stypes;
-            }
-        },
-        storyTypeIcons: function storyTypeIcons() {
-            this.s_types.push({
-                name: 'all',
-                shortname: ''
-            });
-
-            return this.s_types;
-        },
-        // itemsApproved:function() {
-        //     return  this.filterItemsApproved(this.allitems);
-        // },
-        // itemsUnapproved:function() {
-        //     return  this.filterItemsUnapproved(this.allitems);
-        // },
-        itemsLive: function itemsLive() {
-            return this.filterItemsLive(this.items_approved);
-        }
-    },
-
-    methods: (_methods = {
-        filerStoryTypeCustom: function filerStoryTypeCustom(value) {
-            console.log('value' + value.story_type + 'stmodel=' + this.storytype);
-            if (this.storytype === '') {
-                return value.story_type !== '';
-            } else {
-                return value.story_type === this.storytype;
-            }
-
-            // return  moment(value).format("ddd")
-        },
-        filterUnapprovedByStoryType: function filterUnapprovedByStoryType(value) {
-            console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype);
-            if (this.items_unapproved_filter_storytype === '') {
-                return value.story_type !== '';
-            } else {
-                return value.story_type === this.items_unapproved_filter_storytype;
-            }
-        },
-        filterApprovedByStoryType: function filterApprovedByStoryType(value) {
-            console.log('value' + value.story_type + 'stmodel=' + this.items_approved_filter_storytype);
-            if (this.items_approved_filter_storytype === '') {
-                return value.story_type !== '';
-            } else {
-                return value.story_type === this.items_approved_filter_storytype;
-            }
-        }
-    }, _defineProperty(_methods, 'filterUnapprovedByStoryType', function filterUnapprovedByStoryType(value) {
-        console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype);
-        if (this.items_unapproved_filter_storytype === '') {
-            return value.story_type !== '';
-        } else {
-            return value.story_type === this.items_unapproved_filter_storytype;
-        }
-    }), _defineProperty(_methods, 'filterLiveByStoryType', function filterLiveByStoryType(value) {
-        console.log('value' + value.story_type + 'stmodel=' + this.items_live_filter_storytype);
-        if (this.items_live_filter_storytype === '') {
-            return value.story_type !== '';
-        } else {
-            return value.story_type === this.items_live_filter_storytype;
-        }
-    }), _defineProperty(_methods, 'storyTypeFilter', function storyTypeFilter(val, arg) {
-        if (val == '' || val == 'all') {
-            return val.storytype !== '';
-        } else {
-            return val.storytype === arg;
-        }
-    }), _defineProperty(_methods, 'typeIcon', function typeIcon(sname) {
-        switch (sname) {
-            case 'emutoday':
-            case 'story':
-                faicon = 'fa-file-image-o';
-                break;
-            case 'news':
-                faicon = 'fa-file-text-o';
-                break;
-            case 'student':
-                faicon = 'fa-graduation-cap';
-                break;
-            case 'external':
-                faicon = 'fa-file-o';
-                break;
-            case 'article':
-                faicon = 'fa-newspaper-o';
-                break;
-            case '':
-                faicon = 'fa-asterisk';
-                break;
-            default:
-                faicon = 'fa-file-o';
-                break;
-        }
-
-        return 'fa ' + faicon + ' fa-fw';
-    }), _defineProperty(_methods, 'addTypeToFilter', function addTypeToFilter(typeshortname) {
-        var tsnindex = this.currentTypesFilter.indexOf(typeshortname);
-        if (tsnindex < 0) {
-            this.currentTypeFilter.$set(tsnindex, typeshortname);
-        }
-    }), _defineProperty(_methods, 'toggleTypeToFilter', function toggleTypeToFilter(filtertype) {
-        self.storytype = filtertype.shortname;
-
-        //     console.log(filtertype)
-        //     let tsnindex;
-        //     tsnindex = this.currentTypesFilter.indexOf(filtertype.shortname);
-        //     if (tsnindex < 0) {
-        //             this.currentTypesFilter.push(filtertype.shortname);
-        //     } else {
-        //         this.currentTypesFilter.$remove(tsnindex);
-        //     }
-        // console.log('this.currentTypesFilter.length'+ this.currentTypesFilter.length)
-        // this.filterHideType();
-    }), _defineProperty(_methods, 'setFilter', function setFilter(ev) {}), _defineProperty(_methods, 'filterTheList', function filterTheList() {
-        var self = this;
-        this.items_unapproved = this.items_unapproved.filter(function (item) {
-            return item.story_type == self.storytype;
-        });
-    }), _defineProperty(_methods, 'filterHideType', function filterHideType() {
-        var self = this;
-        this.items_unapproved.forEach(function (item, index) {
-            for (var i = 0, l = self.currentTypesFilter.length; i < l; i++) {
-                if (item.story_type == self.currentTypesFilter[i]) {
-                    console.log('item.story_type' + item.story_type + 'self.currentTypesFilter' + self.currentTypesFilter[i]);
-                    self.items_unapproved.splice(index, 1);
-                    break;
-                }
-            }
-        });
-    }), _defineProperty(_methods, 'movedItemIndex', function movedItemIndex(mid) {
-        return this.items_unapproved.findIndex(function (item) {
-            return item.id == mid;
-        });
-    }), _defineProperty(_methods, 'moveToApproved', function moveToApproved(changeditem) {
-        var movedid = changeditem.id;
-        var movedRecord = changeditem;
-        var movedIndex = this.movedItemIndex(movedid);
-
-        // var movedIndex = this.items_unapproved.findIndex(item => item.id == mid)
-        console.log('movedid' + movedid + 'movedIndex' + movedIndex);
-        if (movedRecord.is_approved === 1) {
-            this.items_unapproved.splice(movedIndex, 1);
-            this.items_approved.push(movedRecord);
-        } else {
-            this.items_approved.splice(movedIndex, 1);
-            this.items_unapproved.push(movedRecord);
-        }
-    }), _defineProperty(_methods, 'moveToUnApproved', function moveToUnApproved(changeditem) {
-
-        // this.xitems.pop(changeditem);
-        console.log('moveToUnApproved' + changeditem);
-        changeditem.is_approved = 0;
-
-        this.updateRecord(changeditem);
-    }), _defineProperty(_methods, 'filterItemsLive', function filterItemsLive(items) {
-        return items.filter(function (item) {
-            return (0, _moment2.default)(item.start_date).isSameOrBefore((0, _moment2.default)()) && item.is_approved === 1; // true
-
-            // return moment(item.start_date).isAfter(moment())
-            // return item.live === 1
-        });
-    }), _defineProperty(_methods, 'movedItemIndex', function movedItemIndex(mid) {
-        return this.xitems.findIndex(function (item) {
-            return item.id == mid;
-        });
-    }), _defineProperty(_methods, 'updateRecord', function updateRecord(item) {
-        var currentRecordId = item.id;
-        item.start_date = (0, _moment2.default)(item.start_date, "MM-DD-YYYY").format("YYYY-MM-DD");
-
-        var currentRecord = item;
-        this.$http.patch('/api/story/' + item.id, item, {
-            method: 'PATCH'
-        }).then(function (response) {
-            console.log('good?' + response);
-        }, function (response) {
-            console.log('bad?' + response);
-        });
-    }), _defineProperty(_methods, 'fetchAllRecords', function fetchAllRecords() {
-        var _this = this;
-
-        this.$http.get('/api/story/appLoad').then(function (response) {
-
-            _this.$set('allitems', response.data.data);
-
-            //    this.allitems = response.data.data;
-            // console.log('this.record= ' + this.record);
-
-            _this.checkOverDataFilter();
-        }, function (response) {
-            //error callback
-            console.log("ERRORS");
-
-            //  this.formErrors =  response.data.error.message;
-        }).bind(this);
-    }), _defineProperty(_methods, 'checkOverDataFilter', function checkOverDataFilter() {
-        var self = this;
-        console.log('items=' + this.allitems);
-
-        this.allitems.forEach(function (item) {
-            if (item.is_approved === 1) {
-                self.items_approved.push(item);
-            } else {
-                self.items_unapproved.push(item);
-            }
-            //     if (moment(item.start_date).isSameOrBefore(moment())) {
-            //         self.items_live.push(item)
-            //     } else {
-            //         self.items_approved.push(item)
-            //     }
-            // } else {
-            //     self.items_unapproved.push(item)
-            // }
-        });
-        // this.$set('items_unapproved_filtered',this.items_unapproved )
-
-        console.log('items_unapproved' + this.items_unapproved.length);
-
-        console.log('items_approved' + this.items_approved.length);
-    }), _methods),
-    filters: {},
-    directives: {
-        iconradio: _iconradio2.default
-    },
-
-    events: {}
-};
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <!-- <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"btn-toolbar\" role=\"toolbar\">\n                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                    <label>Filter: </label>\n                </div>\n                <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"storytype\">\n                     <template v-for=\"item in storyTypeIcons\">\n                         <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" /><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\"></span></label>\n                    </template>\n              </div>\n\n\n</div>\n        </div>\n\n    </div> -->\n    <!-- /.row -->\n    <div class=\"row\" _v-0e037730=\"\">\n        <div class=\"col-md-4\" _v-0e037730=\"\">\n            <!-- <div v-if=\"singleStype\" class=\"form-group\">\n              <label class=\"sr-only\" for=\"story-type\">Type</label>\n                  <select id=\"story-type\" v-model=\"storytype\" class=\"form-control\">\n                      <option v-for=\"stype in s_types\" v-bind:value=\"stype.shortname\">\n                          {{stype.name}}\n                      </option>\n                  </select>\n            </div> -->\n            <h4 _v-0e037730=\"\">Unapproved<p _v-0e037730=\"\">{{storytype}}</p></h4>\n            <div v-show=\"checkRole\" class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n                <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                    <label _v-0e037730=\"\">Filter: </label>\n                </div>\n                <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_unapproved_filter_storytype\" _v-0e037730=\"\">\n                     <template v-for=\"item in storyTypeIcons\">\n                         <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                    </template>\n              </div>\n            </div>\n            <div id=\"items-unapproved\" _v-0e037730=\"\">\n                <story-pod pid=\"items-unapproved\" v-for=\"item in items_unapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByStoryType items_unapproved_filter_storytype\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-unapproved\" _v-0e037730=\"\">\n                </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h4 _v-0e037730=\"\">Approved</h4>\n        <div v-show=\"checkRole\" class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n            <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                <label _v-0e037730=\"\">Filter: </label>\n            </div>\n            <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_approved_filter_storytype\" _v-0e037730=\"\">\n                 <template v-for=\"item in storyTypeIcons\">\n                     <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                </template>\n          </div>\n      </div>\n        <div id=\"items-approved\" _v-0e037730=\"\">\n            <story-pod pid=\"items-approved\" v-for=\"item in items_approved | orderBy 'start_date' 1 | filterBy filterApprovedByStoryType items_approved_filter_storytype\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"items-approved\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n\n\n\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h4 _v-0e037730=\"\">Live <small _v-0e037730=\"\">Approved and StartDate is past</small></h4>\n        <div v-show=\"checkRole\" class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n            <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                <label _v-0e037730=\"\">Filter: </label>\n            </div>\n            <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_live_filter_storytype\" _v-0e037730=\"\">\n                 <template v-for=\"item in storyTypeIcons\">\n                     <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                </template>\n          </div>\n      </div>\n        <div id=\"items-live\" _v-0e037730=\"\">\n            <story-pod pid=\"items-live\" v-for=\"item in itemsLive | orderBy 'start_date' 1 | filterBy filterLiveByStoryType\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"items-live\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n</div><!-- ./row -->\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  module.hot.dispose(function () {
-    __vueify_insert__.cache["\n\nh4[_v-0e037730] {\n    margin-top: 3px;\n    font-size: 18px;\n}\n.btn-default[_v-0e037730]:active, .btn-default.active[_v-0e037730], .open > .dropdown-toggle.btn-default[_v-0e037730] {\n    background-color: #605ca8;\n    color: #ffffff;\n\n}\n.btn-default[_v-0e037730]:active, .btn-default.active[_v-0e037730], .open > .dropdown-toggle.btn-default[_v-0e037730] {\n    color: #ffffff;\n\n}\n\nspan.item-type-icon[_v-0e037730]:active, span.item-type-icon.active[_v-0e037730]{\n    background-color: #605ca8;\n    color: #ffffff;\n}\n#items-unapproved .box[_v-0e037730] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n#items-live .box[_v-0e037730] {\n    margin-bottom: 4px;\n\n}\n"] = false
-    document.head.removeChild(__vueify_style__)
-  })
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-0e037730", module.exports)
-  } else {
-    hotAPI.update("_v-0e037730", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"../directives/iconradio.js":11,"./IconToggleBtn.vue":7,"./StoryPod.vue":9,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],9:[function(require,module,exports){
-var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n.callout[_v-2522fd54] {\n    position: relative;\n    background: #ddd;\n    padding: 1em;\n    margin: 0;\n}\n.callout .callout-danger[_v-2522fd54] {\n    background: #ff0000;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.callout .callout-success[_v-2522fd54] {\n    background: #00ff00;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.Alert__close[_v-2522fd54] {\n    position: absolute;\n    top: 1em;\n    right: 1em;\n    font-weight: bold;\n    cursor: pointer;\n}\n\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    /*color: #1B1B1B;*/\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n")
 'use strict';
 
@@ -16699,7 +16365,373 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2522fd54", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./VuiFlipSwitch.vue":10,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],10:[function(require,module,exports){
+},{"./VuiFlipSwitch.vue":10,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],9:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n\nh4[_v-18e33c60] {\n    margin-top: 3px;\n    font-size: 18px;\n}\n.btn-default[_v-18e33c60]:active, .btn-default.active[_v-18e33c60], .open > .dropdown-toggle.btn-default[_v-18e33c60] {\n    background-color: #605ca8;\n    color: #ffffff;\n\n}\n.btn-default[_v-18e33c60]:active, .btn-default.active[_v-18e33c60], .open > .dropdown-toggle.btn-default[_v-18e33c60] {\n    color: #ffffff;\n\n}\n\nspan.item-type-icon[_v-18e33c60]:active, span.item-type-icon.active[_v-18e33c60]{\n    background-color: #605ca8;\n    color: #ffffff;\n}\n#items-unapproved .box[_v-18e33c60] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-18e33c60] {\n    margin-bottom: 4px;\n\n}\n#items-live .box[_v-18e33c60] {\n    margin-bottom: 4px;\n\n}\n")
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _methods;
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _StoryPod = require('./StoryPod.vue');
+
+var _StoryPod2 = _interopRequireDefault(_StoryPod);
+
+var _IconToggleBtn = require('./IconToggleBtn.vue');
+
+var _IconToggleBtn2 = _interopRequireDefault(_IconToggleBtn);
+
+var _iconradio = require('../directives/iconradio.js');
+
+var _iconradio2 = _interopRequireDefault(_iconradio);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+// import EventViewContent from './EventViewContent.vue'
+exports.default = {
+    components: {
+        StoryPod: _StoryPod2.default, IconToggleBtn: _IconToggleBtn2.default
+    },
+    props: ['allrecords', 'stypes', 'cuser', 'role', 'sroute'],
+    created: function created() {
+        // this.currentDate = moment().format();
+    },
+    ready: function ready() {
+        // this.resource = this.$resource('/api/announcement/:id');
+        this.fetchAllRecords();
+
+        // this.fetchUnapprovedRecords();
+    },
+
+    data: function data() {
+        return {
+
+            singleStype: false,
+            // storytypes: [
+            //     { type: 'news'},
+            //     { type: 'student'},
+            //     { type: 'emutoday'},
+            //     { type: 'article'},
+            //     { type: 'external'}
+            // ],
+            storytype: '',
+            items_unapproved_filter_storytype: '',
+            items_approved_filter_storytype: '',
+            items_live_filter_storytype: '',
+            storytype_approved: '',
+            changestorytype: '',
+            currentDate: (0, _moment2.default)(),
+            allitems: [],
+            items: [],
+            xitems: [],
+            items_unapproved_filtered: [],
+            items_unapproved: [],
+            items_approved: [],
+            items_live: [],
+            currentTypesFilter: []
+        };
+    },
+    computed: {
+
+        checkRoleAndQueueType: function checkRoleAndQueueType() {
+            if (this.role === 'admin' || this.role === 'admin_super') {
+                if (this.singleStype) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        },
+        s_types: function s_types() {
+            // var data = localStorage[key];
+            try {
+                this.singleStype = false;
+                return JSON.parse(this.stypes);
+            } catch (e) {
+                this.singleStype = true;
+                // this.record.story_type = this.stypes;
+                return this.stypes;
+            }
+        },
+
+        storyTypeIcons: function storyTypeIcons() {
+            if (this.isString(this.s_types)) {
+                return [{
+                    name: 'all',
+                    shortname: ''
+                }, {
+                    name: 'none',
+                    shortname: 'x'
+                }];
+            } else {
+                this.s_types.push({
+                    name: 'all',
+                    shortname: ''
+                });
+                return this.s_types;
+            }
+        },
+        itemsApproved: function itemsApproved() {
+            return this.filterItemsApproved(this.allitems);
+        },
+        itemsUnapproved: function itemsUnapproved() {
+            return this.filterItemsUnapproved(this.allitems);
+        },
+        itemsLive: function itemsLive() {
+            return this.filterItemsLive(this.allitems);
+        }
+    },
+
+    methods: (_methods = {
+        isString: function isString(val) {
+            return toString.call(val) === "[object String]";
+        },
+        filerStoryTypeCustom: function filerStoryTypeCustom(value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.storytype);
+            if (this.storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.storytype;
+            }
+
+            // return  moment(value).format("ddd")
+        },
+        filterUnapprovedByStoryType: function filterUnapprovedByStoryType(value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype);
+            if (this.items_unapproved_filter_storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.items_unapproved_filter_storytype;
+            }
+        },
+        filterApprovedByStoryType: function filterApprovedByStoryType(value) {
+            console.log('value' + value.story_type + 'stmodel=' + this.items_approved_filter_storytype);
+            if (this.items_approved_filter_storytype === '') {
+                return value.story_type !== '';
+            } else {
+                return value.story_type === this.items_approved_filter_storytype;
+            }
+        }
+    }, _defineProperty(_methods, 'filterUnapprovedByStoryType', function filterUnapprovedByStoryType(value) {
+        console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype);
+        if (this.items_unapproved_filter_storytype === '') {
+            return value.story_type !== '';
+        } else {
+            return value.story_type === this.items_unapproved_filter_storytype;
+        }
+    }), _defineProperty(_methods, 'filterLiveByStoryType', function filterLiveByStoryType(value) {
+        console.log('value' + value.story_type + 'stmodel=' + this.items_live_filter_storytype);
+        if (this.items_live_filter_storytype === '') {
+            return value.story_type !== '';
+        } else {
+            return value.story_type === this.items_live_filter_storytype;
+        }
+    }), _defineProperty(_methods, 'storyTypeFilter', function storyTypeFilter(val, arg) {
+        if (val == '' || val == 'all') {
+            return val.storytype !== '';
+        } else {
+            return val.storytype === arg;
+        }
+    }), _defineProperty(_methods, 'typeIcon', function typeIcon(sname) {
+        switch (sname) {
+            case 'emutoday':
+            case 'story':
+                faicon = 'fa-file-image-o';
+                break;
+            case 'news':
+                faicon = 'fa-file-text-o';
+                break;
+            case 'student':
+                faicon = 'fa-graduation-cap';
+                break;
+            case 'external':
+                faicon = 'fa-file-o';
+                break;
+            case 'article':
+                faicon = 'fa-newspaper-o';
+                break;
+            case '':
+                faicon = 'fa-asterisk';
+                break;
+            default:
+                faicon = 'fa-file-o';
+                break;
+        }
+
+        return 'fa ' + faicon + ' fa-fw';
+    }), _defineProperty(_methods, 'addTypeToFilter', function addTypeToFilter(typeshortname) {
+        var tsnindex = this.currentTypesFilter.indexOf(typeshortname);
+        if (tsnindex < 0) {
+            this.currentTypeFilter.$set(tsnindex, typeshortname);
+        }
+    }), _defineProperty(_methods, 'toggleTypeToFilter', function toggleTypeToFilter(filtertype) {
+        self.storytype = filtertype.shortname;
+
+        //     console.log(filtertype)
+        //     let tsnindex;
+        //     tsnindex = this.currentTypesFilter.indexOf(filtertype.shortname);
+        //     if (tsnindex < 0) {
+        //             this.currentTypesFilter.push(filtertype.shortname);
+        //     } else {
+        //         this.currentTypesFilter.$remove(tsnindex);
+        //     }
+        // console.log('this.currentTypesFilter.length'+ this.currentTypesFilter.length)
+        // this.filterHideType();
+    }), _defineProperty(_methods, 'setFilter', function setFilter(ev) {}), _defineProperty(_methods, 'filterTheList', function filterTheList() {
+        var self = this;
+        this.items_unapproved = this.items_unapproved.filter(function (item) {
+            return item.story_type == self.storytype;
+        });
+    }), _defineProperty(_methods, 'filterHideType', function filterHideType() {
+        var self = this;
+        this.items_unapproved.forEach(function (item, index) {
+            for (var i = 0, l = self.currentTypesFilter.length; i < l; i++) {
+                if (item.story_type == self.currentTypesFilter[i]) {
+                    console.log('item.story_type' + item.story_type + 'self.currentTypesFilter' + self.currentTypesFilter[i]);
+                    self.items_unapproved.splice(index, 1);
+                    break;
+                }
+            }
+        });
+    }), _defineProperty(_methods, 'movedItemIndex', function movedItemIndex(mid) {
+        return this.items_unapproved.findIndex(function (item) {
+            return item.id == mid;
+        });
+    }), _defineProperty(_methods, 'moveToApproved', function moveToApproved(changeditem) {
+        var movedid = changeditem.id;
+        var movedRecord = changeditem;
+        var movedIndex = this.movedItemIndex(movedid);
+
+        // var movedIndex = this.items_unapproved.findIndex(item => item.id == mid)
+        console.log('movedid' + movedid + 'movedIndex' + movedIndex);
+        if (movedRecord.is_approved === 1) {
+            this.items_unapproved.splice(movedIndex, 1);
+            this.items_approved.push(movedRecord);
+        } else {
+            this.items_approved.splice(movedIndex, 1);
+            this.items_unapproved.push(movedRecord);
+        }
+    }), _defineProperty(_methods, 'moveToUnApproved', function moveToUnApproved(changeditem) {
+
+        // this.xitems.pop(changeditem);
+        console.log('moveToUnApproved' + changeditem);
+        changeditem.is_approved = 0;
+
+        this.updateRecord(changeditem);
+    }), _defineProperty(_methods, 'filterItemsApproved', function filterItemsApproved(items) {
+        return items.filter(function (item) {
+            return (0, _moment2.default)(item.start_date).isAfter((0, _moment2.default)()) && item.is_approved === 1;
+        });
+    }), _defineProperty(_methods, 'filterItemsUnapproved', function filterItemsUnapproved(items) {
+        return items.filter(function (item) {
+            return item.is_approved === 0;
+        });
+    }), _defineProperty(_methods, 'filterItemsLive', function filterItemsLive(items) {
+        return items.filter(function (item) {
+            return (0, _moment2.default)(item.start_date).isSameOrBefore((0, _moment2.default)()) && item.is_approved === 1; // true
+
+            // return moment(item.start_date).isAfter(moment())
+            // return item.live === 1
+        });
+    }), _defineProperty(_methods, 'movedItemIndex', function movedItemIndex(mid) {
+        return this.xitems.findIndex(function (item) {
+            return item.id == mid;
+        });
+    }), _defineProperty(_methods, 'updateRecord', function updateRecord(item) {
+        var currentRecordId = item.id;
+        item.start_date = (0, _moment2.default)(item.start_date, "MM-DD-YYYY").format("YYYY-MM-DD");
+
+        var currentRecord = item;
+        this.$http.patch('/api/story/' + item.id, item, {
+            method: 'PATCH'
+        }).then(function (response) {
+            console.log('good?' + response);
+        }, function (response) {
+            console.log('bad?' + response);
+        });
+    }), _defineProperty(_methods, 'fetchAllRecords', function fetchAllRecords() {
+        var _this = this;
+
+        var routeurl = void 0;
+        if (this.isString(this.s_types)) {
+            routeurl = '/api/story/queueload/' + this.stypes;
+        } else {
+            routeurl = '/api/story/queueload/all';
+        }
+        this.$http.get(routeurl).then(function (response) {
+
+            _this.$set('allitems', response.data.data);
+
+            //    this.allitems = response.data.data;
+            // console.log('this.record= ' + this.record);
+
+            //this.checkOverDataFilter();
+        }, function (response) {
+            //error callback
+            console.log("ERRORS");
+
+            //  this.formErrors =  response.data.error.message;
+        }).bind(this);
+    }), _defineProperty(_methods, 'checkOverDataFilter', function checkOverDataFilter() {
+        var self = this;
+        console.log('items=' + this.allitems);
+
+        this.allitems.forEach(function (item) {
+            if (item.is_approved === 1) {
+                self.items_approved.push(item);
+            } else {
+                self.items_unapproved.push(item);
+            }
+            //     if (moment(item.start_date).isSameOrBefore(moment())) {
+            //         self.items_live.push(item)
+            //     } else {
+            //         self.items_approved.push(item)
+            //     }
+            // } else {
+            //     self.items_unapproved.push(item)
+            // }
+        });
+        // this.$set('items_unapproved_filtered',this.items_unapproved )
+
+        console.log('items_unapproved' + this.items_unapproved.length);
+
+        console.log('items_approved' + this.items_approved.length);
+    }), _methods),
+    filters: {},
+    directives: {
+        iconradio: _iconradio2.default
+    },
+
+    events: {}
+};
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-18e33c60=\"\">\n        <div class=\"col-md-4\" _v-18e33c60=\"\">\n            <h4 _v-18e33c60=\"\">Unapproved<p _v-18e33c60=\"\"></p></h4>\n            <div v-show=\"checkRoleAndQueueType\" class=\"btn-toolbar\" role=\"toolbar\" _v-18e33c60=\"\">\n                <div class=\"btn-group btn-group-xs\" role=\"group\" _v-18e33c60=\"\">\n                    <label _v-18e33c60=\"\">Filter: </label>\n                </div>\n                <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_unapproved_filter_storytype\" _v-18e33c60=\"\">\n                     <template v-for=\"item in storyTypeIcons\">\n                         <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-18e33c60=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-18e33c60=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-18e33c60=\"\"></span></label>\n                    </template>\n              </div>\n            </div>\n            <div id=\"items-unapproved\" _v-18e33c60=\"\">\n                <story-pod pid=\"items-unapproved\" :sroute=\"sroute\" v-for=\"item in itemsUnapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByStoryType items_unapproved_filter_storytype\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-unapproved\" _v-18e33c60=\"\">\n                </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-18e33c60=\"\">\n        <h4 _v-18e33c60=\"\">Approved</h4>\n        <div v-show=\"checkRoleAndQueueType\" class=\"btn-toolbar\" role=\"toolbar\" _v-18e33c60=\"\">\n            <div class=\"btn-group btn-group-xs\" role=\"group\" _v-18e33c60=\"\">\n                <label _v-18e33c60=\"\">Filter: </label>\n            </div>\n            <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_approved_filter_storytype\" _v-18e33c60=\"\">\n                 <template v-for=\"item in storyTypeIcons\">\n                     <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-18e33c60=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-18e33c60=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-18e33c60=\"\"></span></label>\n                </template>\n          </div>\n      </div>\n        <div id=\"items-approved\" _v-18e33c60=\"\">\n            <story-pod pid=\"items-approved\" :sroute=\"sroute\" v-for=\"item in itemsApproved | orderBy 'start_date' 1 | filterBy filterApprovedByStoryType items_approved_filter_storytype\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"items-approved\" _v-18e33c60=\"\">\n            </story-pod>\n        </div>\n\n\n\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-18e33c60=\"\">\n        <h4 _v-18e33c60=\"\">Live <small _v-18e33c60=\"\">Approved and StartDate is past</small></h4>\n        <div v-show=\"checkRoleAndQueueType\" class=\"btn-toolbar\" role=\"toolbar\" _v-18e33c60=\"\">\n            <div class=\"btn-group btn-group-xs\" role=\"group\" _v-18e33c60=\"\">\n                <label _v-18e33c60=\"\">Filter: </label>\n            </div>\n            <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_live_filter_storytype\" _v-18e33c60=\"\">\n                 <template v-for=\"item in storyTypeIcons\">\n                     <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-18e33c60=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-18e33c60=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-18e33c60=\"\"></span></label>\n                </template>\n          </div>\n      </div>\n        <div id=\"items-live\" _v-18e33c60=\"\">\n            <story-pod pid=\"items-live\" :sroute=\"sroute\" v-for=\"item in itemsLive | orderBy 'start_date' 1 | filterBy filterLiveByStoryType\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"items-live\" _v-18e33c60=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n</div><!-- ./row -->\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n\nh4[_v-18e33c60] {\n    margin-top: 3px;\n    font-size: 18px;\n}\n.btn-default[_v-18e33c60]:active, .btn-default.active[_v-18e33c60], .open > .dropdown-toggle.btn-default[_v-18e33c60] {\n    background-color: #605ca8;\n    color: #ffffff;\n\n}\n.btn-default[_v-18e33c60]:active, .btn-default.active[_v-18e33c60], .open > .dropdown-toggle.btn-default[_v-18e33c60] {\n    color: #ffffff;\n\n}\n\nspan.item-type-icon[_v-18e33c60]:active, span.item-type-icon.active[_v-18e33c60]{\n    background-color: #605ca8;\n    color: #ffffff;\n}\n#items-unapproved .box[_v-18e33c60] {\n    margin-bottom: 4px;\n}\n#items-approved .box[_v-18e33c60] {\n    margin-bottom: 4px;\n\n}\n#items-live .box[_v-18e33c60] {\n    margin-bottom: 4px;\n\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-18e33c60", module.exports)
+  } else {
+    hotAPI.update("_v-18e33c60", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"../directives/iconradio.js":11,"./IconToggleBtn.vue":7,"./StoryPod.vue":8,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],10:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.vuiflipswitch {\n    position: relative; width: 36px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.vuiflipswitch-checkbox {\n    display: none;\n}\n.vuiflipswitch-label {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 1px solid #666666; border-radius: 4px;\n}\n.vuiflipswitch-inner {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.vuiflipswitch-inner:before, .vuiflipswitch-inner:after {\n    display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;\n    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.vuiflipswitch-inner:before {\n    content: \"Y\";\n    padding-left: 5px;\n    background-color: #EEEEEE; color: #605CA8;\n}\n.vuiflipswitch-inner:after {\n    content: \"N\";\n    padding-right: 5px;\n    background-color: #EEEEEE; color: #666666;\n    text-align: right;\n}\n.vuiflipswitch-switch {\n    display: block;\n    width: 16px;\n    margin: 0;\n    background: #666666;\n    position: absolute; top: 0; bottom: 0;\n    /*right: 16px;*/\n    /*border: 2px solid #666666; */\n    border-radius: 4px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-inner {\n    margin-left: 0;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-switch {\n    right: 0px;\n    background-color: #605CA8;\n}\nselect.form-control {\n    height:22px;\n    border: 1px solid #666666;\n}\n\n\nh6 {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group {\n    /*border: 1px solid red;*/\n}\n.form-group label{\n    margin-bottom: 0;\n}\n.box.box-solid.box-default {\n    border: 1px solid #666666;\n}\n")
 "use strict";
@@ -16797,9 +16829,9 @@ var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _StoryApp = require('./components/StoryApp.vue');
+var _StoryQueue = require('./components/StoryQueue.vue');
 
-var _StoryApp2 = _interopRequireDefault(_StoryApp);
+var _StoryQueue2 = _interopRequireDefault(_StoryQueue);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16808,9 +16840,9 @@ var Vue = require('vue');
 Vue.use(_vueResource2.default);
 
 new Vue({
-        el: '#vue-story-app',
+        el: '#vue-story-queue',
         components: {
-                StoryApp: _StoryApp2.default
+                StoryQueue: _StoryQueue2.default
         },
         http: {
                 headers: {
@@ -16820,10 +16852,10 @@ new Vue({
                 }
         },
         ready: function ready() {
-                console.log('new Vue StoryApp ready');
+                console.log('new Vue StoryQueue ready');
         }
 });
 
-},{"./components/StoryApp.vue":8,"moment":1,"vue":5,"vue-resource":4}]},{},[12]);
+},{"./components/StoryQueue.vue":9,"moment":1,"vue":5,"vue-resource":4}]},{},[12]);
 
-//# sourceMappingURL=vue-story-app.js.map
+//# sourceMappingURL=vue-story-queue.js.map

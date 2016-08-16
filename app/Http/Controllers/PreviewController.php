@@ -40,9 +40,24 @@ class PreviewController extends Controller
 
     }
 
-        public function story($stype, Story $story)
+        public function story( $stype, Story $story)
         {
 
+            $url =  \URL::previous();
+            //$url = 'http://www.domain.com/page?s=194&client=151678&m=a4a&v=1&g=54';
+            $remove_http = str_replace('http://', '', $url);
+            $split_url = explode('/', $remove_http);
+
+            //$flast  = last($split_url);
+
+
+            //check if user is coming from queue or edit form
+            $form = array_pop($split_url);
+            //check what queue or form they are coming from
+            $sroute = array_pop($split_url);
+
+            // dd($url,$split_url,$form,$sroute);
+            // $story =  $this->story->findOrFail($id);
             $mainStoryImage = null;
             $mainStoryImages = $story->storyImages()->where('image_type','story')->get();
             // dd($mainStoryImage);
@@ -59,16 +74,16 @@ class PreviewController extends Controller
             $sideStudentBlurbs = collect();
 
             $sideNewsStorys = collect();
-
+            // $sroute = 'story';
             if($stype == 'story' || $stype == 'emutoday' || $stype == 'news'){
                 $sideStoryBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
 
-                return view('preview.story.story', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
+                return view('preview.story.story', compact('story','sroute', 'form', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
 
             } else if($stype == 'student'){
                 $sideStudentBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
-
-                return view('preview.student.story', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
+                // $sroute = 'student';
+                return view('preview.student.story', compact('story', 'sroute','form','mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
 
 
             } else if($stype == 'article'){
@@ -79,7 +94,8 @@ class PreviewController extends Controller
 
 
 
-            return view('preview.magazine.story', compact('magazine','story', 'mainImage','sideStoryBlurbs','sideNewsStorys'));
+
+            return view('preview.magazine.story', compact('magazine','story','sroute','form', 'mainImage','sideStoryBlurbs','sideNewsStorys'));
 
 
             } else {

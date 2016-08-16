@@ -53,7 +53,8 @@ export default  {
         'recordId',
         'currentUser',
         'role',
-        'rte'
+        'stype',
+        'sroute'
     ],
     ready() {
         console.log('BoxTools')
@@ -102,13 +103,18 @@ export default  {
         },
 
         previewLink:function() {
-            return '/preview/' + this.rte +  '/' + this.thisRecordId;
+            return '/preview/' + this.sroute +  '/' +this.stype +  '/' +this.thisRecordId;
         },
         listLink:function() {
-            return '/admin/story/queue';
+            if(this.sroute === 'magazine'){
+                return '/admin/'+ this.sroute + '/'+ this.stype + '/queue';
+            } else {
+                return '/admin/'+ this.sroute + '/queue';
+
+            }
         },
         createNewLink:function() {
-            return '/admin/story/' + this.rte +  '/setup'
+            return '/admin/'+ this.sroute +'/' + this.stype +  '/setup'
         },
     },
 
@@ -116,21 +122,21 @@ export default  {
         // checkIndexWithValue: function (chitem){
         // 	return
         // },
-        viewPreview: function(evt) {
-            var vurl = '/preview/' + this.rte +  '/' + this.thisRecordId;
-            console.log(vurl);
-            document.location = vurl;
-
-        },
-        viewList: function(evt) {
-            var url = '/admin/story/' + this.rte +  '/'
-            console.log(url);
-            document.location = url;
-        },
-        createNew: function(evt) {
-            var url = '/admin/story/' + this.rte +  '/setup'
-            console.log('this.rte='+ this.rte)
-        },
+        // viewPreview: function(evt) {
+        //     var vurl = '/preview/' + this.rte +  '/' + this.thisRecordId;
+        //     console.log(vurl);
+        //     document.location = vurl;
+        //
+        // },
+        // viewList: function(evt) {
+        //     var url = '/admin/story/' + this.rte +  '/'
+        //     console.log(url);
+        //     document.location = url;
+        // },
+        // createNew: function(evt) {
+        //     var url = '/admin/story/' + this.rte +  '/setup'
+        //     console.log('this.rte='+ this.rte)
+        // },
 
     },
 

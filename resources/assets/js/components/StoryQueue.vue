@@ -1,34 +1,8 @@
 <template>
-    <!-- <div class="row">
-        <div class="col-md-12">
-            <div class="btn-toolbar" role="toolbar">
-                <div class="btn-group btn-group-xs" role="group">
-                    <label>Filter: </label>
-                </div>
-                <div class="btn-group btn-group-xs" role="group" aria-label="typeFiltersLabel" data-toggle="buttons" v-iconradio="storytype">
-                     <template v-for="item in storyTypeIcons">
-                         <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="{{item.name}}"><input type="radio" autocomplete="off" value="{{item.shortname}}" /><span class="item-type-icon-shrt" :class="typeIcon(item.shortname)"></span></label>
-                    </template>
-              </div>
-
-
-</div>
-        </div>
-
-    </div> -->
-    <!-- /.row -->
     <div class="row">
         <div class="col-md-4">
-            <!-- <div v-if="singleStype" class="form-group">
-              <label class="sr-only" for="story-type">Type</label>
-                  <select id="story-type" v-model="storytype" class="form-control">
-                      <option v-for="stype in s_types" v-bind:value="stype.shortname">
-                          {{stype.name}}
-                      </option>
-                  </select>
-            </div> -->
-            <h4>Unapproved<p>{{storytype}}</p></h4>
-            <div v-show="checkRole" class="btn-toolbar" role="toolbar">
+            <h4>Unapproved<p></p></h4>
+            <div v-show="checkRoleAndQueueType" class="btn-toolbar" role="toolbar">
                 <div class="btn-group btn-group-xs" role="group">
                     <label>Filter: </label>
                 </div>
@@ -41,7 +15,8 @@
             <div id="items-unapproved">
                 <story-pod
                     pid="items-unapproved"
-                    v-for="item in items_unapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByStoryType items_unapproved_filter_storytype"
+                    :sroute="sroute"
+                    v-for="item in itemsUnapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByStoryType items_unapproved_filter_storytype"
                     @item-change="moveToApproved"
 
                     :item="item"
@@ -52,7 +27,7 @@
     </div><!-- /.col-md-4 -->
     <div class="col-md-4">
         <h4>Approved</h4>
-        <div v-show="checkRole" class="btn-toolbar" role="toolbar">
+        <div v-show="checkRoleAndQueueType" class="btn-toolbar" role="toolbar">
             <div class="btn-group btn-group-xs" role="group">
                 <label>Filter: </label>
             </div>
@@ -65,7 +40,8 @@
         <div id="items-approved">
             <story-pod
                 pid="items-approved"
-                v-for="item in items_approved | orderBy 'start_date' 1 | filterBy filterApprovedByStoryType items_approved_filter_storytype"
+                :sroute="sroute"
+                v-for="item in itemsApproved | orderBy 'start_date' 1 | filterBy filterApprovedByStoryType items_approved_filter_storytype"
                 @item-change="moveToUnApproved"
 
                 :item="item"
@@ -79,7 +55,7 @@
     </div><!-- /.col-md-4 -->
     <div class="col-md-4">
         <h4>Live <small>Approved and StartDate is past</small></h4>
-        <div v-show="checkRole" class="btn-toolbar" role="toolbar">
+        <div v-show="checkRoleAndQueueType" class="btn-toolbar" role="toolbar">
             <div class="btn-group btn-group-xs" role="group">
                 <label>Filter: </label>
             </div>
@@ -92,6 +68,7 @@
         <div id="items-live">
             <story-pod
                 pid="items-live"
+                :sroute="sroute"
                 v-for="item in itemsLive | orderBy 'start_date' 1 | filterBy filterLiveByStoryType"
                 @item-change="moveToUnApproved"
 
@@ -147,7 +124,7 @@ export default  {
         StoryPod,IconToggleBtn
     },
     props: [
-        'allrecords','stypes','cuser','role'
+        'allrecords','stypes','cuser','role','sroute'
     ],
     created(){
         // this.currentDate = moment().format();
@@ -162,6 +139,7 @@ export default  {
     },
     data: function() {
         return {
+
             singleStype: false,
             // storytypes: [
             //     { type: 'news'},
@@ -189,9 +167,13 @@ export default  {
     },
     computed: {
 
-        checkRole:function() {
+        checkRoleAndQueueType:function() {
             if (this.role === 'admin' || this.role === 'admin_super'){
-                return true
+                if(this.singleStype){
+                    return false
+                } else {
+                    return true
+                }
             } else {
                 return false
             }
@@ -207,27 +189,47 @@ export default  {
                   return this.stypes;
               }
         },
-        storyTypeIcons:function() {
-            this.s_types.push({
-                name: 'all',
-                shortname: ''
-            })
 
-            return this.s_types;
+        storyTypeIcons:function() {
+            if (this.isString(this.s_types)){
+                return [
+                    {
+                    name: 'all',
+                    shortname: ''
+                    },
+                    {
+                    name: 'none',
+                    shortname: 'x'
+                    }
+                ]
+
+            } else {
+                this.s_types.push({
+                    name: 'all',
+                    shortname: ''
+                })
+                return this.s_types;
+            }
+
+
+
         },
-        // itemsApproved:function() {
-        //     return  this.filterItemsApproved(this.allitems);
-        // },
-        // itemsUnapproved:function() {
-        //     return  this.filterItemsUnapproved(this.allitems);
-        // },
+        itemsApproved:function() {
+            return  this.filterItemsApproved(this.allitems);
+        },
+        itemsUnapproved:function() {
+            return  this.filterItemsUnapproved(this.allitems);
+        },
         itemsLive:function() {
-            return  this.filterItemsLive(this.items_approved);
+            return  this.filterItemsLive(this.allitems);
         }
     },
 
 
     methods : {
+        isString: function(val){
+            return toString.call(val) === "[object String]";
+        },
         filerStoryTypeCustom: function (value) {
             console.log('value' + value.story_type + 'stmodel=' + this.storytype)
             if (this.storytype === '') {
@@ -384,16 +386,16 @@ export default  {
 
             this.updateRecord(changeditem)
         },
-        // filterItemsApproved: function(items) {
-        //     return items.filter(function(item) {
-        //         return moment(item.start_date).isAfter(moment()) && item.is_approved === 1
-        //     });
-        // },
-        // filterItemsUnapproved: function(items) {
-        //     return items.filter(function(item) {
-        //         return item.is_approved === 0
-        //     });
-        // },
+        filterItemsApproved: function(items) {
+            return items.filter(function(item) {
+                return moment(item.start_date).isAfter(moment()) && item.is_approved === 1
+            });
+        },
+        filterItemsUnapproved: function(items) {
+            return items.filter(function(item) {
+                return item.is_approved === 0
+            });
+        },
         filterItemsLive: function(items) {
             return items.filter(function(item) {
                 return moment(item.start_date).isSameOrBefore(moment()) && item.is_approved === 1;  // true
@@ -422,7 +424,13 @@ export default  {
     },
 
         fetchAllRecords: function() {
-            this.$http.get('/api/story/appLoad')
+            let routeurl;
+            if (this.isString(this.s_types)){
+                routeurl = '/api/story/queueload/'+ this.stypes;
+            } else {
+                routeurl = '/api/story/queueload/all';
+            }
+            this.$http.get(routeurl)
 
             .then((response) =>{
 
@@ -431,7 +439,7 @@ export default  {
             //    this.allitems = response.data.data;
                 // console.log('this.record= ' + this.record);
 
-                this.checkOverDataFilter();
+                //this.checkOverDataFilter();
             }, (response) => {
                 //error callback
                 console.log("ERRORS");

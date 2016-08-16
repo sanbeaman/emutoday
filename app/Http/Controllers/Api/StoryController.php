@@ -30,7 +30,7 @@ class StoryController extends ApiController
         $this->story = $story;
         // $this->middleware('auth');
         $this->middleware('web', ['only' => [
-           'appLoad','listType'
+           'appLoad','listType','queueload'
        ]]);
        }
 
@@ -81,6 +81,35 @@ class StoryController extends ApiController
         } else {
             return $this->setStatusCode(501)->respondWithError('Error');
 
+
+        }
+    }
+    // this.$http.get('/api/story/appLoad')
+    public function queueload($stype)
+    {
+
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            // $storys = $this->story->newQuery();
+            // dd($user->roles);
+            if ($user->hasRole('contributor_1')){
+                // dd($user->id);
+                $storys = $user->storys()->get();
+            } else {
+                if($stype === 'all'){
+                    $storys  = Story::get();
+                } else {
+                    $storys = Story::where('story_type', $stype)->get();
+                }
+
+            }
+            $fractal = new Manager();
+            // $storys = Story::all();
+            $resource = new Fractal\Resource\Collection($storys->all(), new FractalStoryTransformerModel);
+            // Turn all of that into a Array string
+            return $fractal->createData($resource)->toArray();
+        } else {
+            return $this->setStatusCode(501)->respondWithError('Error');
 
         }
     }

@@ -11,7 +11,7 @@
     @parent
 @endsection
 @section('bodytop')
-    @include('preview.includes.previewstory',['stype'=> $story->story_type, 'recordid' => $story->id] )
+    @include('preview.includes.previewstory',['stype'=> $story->story_type, 'sroute'=> $sroute, 'recordid' => $story->id, 'form'=> $form] )
 @endsection
 @section('offcanvaslist')
     @include('preview.includes.offcanvaslist')
@@ -37,7 +37,7 @@
         <div id="story-content" class="row">
                     {!! Form::model($story,[
                         'method' => 'put',
-                        'route' => ['admin.story.update', $story->id],
+                        'route' => ['admin_story_updatefrompreview', $story->id],
                         'files' => true
                     ]) !!}
                     {{-- {!! Form::model($story, [
@@ -58,12 +58,8 @@
             </div>
           @endif
             <div id="story-content-edit">
-                            {!! Form::textarea('content', null, ['class' => 'form-control', 'id' => 'cktextarea']) !!}
-
-                            {{-- <textarea id="cktextarea" name="cktextarea">
-                                {!! $story->content !!}
-                            </textarea> --}}
-                        </div>
+            {!! Form::textarea('content', null, ['class' => 'form-control', 'id' => 'cktextarea']) !!}
+        </div>
 {{--
                 @if($story->author_id === 0)
                 <div class="story-author">{{ $story->author->name }}</div>

@@ -62,7 +62,7 @@ Route::group(['prefix' => 'api'], function() {
 
     Route::get('magazine/articles', ['as'=> 'api.magazine.articles', 'uses'=> 'Api\StoryController@articles']);
 
-
+    Route::get('story/queueload/{stype}', ['as'=> 'api_story_queueload', 'uses'=> 'Api\StoryController@queueload']);
     Route::get('story/appLoad', ['as' => 'api.story.appLoad', 'uses' => 'Api\StoryController@appLoad']);
     Route::get('story/listapproved', ['as' => 'api.story.listapproved', 'uses' => 'Api\StoryController@listApproved']);
     Route::get('story/{stype}', ['as' => 'api.story.listType', 'uses' => 'Api\StoryController@listType']);
@@ -160,26 +160,39 @@ Route::group(['middleware' => ['web']], function() {
     //watch out for match anything ROUTES
     Route::group(['prefix' => 'preview' ], function()
     {
-        Route::get('page/{page}', ['as' => 'preview_hub', 'uses' => 'PreviewController@hub']);
-        Route::get('magazine/{magazine}', ['as' => 'preview_magazine', 'uses' => 'PreviewController@magazine']);
+        Route::get('page/{page}/', ['as' => 'preview_hub', 'uses' => 'PreviewController@hub']);
 
-        Route::get('story/{stype}/{story}', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
+        Route::get('magazine/{stype}/{story}/', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
 
-        Route::get('{stype}/{story}', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
+        Route::get('story/{stype}/{story}/', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
+        Route::get('{stype}/{story}/', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
+
+        Route::get('magazine/{magazine}/', ['as' => 'preview_magazine', 'uses' => 'PreviewController@magazine']);
 
     });
 
     Route::group(['prefix' => 'admin' ], function()
     {
+
         Route::get('delete', function() {
             return back();
         });
+        Route::post('user/{user}/addMediafileUser', ['as' => 'store_mediafile_user', 'uses' => 'Admin\MediafileController@addMediafileUser']);
+        Route::post('user/{user}/updateMediafileUser', ['as' => 'update_mediafile_user', 'uses' => 'Admin\MediafileController@updateMediafileUser']);
+        Route::delete('user/{user}/removeMediafileUser', ['as' => 'remove_mediafile_user', 'uses' => 'Admin\MediafileController@removeMediafileUser']);
 
-        Route::get('magazine/article', function() {
-            return view('admin.magazine.articles');
-        });
-        Route::get('magazine/article/{story}/edit', ['as' => 'admin_magazine_article_edit', 'uses' => 'Admin\StoryController@edit']);
-        // Route::get('magazine/article/{story}', ['as' => 'admin_magazine_article_preview', 'uses' => 'Admin\StoryController@show']);
+        Route::get('users/{users}/confirm', ['as' => 'admin.users.confirm', 'uses' => 'Admin\UsersController@confirm']);
+        Route::resource('users', 'Admin\UsersController');
+
+
+        // Route::get('magazine/article', function() {
+        //     return view('admin.magazine.articles');
+        // });
+            // Route::get('magazine/article/{story}', ['as' => 'admin_magazine_article_preview', 'uses' => 'Admin\StoryController@show']);
+        Route::get('magazine/article/queue', ['as'=> 'admin_magazine_article_queue', 'uses'=> 'Admin\StoryController@queueArticle']);
+        // Route::get('magazine/article/{story}/edit', ['as' => 'admin_magazine_article_edit', 'uses' => 'Admin\StoryController@edit']);
+        Route::get('magazine/{stype}/{story}/edit', ['as' => 'admin_magazine_article_edit', 'uses' => 'Admin\StoryTypeController@storyTypeEdit']);
+
 
 
         Route::get('magazine/{magazine}/confirm', ['as' => 'admin.magazine.confirm', 'uses' => 'Admin\MagazineController@confirm']);
@@ -192,13 +205,6 @@ Route::group(['middleware' => ['web']], function() {
         Route::resource('magazine', 'Admin\MagazineController');
 
 
-        Route::post('user/{user}/addMediafileUser', ['as' => 'store_mediafile_user', 'uses' => 'Admin\MediafileController@addMediafileUser']);
-        Route::post('user/{user}/updateMediafileUser', ['as' => 'update_mediafile_user', 'uses' => 'Admin\MediafileController@updateMediafileUser']);
-        Route::delete('user/{user}/removeMediafileUser', ['as' => 'remove_mediafile_user', 'uses' => 'Admin\MediafileController@removeMediafileUser']);
-
-        Route::get('users/{users}/confirm', ['as' => 'admin.users.confirm', 'uses' => 'Admin\UsersController@confirm']);
-        Route::resource('users', 'Admin\UsersController');
-
 
         // Route::get('story/setup/{stype}/', ['as' => 'admin_story_setup', 'uses' => 'Admin\StoryController@setup']);
         // Route::get('story/indexList', ['as' => 'admin.story.indexList', 'uses' => 'Admin\StoryController@indexList']);
@@ -209,9 +215,11 @@ Route::group(['middleware' => ['web']], function() {
          *
          * (story/{stype} or magazine/article)
          */
-         Route::get('story/app', ['as' => 'admin_story_app', 'uses' => 'Admin\StoryController@app']);
 
-         Route::get('story/queue', ['as' => 'admin_story_queue', 'uses' => 'Admin\StoryController@queue']);
+        Route::put('story/{id}/updateFromPreview', ['as'=> 'admin_story_updatefrompreview', 'uses'=> 'Admin\StoryController@updateFromPreview']);
+        Route::get('story/app', ['as' => 'admin_story_app', 'uses' => 'Admin\StoryController@app']);
+
+        Route::get('story/queue', ['as' => 'admin_story_queue', 'uses' => 'Admin\StoryController@queue']);
 
         Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryTypeController@articleSetup']);
 
@@ -221,11 +229,6 @@ Route::group(['middleware' => ['web']], function() {
 
         Route::post('story/{stype}/{story}/addNewStoryImage','Admin\StoryController@addNewStoryImage');
 
-        // Route::get('story/{stype}/{story}/preview', ['as' => 'admin_storytype_preview', 'uses' => 'Admin\StoryTypeController@storyTypePreview']);
-
-        // Route::get('story/appload', ['as' => 'api.story.appload', 'uses' => 'Admin\StoryController@appLoad']);
-
-        // Route::get('admin/story/create/{stype}/', ['as' => 'admin_story_create', 'uses' => 'Admin\StoryController@create']);
         Route::get('story/{story}/confirm', ['as' => 'admin.story.confirm', 'uses' => 'Admin\StoryController@confirm']);
 
         Route::post('story/{id}/addnewimage','Admin\StoryController@addNewImage');

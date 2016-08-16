@@ -31,6 +31,7 @@
 
         @section('content')
         <div class="row">
+
             @if($currentUser->roles->first()->name == 'contributor_1')
                 <div class="col-md-10">
             @else
@@ -43,7 +44,7 @@
                 <div class="box box-primary">
                         <div class="box-header with-border">
                             <div id="vue-box-tools">
-                                <box-tools v-ref:boxtools rte="{{$stype}}" viewtype="form"
+                                <box-tools v-ref:boxtools sroute="{{$sroute}}" stype="{{$stype}}" viewtype="form"
                                 :current-user="{{$currentUser}}"
                                 :record-id="{{$story->exists ? $story->id: null}}"
                                 ></box-tools>

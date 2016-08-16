@@ -52,6 +52,8 @@
             <p>Archived: {{item.is_archived}}</p>
             <p>Tags: {{item.tags | json}}</p>
             <p>Start Date: {{item.start_date}}</p>
+            <p>User: {{item.user | json}}</p>
+            <p>User: {{item.author | json}}</p>
 
       </div><!-- /.box-body -->
             <div class="box-footer list-footer">
@@ -272,7 +274,9 @@ import VuiFlipSwitch from './VuiFlipSwitch.vue'
 module.exports  = {
                 props: [
                     'item',
-                    'pid'
+                    'pid',
+                    'sroute'
+
                 ],
               data: function() {
                 return {
@@ -311,10 +315,10 @@ module.exports  = {
                       return this.item.is_approved;
                   },
                   itemEditPath: function(){
-                      return '/admin/story/'+ this.item.story_type+'/'+this.item.id + '/edit'
+                      return '/admin/'+ this.sroute + '/' + this.item.story_type+'/'+this.item.id + '/edit'
                   },
                   itemPreviewPath: function(){
-                      return '/preview/story/'+ this.item.story_type+'/'+this.item.id
+                      return '/preview/'+ this.sroute + '/'+ this.item.story_type+'/'+this.item.id
                   },
                   typeClass: function() {
 

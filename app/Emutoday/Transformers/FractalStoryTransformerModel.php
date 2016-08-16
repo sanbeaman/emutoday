@@ -28,7 +28,8 @@ class FractalStoryTransformerModel extends Fractal\TransformerAbstract
             'is_live' =>  $story->is_live,
             'is_archived' =>  $story->is_archived,
             'tags' => $story->tags->pluck('name'),
-            'start_date'   => $story->start_date->format('m-d-Y'),
+            'start_date'   =>  $story->start_date->toDateString(),
+            // 'start_date'   => $story->start_date->format('m-d-Y'),
             'author' => ($story->author_id == 0)? null:$story->author
         ];
     }

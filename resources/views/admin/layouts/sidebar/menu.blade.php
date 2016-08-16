@@ -24,7 +24,7 @@
     <ul class="treeview-menu">
         @can('story_promote', $currentUser)
 
-        <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/app"><i class="fa fa-rocket"></i> <span>App</span></a></li>
+        <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/queue"><i class="fa fa-rocket"></i> <span>Queue</span></a></li>
         @endcan
         @can('story_approve', $currentUser)
 
@@ -62,7 +62,7 @@
     <ul class="treeview-menu">
         <li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine"><i class="fa fa-list"></i> <span>List</span></a></li>
         <li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
-        <li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/article"><i class="fa fa-file-text-o"></i> <span>Articles</span></a></li>
+        <li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/article/queue"><i class="fa fa-rocket"></i> <span>Articles</span></a></li>
     </ul>
 </li>
 @endcan

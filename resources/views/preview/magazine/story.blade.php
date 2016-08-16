@@ -1,34 +1,63 @@
 {{-- Magazine Article Page --}}
 @extends('public.layouts.global')
+@section('styles')
+    @parent
+    @include('preview.includes.previewcoverstyle')
+@endsection
+@section('scriptshead')
+    <!-- Scripts  for code libraries and plugins that need to be loaded in the header -->
+    <script src="/themes/plugins/ckeditor/ckeditor.js"></script>
+    @parent
+@endsection
+@section('bodytop')
+    @include('preview.includes.previewstory',['stype'=> $story->story_type, 'sroute'=> $sroute, 'recordid' => $story->id, 'form'=> $form] )
+
+@endsection
 @section('offcanvaslist')
-	@include('preview.includes.offcanvaslist')
+    @include('preview.includes.offcanvaslist')
 @endsection
   @section('connectionbar')
     @include('preview.magazine.partials.connectionbar')
+
   @endsection
 @section('content')
       <div id="news-story-bar" class="magazine-story">
-          <div id="story-content" class="row">
+              <div id="story-content" class="row">
+                  {!! Form::model($story,[
+                      'method' => 'put',
+                      'route' => ['admin_story_updatefrompreview', $story->id],
+                      'files' => true
+                  ]) !!}
             <div class="large-9 medium-8 small-12 columns">
               <div id="issue-grouping" class="row">
                 <div class="large-8 medium-8 small-12 columns">
-                  <a href="/emu-today/magazine/{{$magazine->year}}"><h2 class="issue-date news-caps">{{$magazine->season}} {{$magazine->year}}</h2></a>
+                    @if(isset($magazine))
+                        <a href="/emu-today/magazine/{{$magazine->year}}"><h2 class="issue-date news-caps">{{$magazine->season}} {{$magazine->year}}</h2></a>
+                    @else
+                        <a href="#"><h2 class="issue-date news-caps">Season Year</h2></a>
+                    @endif
                 </div>
                 <div class="large-4 medium-4 small-12 columns noleftpadding">
                   <div class="addthis magazine-top"><a href=""><img src="/assets/imgs/icons/fake-addthis.png" alt="addthis "></a></div>
-								</div>
+                </div>
               </div>
-							<div class="row">
-								<div class="large-8 medium-8 small-12 columns">
-									<h3>{{ $story->title }}</h3>
-			            <h5>{{ $story->subtitle }}</h5>
-								</div>
-							</div><!-- /.row -->
-              <div id="big-feature-image">
+            <div class="row">
+                <div class="large-8 medium-8 small-12 columns">
+                    <h3>{{ $story->title }}</h3>
+                    <h5>{{ $story->subtitle }}</h5>
+                </div>
+            </div><!-- /.row -->
+             <div id="big-feature-image">
                   <img src="{{$mainImage->present()->mainImageURL}}" alt="feature-image">
               </div>
+              <!-- Story Page Content -->
+
               <!-- <div class="magazine-titlebar"><img src="/assets/imgs/graphic-title.png" alt="Lost Voices"></div> -->
-              {!! $story->content !!}
+              {{-- {!! $story->content !!} --}}
+              <div id="story-content-edit">
+              {!! Form::textarea('content', null, ['class' => 'form-control', 'id' => 'cktextarea']) !!}
+          </div>
+
               <div class="story-author">Author's name</div>
               <p class="news-contacts">Contact Author, author@emich.edu, 734.487.XXXX</p>
             </div>
@@ -60,3 +89,20 @@
           </div>
         </div>
 @endsection
+@section('scriptsfooter')
+  @parent
+    <script>
+    $(function () {
+    // var storycontent = document.getElementById('story-content-edit');
+    // storycontent.setAttribute('contenteditable', true);
+    CKEDITOR.inline( 'cktextarea', {
+            // Define changes to default configuration here. For example:
+                filebrowserBrowseUrl : '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=files',
+                filebrowserImageBrowseUrl: '/themes/plugins/kcfinder/browse.php?opener=ckeditor&type=images',
+                filebrowserUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=files',
+                filebrowserImageUploadUrl : '/themes/plugins/kcfinder/upload.php?opener=ckeditor&type=images'
+        });
+    });
+    </script>
+
+  @endsection
