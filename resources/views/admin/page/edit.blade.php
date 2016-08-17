@@ -91,7 +91,7 @@
                         <div class="col-md-1">
                             <div class="form-group">
                                     {!! Form::label('is_ready', 'ready') !!}
-                                    <div class="radio">{!! Form::radio('is_ready', true ,null,['readonly'=>'readonly']) !!}</div>
+                                    <div class="radio">{!! Form::radio('is_ready', true ,null,['class' => 'form-control', 'id'=> 'is-ready']) !!}</div>
                                 </div>
 
                             </div>
@@ -190,8 +190,8 @@
                 checkboxClass: 'icheckbox_flat-blue',
                 radioClass: 'iradio_flat-blue'
             })
-            $('#is-featured-no').iCheck('check');
-            $('#is-featured-yes').iCheck('disable');
+            // $('#is-featured-no').iCheck('check');
+            $('#is-ready').iCheck('disable');
 
         //iCheck for checkbox and radio inputs
         $('input[type="checkbox"].minimal, input[type="radio"].minimal').iCheck({
