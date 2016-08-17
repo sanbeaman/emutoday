@@ -3,7 +3,7 @@
 namespace emutoday\Http\Controllers\Admin;
 
 
-use emutoday\Page;
+use emutoday\Page as Page;
 use emutoday\Story;
 use emutoday\StoryImage;
 
@@ -23,6 +23,29 @@ class PageController extends Controller
         $this->storyImage = $storyImage;
     }
 
+    public function index()
+    {
+
+        $pages_complete = Page::has('storys', '>=', 5)->orderBy('start_date', 'desc')->get();
+        $pages_incomplete = Page::has('storys', '<', 5)->orderBy('start_date', 'desc')->get();
+
+        $pgselect = Page::has('storys', '>=', 5)->select('id', 'template','start_date', 'end_date')->get();
+
+        // = \DB::table('pages')->where('storys',5)->select('id', 'template','start_date', 'end_date')->get();
+        // $strys = \DB::table('storys')->select('id', 'title', 'start_date', 'end_date')->get();
+        $pgs = collect($pgselect)->toJson();
+
+        JavaScript::put([
+            'pgselect' => $pgselect,
+            'pgs' => $pgs
+
+        ]);
+
+
+        return view('admin.page.index',compact('pages_incomplete','pages_complete','pgs'));
+
+        // return view('admin.page.index',compact('pages','pgs','strys'));
+    }
 
      public function appLoad(){
          $pages = $this->page->orderBy('updated_at', 'desc')->get();
@@ -37,16 +60,7 @@ class PageController extends Controller
          ]);
          return view('admin.page.app', compact('pages','pgs','strys'));
      }
-    public function index()
-    {
-        $pages = $this->page->orderBy('updated_at', 'desc')->get();
 
-        $pgselect = \DB::table('pages')->select('id', 'uri','start_date', 'end_date')->get();
-        $strys = \DB::table('storys')->select('id', 'title', 'start_date', 'end_date')->get();
-        $pgs = collect($pgselect)->toJson();
-
-        return view('admin.page.index',compact('pages','pgs','strys'));
-    }
 
     public function create(Page $page)
     {
@@ -128,23 +142,37 @@ class PageController extends Controller
         $storyIDString =  $request->get('story_ids');
         $storyIDarray = explode(",", $storyIDString);
         $storyIDarrayCount = count($storyIDarray);
-        $storyIDsForPivotArray;
+        $storyIDsForPivotArray = [];
 
          for ($x = 0; $x < $storyIDarrayCount; $x++) {
             // $attributes = array()
              //$pushval = $storyIDarray[$x] . " => ['page_position' => " . intval($x) . "]";
              $namedKey = $storyIDarray[$x];
-             $attributeArray = array();
-             $attributeArray["page_position"] = intval($x);
-             $attributeArray["note"] = 'some notes';
-             $storyIDsForPivotArray[intval($namedKey)] = $attributeArray;
+             if($namedKey != 0) {
+                 $attributeArray = array();
+                 $attributeArray["page_position"] = intval($x);
+                 $attributeArray["note"] = 'some notes';
+                 $storyIDsForPivotArray[intval($namedKey)] = $attributeArray;
+             }
              //array_push($storyIDsForPivotArray, $pushval);
-         }
-        $page->storys()->sync($storyIDsForPivotArray);
+            }
+             if (empty($storyIDsForPivotArray)) {
+                 $page->is_ready = 0;
+             } else {
+                 if(count($storyIDsForPivotArray) < $page->template_elements){
+                     $page->is_ready = 0;
+                 } else {
+                     $page->is_ready = 1;
+                 }
+            //  dd($storyIDsForPivotArray);
+             $page->storys()->sync($storyIDsForPivotArray);
+            }
+
         $page->uri = $request->uri;
         $page->start_date = \Carbon\Carbon::parse($request->start_date);
         $page->end_date = \Carbon\Carbon::parse($request->end_date);
-        $page->is_active = $request->is_active;
+        // $page->is_active = $request->is_active;
+
         $page->save();
 
         //$story->fill($request->only('title', 'slug', 'subtitle', 'teaser','content','story_type'))->save();

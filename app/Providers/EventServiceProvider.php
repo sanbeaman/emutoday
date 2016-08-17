@@ -3,6 +3,7 @@
 namespace emutoday\Providers;
 
 use emutoday\Story;
+use emutoday\Page;
 use emutoday\StoryImage;
 use emutoday\Mediafile;
 
@@ -55,23 +56,6 @@ class EventServiceProvider extends ServiceProvider
             // $storyImage->filename = $storyImage->image_name . '.' . $storyImage->image_extension;
 
        });
-       Story::saving(function ($story)
-       {
-
-           switch ($story->story_type) {
-               case 'external':
-                   $story->is_promoted = ($story->storyImages->where('is_active',1)->count()>0)?1:0;
-                   break;
-                case 'story':
-                case 'article':
-                case 'student':
-                $story->is_promoted = ($story->storyImages->where('is_active',1)->count()<2)?0:1;
-                    break;
-               default:
-                   # code...
-                   break;
-           }
-       });
 
 
        Mediafile::saving(function ($mediafile)
@@ -95,6 +79,30 @@ class EventServiceProvider extends ServiceProvider
            }
 
            // $storyImage->filename = $storyImage->image_name . '.' . $storyImage->image_extension;
+
+      });
+
+      Story::saving(function ($story)
+      {
+
+          switch ($story->story_type) {
+              case 'external':
+                  $story->is_promoted = ($story->storyImages->where('is_active',1)->count()>0)?1:0;
+                  break;
+               case 'story':
+               case 'article':
+               case 'student':
+               $story->is_promoted = ($story->storyImages->where('is_active',1)->count()<2)?0:1;
+                   break;
+              default:
+                  # code...
+                  break;
+          }
+      });
+      Page::saving(function ($page)
+      {
+          $page->is_ready = ($page->storys()->count() === $page->template_elements )?1:0;
+
 
       });
 

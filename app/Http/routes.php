@@ -260,6 +260,8 @@ Route::group(['middleware' => ['web']], function() {
 
         Route::get('page/app', ['as' => 'admin.page.app', 'uses' => 'Admin\PageController@appLoad']);
 
+        Route::get('page/{page}/edit', ['as' => 'admin_page_edit', 'uses' => 'Admin\PageController@edit']);
+
         Route::get('page/{page}/confirm', ['as' => 'admin.page.confirm', 'uses' => 'Admin\PageController@confirm']);
         Route::post('page/delete', ['as' => 'admin_page_delete', 'uses' => 'Admin\PageController@delete'] );
 

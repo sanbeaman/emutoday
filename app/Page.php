@@ -6,12 +6,15 @@ namespace emutoday;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Laracasts\Presenter\PresentableTrait;
 
 class Page extends Model
 {
+    use PresentableTrait;
+    protected $presenter = 'emutoday\Presenters\PagePresenter';
 
-     protected $fillable = ['template', 'uri', 'start_date', 'end_date', 'user_id'];
-     protected $dates = ['end_date', 'start_date'];
+    protected $fillable = ['template', 'uri', 'start_date', 'end_date', 'user_id'];
+    protected $dates = ['end_date', 'start_date'];
 
     public function storys(){
         return $this->belongsToMany('emutoday\Story')

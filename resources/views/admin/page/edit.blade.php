@@ -13,7 +13,7 @@
     @section('style-plugin')
         @parent
         <link rel="stylesheet" href="/css/my-redips.css" type="text/css" media="screen" />
-
+        <link rel="stylesheet" href="/themes/plugins/flatpickr/flatpickr.min.css" type="text/css" media="screen" />
     @endsection
     @section('style-app')
             @parent
@@ -28,6 +28,7 @@
             @section('scripts-plugin')
                 <!-- Scripts  for code libraries and plugins that need to be loaded in the header -->
                     <script src="/themes/plugins/ckeditor/ckeditor.js"></script>
+                    <script src="/themes/plugins/flatpickr/flatpickr.js"></script>
                 @parent
             @endsection
             @section('scripts-app')
@@ -47,7 +48,19 @@
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Edit Page Info</h3>
-                    @include('admin.layouts.components.boxtools', ['rte' => 'page', 'path' => 'admin/page/', 'cuser'=>$currentUser, 'id'=>$page->id])
+                    <div class="box-tools">
+                        <div class="btn-toolbar btn-group-sm">
+                    @if($page->is_ready === 0)
+                        <button class="btn bg-orange btn-sm" disabled="disabled"><i class="fa fa-eye"></i></button>
+                    @else
+                        <a href="/preview/page/{{$page->id}}" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
+                    @endif
+                    <a href="/admin/page/create" class="btn bg-orange"><i class="fa fa-plus-square"></i></a>
+                    <a href="/admin/page" class="btn bg-orange"><i class="fa fa-list-alt"></i></a>
+                </div><!-- /.btn-toolbar -->
+
+            </div><!-- /.box-tools -->
+                    {{-- @include('admin.layouts.components.boxtools', ['rte' => 'page', 'path' => 'admin/page/', 'cuser'=>$currentUser, 'id'=>$page->id]) --}}
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <div class="row">
@@ -66,32 +79,20 @@
                         <div class="col-md-2">
                             <div class="form-group">
                                 {!! Form::label('start_date') !!}
-                                {!! Form::text('start_date', null, ['class' => 'form-control datetimepicker']) !!}
+                                {!! Form::text('start_date', null, ['class' => 'form-control', 'id'=> 'start-date']) !!}
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                     {!! Form::label('end_date') !!}
-                                    {!! Form::text('end_date', null, ['class' => 'form-control datetimepicker']) !!}
+                                    {!! Form::text('end_date', null, ['class' => 'form-control', 'id'=> 'end-date']) !!}
                             </div>
                         </div>
                         <div class="col-md-1">
                             <div class="form-group">
-                                    {!! Form::label('is_active', 'active') !!}
-                                    <div class="radio">
-
-                                        <label>
-                                            {!! Form::radio('is_active', true ,null) !!}
-                                            yes
-                                        </label>
-                                    </div>
-                                    <div class="radio">
-                                        <label>
-                                    {!! Form::radio('is_active', false ,null) !!}
-                                    no
-                                        </label>
-                                    </div>
-                            </div>
+                                    {!! Form::label('is_ready', 'ready') !!}
+                                    <div class="radio">{!! Form::radio('is_ready', true ,null,['readonle'=>'readonly']) !!}</div>
+                                </div>
 
                             </div>
 
@@ -127,7 +128,13 @@
                 <h3 class="box-title">Page Builder</h3>
                 <div class="box-tools">
                     <div class="btn-toolbar btn-group-sm">
+                        @if($page->is_ready === 0)
+                        <button class="btn bg-orange btn-sm" disabled="disabled"><i class="fa fa-eye"></i></button>
+                        @else
                         <a href="/preview/page/{{$page->id}}" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
+
+                        @endif
+
                     </div><!-- /.btn-toolbar -->
                 </div><!-- /.box-tools -->
             </div>
@@ -159,7 +166,7 @@
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script> --}}
     <!-- iCheck 1.0.1 -->
     <script src="/themes/admin-lte/plugins/iCheck/icheck.min.js"></script>
-    <script src="/themes/plugins/eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    {{-- <script src="/themes/plugins/eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script> --}}
 
 
 @endsection
@@ -202,10 +209,29 @@
           radioClass: 'iradio_flat-green'
         });
 
+        // var check_in = $("#start-date").flatpickr({
+        //             altInput: true,
+        //             altFormat: "m-d-Y",
+        //             minDate: new Date(),
+        //             onChange: function(dateObj, dateStr, instance) {
+        //                 check_out.set("minDate", dateObj.fp_incr(1));
+        //             }
+        //             });
+        // var check_out = $("end-date").flatpickr({
+        //            altInput: true,
+        //               altFormat: "m-d-Y",
+        //                  minDate: new Date(),
+        //                  onChange: function(dateObj, dateStr, instance) {
+        //                      check_in.set("maxDate", dateObj.fp_incr(-1));
+        //                  }
+        //              });
+                    // check_in.config.onChange = dateObj => check_out.set("minDate", dateObj.fp_incr(1));
+//check_out.config.onChange = dateObj => check_in.set("maxDate", dateObj.fp_incr(-1));
+
             //Start Date picker
-            $('#start-date').datetimepicker({
-                format: 'YYYY-MM-DD HH:mm:ss'
-            });
+            // $('#start-date').datetimepicker({
+            //     format: 'YYYY-MM-DD HH:mm:ss'
+            // });
             //
             // CKEDITOR.replaceAll('.ckeditor');
 
@@ -224,5 +250,22 @@
 
 
     });
+    var check_in = document.getElementById("start-date").flatpickr({
+                        altInput: true,
+                        altFormat: "m-d-Y",
+                        minDate: new Date(),
+                        onChange: function(dateObj, dateStr, instance) {
+                            check_out.set("minDate", dateObj.fp_incr(1));
+                        }
+                        });
+    var check_out =document.getElementById("end-date").flatpickr({
+                       altInput: true,
+                          altFormat: "m-d-Y",
+                             minDate: new Date(),
+                             onChange: function(dateObj, dateStr, instance) {
+                                 check_in.set("maxDate", dateObj.fp_incr(-1));
+                             }
+                         });
+
     </script>
 @endsection

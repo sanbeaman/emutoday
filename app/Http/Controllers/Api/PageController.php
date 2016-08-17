@@ -42,6 +42,8 @@ class PageController extends ApiController
             //     'data' => $this->storyTransformer->transformCollection($storys->all())
             // ]);
     }
+
+
     public function saveAs(Request $request, $id)
     {
             $page = Page::findOrFail($id);
@@ -80,13 +82,13 @@ class PageController extends ApiController
 
         // $pgs = \DB::table('pages')->select('id', 'uri','start_date', 'end_date')->get();
         // $strys = \DB::table('storys')->select('id', 'title', 'start_date', 'end_date')->get();
-
-            $page = Page::all();
-            $fractal = new Manager();
-            // $storys = Story::all();
-            $resource = new Fractal\Resource\Collection($page->all(), new FractalPageChartTransformer);
-            // Turn all of that into a Array string
-            return $fractal->createData($resource)->toArray();
+        //$page = Page::has('storys', '>=', 5)->get();
+        $page = Page::all();
+        $fractal = new Manager();
+        // $storys = Story::all();
+        $resource = new Fractal\Resource\Collection($page->all(), new FractalPageChartTransformer);
+        // Turn all of that into a Array string
+        return $fractal->createData($resource)->toArray();
 
     }
 
