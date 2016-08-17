@@ -14,7 +14,7 @@ class FractalPageChartTransformer extends Fractal\TransformerAbstract
     {
         return [
             'id'           =>   $page->id,
-            'uri'   =>  'id: '. $page->id.'-'. $page->uri,
+            'uri'   =>  'id:'. $page->id.'-'. $page->template,
             'start_date'   => $page->start_date->toDateString(),
             'end_date'   => $page->end_date ? $page->end_date->toDateString() : Carbon::now()->addMonths(3)->toDateString()
         ];

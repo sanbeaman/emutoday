@@ -50,7 +50,7 @@
     <div class="col-md-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Not Ready</h3>
+                <h3 class="box-title">Not Ready: <small><em>These Pages are missing critical items and/or assets</em></small></h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
                             <i class="fa fa-minus"></i>
@@ -94,13 +94,18 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="box-footer">
+
+                </div><!-- /.box-footer -->
                 <!-- /.box-body -->
             </div><!-- /.box -->
         </div><!-- /.col-md-6 -->
     <div class="col-md-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Ready</h3>
+                <h3 class="box-title">Ready: <small><em>These Pages have all necessary assets and will go live depending on start and end dates</em></small></h3>
+
+
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
                             <i class="fa fa-minus"></i>
@@ -152,16 +157,49 @@
                     </table>
                 </div>
                 <!-- /.box-body -->
+                <div class="box-footer">
+
+                </div><!-- /.box-footer -->
             </div><!-- /.box -->
     </div><!-- /.col-md-6 -->
 </div><!-- /.row -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title">Legend: </h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <tr></tr>
+                        <tr>
+                        <td class="text-right">Row colors: </td>
+                          <td class="warning text-center"><small>Page with upcoming start date </small></td>
+                          <td class="danger text-center"><small>Current Page Live on site</small></td>
+                          <td class="active text-center"><small>Page is no longer active</small></td>
+                          <td class="text-center"><span class="fa fa-calendar" aria-hidden="true"></span></td>
 
+                        </tr>
+                        <tr></tr>
+                    </table>
+                </div><!-- /.box-body -->
+
+        </div><!-- /.box -->
+    </div><!-- /.col-md-12 -->
+</div><!-- /.row -->
 
 <div class="row">
     <div class="col-md-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Not Ready Past</h3>
+                <h3 class="box-title">Not Ready & Past: <small><em>The Pages are  missing critical assets and start and end dates have passed</em></small></h3>
+
+
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
                             <i class="fa fa-minus"></i>
@@ -212,7 +250,7 @@
     <div class="col-md-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Past </h3>
+                <h3 class="box-title">Past: <small><em>These Pages have already gone live and are no logner active</em></small></h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
                             <i class="fa fa-minus"></i>
