@@ -3,13 +3,7 @@
 @section('title', 'View Pages')
     @section('style-plugin')
         @parent
-            <!-- daterange picker -->
-    <!-- bootstrap datepicker -->
-    <!-- iCheck for checkboxes and radio inputs -->
-    <!-- Bootstrap Color Picker -->
-    <!-- Bootstrap time Picker -->
-    <!-- Select2 -->
-    <!-- bootstrap wysihtml5 - text editor -->
+
     <link rel="stylesheet" href="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.css">
 
             @endsection

@@ -161,13 +161,13 @@ Route::group(['middleware' => ['web']], function() {
     Route::group(['prefix' => 'preview' ], function()
     {
         Route::get('page/{page}/', ['as' => 'preview_hub', 'uses' => 'PreviewController@hub']);
+        Route::get('magazine/{magazine}/', ['as' => 'preview_magazine', 'uses' => 'PreviewController@magazine']);
 
         Route::get('magazine/{stype}/{story}/', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
 
         Route::get('story/{stype}/{story}/', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
         Route::get('{stype}/{story}/', ['as' => 'preview_story', 'uses' => 'PreviewController@story']);
 
-        Route::get('magazine/{magazine}/', ['as' => 'preview_magazine', 'uses' => 'PreviewController@magazine']);
 
     });
 
@@ -185,12 +185,12 @@ Route::group(['middleware' => ['web']], function() {
         Route::resource('users', 'Admin\UsersController');
 
 
-        // Route::get('magazine/article', function() {
-        //     return view('admin.magazine.articles');
-        // });
-            // Route::get('magazine/article/{story}', ['as' => 'admin_magazine_article_preview', 'uses' => 'Admin\StoryController@show']);
+        Route::get('magazine/{magazine}/edit', ['as' => 'admin_magazine_edit', 'uses' => 'Admin\MagazineController@edit']);
+
         Route::get('magazine/article/queue', ['as'=> 'admin_magazine_article_queue', 'uses'=> 'Admin\StoryController@queueArticle']);
         // Route::get('magazine/article/{story}/edit', ['as' => 'admin_magazine_article_edit', 'uses' => 'Admin\StoryController@edit']);
+
+
         Route::get('magazine/{stype}/{story}/edit', ['as' => 'admin_magazine_article_edit', 'uses' => 'Admin\StoryTypeController@storyTypeEdit']);
 
 
