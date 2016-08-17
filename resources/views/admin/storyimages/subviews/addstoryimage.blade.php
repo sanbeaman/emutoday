@@ -3,9 +3,9 @@
     <div class="box-header with-border">
         <form action="addNewStoryImage" method="POST">
                 {{ csrf_field() }}
-                {{$otherImage->id}}
+                {{-- {{$otherImage->id}}
                 {{$otherImage->type}}
-                {{$otherImage->name}}
+                {{$otherImage->name}} --}}
             {!! Form::hidden('story_id', 	$story_id, 	         ['id'=>'story_id']) 	!!}
             {!! Form::hidden('img_id', 		$otherImage->id, 	['id'=>'img_id']) 	!!}
             {!! Form::hidden('img_type', 	$otherImage->type, 	['id'=>'img_type']) !!}

@@ -10,7 +10,7 @@
 <!-- Select2 -->
 <link rel="stylesheet" href="/themes/admin-lte/plugins/select2/select2.min.css">
 
-<link rel="stylesheet" href="/themes/plugins/eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css">
+{{-- <link rel="stylesheet" href="/themes/plugins/eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"> --}}
 
     @endsection
         @section('scripts-vendor')
@@ -165,7 +165,7 @@
 <!-- date-range-picker -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 
-<script src="/themes/plugins/eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+{{-- <script src="/themes/plugins/eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script> --}}
 
 
 <script src="/themes/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
@@ -211,10 +211,10 @@ $(function () {
     });
 
 
-        //Start Date picker
-        $('#start-date').datetimepicker({
-            format: 'YYYY-MM-DD HH:mm:ss'
-        });
+        // //Start Date picker
+        // $('#start-date').datetimepicker({
+        //     format: 'YYYY-MM-DD HH:mm:ss'
+        // });
 
         //End Date picker
         // $('#end-date').datetimepicker({

@@ -61,14 +61,8 @@ class MagazinePresenter extends Presenter
     }
     public function prettyEndDate()
     {
-        $enddate;
-        if($this->end_date){
-            $enddate = $this->end_state->format('m-d-Y');
-        } else {
-            $enddate = $this->start_date->addMonths(4)->format('m-d-Y');
 
-        }
-        return $enddate;
+        return $this->end_date->format('m-d-Y');
     }
    //
    // public function __construct()

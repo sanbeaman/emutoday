@@ -15,6 +15,7 @@
     @section('style-plugin')
         @parent
         <link rel="stylesheet" href="/css/my-redips.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="/themes/plugins/flatpickr/flatpickr.min.css" type="text/css" media="screen" />
 
     @endsection
 
@@ -54,24 +55,32 @@
                     </div>
                     <div class="box-body">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('year') !!}
                                     {!! Form::select('year', $yearList::all(), null, ['class'=> 'form-control select2','id'=>'select-year']) !!}
                                 </div>
                             </div><!-- /.col-md-4 -->
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('season') !!}
                                     {!! Form::select('season', $seasonList::all(), null, ['class'=> 'form-control select2','id'=>'select-season']) !!}
                                 </div>
                             </div><!-- /.col-md-4 -->
-                            <div class="col-md-4">
+                        </div><!-- /.row -->
+                        <div class="row">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('start_date') !!}
                                     {!! Form::text('start_date', null, ['class' => 'form-control', 'id'=>'start-date']) !!}
                                 </div>
-                            </div><!-- /.col-md-4 -->
+                            </div><!-- /.col-md-6 -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {!! Form::label('end_date') !!}
+                                    {!! Form::text('end_date', null, ['class' => 'form-control', 'id'=>'end-date']) !!}
+                                </div>
+                            </div><!-- /.col-md-6 -->
                         </div><!-- /.row -->
                         <div class="row">
                             <div class="col-md-12">
@@ -210,7 +219,9 @@
             {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script> --}}
             <!-- iCheck 1.0.1 -->
             <script src="/themes/admin-lte/plugins/iCheck/icheck.min.js"></script>
-            <script src="/themes/plugins/eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+            <script src="/themes/plugins/flatpickr/flatpickr.js"></script>
+
+            {{-- <script src="/themes/plugins/eonasdan-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script> --}}
 
         @endsection
 
@@ -253,9 +264,9 @@
                 });
 
                     //Start Date picker
-                    $('#start-date').datetimepicker({
-                        format: 'YYYY-MM-DD HH:mm:ss'
-                    });
+                    // $('#start-date').datetimepicker({
+                    //     format: 'YYYY-MM-DD HH:mm:ss'
+                    // });
 
                     CKEDITOR.replaceAll('.ckeditor');
                 // 	CKEDITOR.replace( 'story-content', {
@@ -282,6 +293,23 @@
 
 
               });
+
+              var check_in = document.getElementById("start-date").flatpickr({
+                                  altInput: true,
+                                  altFormat: "m-d-Y",
+                                  minDate: new Date(),
+                                  onChange: function(dateObj, dateStr, instance) {
+                                      check_out.set("minDate", dateObj.fp_incr(1));
+                                  }
+                                  });
+              var check_out =document.getElementById("end-date").flatpickr({
+                                 altInput: true,
+                                    altFormat: "m-d-Y",
+                                       minDate: new Date(),
+                                       onChange: function(dateObj, dateStr, instance) {
+                                           check_in.set("maxDate", dateObj.fp_incr(-1));
+                                       }
+                                   });
                 </script>
 
 

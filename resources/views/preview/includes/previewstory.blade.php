@@ -1,6 +1,6 @@
 <div id="returnPanel">
 @if(isset($form))
-    <p>{{$form}} - {{$sroute}} - {{$stype}}</p>
+    {{-- <p>{{$form}} - {{$sroute}} - {{$stype}}</p> --}}
         @if($form === 'queue')
             @if($sroute === 'article')
                 <a class="warning button" href="/admin/magazine/{{$sroute}}/queue">RETURN</a>

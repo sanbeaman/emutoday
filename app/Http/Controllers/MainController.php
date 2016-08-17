@@ -27,10 +27,10 @@ class MainController extends Controller
 
 
     }
-		public function preview($stype, Story $story)
-		{
-			return 'need to recreate or reroute to correct preview page' . $stype . $story;
-		}
+        public function preview($stype, Story $story)
+        {
+            return 'need to recreate or reroute to correct preview page' . $stype . $story;
+        }
 
     public function index()
     {
@@ -39,7 +39,13 @@ class MainController extends Controller
         //     ['start_date', '<=', $currentDateTime],
         //     ['end_date', '>=', $currentDateTime],
         // ])->first();
-        $page = $this->page->where('is_active', 1)->first();
+        $page = $this->page->where([
+            ['is_ready', 1],
+            ['is_archived', 0],
+            ['start_date', '<=', $currentDateTime],
+            ['end_date', '>=',  $currentDateTime]
+        ])->first();
+
         $currentStorysBasic = $this->story->where('story_type', 'news')->paginate(3);
         $currentAnnouncements = $this->announcement->where('is_approved', 1)->orderBy('priority','desc')->paginate(3);
         $barImgs = collect();
@@ -83,12 +89,12 @@ class MainController extends Controller
         $sideStorysFeatured = $this->story->where([
             ['story_type', 'story'],
             ['id', '<>', $id],
-						['is_approved', 1],
+            ['is_approved', 1],
             ])->orderBy('created_at', 'desc')->take(3)->get();
         $sideStorysStudent = $this->story->where([
             ['story_type', 'student'],
             ['id', '<>', $id],
-						['is_approved', 1],
+            ['is_approved', 1],
         ])->orderBy('created_at', 'desc')->take(3)->get();
 
         JavaScript::put([

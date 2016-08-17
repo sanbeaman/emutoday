@@ -24,6 +24,7 @@ class MagazineController extends Controller
 {
 
   protected $magazines;
+  protected $articleCount = 6;
 
   public function __construct(Magazine $magazine, Story $story,StoryImage $storyImage, Mediafile $mediafile)
   {
@@ -51,8 +52,14 @@ class MagazineController extends Controller
         //      ])->count();
         //
 
-         $magazines_complete = Magazine::has('storys', '>=', 5)->orderBy('start_date', 'desc')->get();
-         $magazines_incomplete = Magazine::has('storys', '<', 5)->orderBy('start_date', 'desc')->get();
+        //  $magazines_complete = Magazine::has('storys', '>=', $this->articleCount)->orderBy('start_date', 'desc')->get();
+        //  $magazines_incomplete = Magazine::has('storys', '<', $this->articleCount)->orderBy('start_date', 'desc')->get();
+
+
+        $magazines_complete = Magazine::where('is_ready',1)->orderBy('start_date', 'desc')->get();
+                  $magazines_incomplete = Magazine::where('is_ready',0)->orderBy('start_date', 'desc')->get();
+
+
         //  dd($magazines_complete,$magazines_incomplete);
         //  $magselect = Magazine::has('storys', '>=', 4)->select('id', 'template','start_date', 'end_date')->get();
 
@@ -66,6 +73,7 @@ class MagazineController extends Controller
          //
         //  ]);
 
+        //  dd($magazines_complete,$magazines_incomplete);
 
          return view('admin.magazine.index',compact('magazines_incomplete','magazines_complete'));
 
@@ -249,17 +257,18 @@ class MagazineController extends Controller
     public function edit($id)
     {
       $magazine = $this->magazine->findOrFail($id);
-            $storys = Story::where('story_type', 'article')->with(['images' => function($query){
-                                                            $query->where('group','=','article');
-                                                        }])->get();
+            $storys = Story::where('story_type', 'article')
+                            ->with(['images' => function($query){
+                                    $query->where('group','=','article');
+                                    }])->get();
 
 
 
             $storyimgs = $this->storyImage->where([
-                                                                            ['group','article'],
-                                                                            ['image_type', 'small'],
-                                                                            ])
-                                                                            ->orderBy('updated_at', 'desc')->get();
+                                                ['group','article'],
+                                                ['image_type', 'small'],
+                                                ])
+                                                ->orderBy('updated_at', 'desc')->get();
       // $storys =  $this->story->where('story_type', 'article')->orderBy('updated_at', 'desc')->get();
             $mediatypes = Mediatype::where('group','magazine')->pluck('type','id');
 
@@ -311,16 +320,39 @@ class MagazineController extends Controller
       $storyIDString =  $request->get('story_ids');
       $storyIDarray = explode(",", $storyIDString);
       $storyIDarrayCount = count($storyIDarray);
-      $storyIDsForPivotArray;
+      $storyIDsForPivotArray =[];
 
        for ($x = 0; $x < $storyIDarrayCount; $x++) {
           $namedKey = $storyIDarray[$x];
+           if($namedKey != 0) {
            $attributeArray = array();
            $attributeArray["story_position"] = intval($x);
            $storyIDsForPivotArray[intval($namedKey)] = $attributeArray;
+            }
 
        }
-      $magazine->storys()->sync($storyIDsForPivotArray);
+       $magazine->is_ready = 1;
+
+       if (empty($storyIDsForPivotArray)) {
+           $magazine->is_ready = 0;
+       } else {
+           if(count($storyIDsForPivotArray) < $this->articleCount){
+               $magazine->is_ready = 0;
+           } else {
+            //    $page->is_ready = 1;
+           }
+           $magazine->storys()->sync($storyIDsForPivotArray);
+
+       }
+
+       $magazineMediaCount = Mediatype::ofGroup('magazine')->where('is_required',1)->count();
+
+
+       if($magazine->mediafiles->count() < $magazineMediaCount){
+           $magazine->is_ready = 0;
+       }
+    //    dd($magazine->mediafiles->count(),$magazine->is_ready,$magazineMediaCount);
+
       $magazine->year = $request->year;
       $magazine->season   = $request->season;
       $magazine->title = $request->title;
@@ -328,6 +360,8 @@ class MagazineController extends Controller
       $magazine->teaser = $request->teaser;
       $magazine->ext_url = $request->ext_url;
       $magazine->start_date = \Carbon\Carbon::parse($request->start_date);
+      $magazine->end_date = \Carbon\Carbon::parse($request->end_date);
+
       $magazine->cover_art = $request->cover_art;
       $magazine->is_published = $request->is_published;
       $magazine->is_archived = $request->is_archived;

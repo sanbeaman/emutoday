@@ -53,6 +53,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if(isset($magazines_incomplete))
                                 @foreach($magazines_incomplete as $magazine)
                                     <tr class="{{ $magazine->present()->magazineScheduleStatus }}">
                                         <td class="text-center">{{ $magazine->id }}</td>
@@ -72,6 +73,7 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </div>
@@ -99,12 +101,16 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if(isset($magazines_complete))
+
                                 @foreach($magazines_complete as $magazine)
                                     <tr class="{{ $magazine->present()->magazineScheduleStatus }}">
+                                    
+
                                         <td class="text-center">{{ $magazine->id }}</td>
                                         <td>{{ $magazine->present()->prettyStartDate }}</td>
                                         <td>{{ $magazine->present()->prettyEndDate }}</td>
-                                            <td>{{ $magazine->present()->magazineLiveIn }}</td>
+                                        <td>{{ $magazine->present()->magazineLiveIn }}</td>
 
                                         <td class="text-center">
                                             <a href="{{ route('preview_magazine', $magazine->id) }}">
@@ -123,6 +129,7 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </div>
