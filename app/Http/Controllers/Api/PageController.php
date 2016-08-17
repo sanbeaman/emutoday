@@ -11,6 +11,7 @@ use emutoday\Emutoday\Transformers\FractalPageTransformer;
 use emutoday\Emutoday\Transformers\FractalPageChartTransformer;
 use League\Fractal\Manager;
 use League\Fractal;
+use Carbon\Carbon;
 
 class PageController extends ApiController
 {
@@ -83,10 +84,12 @@ class PageController extends ApiController
         // $pgs = \DB::table('pages')->select('id', 'uri','start_date', 'end_date')->get();
         // $strys = \DB::table('storys')->select('id', 'title', 'start_date', 'end_date')->get();
         //$page = Page::has('storys', '>=', 5)->get();
-        $page = Page::all();
+        // $page = Page::all();
+        $currentDate = Carbon::now();
+        $page = Page::where('end_date','>=',$currentDate );
         $fractal = new Manager();
         // $storys = Story::all();
-        $resource = new Fractal\Resource\Collection($page->all(), new FractalPageChartTransformer);
+        $resource = new Fractal\Resource\Collection($page->get(), new FractalPageChartTransformer);
         // Turn all of that into a Array string
         return $fractal->createData($resource)->toArray();
 

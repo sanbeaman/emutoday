@@ -10,6 +10,7 @@ use emutoday\StoryImage;
 use Illuminate\Http\Request;
 use JavaScript;
 use emutoday\Http\Requests;
+use Carbon\Carbon;
 
 class PageController extends Controller
 {
@@ -25,10 +26,32 @@ class PageController extends Controller
 
     public function index()
     {
+        $currentDate = Carbon::now();
 
-        $pages_complete = Page::has('storys', '>=', 5)->orderBy('start_date', 'desc')->get();
-        $pages_incomplete = Page::has('storys', '<', 5)->orderBy('start_date', 'desc')->get();
 
+        $pages_notready_current = Page::where([
+            ['is_ready', 0],
+            ['end_date', '>=' ,$currentDate ]
+            ])->orderBy('start_date', 'asc')->get();
+
+        $pages_ready_current = Page::where([
+                ['is_ready', 1],
+                ['end_date', '>=' ,$currentDate ]
+                ])->orderBy('start_date', 'asc')->get();
+
+            $pages_ready_past = Page::where([
+                ['is_ready', 1],
+                ['end_date', '<' ,$currentDate ]
+                ])->orderBy('start_date', 'asc')->get();
+
+            $pages_notready_past = Page::where([
+                ['is_ready', 0],
+                ['end_date', '<' ,$currentDate ]
+                ])->orderBy('start_date', 'asc')->get();
+                //  dd($pages_notready_current, $pages_ready_current);
+
+//         Page::has('storys', '<', 5)->orderBy('start_date', 'asc')->get();
+// $pages_past =
         $pgselect = Page::has('storys', '>=', 5)->select('id', 'template','start_date', 'end_date')->get();
 
         // = \DB::table('pages')->where('storys',5)->select('id', 'template','start_date', 'end_date')->get();
@@ -42,7 +65,7 @@ class PageController extends Controller
         ]);
 
 
-        return view('admin.page.index',compact('pages_incomplete','pages_complete','pgs'));
+        return view('admin.page.index',compact('pages_ready_current','pages_notready_current','pages_ready_past','pages_notready_past', 'pgs'));
 
         // return view('admin.page.index',compact('pages','pgs','strys'));
     }

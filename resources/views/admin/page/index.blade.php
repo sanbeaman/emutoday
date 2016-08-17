@@ -4,16 +4,16 @@
     @section('style-plugin')
         @parent
 
-    <link rel="stylesheet" href="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.css">
+        <link rel="stylesheet" href="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.css">
 
-            @endsection
-            @section('scripthead')
-                        {{-- @include('admin.layouts.scriptshead') --}}
-            {{-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> --}}
-            @show
-            @include('include.js')
+    @endsection
+    @section('scripthead')
+        {{-- @include('admin.layouts.scriptshead') --}}
+        {{-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script> --}}
+    @show
+    @include('include.js')
     @section('content')
-    @include('admin.layouts.modal')
+        @include('admin.layouts.modal')
         <!-- Main content -->
         <div class="row">
             <div class="col-md-12">
@@ -25,8 +25,8 @@
                     <!-- /.box-header -->
                     <div class="box-body">
                         <div id="vue-chart-app">
-                                <page-chart-app gcols="{{$pgs}}">
-                            {{-- <page-chart-app gcols="{{json_encode($pgs)}}"> --}}
+                            <page-chart-app gcols="{{$pgs}}">
+                                {{-- <page-chart-app gcols="{{json_encode($pgs)}}"> --}}
                             </page-chart-app>
                         </div>
                     </div><!-- /.box-body -->
@@ -37,48 +37,46 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Hub</h3>
-                                @include('admin.layouts.components.boxtools', ['rte' => 'page', 'path' => 'admin/page'])
-                            </div>
-                            {{-- <div class="box-body">
-
-                            </div><!-- /.box-body --> --}}
-
-                        </div><!-- /.col-md-12 -->
-                    </div><!-- /.row -->
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Hub</h3>
+                        @include('admin.layouts.components.boxtools', ['rte' => 'page', 'path' => 'admin/page'])
+                    </div>
+                </div><!-- /.box -->
+            </div><!-- /.col-md-12 -->
+        </div><!-- /.row -->
 
 
-                    <div class="row">
-
-                            <div class="col-md-6">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">Incomplete</h3>
-                                </div>
-                                <div class="box-body no-padding">
-                                    <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">id</th>
-
-                                    <th class="text-left">Start Date</th>
-                                    <th class="text-left">End Date</th>
-                                    <th class="text-left">Live In</th>
-
-                                    <th class="text-center"><span class="fa fa-pencil" aria-hidden="true"></span></th>
-                                    <th class="text-center"><span class="fa fa-trash" aria-hidden="true"></span></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($pages_incomplete as $page)
+<div class="row">
+    <div class="col-md-6">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Not Ready</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">id</th>
+                                <th class="text-left">Start Date</th>
+                                <th class="text-left">End Date</th>
+                                <th class="text-center"><span class="fa fa-calendar" aria-hidden="true"></span></th>
+                                <th class="text-center"><span class="fa fa-pencil" aria-hidden="true"></span></th>
+                                <th class="text-center"><span class="fa fa-trash" aria-hidden="true"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($pages_notready_current))
+                                @foreach($pages_notready_current as $page)
                                     <tr class="{{ $page->present()->pageScheduleStatus }}">
                                         <td class="text-center">{{ $page->id }}</td>
                                         <td>{{ $page->present()->prettyStartDate }}</td>
                                         <td>{{ $page->present()->prettyEndDate }}</td>
-                                        <td>{{ $page->present()->pageLiveIn }}</td>
-
+                                        <td class="text-center"><small>{{ $page->present()->pageLiveIn }}</small></td>
                                         <td class="text-center">
                                             <a href="{{ route('admin.page.edit', $page->id) }}">
                                                 <span class="fa fa-pencil" aria-hidden="true"></span>
@@ -86,48 +84,54 @@
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('admin_page_delete', $page->id) }}">
-                                            <span class="fa fa-trash" aria-hidden="true"></span>
+                                                <span class="fa fa-trash" aria-hidden="true"></span>
                                             </a>
                                         </td>
                                     </tr>
                                 @endforeach
-                            </tbody>
-                        </table>
+                            @endif
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col-md-6 -->
+    <div class="col-md-6">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Ready</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
                     </div>
-                    <!-- /.box-body -->
-                        </div><!-- /.col-md-6 -->
-                        <div class="col-md-6">
-                            <div class="box-header with-border">
-                                <h3 class="box-title">Complete</h3>
-                            </div>
-                            <div class="box-body no-padding">
-                            <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="text-center">id</th>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">id</th>
+                                <th class="text-left">Start Date</th>
+                                <th class="text-left">End Date</th>
+                                <th class="text-center"><span class="fa fa-calendar" aria-hidden="true"></span></th>
+                                <th class="text-center"><span class="fa fa-eye" aria-hidden="true"></span></th>
+                                <th class="text-center"><span class="fa fa-pencil" aria-hidden="true"></span></th>
+                                <th class="text-center"><span class="fa fa-trash" aria-hidden="true"></span></th>
 
-                                    <th class="text-left">Start Date</th>
-                                    <th class="text-left">End Date</th>
-                                    <th class="text-left">Live In</th>
-
-
-                                    <th class="text-center"><span class="fa fa-eye" aria-hidden="true"></span></th>
-                                    <th class="text-center"><span class="fa fa-pencil" aria-hidden="true"></span></th>
-                                    <th class="text-center"><span class="fa fa-trash" aria-hidden="true"></span></th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($pages_complete as $page)
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($pages_ready_current))
+                                @foreach($pages_ready_current as $page)
                                     <tr class="{{ $page->present()->pageScheduleStatus }}">
                                         <td class="text-center">{{ $page->id }}</td>
                                         <td>{{ $page->present()->prettyStartDate }}</td>
                                         <td>{{ $page->present()->prettyEndDate }}</td>
-                                            <td>{{ $page->present()->pageLiveIn }}</td>
-
+                                        <td class="text-center"><small>{{ $page->present()->pageLiveIn }}</small></td>
                                         <td class="text-center">
                                             <a href="{{ route('preview_hub', $page->id) }}">
-                                            <span class="fa fa-eye" aria-hidden="true"></span>
+                                                <span class="fa fa-eye" aria-hidden="true"></span>
                                             </a>
                                         </td>
                                         <td class="text-center">
@@ -137,148 +141,265 @@
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('admin_page_delete', $page->id) }}">
-                                            <span class="fa fa-trash" aria-hidden="true"></span>
+                                                <span class="fa fa-trash" aria-hidden="true"></span>
                                             </a>
                                         </td>
                                     </tr>
                                 @endforeach
-                            </tbody>
-                        </table>
+                            @endif
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div><!-- /.box -->
+    </div><!-- /.col-md-6 -->
+</div><!-- /.row -->
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Not Ready Past</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
                     </div>
-                    <!-- /.box-body -->
-                </div><!-- /.col-md-6 -->
-                </div><!-- /.row -->
-                    <div class="row">
-                        <div class="col-md-12">
-                        <div class="box-footer">
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">id</th>
+                                <th class="text-left">Start Date</th>
+                                <th class="text-left">End Date</th>
+                                <th class="text-center"><span class="fa fa-calendar-times-o" aria-hidden="true"></span></th>
+                                <th class="text-center"><span class="fa fa-pencil" aria-hidden="true"></span></th>
+                                <th class="text-center"><span class="fa fa-trash" aria-hidden="true"></span></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($pages_notready_past))
+                                @foreach($pages_notready_past as $page)
+                                    <tr class="{{ $page->present()->pageScheduleStatus }}">
+                                        <td class="text-center">{{ $page->id }}</td>
+                                        <td>{{ $page->present()->prettyStartDate }}</td>
+                                        <td>{{ $page->present()->prettyEndDate }}</td>
+                                        <td class="text-center"><small>{{ $page->present()->pageLiveIn }}</small></td>
 
-                        </div><!-- /.box-footer -->
+                                        <td class="text-center">
+                                            <a href="{{ route('admin.page.edit', $page->id) }}">
+                                                <span class="fa fa-pencil" aria-hidden="true"></span>
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('admin_page_delete', $page->id) }}">
+                                                <span class="fa fa-trash" aria-hidden="true"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
 
-                        </div><!-- /.col-md-12 -->
-                    </div><!-- /.row -->
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col-md-6 -->
+    <div class="col-md-6">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Past </h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body no-padding">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">id</th>
+                                <th class="text-left">Start Date</th>
+                                <th class="text-left">End Date</th>
+                                <th class="text-center"><span class="fa fa-calendar-times-o" aria-hidden="true"></span></th>
+                                <th class="text-center"><span class="fa fa-eye" aria-hidden="true"></span></th>
+                                <th class="text-center"><span class="fa fa-pencil" aria-hidden="true"></span></th>
+                                <th class="text-center"><span class="fa fa-trash" aria-hidden="true"></span></th>
 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($pages_ready_past))
+                                @foreach($pages_ready_past as $page)
+                                    <tr class="{{ $page->present()->pageScheduleStatus }}">
+                                        <td class="text-center">{{ $page->id }}</td>
+                                        <td>{{ $page->present()->prettyStartDate }}</td>
+                                        <td>{{ $page->present()->prettyEndDate }}</td>
+                                        <td class="text-center"><small>{{ $page->present()->pageLiveIn }}</small></td>
+                                        <td class="text-center">
+                                            <a href="{{ route('preview_hub', $page->id) }}">
+                                                <span class="fa fa-eye" aria-hidden="true"></span>
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('admin.page.edit', $page->id) }}">
+                                                <span class="fa fa-pencil" aria-hidden="true"></span>
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('admin_page_delete', $page->id) }}">
+                                                <span class="fa fa-trash" aria-hidden="true"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endif
 
-
-            </div>
-            <!-- /.box -->
-</div><!-- /.col-md-6 -->
-    </div><!-- /.row -->
-@endsection
-
-
-@section('footer-plugin')
-    @parent
-    <script src="/js/vue-chart-app.js"></script>
-
-    {{-- <script src="/themes/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
-
-<script src="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.min.js"></script> --}}
-<!-- SlimScroll -->
-<script src="/themes/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
-<script src="/themes/admin-lte/plugins/fastclick/fastclick.js"></script>
-@endsection
-
-@section('footer-script')
-    @parent
-    <script>
-
-
-    // google.charts.load('current', {'packages':['timeline']});
-    //  google.charts.setOnLoadCallback(drawChart);
-    //  function drawChart() {
-    //    var container = document.getElementById('timeline');
-    //    var chart = new google.visualization.Timeline(container);
-    //    var gdataTable = new google.visualization.DataTable();
-    //
-    //    dataTable.addColumn({ type: 'string', id: 'President' });
-    //    dataTable.addColumn({ type: 'date', id: 'Start' });
-    //    dataTable.addColumn({ type: 'date', id: 'End' });
-    //    dataTable.addRows([
-    //        JSvars.pagearray
-    //     //  [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ],
-    //     //  [ 'Adams',      new Date(1797, 2, 4),  new Date(1801, 2, 4) ],
-    //     //  [ 'Jefferson',  new Date(1801, 2, 4),  new Date(1809, 2, 4) ]
-    //  ]);
-    //
-    //    chart.draw(gdataTable);
-    //  }
-    $(function () {
-
-        // var table = $('#main-page-table').DataTable({
-        //     "ajax": "/api/page",
-        //     "columns": [
-        //         {"data": "id"},
-        //         {"data": "template"},
-        //
-        //         {"data": "start_date"},
-        //         {"data": "end_date"},
-        //         {"data": "ready"},
-        //         {"data": "live"},
-        //
-        //         {"date": null,
-        //             "defaultContent": "<a href='#'><i class='fa fa-eye'></i></a>"
-        //         },
-        //         {"date": null,
-        //             "defaultContent": "<a href='#'><i class='fa fa-pencil'></i></a>"
-        //         },
-        //         {"date": null,
-        //             "defaultContent": "<a href='#'><i class='fa fa-trash'></i></a>"
-        //         }
-        //     ]
-        // });
-        //
-        // function openroute(rte,id){
-        // 	window.location.href =
-        // }
-        //
-        // $('#main-page-table tbody').on('click', '.fa-eye', function () {
-        //     var data = table.row( $(this).parents('tr') ).data();
-        //     window.location.href = '/preview/page/'+ data["id"];
-        // });
-        // $('#main-page-table tbody').on('click', '.fa-pencil', function () {
-        //
-        //     var data = table.row( $(this).parents('tr') ).data();
-        //
-        //     window.location.href = '/admin/page/'+ data["id"] + '/edit';
-        //
-        // });
-        // $('#main-page-table tbody').on('click', '.fa-trash', function () {
-        //
-        //     var data = table.row( $(this).parents('tr') ).data();
-        //     var dataid = data["id"];
-        //     var recordid = 'Record ID: '+ dataid;
-        //     var datatitle = data["title"];
-        //     var modal = $('#modal-confirm-delete').modal('show');
-        //     modal.find('#modal-confirm-title').html('Delete Page');
-        //     modal.find('#record-info').html(datatitle);
-        //     modal.find('#record-id').html(recordid);
-        //     modal.find('#hidden-id').val(dataid);
-        //
-        //     document.getElementById("btn-confirm-delete").addEventListener("click", function(){
-        //         form = document.getElementById('admin_destroy');
-        //         form.id = 'page_id';
-        //         form.action = '/admin/page/delete';
-        //         form._method = 'POST';
-        //         form.submit();
-        //     });
-        //
-        // })
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div><!-- /.box -->
+    </div><!-- /.col-md-6 -->
+</div><!-- /.row -->
 
 
-        // $('#main-magazine-table tbody').on('click', '.fa-trash', function () {
-        //
-        // 	var data = table.row( $(this).parents('tr') ).data();
-        // //	var storyid = data["id"];
-        // 	window.location.href = '/admin/magazine/'+ data["id"] + '/confirm';
-        //
-        // 	//openroute('edit',data["id"]);
-        // 	// var data = table.row( $(this).parents('tr') ).data();
-        // 	// 	alert( data["id"]);
-        // })
 
 
-    });
-</script>
 
-@endsection
+
+
+
+
+
+
+
+
+
+
+
+
+                @endsection
+
+
+                @section('footer-plugin')
+                    @parent
+                    <script src="/js/vue-chart-app.js"></script>
+
+                    {{-- <script src="/themes/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
+
+                    <script src="/themes/admin-lte/plugins/datatables/dataTables.bootstrap.min.js"></script> --}}
+                    <!-- SlimScroll -->
+                    <script src="/themes/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+                    <!-- FastClick -->
+                    <script src="/themes/admin-lte/plugins/fastclick/fastclick.js"></script>
+                @endsection
+
+                @section('footer-script')
+                    @parent
+                    <script>
+
+
+                    // google.charts.load('current', {'packages':['timeline']});
+                    //  google.charts.setOnLoadCallback(drawChart);
+                    //  function drawChart() {
+                    //    var container = document.getElementById('timeline');
+                    //    var chart = new google.visualization.Timeline(container);
+                    //    var gdataTable = new google.visualization.DataTable();
+                    //
+                    //    dataTable.addColumn({ type: 'string', id: 'President' });
+                    //    dataTable.addColumn({ type: 'date', id: 'Start' });
+                    //    dataTable.addColumn({ type: 'date', id: 'End' });
+                    //    dataTable.addRows([
+                    //        JSvars.pagearray
+                    //     //  [ 'Washington', new Date(1789, 3, 30), new Date(1797, 2, 4) ],
+                    //     //  [ 'Adams',      new Date(1797, 2, 4),  new Date(1801, 2, 4) ],
+                    //     //  [ 'Jefferson',  new Date(1801, 2, 4),  new Date(1809, 2, 4) ]
+                    //  ]);
+                    //
+                    //    chart.draw(gdataTable);
+                    //  }
+                    $(function () {
+
+                        // var table = $('#main-page-table').DataTable({
+                        //     "ajax": "/api/page",
+                        //     "columns": [
+                        //         {"data": "id"},
+                        //         {"data": "template"},
+                        //
+                        //         {"data": "start_date"},
+                        //         {"data": "end_date"},
+                        //         {"data": "ready"},
+                        //         {"data": "live"},
+                        //
+                        //         {"date": null,
+                        //             "defaultContent": "<a href='#'><i class='fa fa-eye'></i></a>"
+                        //         },
+                        //         {"date": null,
+                        //             "defaultContent": "<a href='#'><i class='fa fa-pencil'></i></a>"
+                        //         },
+                        //         {"date": null,
+                        //             "defaultContent": "<a href='#'><i class='fa fa-trash'></i></a>"
+                        //         }
+                        //     ]
+                        // });
+                        //
+                        // function openroute(rte,id){
+                        // 	window.location.href =
+                        // }
+                        //
+                        // $('#main-page-table tbody').on('click', '.fa-eye', function () {
+                        //     var data = table.row( $(this).parents('tr') ).data();
+                        //     window.location.href = '/preview/page/'+ data["id"];
+                        // });
+                        // $('#main-page-table tbody').on('click', '.fa-pencil', function () {
+                        //
+                        //     var data = table.row( $(this).parents('tr') ).data();
+                        //
+                        //     window.location.href = '/admin/page/'+ data["id"] + '/edit';
+                        //
+                        // });
+                        // $('#main-page-table tbody').on('click', '.fa-trash', function () {
+                        //
+                        //     var data = table.row( $(this).parents('tr') ).data();
+                        //     var dataid = data["id"];
+                        //     var recordid = 'Record ID: '+ dataid;
+                        //     var datatitle = data["title"];
+                        //     var modal = $('#modal-confirm-delete').modal('show');
+                        //     modal.find('#modal-confirm-title').html('Delete Page');
+                        //     modal.find('#record-info').html(datatitle);
+                        //     modal.find('#record-id').html(recordid);
+                        //     modal.find('#hidden-id').val(dataid);
+                        //
+                        //     document.getElementById("btn-confirm-delete").addEventListener("click", function(){
+                        //         form = document.getElementById('admin_destroy');
+                        //         form.id = 'page_id';
+                        //         form.action = '/admin/page/delete';
+                        //         form._method = 'POST';
+                        //         form.submit();
+                        //     });
+                        //
+                        // })
+
+
+                        // $('#main-magazine-table tbody').on('click', '.fa-trash', function () {
+                        //
+                        // 	var data = table.row( $(this).parents('tr') ).data();
+                        // //	var storyid = data["id"];
+                        // 	window.location.href = '/admin/magazine/'+ data["id"] + '/confirm';
+                        //
+                        // 	//openroute('edit',data["id"]);
+                        // 	// var data = table.row( $(this).parents('tr') ).data();
+                        // 	// 	alert( data["id"]);
+                        // })
+
+
+                    });
+                    </script>
+
+                @endsection
