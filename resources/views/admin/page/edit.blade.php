@@ -91,7 +91,7 @@
                         <div class="col-md-1">
                             <div class="form-group">
                                     {!! Form::label('is_ready', 'ready') !!}
-                                    <div class="radio">{!! Form::radio('is_ready', true ,null,['readonle'=>'readonly']) !!}</div>
+                                    <div class="radio">{!! Form::radio('is_ready', true ,null,['readonly'=>'readonly']) !!}</div>
                                 </div>
 
                             </div>
