@@ -5,15 +5,18 @@
     }
 
     label {
+        margin-top: 3px;
+        margin-bottom: 3px;
         display: block;
         /*margin-bottom: 1.5em;*/
     }
 
     label > span {
         display: inline-block;
-        width: 8em;
+        /*width: 8em;*/
         vertical-align: top;
     }
+
 
     .valid-titleField {
         background-color: #fefefe;
@@ -81,7 +84,25 @@
     input[type="text"] {
         margin: 0;
     }
-
+    h5.form-control {
+        margin: 0;
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #222222;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    }
+    /*h5.ext-example {
+        border: 1px solid #ccc;
+    }*/
 
     /*
     input[type='email'],
@@ -202,26 +223,39 @@
             <!-- /.small-12 columns -->
         </div>
         <!-- /.row -->
-        <div class="row">
-            <div :class="md6col">
-                <div v-bind:class="formGroup">
-                    <label>External Link Text</label>
-                    <p class="help-text" id="title-helptext">Please enter a descriptive text for your external link</p>
-                    <input v-model="record.link_txt" class="form-control" v-bind:class="[formErrors.link_txt ? 'invalid-input' : '']" name="link_txt" type="text">
-                    <p v-if="formErrors.link_txt" class="help-text invalid"> Please include a descriptive text for your external link.</p>
-                </div>
-            </div><!-- /.col-md-4 -->
-        </div>
+
         <div class="row">
             <div :class="md12col">
                 <div v-bind:class="formGroup">
                     <label>External Link</label>
-                    <p class="help-text" id="title-helptext">Please enter the url for your external web page.</p>
-                    <input v-model="record.link" class="form-control" v-bind:class="[formErrors.link ? 'invalid-input' : '']" name="link" type="text">
+                    <p class="help-text" id="title-helptext">Please enter the url for your external web page. (www.yourlink.com)</p>
+                    <div class="input-group">
+                        <span :class="inputGroupLabel">http://</span>
+                        <input v-model="record.link" class="form-control" v-bind:class="[formErrors.link ? 'invalid-input' : '']" name="link" type="text">
+                    </div>
                     <p v-if="formErrors.link" class="help-text invalid">Please make sure url is properly formed.</p>
                 </div>
             </div><!-- /.col-md-4 -->
         </div><!-- /.row -->
+        <div class="row">
+            <div :class="md4col">
+                <div v-bind:class="formGroup">
+                    <label>External Link Text</label>
+                    <p class="help-text" id="title-helptext">Please enter link text</p>
+                    <input v-model="record.link_txt" class="form-control" v-bind:class="[formErrors.link_txt ? 'invalid-input' : '']" name="link_txt" type="text">
+                    <p v-if="formErrors.link_txt" class="help-text invalid"> Please include a descriptive text for your external link.</p>
+                </div>
+            </div><!-- /.col-md-4 -->
+            <div :class="md8col">
+                <template v-if="record.link_txt">
+                <div v-bind:class="formGroup">
+                    <label>Example of External Link</label>
+                    <p class="help-text">Below is how it may look. </p>
+                    <h5 class="form-control">For more information click: <a href="#"> {{record.link_txt}}</a>.</h5>
+                </div>
+                </template>
+            </div><!-- /.md6col -->
+        </div>
         <div class="row">
             <div v-bind:class="md6col">
                 <div v-bind:class="formGroup">
@@ -392,6 +426,9 @@ module.exports = {
         },
         iconStar: function() {
             return (this.framework == 'foundation' ? 'fi-star ' : 'fa fa-star')
+        },
+        inputGroupLabel:function(){
+                return (this.framework=='foundation')?'input-group-label':'input-group-addon'
         },
         readyForEndDate: function() {
             console.log('record' + this.record.start_date)

@@ -3,7 +3,7 @@
 namespace emutoday\Presenters;
 
 use Lewis\Presenter\AbstractPresenter;
-use League\CommonMark\CommonMarkConverter;
+// use League\CommonMark\CommonMarkConverter;
 
 
 class PostPresenter extends AbstractPresenter
@@ -13,20 +13,20 @@ class PostPresenter extends AbstractPresenter
     public function __construct($object)
     {
         //$this->markdown = $markdown;
-        $this->markdown = new CommonMarkConverter();
+        // $this->markdown = new CommonMarkConverter();
 
         parent::__construct($object);
     }
 
-    public function excerptHtml()
-    {
-        return $this->excerpt ? $this->markdown->convertToHtml($this->excerpt) : null;
-    }
-
-    public function bodyHtml()
-    {
-        return $this->body ? $this->markdown->convertToHtml($this->body) : null;
-    }
+    // public function excerptHtml()
+    // {
+    //     return $this->excerpt ? $this->markdown->convertToHtml($this->excerpt) : null;
+    // }
+    //
+    // public function bodyHtml()
+    // {
+    //     return $this->body ? $this->markdown->convertToHtml($this->body) : null;
+    // }
 
     public function publishedDate()
     {

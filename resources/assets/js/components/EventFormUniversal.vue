@@ -127,18 +127,18 @@
             <div class="row">
                 <div :class="md6col">
                     <div class="form-group">
-                        <label>Contact Person <span :class="iconStar" class="reqstar"></span>
+                        <label>Contact Person: <span :class="iconStar" class="reqstar"></span><em>(Jane Doe)</em></label>
                             <input v-model="newevent.contact_person" class="form-control" :class="[formErrors.contact_person ? 'invalid-input' : '']" name="contact-person" type="text">
                             <p v-if="formErrors.contact_person" class="help-text invalid">Need a Contact Person!</p>
-                        </label>
+
                     </div>
                 </div><!-- /.md6col -->
                 <div :class="md6col">
                     <div class="form-group">
-                        <label>Contact Email: <span :class="iconStar" class="reqstar"></span><em>(ex.janedoe@emich.edu)</em>
+                        <label>Contact Email: <span :class="iconStar" class="reqstar"></span><em>(ex.janedoe@emich.edu)</em></label>
                             <input v-model="newevent.contact_email" class="form-control" :class="[formErrors.contact_email ? 'invalid-input' : '']" name="contact-email" type="text">
                             <p v-if="formErrors.contact_email" class="help-text invalid">Need a Contact Email!</p>
-                        </label>
+
                     </div>
                 </div><!-- /.md6col -->
             </div><!-- /.row -->
@@ -209,14 +209,14 @@
                             <label>Event Cost <span :class="iconStar" class="reqstar"></span></label>
                             <div v-show="hasCost" class="form-group">
                                 <div class="input-group">
-                                    <span class="input-group-label">$</span>
+                                    <span :class="inputGroupLabel">$</span>
                                     <input v-model="newevent.cost" class="form-control" :class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="number">
                                 </div><!-- /. input-group -->
                             </div>
                             <div v-else :class="formGroup">
                                 <div class="input-group">
-                                    <span class="input-group-label">$</span>
-                                    <input v-model="newevent.cost" :class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="number" readonly="readonly">
+                                    <span :class="inputGroupLabel">$</span>
+                                    <input v-model="newevent.cost" class="form-control" :class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="number" readonly="readonly">
                                 </div><!-- /. input-group -->
                             </div>
                         </div><!-- /.md8col -->
@@ -229,9 +229,9 @@
                 <div :class="md12col">
                     <div :class="formGroup">
                         <label>Tickets Available
-                            <select v-model="newevent.tickets">
+                            <select v-model="newevent.tickets" class="form-control">
                                 <option v-for="ticketoption in ticketoptions" :value="ticketoption.value">
-                                    {{ ticketoption.text }}
+                                    {{ ticketoption.label }}
                                 </option>
                             </select>
                         </label>
@@ -262,14 +262,17 @@
                 <div :class="md12col">
                     <div :class="formGroup">
                         <label>Participants</label>
-                            <v-select :value="newevent.participants"
+                        <select v-model="newevent.participants" class="form-control">
+                            <option v-for="participant in participants" :value="participant.value">
+                                {{ participant.label }}
+                         </option>
+                </select>
+                            <!-- <v-select :value="newevent.participants"
                                         :options="participants"
                                         :searchable="false"
                             >
-                                <!-- <option v-for="participant in participants" v-bind:value="participant.value">
-                                    {{ participant.text }}
-                                </option> -->
-                            </v-select>
+
+                            </v-select> -->
 
                     </div>
                 </div><!--/.md12col -->
@@ -343,6 +346,8 @@
             margin:0;
         }
         label {
+            margin-top: 3px;
+            margin-bottom: 3px;
             display: block;
             /*margin-bottom: 1.5em;*/
         }
@@ -443,11 +448,11 @@
                     stime: '',
                     rdate: '',
                     ticketoptions: [
-                        { text: 'Online', value: 'online'},
-                        { text: 'Phone', value: 'phone'},
-                        { text: 'Ticket Office', value: 'office'},
-                        { text: 'Online, Phone and Ticket Office', value: 'all'},
-                        { text: 'Other', value: 'other'},
+                        { label: 'Online', value: 'online'},
+                        { label: 'Phone', value: 'phone'},
+                        { label: 'Ticket Office', value: 'office'},
+                        { label: 'Online, Phone and Ticket Office', value: 'all'},
+                        { label: 'Other', value: 'other'},
                     ],
                     participants: [
                         { label: 'Campus Only', value: 'campus'},
@@ -594,9 +599,13 @@
                 formGroup: function() {
                     return (this.framework == 'foundation')? 'form-group':'form-group'
                 },
+                inputGroupLabel:function(){
+                        return (this.framework=='foundation')?'input-group-label':'input-group-addon'
+                },
                 iconStar: function() {
                     return (this.framework == 'foundation')? 'fi-star':'fa fa-star'
                 },
+
                 computedLocation: function() {
                     if (this.zbuildings) {
                         this.newevent.building  = (this.zbuildings.length > 0)?this.zbuildings[0]:'';
