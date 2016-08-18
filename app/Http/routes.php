@@ -6,6 +6,7 @@ The ORDER of ROUTES is critical
 use emutoday\Building;
 use emutoday\Event;
 use emutoday\Category;
+use emutoday\MiniCalendar;
 use Illuminate\Support\Facades\Input;
 
 Route::group(['prefix' => 'api'], function() {
@@ -23,6 +24,12 @@ Route::group(['prefix' => 'api'], function() {
     Route::get('zcats', function() {
         $text = Input::get('q');
         return Category::likeSearch('category', $text)->get();
+        //return Building::ofMapType('illustrated')->get();
+    });
+
+    Route::get('minicals', function() {
+        $text = Input::get('q');
+        return MiniCalendar::likeSearch('calendar', $text)->select('calendar','id')->get();
         //return Building::ofMapType('illustrated')->get();
     });
 

@@ -56,7 +56,7 @@
     }*/
 
     .reqstar {
-        font-size: .5rem;
+        font-size: .6rem;
         color: #E33100;
         vertical-align: text-top;
     }
@@ -185,16 +185,16 @@
 
             <div v-bind:class="md12col">
                 <div v-bind:class="formGroup">
-                    <label>Title <i class="fi-star reqstar"></i></label>
+                    <label>Title <span v-bind:class="iconStar" class="reqstar"></span></label>
                     <p class="help-text" id="title-helptext">Please enter a title ({{titleChars}} characters left)</p>
-                    <input v-model="record.title" v-bind:class="[formErrors.title ? 'invalid-input' : '']" name="title" type="text">
+                    <input v-model="record.title" class="form-control" v-bind:class="[formErrors.title ? 'invalid-input' : '']" name="title" type="text">
                     <p v-if="formErrors.title" class="help-text invalid"> Please Include a Title!</p>
                 </div>
                 <div v-bind:class="formGroup">
-                    <label>Announcement <i class="fi-star reqstar"></i>
+                    <label>Announcement <span v-bind:class="iconStar" class="reqstar"></span></i>
                         <p class="help-text" id="announcement-helptext">({{descriptionChars}} characters left)</p>
 
-                        <textarea v-model="record.announcement" v-bind:class="[formErrors.announcement ? 'invalid-input' : '']" name="announcement" type="textarea" rows="8"></textarea>
+                        <textarea v-model="record.announcement" class="form-control" v-bind:class="[formErrors.announcement ? 'invalid-input' : '']" name="announcement" type="textarea" rows="8"></textarea>
                     </label>
                     <p v-if="formErrors.announcement" class="help-text invalid">Need a Description!</p>
                 </div>
@@ -203,10 +203,30 @@
         </div>
         <!-- /.row -->
         <div class="row">
+            <div :class="md6col">
+                <div v-bind:class="formGroup">
+                    <label>External Link Text</label>
+                    <p class="help-text" id="title-helptext">Please enter a descriptive text for your external link</p>
+                    <input v-model="record.link_txt" class="form-control" v-bind:class="[formErrors.link_txt ? 'invalid-input' : '']" name="link_txt" type="text">
+                    <p v-if="formErrors.link_txt" class="help-text invalid"> Please include a descriptive text for your external link.</p>
+                </div>
+            </div><!-- /.col-md-4 -->
+        </div>
+        <div class="row">
+            <div :class="md12col">
+                <div v-bind:class="formGroup">
+                    <label>External Link</label>
+                    <p class="help-text" id="title-helptext">Please enter the url for your external web page.</p>
+                    <input v-model="record.link" class="form-control" v-bind:class="[formErrors.link ? 'invalid-input' : '']" name="link" type="text">
+                    <p v-if="formErrors.link" class="help-text invalid">Please make sure url is properly formed.</p>
+                </div>
+            </div><!-- /.col-md-4 -->
+        </div><!-- /.row -->
+        <div class="row">
             <div v-bind:class="md6col">
                 <div v-bind:class="formGroup">
-                    <label for="start-date">Start Date: <i class="fi-star reqstar"></i></label>
-                    <input id="start-date" class="formControl" v-bind:class="[formErrors.start_date ? 'invalid-input' : '']" type="text" v-model="record.start_date" />
+                    <label for="start-date">Start Date: <span v-bind:class="iconStar" class="reqstar"></span></label>
+                    <input id="start-date" :class="formControl" v-bind:class="[formErrors.start_date ? 'invalid-input' : '']" type="text" v-model="record.start_date" />
                     <p v-if="formErrors.start_date" class="help-text invalid">Need a Start Date</p>
                 </div>
                 <!--form-group -->
@@ -215,7 +235,7 @@
             <div v-bind:class="md6col">
                 <div v-bind:class="formGroup">
                     <!-- <input id="my-end-date" v-dtpicker ddate="currentDate" /> -->
-                    <label for="end-date">End Date: <i class="fi-star reqstar"></i></label>
+                    <label for="end-date">End Date: <span v-bind:class="iconStar" class="reqstar"></span></label>
                     <input id="end-date" v-bind:class="[formErrors.end_date ? 'invalid-input' : '']" type="text" v-model="record.end_date" :disabled="readyForEndDate" />
                     <!-- <template v-if="hasStartDate">
                         <input id="end-date" v-bind:class="[formErrors.end_date ? 'invalid-input' : '']" type="text" v-model="record.end_date"   />
@@ -355,6 +375,12 @@ module.exports = {
         md12col: function() {
             return (this.framework == 'foundation' ? 'medium-12 columns' : 'col-md-12')
         },
+        md8col: function() {
+            return (this.framework == 'foundation' ? 'medium-8 columns' : 'col-md-8')
+        },
+        md4col: function() {
+            return (this.framework == 'foundation' ? 'medium-4 columns' : 'col-md-4')
+        },
         btnPrimary: function() {
             return (this.framework == 'foundation' ? 'button button-primary' : 'btn btn-primary')
         },
@@ -363,6 +389,9 @@ module.exports = {
         },
         formControl: function() {
             return (this.framework == 'foundation' ? '' : 'form-control')
+        },
+        iconStar: function() {
+            return (this.framework == 'foundation' ? 'fi-star ' : 'fa fa-star')
         },
         readyForEndDate: function() {
             console.log('record' + this.record.start_date)

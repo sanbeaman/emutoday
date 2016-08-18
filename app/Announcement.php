@@ -9,7 +9,7 @@ class Announcement extends Model
 {
   use PresentableTrait;
   protected $presenter = 'emutoday\Presenters\AnnouncementPresenter';
-  protected $fillable = ['user_id', 'title', 'announcement', 'start_date', 'end_date', 'is_promoted', 'is_approved'];
+  protected $fillable = ['user_id', 'title', 'announcement', 'start_date', 'end_date','link_txt', 'link', 'is_promoted', 'is_approved'];
   protected $dates = ['end_date', 'start_date', 'submission_date', 'approved_date'];
 
 

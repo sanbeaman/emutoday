@@ -20,4 +20,8 @@ class MiniCalendar extends Model
 
   }
 
+  public function scopeLikeSearch($query, $field, $value){
+    return $query->where($field, 'LIKE', "%$value%");
+  }
+
 }
