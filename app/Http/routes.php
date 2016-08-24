@@ -20,10 +20,14 @@ Route::group(['prefix' => 'api'], function() {
         return Building::likeSearch('name', $text)->get();
         //return Building::ofMapType('illustrated')->get();
     });
-
-    Route::get('zcats', function() {
+    Route::get('buildinglist', function() {
         $text = Input::get('q');
-        return Category::likeSearch('category', $text)->get();
+        return Building::likeSearch('name', $text)->select('name', 'id')->get();
+        //return Building::ofMapType('illustrated')->get();
+    });
+    Route::get('categorylist', function() {
+        $text = Input::get('q');
+        return Category::likeSearch('category', $text)->select('category', 'id')->get();
         //return Building::ofMapType('illustrated')->get();
     });
 

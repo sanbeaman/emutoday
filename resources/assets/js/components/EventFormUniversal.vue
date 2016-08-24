@@ -31,15 +31,22 @@
 
             </div><!-- /.md6col -->
         </div><!-- /.row -->
-        <div class="row">
+                <div class="row">
             <div :class="md12col">
                 <template v-if="isOnCampus">
                     <div class="row">
                         <div :class="md8col">
                             <label>Building</label>
-                            <select id="select-zbuilding" class="js-example-basic-multiple" style="width: 100%" v-myselect="zbuildings"  ajaxurl="/api/zbuildings" v-bind:resultvalue="buildings" data-tags="false" multiple="multiple" data-maximum-selection-length="1">
-                                <!-- <option value="0">default</option> -->
-                            </select>
+                            <v-select
+                                :debounce="250"
+                                :value="building"
+                                :on-search="fetchForSelectBuildingList"
+                                :options="buildings"
+                                placeholder="Select a Building ..."
+                                label="name">
+                            </v-select>
+                            <!-- <select id="select-zbuilding" class="js-example-basic-multiple" style="width: 100%" v-myselect="zbuildings"  ajaxurl="/api/zbuildings" v-bind:resultvalue="buildings" data-tags="false" multiple="multiple" data-maximum-selection-length="1">
+                            </select> -->
                         </div><!-- /.md8col -->
                         <div :class="md4col">
                             <label>Room</label>
@@ -112,6 +119,22 @@
                 </div><!-- /.md6col -->
             </div><!-- /.row -->
             <div class="row">
+                <div :class="md12col">
+                    <div class="form-group">
+                        <label>Categories: <span :class="iconStar" class="reqstar"></span></label>
+                        <v-select
+                        :class="[formErrors.categories ? 'invalid-input' : '']"
+                            :debounce="250"
+                            :value="newevent.categories"
+                            :on-search="fetchForSelectCategoriesList"
+                            :options="zcats"
+                            :multiple="true"
+                            placeholder="Select related categories ..."
+                            label="category">
+                        </v-select>
+
+                    </div><!-- /.form-group -->
+                </div><!-- /.md12col -->
                 <div :class="md12col">
                     <div class="form-group">
                         <label>Categories: <span :class="iconStar" class="reqstar"></span></label>
@@ -466,10 +489,12 @@
                         title: 100,
                         description: 255
                     },
-                    newbuilding: '',
-                    zcategories: [],
-                    zbuildings: [],
+                    building: null,
                     buildings: [],
+                    // newbuilding: '',
+                    //
+                    // zbuildings: [],
+                    zcategories: [],
                     zcats: [],
                     categories: {},
                     minicals: null,
@@ -607,14 +632,22 @@
                 },
 
                 computedLocation: function() {
-                    if (this.zbuildings) {
-                        this.newevent.building  = (this.zbuildings.length > 0)?this.zbuildings[0]:'';
-                        buildingChoice = 	this.newevent.building
+
+                    // if (this.zbuildings) {
+                    //     this.newevent.building  = (this.zbuildings.length > 0)?this.zbuildings[0]:'';
+                    //     buildingChoice = 	this.newevent.building
+                    // } else {
+                    //     return
+                    // }
+
+                    if (this.building) {
+                        this.newevent.building = this.building
                     } else {
                         return
                     }
-                    var room = (this.newevent.room)?' - Room:' + this.newevent.room:'';
-                    return buildingChoice + room;
+                    // let  buildingChoice = 	this.newevent.building
+                    let room = (this.newevent.room)?' - Room:' + this.newevent.room:'';
+                    return this.newevent.building+ room;
                     // return this.zbuilding[0] + room
                 },
                 isOnCampus: function() {
@@ -720,6 +753,24 @@
                     // this.newbuilding = this.newevent.building;
                     // this.zbuilding.push(this.newevent.building);
 
+                },
+                fetchForSelectCategoriesList(search,loading){
+                    loading(true)
+                    this.$http.get('/api/categorylist',{
+                        q: search
+                    }).then(resp => {
+                        this.zcats = resp.data;
+                        loading(false)
+                    })
+                },
+                fetchForSelectBuildingList(search,loading) {
+                    loading(true)
+                    this.$http.get('/api/buildinglist',{
+                        q: search
+                    }).then(resp => {
+                        this.buildings = resp.data;
+                        loading(false)
+                    })
                 },
                 fetchForSelectMiniCalendarList(search,loading) {
                     loading(true)
