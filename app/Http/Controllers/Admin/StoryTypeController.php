@@ -88,6 +88,34 @@ class StoryTypeController extends Controller
 
     }
 
+
+    /**
+    * Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryController@articleSetup']);
+    * @return [type]        [Direct route for creating a magazine article]
+    */
+    public function articleSetup()
+    {
+        $user = \Auth::user();
+        $story = new Story;
+        // $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
+        $sroute = 'magazine';
+        $stypelist = 'article';
+        $stype = 'article';
+        $stypes = 'article';
+        $story->story_type = $stypes;
+
+        JavaScript::put([
+            'cuser' => $user,
+            'stypes' => $stypes,
+            'storytype' => $stype,
+            'stypelist' => $stypelist
+        ]);
+        return view('admin.story.form', compact('story','sroute','stype' ,'stypes', 'stypelist' ));
+
+        // return view('admin.story.form', compact('story','sroute','stypes','stypelist'));
+
+    }
+
     // Route::get('story/{stype}/{story}/edit', ['as' => 'admin_storytype_edit', 'uses' => 'Admin\StoryController@storyTypeEdit']);
 
     public function storyTypeEdit($stype, Story $story)
@@ -214,24 +242,7 @@ class StoryTypeController extends Controller
     //     return redirect()->route('emutoday_preview',['stype'=> $stype, 'id' => $story->id]);
     //
     // }
-    /**
-    * Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryController@articleSetup']);
-    * @return [type]        [Direct route for creating a magazine article]
-    */
-    public function articleSetup()
-    {
-        $story = new Story;
-        $stypelist = \emutoday\StoryType::where('level', 1)->lists('name','shortname');
-        $sroute = 'magazine';
-        $stypes = 'article';
-        $story->story_type = $stypes;
-        JavaScript::put([
-            'storytype' => $stypes
-        ]);
 
-        return view('admin.story.form', compact('story','sroute','stypes','stypelist'));
-
-    }
 
 //     public function store(Requests\StoreStoryRequest $request)
 //     {

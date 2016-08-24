@@ -31,7 +31,7 @@
             <div class="large-9 medium-8 small-12 columns">
               <div id="issue-grouping" class="row">
                 <div class="large-8 medium-8 small-12 columns">
-                    @if(isset($magazine))
+                    @if($magazine)
                         <a href="/emu-today/magazine/{{$magazine->year}}"><h2 class="issue-date news-caps">{{$magazine->season}} {{$magazine->year}}</h2></a>
                     @else
                         <a href="#"><h2 class="issue-date news-caps">Season Year</h2></a>
@@ -48,7 +48,12 @@
                 </div>
             </div><!-- /.row -->
              <div id="big-feature-image">
+                 @if($mainImage)
                   <img src="{{$mainImage->present()->mainImageURL}}" alt="feature-image">
+              @else
+                  <img src="/imagecache/original/article_front.jpg" alt="feature-image">
+
+              @endif
               </div>
               <!-- Story Page Content -->
 
@@ -58,17 +63,22 @@
               {!! Form::textarea('content', null, ['class' => 'form-control', 'id' => 'cktextarea']) !!}
           </div>
 
-              <div class="story-author">Author's name</div>
-              <p class="news-contacts">Contact Author, author@emich.edu, 734.487.XXXX</p>
+              <div class="story-author">{{$authorInfo->full_name}}</div>
+              <p class="news-contacts">{{$authorInfo->first_name}} {{$authorInfo->last_name}}, {{$authorInfo->email}}, {{$authorInfo->phone}}</p>
             </div>
             <div class="large-3 medium-4 small-12 columns featurepadding">
               <div class="featured-content-block magazine-block">
                 <h6 class="headline-block">Popular stories</h6>
                 <ul class="feature-list">
                     @foreach ($sideStoryBlurbs as $ssblurb)
-                  <li><a href="/emu-today/{{$ssblurb->story->story_folder}}/{{$ssblurb->story->id}}">{{$ssblurb->caption}}</a></li>
-                @endforeach
-              </ul>
+                    {{-- <li><a href="/emu-today/{{$ssblurb->story->story_folder}}/{{$ssblurb->story->id}}">{{$ssblurb->caption}}</a></li> --}}
+                        @if($ssblurb)
+                            <li><a href="#">{{$ssblurb->caption}}</a></li>
+                        @else
+                            <li><a href="#">Missing article small caption</a></li>
+                        @endif
+                    @endforeach
+                </ul>
               </div>
               <div class="featured-content-block magazine-block">
                 <h6 class="headline-block">Headlines</h6>

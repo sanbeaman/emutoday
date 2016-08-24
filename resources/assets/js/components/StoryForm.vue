@@ -443,8 +443,6 @@ module.exports  = {
                     } else {
                         this.newform = true;
                         this.hasContent = true;
-
-
                         this.record.user_id = this.cuser.id;
                         console.log('tthis.record.user_id'+     this.record.user_id);
 
@@ -560,6 +558,7 @@ module.exports  = {
                                 this.author = this.record.author;
                             } else {
                                 this.author = this.currentUser;
+                                this.author.id = 0;
                             }
                             this.recordexists = true;
 
@@ -612,7 +611,10 @@ module.exports  = {
                   }
                 //this.record.start_date = this.fdate;
                 //   this.record.start_date =  moment(this.fdate,"MM-DD-YYYY").format("YYYY-MM-DD HH:mm:ss");
-                  this.record.author_id = this.author.id;
+                if (this.author.id !== 0) {
+                    this.record.author_id = this.author.id;
+                }
+
                   let tempid;
                   if (typeof this.currentRecordId != 'undefined'){
                       tempid = this.currentRecordId;

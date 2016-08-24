@@ -22,10 +22,10 @@
 <li class="treeview {{ set_active('admin/story*') }}">
     <a href="#"><i class="fa fa-file-text-o"></i> <span>Stories</span> <i class="fa fa-angle-left pull-right"></i></a>
     <ul class="treeview-menu">
-        @can('story_promote', $currentUser)
+        {{-- @can('story_promote', $currentUser)
 
         <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/queue"><i class="fa fa-rocket"></i> <span>Queue</span></a></li>
-        @endcan
+        @endcan --}}
         @can('story_approve', $currentUser)
 
         <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/queue"><i class="fa fa-rocket"></i> <span>Queue</span></a></li>
@@ -62,7 +62,8 @@
     <ul class="treeview-menu">
         <li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine"><i class="fa fa-list"></i> <span>List</span></a></li>
         <li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
-        <li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/article/queue"><i class="fa fa-rocket"></i> <span>Articles</span></a></li>
+        <li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/article/queue"><i class="fa fa-rocket"></i><span>Articles</span></a></li>
+        <li class="{{ set_active('admin/magazine*') }}"><a href="/admin/magazine/article/setup"><i class="fa fa-plus-square"></i><span>Add Article</span></a></li>
     </ul>
 </li>
 @endcan

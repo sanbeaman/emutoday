@@ -53,7 +53,7 @@
             <p>Tags: {{item.tags | json}}</p>
             <p>Start Date: {{item.start_date}}</p>
             <p>User: {{item.user | json}}</p>
-            <p>User: {{item.author | json}}</p>
+            <p>Author: {{item.author | json}}</p>
 
       </div><!-- /.box-body -->
             <div class="box-footer list-footer">
@@ -64,7 +64,8 @@
                     <div class="col-sm-5">
                         <div class="btn-group pull-right">
                                 <button v-on:click.prevent="editItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-pencil"></i></button>
-                                <button v-on:click.prevent="previewItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-eye"></i></button>
+                                <button v-on:click.prevent="previewItem" class="btn bg-orange btn-xs footer-btn" :disabled="disabledPreview"><i class="fa fa-eye"></i></button>
+
                         </div><!-- /.btn-toolbar -->
 
                     </div><!-- /.col-md-7 -->
@@ -405,6 +406,30 @@ module.exports  = {
 
                       return 'fa '+ faicon + ' fa-fw'
 
+                  },
+                  recordIsReady:function(){
+                      switch(this.item.story_type){
+                          case 'article':
+                          case 'story':
+                          case 'student':
+                          case 'external':
+                          if(this.item.is_promoted === 1) {
+                              return true
+                          } else {
+                              return false
+                          }
+                          break;
+                          default:
+                            return true;
+                        }
+                    },
+                  disabledPreview: function() {
+                      if(this.recordIsReady){
+                          return false
+                      } else {
+                         return true
+
+                      }
                   }
 
               },

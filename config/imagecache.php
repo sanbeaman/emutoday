@@ -36,6 +36,7 @@ return array(
                 public_path('imgs/magazine'),
                 public_path('imgs/user'),
                 public_path('imgs/event'),
+                public_path('imgs/placeholder'),
     ),
 
     /*

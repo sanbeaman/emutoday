@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use emutoday\Http\Requests;
 use emutoday\Story;
+use emutoday\User;
+use emutoday\Author;
 use emutoday\Event;
 use emutoday\Page;
 use emutoday\Magazine;
@@ -74,16 +76,22 @@ class PreviewController extends Controller
             $sideStudentBlurbs = collect();
 
             $sideNewsStorys = collect();
+
+            if ($story->author_id === 0) {
+                $authorInfo = $story->user;
+            } else {
+                $authorInfo = $story->author;
+            }
             // $sroute = 'story';
             if($stype == 'story' || $stype == 'emutoday' || $stype == 'news'){
                 $sideStoryBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
 
-                return view('preview.story.story', compact('story','sroute', 'form', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
+                return view('preview.story.story', compact('story','sroute', 'form', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs', 'authorInfo'));
 
             } else if($stype == 'student'){
                 $sideStudentBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
                 // $sroute = 'student';
-                return view('preview.student.story', compact('story', 'sroute','form','mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
+                return view('preview.student.story', compact('story', 'sroute','form','mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs', 'authorInfo'));
 
 
             } else if($stype == 'article'){
@@ -91,11 +99,11 @@ class PreviewController extends Controller
                 $mainImage = $story->storyImages()->where('image_type','story')->first();
                 // dd($magazine);
                 $sideStoryBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
+                // dd($sideStoryBlurbs);
 
 
 
-
-            return view('preview.magazine.story', compact('magazine','story','sroute','form', 'mainImage','sideStoryBlurbs','sideNewsStorys'));
+            return view('preview.magazine.story', compact('magazine','story','sroute','form', 'mainImage','sideStoryBlurbs','sideNewsStorys', 'authorInfo'));
 
 
             } else {
