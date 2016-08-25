@@ -85,16 +85,21 @@ class EventServiceProvider extends ServiceProvider
       Story::saving(function ($story)
       {
 
-          switch ($story->story_type) {
-              case 'external':
-                  $story->is_promoted = ($story->storyImages->where('is_active',1)->count()>0)?1:0;
-                  break;
-               case 'story':
-               case 'article':
-               case 'student':
-               $story->is_promoted = ($story->storyImages->where('is_active',1)->count()<2)?0:1;
-                   break;
-              default:
+        switch ($story->story_type) {
+            case 'external':
+                $story->is_ready = ($story->storyImages->where('is_active',1)->count()>0)?1:0;
+                $story->is_promoted = ($story->storyImages->where('is_active',1)->count()>0)?1:0;
+                break;
+            case 'story':
+            case 'article':
+            case 'student':
+                $story->is_ready = ($story->storyImages->where('is_active',1)->count()<2)?0:1;
+                $story->is_promoted = ($story->storyImages->where('is_active',1)->count()<2)?0:1;
+                break;
+            case 'news':
+                $story->is_ready = 1;
+                break;    
+            default:
                   # code...
                   break;
           }
