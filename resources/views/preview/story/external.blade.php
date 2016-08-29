@@ -5,7 +5,7 @@
     @include('preview.includes.previewcoverstyle')
 @endsection
 @section('bodytop')
-    @include('preview.includes.previewcover')
+    @include('preview.includes.previewstory',['stype'=> $story->story_type, 'sroute'=> $sroute, 'recordid' => $story->id, 'form'=> $form] )
 @endsection
 @section('offcanvaslist')
     @include('preview.includes.offcanvaslist')
@@ -18,12 +18,12 @@
     <div id="news-bar">
       <div class="row">
         <div class="large-7 medium-12 small-12 columns">
-          <img src="/imagecache/original/{{$heroImg->filename}}" alt="featured image">
+          {{-- <img src="/imagecache/original/{{$heroImg->filename}}" alt="featured image"> --}}
         </div>
         <div id="featured-text" class="large-5 medium-12 small-12 columns">
-          <h3>{{$heroImg->title}}</h3>
+          {{-- <h3>{{$heroImg->title}}</h3>
           <p>{{$heroImg->caption}}</p>
-          <p class="button-group"><a href="/emu-today/{{$heroImg->story->story_folder}}/{{$heroImg->story->id}}" class="button">{{$heroImg->moretext}}</a></p>
+          <p class="button-group"><a href="/emu-today/{{$heroImg->story->story_folder}}/{{$heroImg->story->id}}" class="button">{{$heroImg->moretext}}</a></p> --}}
         </div>
       </div>
     </div>
@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="row small-up-2 medium-up-2 large-up-4" data-equalizer>
-        @for ($i = 1; $i <= count($barImgs); $i++)
+        {{-- @for ($i = 1; $i <= count($barImgs); $i++)
           <div class="column four-stories-block">
             <img class="topic-image" src="/imagecache/original/{{$barImgs[$i]->filename}}" alt="story image">
             <div class="stories-content">
@@ -46,7 +46,7 @@
               </p>
             </div>
           </div>
-        @endfor
+        @endfor --}}
 
 
         {{-- @each('public.layouts.components.smallimg', $barImgs, 'barImg') --}}

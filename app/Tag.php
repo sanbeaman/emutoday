@@ -19,6 +19,12 @@ class Tag extends Model
      */
     public function storys()
     {
-        return $this->belongsToMany('emutoday\Story', "story_tag");
+        return $this->belongsToMany('emutoday\Story', 'story_tag', 'tag_id', 'story_id')
+        ->withTimestamps();
     }
+
+    public function scopeLikeSearch($query, $field, $value){
+        return $query->where($field, 'LIKE', "%$value%");
+    }
+
 }

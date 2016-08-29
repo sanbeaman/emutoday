@@ -78,6 +78,17 @@
                                 {!! Form::textarea('teaser', null, ['class' => 'form-control input-sm', 'rows'=>'5']) !!}
                                 <span class="help-block">Small to Medium size text for brief paragraph about article on current issue page</span>
                             </div>
+                        @elseif($storyImage->group == 'external')
+                            <div class="form-group">
+                                {!! Form::label('caption', 'Caption') !!}
+                                {!! Form::text('caption', null, ['class' => 'form-control input-sm']) !!}
+                                <span class="help-block">Small to Medium size text limited to a couple of lines, visible under Video Image on emu-today and linked to YouTube video</span>
+                            </div>
+                            <div class="form-group">
+                                {!! Form::label('link', 'External Link') !!}
+                                {!! Form::text('link', null, ['class' => 'form-control input-sm']) !!}
+                                <span class="help-block">Fully qualified URL of YouTube video </span>
+                            </div>
                         @else
                             <div class="form-group">
                                 {!! Form::label('title', 'Title/Header') !!}

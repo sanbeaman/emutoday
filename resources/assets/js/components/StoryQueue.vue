@@ -11,12 +11,18 @@
                          <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="{{item.name}}"><input type="radio" autocomplete="off" value="{{item.shortname}}" /><span class="item-type-icon-shrt" :class="typeIcon(item.shortname)"></span></label>
                     </template>
               </div>
+              <!-- <div class="btn-group btn-group-xs" @click="changeFilterByReadyStatus" role="group" aria-label="isReadyLabel" data-toggle="buttons" v-iconradio="readyStatus">
+                  <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="ready"><input type="radio" autocomplete="off" value="1" /><span class="item-type-icon-shrt fa fa-circle"></span></label>
+                  <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="not ready"><input type="radio" autocomplete="off" value="0" /><span class="item-type-icon-shrt fa fa-circle-o"></span></label>
+                  <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="reset"><input type="radio" autocomplete="off" value="" /><span class="item-type-icon-shrt fa fa-asterisk"></span></label>
+
+              </div> -->
             </div>
             <div id="items-unapproved">
                 <story-pod
                     pid="items-unapproved"
                     :sroute="sroute"
-                    v-for="item in itemsUnapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByStoryType items_unapproved_filter_storytype"
+                    v-for="item in itemsUnapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByStoryType"
                     @item-change="moveToApproved"
 
                     :item="item"
@@ -41,7 +47,7 @@
             <story-pod
                 pid="items-approved"
                 :sroute="sroute"
-                v-for="item in itemsApproved | orderBy 'start_date' 1 | filterBy filterApprovedByStoryType items_approved_filter_storytype"
+                v-for="item in itemsApproved | orderBy 'start_date' 1 | filterBy filterApprovedByStoryType"
                 @item-change="moveToUnApproved"
 
                 :item="item"
@@ -82,35 +88,35 @@
 </template>
 <style scoped>
 
-h4 {
-    margin-top: 3px;
-    font-size: 18px;
-}
-.btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
-    background-color: #605ca8;
-    color: #ffffff;
+    h4 {
+        margin-top: 3px;
+        font-size: 18px;
+    }
+    .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+        background-color: #605ca8;
+        color: #ffffff;
 
-}
-.btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
-    color: #ffffff;
+    }
+    .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+        color: #ffffff;
 
-}
+    }
 
-span.item-type-icon:active, span.item-type-icon.active{
-    background-color: #605ca8;
-    color: #ffffff;
-}
-#items-unapproved .box {
-    margin-bottom: 4px;
-}
-#items-approved .box {
-    margin-bottom: 4px;
+    span.item-type-icon:active, span.item-type-icon.active{
+        background-color: #605ca8;
+        color: #ffffff;
+    }
+    #items-unapproved .box {
+        margin-bottom: 4px;
+    }
+    #items-approved .box {
+        margin-bottom: 4px;
 
-}
-#items-live .box {
-    margin-bottom: 4px;
+    }
+    #items-live .box {
+        margin-bottom: 4px;
 
-}
+    }
 </style>
 <script>
 
@@ -139,7 +145,7 @@ export default  {
     },
     data: function() {
         return {
-
+            readyStatus: '',
             singleStype: false,
             // storytypes: [
             //     { type: 'news'},
@@ -240,6 +246,25 @@ export default  {
 
             // return  moment(value).format("ddd")
         },
+        changeFilterByReadyStatus: function(evnt){
+            if (this.readyStatus == ''){
+                this.resetReadyStatus();
+            } else {
+                this.filterReadyStatus();
+            }
+        },
+        // filterReadyStatus: function(){
+        //     this.itemsUnapproved = this.itemsUnapproved.filter(function(item){
+        //         console.log('item.is_ready= ' + item.is_ready);
+        //         return item.is_ready === this.readyStatus;
+        //     })
+        // },
+        // resetReadyStatus: function(){
+        //     this.itemsUnapproved = this.itemsUnapproved.filter(function(item){
+        //         console.log('item.is_ready= ' + item.is_ready);
+        //         return item.is_ready !== '';
+        //     })
+        // },
         filterUnapprovedByStoryType: function (value) {
             console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype)
             if (this.items_unapproved_filter_storytype === '') {
@@ -248,6 +273,23 @@ export default  {
                 return value.story_type === this.items_unapproved_filter_storytype;
             }
         },
+        // filterUnapprovedByValues: function (value) {
+        //     console.log('value.story_type= ' + value.story_type + ' value.is_ready= ' + value.is_ready + ' storytype= ' + this.items_unapproved_filter_storytype  + ' is_ready= ' + this.items_unapproved_filter_isready)
+        //     let resetType,resetIsReady
+        //     resetType = (this.items_unapproved_filter_storytype === '')?true:false;
+        //     resetIsReady = (this.items_unapproved_filter_isready === '')?true:false;
+        //     if (resetType)
+        //     if (this.items_unapproved_filter_storytype === '' && this.items_unapproved_filter_isready === '') {
+        //         return value.story_type !== '' && value.is_ready !== '';
+        //     } else if (this.items_unapproved_filter_storytype === '' && this.items_unapproved_filter_isready !== '') {
+        //         return value.story_type !== '' && value.is_ready === this.items_unapproved_filter_isready
+        //     } else if (this.items_unapproved_filter_storytype !== '' && this.items_unapproved_filter_isready === '') {
+        //         return value.story_type === this.items_unapproved_filter_storytype && value.is_ready !== ''
+        //     }else {
+        //         return value.story_type === this.items_unapproved_filter_storytype && value.is_ready === this.items_unapproved_filter_isready
+        //
+        //     }
+        // },
         filterApprovedByStoryType: function (value) {
             console.log('value' + value.story_type + 'stmodel=' + this.items_approved_filter_storytype)
             if (this.items_approved_filter_storytype === '') {
@@ -256,14 +298,7 @@ export default  {
                 return value.story_type === this.items_approved_filter_storytype;
             }
         },
-        filterUnapprovedByStoryType: function (value) {
-            console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype)
-            if (this.items_unapproved_filter_storytype === '') {
-                return value.story_type !== '';
-            } else {
-                return value.story_type === this.items_unapproved_filter_storytype;
-            }
-        },
+
         filterLiveByStoryType: function (value) {
             console.log('value' + value.story_type + 'stmodel=' + this.items_live_filter_storytype)
             if (this.items_live_filter_storytype === '') {
@@ -272,15 +307,15 @@ export default  {
                 return value.story_type === this.items_live_filter_storytype;
             }
         },
-        storyTypeFilter:function (val, arg){
-            if (val == '' || val == 'all'){
-                return val.storytype !== '';
-            } else {
-                return val.storytype === arg;
-            }
-
-
-        },
+        // storyTypeFilter:function (val, arg){
+        //     if (val == '' || val == 'all'){
+        //         return val.storytype !== '';
+        //     } else {
+        //         return val.storytype === arg;
+        //     }
+        //
+        //
+        // },
 
         typeIcon: function(sname) {
             switch (sname) {
@@ -319,47 +354,37 @@ export default  {
         //         return val.group === 'news'
         //
         // },
-        addTypeToFilter: function(typeshortname){
-            let tsnindex = this.currentTypesFilter.indexOf(typeshortname);
-            if (tsnindex < 0) {
-                this.currentTypeFilter.$set(tsnindex, typeshortname);
-            }
-        },
-        toggleTypeToFilter: function(filtertype){
-            self.storytype = filtertype.shortname;
-
-        //     console.log(filtertype)
-        //     let tsnindex;
-        //     tsnindex = this.currentTypesFilter.indexOf(filtertype.shortname);
+        // addTypeToFilter: function(typeshortname){
+        //     let tsnindex = this.currentTypesFilter.indexOf(typeshortname);
         //     if (tsnindex < 0) {
-        //             this.currentTypesFilter.push(filtertype.shortname);
-        //     } else {
-        //         this.currentTypesFilter.$remove(tsnindex);
+        //         this.currentTypeFilter.$set(tsnindex, typeshortname);
         //     }
-        // console.log('this.currentTypesFilter.length'+ this.currentTypesFilter.length)
-        // this.filterHideType();
-        },
-        setFilter: function(ev) {
-
-        },
-        filterTheList:function() {
-            let self = this;
-            this.items_unapproved = this.items_unapproved.filter(function (item) {
-                return item.story_type ==  self.storytype;
-            })
-        },
-        filterHideType:function() {
-            let self = this;
-            this.items_unapproved.forEach(function(item, index){
-                for(var i= 0, l = self.currentTypesFilter.length; i< l; i++){
-                    if(item.story_type == self.currentTypesFilter[i]){
-                        console.log('item.story_type'+item.story_type+ 'self.currentTypesFilter'+ self.currentTypesFilter[i])
-                        self.items_unapproved.splice(index,1);
-                        break;
-                    }
-                }
-            });
-        },
+        // },
+        // toggleTypeToFilter: function(filtertype){
+        //     self.storytype = filtertype.shortname;
+        //
+        // },
+        // setFilter: function(ev) {
+        //
+        // },
+        // filterTheList:function() {
+        //     let self = this;
+        //     this.items_unapproved = this.items_unapproved.filter(function (item) {
+        //         return item.story_type ==  self.storytype;
+        //     })
+        // },
+        // filterHideType:function() {
+        //     let self = this;
+        //     this.items_unapproved.forEach(function(item, index){
+        //         for(var i= 0, l = self.currentTypesFilter.length; i< l; i++){
+        //             if(item.story_type == self.currentTypesFilter[i]){
+        //                 console.log('item.story_type'+item.story_type+ 'self.currentTypesFilter'+ self.currentTypesFilter[i])
+        //                 self.items_unapproved.splice(index,1);
+        //                 break;
+        //             }
+        //         }
+        //     });
+        // },
         movedItemIndex: function(mid) {
             return this.items_unapproved.findIndex(item => item.id == mid)
         },
@@ -433,19 +458,10 @@ export default  {
             this.$http.get(routeurl)
 
             .then((response) =>{
-
                 this.$set('allitems', response.data.data)
-
-            //    this.allitems = response.data.data;
-                // console.log('this.record= ' + this.record);
-
-                //this.checkOverDataFilter();
             }, (response) => {
                 //error callback
                 console.log("ERRORS");
-
-                //  this.formErrors =  response.data.error.message;
-
             }).bind(this);
         },
         // checkOverData: function() {
@@ -454,36 +470,57 @@ export default  {
         //
         // },
 
-        checkOverDataFilter: function() {
-            let self = this;
-            console.log('items=' + this.allitems)
-
-            this.allitems.forEach(function(item) {
-            if (item.is_approved === 1) {
-                self.items_approved.push(item)
-            } else {
-                self.items_unapproved.push(item)
-            }
-            //     if (moment(item.start_date).isSameOrBefore(moment())) {
-            //         self.items_live.push(item)
-            //     } else {
-            //         self.items_approved.push(item)
-            //     }
-            // } else {
-            //     self.items_unapproved.push(item)
-            // }
-        });
-        // this.$set('items_unapproved_filtered',this.items_unapproved )
-
-        console.log('items_unapproved'+ this.items_unapproved.length )
-
-        console.log('items_approved'+ this.items_approved.length )
-
-
-        }
+        // checkOverDataFilter: function() {
+        //     let self = this;
+        //     console.log('items=' + this.allitems)
+        //
+        //     this.allitems.forEach(function(item) {
+        //     if (item.is_approved === 1) {
+        //         self.items_approved.push(item)
+        //     } else {
+        //         self.items_unapproved.push(item)
+        //     }
+        //
+        // });
+        // console.log('items_unapproved'+ this.items_unapproved.length )
+        // console.log('items_approved'+ this.items_approved.length )
+        // }
     },
     filters: {
+        // titleDay: function (value) {
+        //     return  moment(value).format("ddd")
+        // },
+        byObject: function(array, options) {
+            var entry, found, i, key, len, result, value;
+            result = [];
+            console.log(options);
+            if (Object.keys(options).length === 0) {
+              return array;
+            }
+            for (i = 0, len = array.length; i < len; i++) {
+              entry = array[i];
+              found = true;
+              for (key in options) {
+                value = options[key];
+                console.log('options[key]=' + options[key])
+                if(value === ''){
+                    break;
+                }
+                console.log('entry[key]= ' + entry[key]);
+                if (entry[key] !== value) {
+                  found = false;
+                  break;
+                }
 
+
+              }
+              if (found) {
+                result.push(entry);
+              }
+            }
+            console.log(result);
+            return result;
+          }
     },
     directives: {
         iconradio

@@ -11,11 +11,12 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="pull-left">
-                            <span class="item-type-icon" :class="typeIcon"></span>
-                            <span class="item-featured-icon" :class="promotedIcon"></span>
-                            <span class="item-featured-icon" :class="featuredIcon"></span>
-                            <span class="item-featured-icon" :class="homeIcon"></span>
-                            <span class="item-featured-icon" :class="archivedIcon"></span>
+                            <label data-toggle="tooltip" data-placement="top" title="{{item.story_type}}"><span class="item-type-icon" :class="typeIcon"></span></label>
+                            <label data-toggle="tooltip" data-placement="top" :title="isReadyStatus"><span class="item-featured-icon" :class="readyIcon"></span></label>
+                            <label data-toggle="tooltip" data-placement="top" title="Promoted"><span class="item-featured-icon" :class="promotedIcon"></span></label>
+                            <label data-toggle="tooltip" data-placement="top" title="Featured"><span class="item-featured-icon" :class="featuredIcon"></span></label>
+                            <label data-toggle="tooltip" data-placement="top" title="on HomePage"><span class="item-featured-icon" :class="homeIcon"></span></label>
+                            <label data-toggle="tooltip" data-placement="top" title="Archived"><span class="item-featured-icon" :class="archivedIcon"></span></label>
                         </div><!-- /.pull-left -->
                         <div class=" form-inline pull-right">
                             <div class="form-group">
@@ -45,6 +46,7 @@
             <p>ID: {{item.id}}</p>
             <p>Type: {{item.story_type}}</p>
             <p>Title: {{item.title}}</p>
+            <p>Ready: {{item.is_ready}}</p>
             <p>Approved: {{item.is_approved}}</p>
             <p>Promoted: {{item.is_promoted}}</p>
             <p>Featured: {{item.is_featured}}</p>
@@ -273,86 +275,83 @@ import moment from 'moment'
 import VuiFlipSwitch from './VuiFlipSwitch.vue'
 
 module.exports  = {
-                props: [
-                    'item',
-                    'pid',
-                    'sroute'
+    directives: {},
+    components: {VuiFlipSwitch},
+    props: ['item','pid','sroute'],
+    data: function() {
+        return {
+            response_msg: '',
+            response_approval: '',
+            showBody: false,
+            currentDate: {},
+            record: {
+                user_id : '',
+                title: '',
+                story_type: '',
+                start_date: ''
+            },
+            itemMsgStatus: {
+                show: false,
+                level: '',
+                msg: ''
+            }
+        }
+    },
+    created: function () {
 
-                ],
-              data: function() {
-                return {
-                        response_msg: '',
-                        response_approval: '',
-                        showBody: false,
-                        currentDate: {},
-                        record: {
-                            user_id : '',
-                            title: '',
-                            story_type: '',
-                            start_date: ''
-                        },
-                        itemMsgStatus: {
-                            show: false,
-                            level: '',
-                            msg: ''
-                        }
+    },
+    ready: function() {
 
-                }
-              },
-                created: function () {
-                    // this.currentDate = moment();
-                    // console.log('this.currentDate=' + this.currentDate)
-                },
-                ready: function() {
-                    //ready function
-                    // this.record = this.props.item;
-                    //console.log('type'+ this.item.story_type);
-                },
-              computed: {
-                  timefromNow:function() {
-                      return moment(this.item.start_date).fromNow()
-                  },
-                  isApproved: function() {
-                      return this.item.is_approved;
-                  },
-                  itemEditPath: function(){
-                      return '/admin/'+ this.sroute + '/' + this.item.story_type+'/'+this.item.id + '/edit'
-                  },
-                  itemPreviewPath: function(){
-                      return '/preview/'+ this.sroute + '/'+ this.item.story_type+'/'+this.item.id
-                  },
-                  typeClass: function() {
+    },
+    computed: {
+        timefromNow:function() {
+            return moment(this.item.start_date).fromNow()
+        },
+        isApproved: function() {
+            return this.item.is_approved;
+        },
+        itemEditPath: function(){
+            return '/admin/'+ this.sroute + '/' + this.item.story_type+'/'+this.item.id + '/edit'
+        },
+        itemPreviewPath: function(){
+            return '/preview/'+ this.sroute + '/'+ this.item.story_type+'/'+this.item.id
+        },
+        typeClass: function() {
 
-                  },
-                  promotedIcon: function() {
-
-                      if (this.item.is_promoted === 1){
-                          pIcon = 'fa fa-circle'
-                      } else {
-                          pIcon = 'fa fa-circle-o'
-                      }
-
-                      return pIcon
-                  },
-                  liveIcon: function() {
-
-                      if (this.item.is_live === 1){
-                          lIcon = 'fa fa-home'
-                      } else {
-                          lIcon = ''
-                      }
-
-                      return lIcon
-                  },
-                  homeIcon: function() {
-                      if (this.item.tags.length > 0){
+        },
+        readyIcon: function() {
+            if (this.item.is_ready === 1){
+                pIcon = 'fa fa-circle'
+            } else {
+                pIcon = 'fa fa-circle-o'
+            }
+            return pIcon
+        },
+        promotedIcon: function() {
+            if (this.item.is_promoted === 1){
+                pIcon = 'fa fa-arrow-circle-up'
+              } else {
+                  pIcon = ''
+              }
+              return pIcon
+         },
+        liveIcon: function() {
+          if (this.item.is_live === 1){
+              lIcon = 'fa fa-home'
+          } else {
+              lIcon = ''
+          }
+          return lIcon
+        },
+        homeIcon: function() {
+              if (this.item.tags.length > 0){
 
 
-                      if (this.item.tags.indexOf('homepage') >= 0){
-                          hIcon = 'fa fa-home'
-                      } else {
-                          hIcon = ''
-                      }
+              if (this.item.tags.indexOf('homepage') >= 0){
+                  hIcon = 'fa fa-home'
+              } else {
+                  hIcon = ''
+              }
                   } else {
                       hIcon = ''
                   }
@@ -372,14 +371,17 @@ module.exports  = {
                   },
                   featuredIcon: function() {
 
-                      if (this.item.featured === 1){
+                      if (this.item.is_featured === 1){
                           featuredicon = 'fa fa-star'
                       } else {
                         //   featuredicon = ''
-                          featuredicon = 'fa fa-star-o'
+                          featuredicon = ''
                       }
 
                       return featuredicon
+                  },
+                  isReadyStatus: function(){
+                      return (this.item.is_ready === 1)?'Ready':'Not Ready';
                   },
                   typeIcon: function() {
                       switch (this.item.story_type) {
@@ -505,16 +507,7 @@ module.exports  = {
                         }
                     }
                 },
-                directives: {
-                        // mydatedropper: require('../directives/mydatedropper.js')
-                        // dtpicker: require('../directives/dtpicker.js')
-                },
-                components: {
-                        VuiFlipSwitch
-                        // autocomplete: require('./vue-autocomplete.vue'),
-                    // 'datepicker': require('../vendor/datepicker.vue'),
 
-                },
                 filters: {
 
                         momentPretty: {

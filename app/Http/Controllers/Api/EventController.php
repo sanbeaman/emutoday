@@ -282,23 +282,16 @@ class EventController extends ApiController
             //
             // `submitter` varchar(255) DEFAULT NULL,
             // $categories_array =  $request->get('categories');
+            // dd($categoriesRequest);
+
                     if($event->save()) {
-                        $event->eventcategories()->sync($request->get('categories'));
+                        $categoriesRequest = $request->input('categories') == null ? [] : array_pluck($request->input('categories'),'id');
+                        $event->eventcategories()->sync($categoriesRequest);
                         $event->save();
-
-                        // return redirect()->route('emutoday_event_edit',['id' => $event->id] );
-
-                        // $url = route('profile', ['id' => 1]);
-
-
-                            return $this->setStatusCode(201)
-                                                        ->respondCreated('Event successfully created.');
-                                    //  return response()->json([
-                                    //          'success' => true,
-                                    //          'message' => 'record updated'
-                                    //      ], 201);
-                                   }
-                              }
+                        return $this->setStatusCode(201)
+                            ->respondCreated('Event successfully created.');
+                    }
+                }
 
               }
         // if (! $request->input('title') or ! $request->input('location'))

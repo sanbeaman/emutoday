@@ -53,7 +53,7 @@
                       @foreach ($currentStorysBasic as $basicstory)
                       <li><a href="/emu-today/news/{{$basicstory->id}}">{{$basicstory->title}}</a></li>
                       @endforeach
-											<li><a href="/emu-today/news" class="bottom-tab-link">More Headlines</a></li>
+                                            <li><a href="/emu-today/news" class="bottom-tab-link">More Headlines</a></li>
                     </ul>
                   </div>
                   <div class="tabs-panel newshub-tab-front" id="newshub-announcements-front">
@@ -61,8 +61,8 @@
                       @foreach ($currentAnnouncements as $announcement)
                       <li><a href="/emu-today/announcement/{{$announcement->id}}">{{$announcement->title}}</a></li>
                       @endforeach
-											<li><a href="/emu-today/announcement" class="bottom-tab-link">More Announcement</a></li>
-											</ul>
+                                            <li><a href="/emu-today/announcement" class="bottom-tab-link">More Announcement</a></li>
+                                            </ul>
                   </div>
 
                 </div>
@@ -70,9 +70,16 @@
          <div class="large-3 medium-4 small-12 columns">
               <div class="featured-content-block">
                   <h6 class="headline-block">Featured video</h6>
-                  <a href="https://www.youtube.com/watch?v=v-3BGoQtOsY" target="blank"><img src="{{'/assets/imgs/home/video_featured.png'}}" alt="featured video"></a>
-                  <p><a href="https://www.youtube.com/watch?v=v-3BGoQtOsY" target="blank">Out of the Park Lunch by the Lake All-Campus Picnic</a></p>
-             </div>
+                  @if(isset($currentStoryImageWithVideoTag))
+                      <a href="{{$currentStoryImageWithVideoTag->link}}" target="blank"><img src="/imagecache/original/{{$currentStoryImageWithVideoTag->filename}}" alt="featured video"></a>
+                      <p><a href="{{$currentStoryImageWithVideoTag->link}}" target="blank">{{$currentStoryImageWithVideoTag->caption}}</a></p>
+
+                  @else
+                      <a href="https://www.youtube.com/user/emichigan08" target="blank"><img src="/imagecache/original/external_video.jpg" alt="featured video"></a>
+                      <p><a href="https://www.youtube.com/user/emichigan08" target="blank">Welcome to Education First, the official Eastern Michigan University YouTube Channel.</a></p>
+                  @endif
+
+            </div>
          </div>
 
       </div>

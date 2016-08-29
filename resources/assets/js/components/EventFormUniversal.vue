@@ -4,7 +4,7 @@
         <!-- <slot name="author_id" v-model="newevent.author_id"></slot> -->
         <div class="row">
             <div :class="md12col">
-                <div v-show="formMessage.isOk"  class="callout success">
+                <div v-show="formMessage.isOk"  :class="calloutSuccess">
                     <h5>{{formMessage.msg}}</h5>
                 </div>
                 <div class="form-group">
@@ -39,7 +39,7 @@
                             <label>Building</label>
                             <v-select
                                 :debounce="250"
-                                :value="building"
+                                :value.sync="building"
                                 :on-search="fetchForSelectBuildingList"
                                 :options="buildings"
                                 placeholder="Select a Building ..."
@@ -125,7 +125,7 @@
                         <v-select
                         :class="[formErrors.categories ? 'invalid-input' : '']"
                             :debounce="250"
-                            :value="newevent.categories"
+                            :value.sync="newevent.categories"
                             :on-search="fetchForSelectCategoriesList"
                             :options="zcats"
                             :multiple="true"
@@ -135,7 +135,7 @@
 
                     </div><!-- /.form-group -->
                 </div><!-- /.md12col -->
-                <div :class="md12col">
+                <!-- <div :class="md12col">
                     <div class="form-group">
                         <label>Categories: <span :class="iconStar" class="reqstar"></span></label>
                         <select  :class="[formErrors.categories ? 'invalid-input' : '']" id="select-zcats" style="width: 100%" v-myselect="zcategories" v-bind:resultvalue="zcats" ajaxurl="/api/zcats" data-close-on-select="false" data-placeholder="zcats" data-tags="false"  multiple="multiple">
@@ -143,9 +143,8 @@
                                 default
                             </option>
                         </select>
-
-                    </div><!-- /.form-group -->
-                </div><!-- /.md12col -->
+                    </div>
+                </div> -->
             </div><!-- /.row -->
             <div class="row">
                 <div :class="md6col">
@@ -364,7 +363,7 @@
 
 
         </template>
-        <style scoped>
+<style scoped>
         p {
             margin:0;
         }
@@ -432,15 +431,12 @@
         input[type="text"]{
             margin: 0;
         }
-
-        </style>
-
-        <script>
-
-        import flatpickr from "flatpickr"
-        import vSelect from "vue-select"
-        import myselect from "../directives/myselect.js"
-        module.exports  = {
+</style>
+<script>
+    import flatpickr from "flatpickr"
+    import vSelect from "vue-select"
+    import myselect from "../directives/myselect.js"
+    module.exports  = {
             directives: {
                 myselect
             },
@@ -506,7 +502,8 @@
                         free: 0,
                         title: '',
                         description: '',
-                        mini_calendar: ''
+                        mini_calendar: '',
+                        categories:[]
                     },
                     response: {
 
@@ -522,7 +519,7 @@
                 }
             },
             ready: function() {
-                this.newevent.user_id = this.authorid;
+                this.newevent.author_id = this.authorid;
                 var self = this;
 
 
@@ -630,24 +627,26 @@
                 iconStar: function() {
                     return (this.framework == 'foundation')? 'fi-star':'fa fa-star'
                 },
+                calloutSuccess:function(){
+                    return (this.framework == 'foundation')? 'callout success':'alert alert-success'
+
+                },
 
                 computedLocation: function() {
-
-                    // if (this.zbuildings) {
-                    //     this.newevent.building  = (this.zbuildings.length > 0)?this.zbuildings[0]:'';
-                    //     buildingChoice = 	this.newevent.building
-                    // } else {
-                    //     return
-                    // }
-
+                    let bldg,room;
                     if (this.building) {
-                        this.newevent.building = this.building
+                        this.newevent.building = this.building.name
+                        bldg = this.newevent.building
+                        room = (this.newevent.room)?' - Room:' + this.newevent.room:'';
+
                     } else {
-                        return
+                        bldg = ''
+                        room = ''
                     }
+                    return bldg + room;
                     // let  buildingChoice = 	this.newevent.building
-                    let room = (this.newevent.room)?' - Room:' + this.newevent.room:'';
-                    return this.newevent.building+ room;
+                    // let room = (this.newevent.room)?' - Room:' + this.newevent.room:'';
+                    // return this.newevent.building+ room;
                     // return this.zbuilding[0] + room
                 },
                 isOnCampus: function() {
@@ -806,8 +805,8 @@
                         this.newevent.location = this.newevent.locationoffcampus;
                     }
                     // this.newevent.location = (this.on_campus)?this.computedLocation: this.newevent.location;
-                    this.newevent.categories = this.zcategories;
-                    console.log("cats="+ this.newevent.categories);
+                    // this.newevent.categories = this.zcategories;
+                    // console.log("cats="+ this.newevent.categories);
                     this.$http.post('/api/event', this.newevent)
 
                     .then((response) =>{

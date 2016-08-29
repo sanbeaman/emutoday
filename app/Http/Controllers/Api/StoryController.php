@@ -337,29 +337,36 @@ class StoryController extends ApiController
       if($validation->passes())
      {
         //  $story = new Story;
-         $story->user_id       	= $request->get('user_id');
-         $story->title           	= $request->get('title');
-         $story->slug           	= $request->get('slug');
-         $story->subtitle           = $request->get('subtitle');
-         $story->teaser           	= $request->get('teaser');
-         $story->story_type         = $request->get('story_type');
-         $story->author_id        = $request->get('author_id',0);
-         $story->author_info        = $request->get('author_info', null);
-         $story->content     	    = $request->get('content');
-         $story->is_approved     	= $request->get('is_approved', 0);
-
-
+        $story->user_id       	= $request->get('user_id');
+        $story->title           	= $request->get('title');
+        $story->slug           	= $request->get('slug');
+        $story->subtitle           = $request->get('subtitle');
+        $story->teaser           	= $request->get('teaser');
+        $story->story_type         = $request->get('story_type');
+        $story->author_id        = $request->get('author_id',0);
+        $story->author_info        = $request->get('author_info', null);
+        $story->content     	    = $request->get('content');
+        $story->is_approved     	= $request->get('is_approved', 0);
+        $story->is_ready     	= $request->get('is_ready', 0);
         $story->is_promoted          = $request->get('is_promoted', 0);
         $story->is_featured    	= $request->get('is_featured', 0);
-       $story->is_live          = $request->get('is_live', 0);
-       $story->is_archived         = $request->get('is_archived', 0);
-         $story->start_date      	= $request->get('start_date');
-          $story->end_date      	= \Carbon\Carbon::parse($request->get('end_date', null));
-         if($story->save()) {
-             $record_id = $story->id;
+        $story->is_live          = $request->get('is_live', 0);
+        $story->is_archived         = $request->get('is_archived', 0);
+        $story->start_date      	= $request->get('start_date');
+        $story->end_date      	= \Carbon\Carbon::parse($request->get('end_date', null));
 
+        // $arrayDot = array_dot($request->input('tags'));
+        // $arrayPluck = array_pluck($request->input('tags'),'id');
+        // dd($arrayDot,$arrayPluck);
+        // $taglistRequest = $request->input('tags') == null ? [] : $request->input('tags');
+        $taglistRequest = $request->input('tags') == null ? [] : array_pluck($request->input('tags'),'value');
+
+        if($story->save()) {
+             $record_id = $story->id;
+             $story->tags()->sync($taglistRequest);
+             $story->save();
              return $this->setStatusCode(201)
-             ->respondSavedWithData('Story successfully created!',[ 'record_id' => $story->id, 'stype'=> $story->story_type] );
+             ->respondSavedWithData('Story successfully updated!',[ 'record_id' => $story->id, 'stype'=> $story->story_type] );
 
              }
          }

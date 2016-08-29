@@ -69,6 +69,22 @@ class MainController extends Controller
       //  $tweets = Tweet::orderBy('created_at','desc')->paginate(4);
         $tweets = Tweet::where('approved',1)->orderBy('created_at','desc')->take(4)->get();
 
+        $allStorysWithVideoTag = Story::whereHas('tags', function ($query) {
+            $query->where('name', 'video');
+        })->where([
+            ['is_approved',1],
+            ['story_type', 'external'],
+            ['start_date', '>=', Carbon::now()->startOfDay()]
+        ])
+        ->with('storyImages')->get();
+
+        if(count($allStorysWithVideoTag)> 0) {
+            $currentStoryWithVideoTag = $allStorysWithVideoTag->first();
+            $currentStoryImageWithVideoTag = $currentStoryWithVideoTag->storyImages()->first();
+        } else {
+            $currentStoryImageWithVideoTag = null;
+        }
+
         JavaScript::put([
             'jsis' => 'hi',
             'cdnow' => Carbon::now(),
@@ -77,7 +93,7 @@ class MainController extends Controller
             'currentPage' => $page
         ]);
 
-        return view('public.hub', compact('page', 'storyImages', 'heroImg', 'barImgs', 'currentStorysBasic', 'currentAnnouncements', 'events','tweets'));
+        return view('public.hub', compact('page', 'storyImages', 'heroImg', 'barImgs', 'currentStorysBasic', 'currentAnnouncements', 'events','tweets','currentStoryImageWithVideoTag'));
 
     }
 

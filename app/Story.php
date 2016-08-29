@@ -23,7 +23,7 @@ class Story extends Model
          *
          * @var array
          */
-    protected $fillable = ['user_id', 'title', 'slug','subtitle', 'teaser', 'content', 'external_link', 'start_date','end_date', 'is_featured','is_approved', 'is_live' ,'story_type','author_id','author_info'];
+    protected $fillable = ['user_id', 'title', 'slug','subtitle', 'teaser', 'content', 'external_link', 'start_date','end_date', 'is_featured','is_ready','is_approved', 'is_live' ,'story_type','author_id','author_info'];
 
     protected $dates = ['start_date', 'end_date'];
 
@@ -98,7 +98,7 @@ class Story extends Model
      */
     public function tags()
     {
-        return $this->belongsToMany('emutoday\Tag', "story_tag")->withTimestamps();
+        return $this->belongsToMany('emutoday\Tag', 'story_tag', 'story_id','tag_id')->withTimestamps();
     }
 
     /**

@@ -54,6 +54,7 @@
         <div class="row">
             <div class="col-md-12">
                 <a v-if="!needAuthor" @click.prevent="changeAuthor" href="#" class="btn btn-primary btn-sm">Change Author</a>
+                <a v-if="hasAuthor" @click.prevent="resetAuthor" href="#" class="btn btn-primary btn-sm">Reset Author</a>
                 <div v-if="needAuthor" class="form-inline author">
                     <div class="form-group">
                         <label for="author-last-name">Last Name</label>
@@ -86,10 +87,17 @@
                 </div><!--form-group -->
             </div><!-- /.small-6 columns -->
             <div class="col-md-6">
-                <div class="form-group">
-                    <div class="story-type pull-right">
+                <div v-if="isAdmin" class="form-group">
+                    <label>Tags:</label>
+                    <v-select
+                    :class="[formErrors.tags ? 'invalid-input' : '']"
+                        :value.sync="tags"
+                        :options="optionsTaglist"
+                        :multiple="true"
+                        placeholder="Select tags"
+                        label="name">
+                    </v-select>
 
-                    </div><!-- /.story-type -->
                 </div><!-- /.form-group -->
             </div><!-- /.small-6 columns -->
         </div><!-- /.row -->
@@ -123,11 +131,19 @@
                     {{record | json}}
                 </div> -->
             </div><!-- /.col-md-6 -->
+
             <div class="col-md-6">
+
+            </div><!-- /.col-md-6 -->
+            </div><!-- /.row -->
+        <div class="row">
+
+
+            <div class="col-md-12">
                 <div class="form-group">
                     <button v-on:click="submitForm" type="submit" class="btn btn-primary">{{submitBtnLabel}}</button>
                 </div>
-            </div><!-- /.medium-12 column -->
+            </div><!-- /.column -->
         </div>
     </form>
 </template>
@@ -218,21 +234,15 @@
 <script>
 // var moment = require('moment')
 import moment from 'moment'
+import vSelect from "vue-select"
+import ckrte from "../directives/ckrte.js"
+import flatpickr from "../directives/flatpickr.js"
 import { updateRecordId, updateRecordIsDirty, updateRecordState} from '../vuex/actions'
 import { getRecordId, getRecordState, getRecordIsDirty } from '../vuex/getters'
 // import flatpickr from 'flatpickr';
 module.exports  = {
-                props:{
-                    cuser: {default: {}},
-                    recordexists: {default: false},
-                    editid: {default: ''},
-                    stypes: {default: {}}
-                    // stypelist: {},
-                    // stypelist1: {},
-                    // stypelist2: {}
-                    // storytype1: {default: {}},
-                    // storytype: {default: {}}
-                },
+                directives: {ckrte,flatpickr},
+                components: {vSelect},
                 vuex: {
                     getters: {
                         thisRecordId: getRecordId,
@@ -255,9 +265,21 @@ module.exports  = {
                         // }
                     }
                 },
-
-              data: function() {
+                props:{
+                    cuser: {default: {}},
+                    recordexists: {default: false},
+                    editid: {default: ''},
+                    stypes: {default: {}}
+                    // stypelist: {},
+                    // stypelist1: {},
+                    // stypelist2: {}
+                    // storytype1: {default: {}},
+                    // storytype: {default: {}}
+                },
+                data: function() {
                 return {
+                    tags:[],
+                    taglist:[],
                     newform: false,
                     response_record_id:'',
                     response_stype: '',
@@ -271,7 +293,9 @@ module.exports  = {
                         email: this.cuser.email,
                         phone: this.cuser.phone
                     },
+                    userRoles: [],
                     needAuthor: false,
+                    hasAuthor: false,
                     author: {
                         id: 0,
                         last_name: '',
@@ -330,7 +354,43 @@ module.exports  = {
                   formErrors : {}
                 }
               },
+              created: function () {
+                  this.currentDate = moment();
+                  this.recordState = 'created';
+              },
+              ready() {
+                  if (this.recordexists){
+                      this.currentRecordId = this.editid;
+                      console.log('this.recordId >>>>'+     this.currentRecordId );
+                      this.singleStype = true;
+                      this.newform = false;
+                      // this.record.user_id = this.cuser.id;
+                      this.fetchCurrentRecord();
+                  } else {
+                      this.newform = true;
+                      this.hasContent = true;
+                      this.record.user_id = this.cuser.id;
+                      console.log('tthis.record.user_id'+     this.record.user_id);
+
+                      //this.stype_list = this.storytype;
+                      //this.record.story_type = this.storytype;
+                      this.fdate = this.currentDate;
+
+                      this.author = this.currentUser;
+                      this.author.id = 0;
+                      this.record.author_id = 0;
+                      this.recordState = 'new';
+                  }
+                  this.fetchTagsList();
+                  this.getUserRoles();
+              },
               computed: {
+                  optionsTaglist:function(){
+                      return this.taglist;
+                  },
+                  isAdmin:function(){
+                      return (this.userRoles.indexOf('admin') != -1)?true:false;
+                  },
                   s_types:function(){
                      // var data = localStorage[key];
                         try {
@@ -342,19 +402,6 @@ module.exports  = {
                             return this.stypes;
                         }
                   },
-                //   s_typelist:function() {
-                //       return JSON.parse(this.stypelist);
-                  //
-                //   },
-                //   s_typelist1:function(){
-                //       return JSON.parse(this.stypelist1);
-                //   },
-                //   s_typelist2:function(){
-                //       return JSON.parse(this.stypelist2);
-                //   },
-                //   stype_list: function(){
-                //       return this.storytype;
-                //   },
                   submitBtnLabel: function() {
                       return (this.recordexists)? 'Update Story' : 'Save Story';
                   },
@@ -374,30 +421,13 @@ module.exports  = {
                       }
                       return ckval
                   },
-            //       recordId: {
-            //           get () {
-            //               return this.recordId
-            //           },
-            //           set (val) {
-            //               this.updateRecordId(val)
-            //           }
-            //       },
-            //       recordIsDirty: {
-            //           get () {
-            //               return this.recordIsDirty
-            //           },
-            //           set (val) {
-            //               this.updateRecordIsDirty(val)
-            //           }
-            //       },
-            //   recordState: {
-            //       get () {
-            //           return this.recordState
-            //       },
-            //       set (val) {
-            //           this.updateRecordState(val)
-            //       }
-            //   },
+                  hasAuthor:function() {
+                      if (this.record.author_id === 0){
+                          return false;
+                      } else {
+                          return true;
+                      }
+                  },
                   recordSlug: function(){
                       if(this.record.title){
                           return  this.record.title.toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '')
@@ -413,56 +443,35 @@ module.exports  = {
 
                   }
               },
-              watch: {
-                //   'recordState': function(val,oldVal) {
-                //       console.log('new: %s, old: %s', val, oldVal)
-                //       this.updateRecordState(val)
-
-                  //
-                //   },
-                //   deep: true
-
-              },
-
-              directives: {
-                  ckrte: require('../directives/ckrte.js'),
-                  flatpickr: require('../directives/flatpickr.js')
-              },
-                created: function () {
-                    this.currentDate = moment();
-                    this.recordState = 'created';
-                },
-                ready() {
-                    if (this.recordexists){
-                        this.currentRecordId = this.editid;
-                        console.log('this.recordId >>>>'+     this.currentRecordId );
-                        this.singleStype = true;
-                        this.newform = false;
-                        // this.record.user_id = this.cuser.id;
-                        this.fetchCurrentRecord();
-                    } else {
-                        this.newform = true;
-                        this.hasContent = true;
-                        this.record.user_id = this.cuser.id;
-                        console.log('tthis.record.user_id'+     this.record.user_id);
-
-                        //this.stype_list = this.storytype;
-                        //this.record.story_type = this.storytype;
-                        this.fdate = this.currentDate;
-
-                        this.author = this.currentUser;
-                        this.author.id = 0;
-                        this.record.author_id = 0;
-                        this.recordState = 'new';
-                    }
-                },
-
               methods: {
+                  getUserRoles(){
+                      let roles = this.cuser.roles;
+                      let self = this;
+                      this.userRoles = [];
+                      if (roles.length > 0) {
+                          roles.forEach(function(item,index){
+                              self.userRoles.push(item.name);
+                          })
+                      } else {
+                        self.userRoles.push('guest');
+                      }
+
+                      console.log('userRoles===='+ this.userRoles)
+
+                  },
+                  formatTagsForRecord(val){
+                      console.log(JSON.stringify(val))
+                      this.record.tags = val.map(function(item,index){
+                          return item.id;
+                      })
+                      console.log('this.record.tags= '+ this.record.tags)
+                  },
                   nowOnReload:function() {
                       let newurl = '/admin/story/' + this.response_stype +'/'+ this.response_record_id+'/edit';
                       console.log(newurl);
                       document.location = newurl;
                   },
+
                   onRefresh: function() {
 
 
@@ -485,6 +494,14 @@ module.exports  = {
                            this.author = this.authorNew;
                       }
                       this.needAuthor = true;
+                  },
+                  resetAuthor:function(evt){
+                      if (this.record.author_id !== 0 ){
+                           this.author = this.currentUser;
+                           this.author.id = 0;
+                           this.record.author_id = 0;
+                      }
+                     // this.needAuthor = true;
                   },
                   toggleCallout:function(evt){
                      this.formMessage.isOk = false
@@ -519,6 +536,45 @@ module.exports  = {
                   jsonEquals: function(a,b) {
                       return JSON.stringify(a) === JSON.stringify(b);
                   },
+                //   fetchForSelectTagsList(){
+                //       loading(true)
+                //       this.$http.get('/api/taglist',{
+                //           q: search
+                //       }).then(resp => {
+                //           this.tags = resp.data;
+                //           loading(false)
+                //       })
+                //   },
+
+                  fetchTagsList: function() {
+
+                      this.$http.get('/api/taglist')
+                          .then((response) =>{
+                            //   let taglistraw = response.data;
+                            //   let taglistformat = this.foreachTagListRaw(response.data);
+
+
+                                  this.$set('taglist', response.data)
+                              }, (response) => {
+                                  //error callback
+                                  console.log("ERRORS");
+                                  this.formErrors =  response.data.error.message;
+
+                              }).bind(this);
+                  },
+                //   foreachTagListRaw: function(myarray) {
+                //       let newarray = [];
+                //       myarray.forEach(function(item,index){
+                //           let tobject = {};
+                //           tobject.name = item.name;
+                //           tobject.value = item.id;
+                  //
+                //           newarray.push(tobject);
+                //       });
+                  //
+                //       return newarray;
+                  //
+                //   },
                     fetchCurrentRecord: function() {
 
                         this.$http.get('/api/story/'+ this.currentRecordId +'/edit')
@@ -550,7 +606,11 @@ module.exports  = {
                             this.currentRecordId = this.record.id;
                             this.content = this.record.content;
                             // console.log('this.record.start_date='+ this.record.start_date)
-
+                            if (this.record.tags){
+                                
+                                this.tags = this.record.tags;
+                                this.record.tags = null;
+                            }
 
                             this.fdate = this.record.start_date;
                             console.log('this.fdate'+ this.fdate)
@@ -603,7 +663,16 @@ module.exports  = {
                   // this.newevent.reg_deadline = this.rdate;
                   this.record.user_id = this.cuser.id;
                  // this.record.user_id = this.currentUser.id;
-                  this.record.content = this.content;
+                 if(this.record.story_type === 'external'){
+                     this.record.content = 'not used';
+                 } else {
+                     this.record.content = this.content;
+                 }
+                 if (this.tags.length > 0) {
+                     this.record.tags = this.tags;
+                 }
+
+
                   //   this.record.story_type = this.storytype;
                   this.record.slug = this.recordSlug;
                   if (moment(this.fdate).isValid()){
@@ -659,17 +728,6 @@ module.exports  = {
                                 }).bind(this);
                     }
                     },
-
-
-                    components: {
-                        // Datepicker: require('vue-bulma-datepicker')
-                        // datepicker: require('datepicker')
-
-                        // listselect2: require('./ListSelect2.vue')
-                        // autocomplete: require('./vue-autocomplete.vue'),
-                    // 'datepicker': require('../vendor/datepicker.vue'),
-
-                    },
                     filters: {
                         momentstart: {
                             read: function(val) {
@@ -694,6 +752,16 @@ module.exports  = {
                                 return moment(val).format('YYYY-MM-DD');
                             }
                         },
+                    },
+                    watch: {
+                      //   'recordState': function(val,oldVal) {
+                      //       console.log('new: %s, old: %s', val, oldVal)
+                      //       this.updateRecordState(val)
+
+                        //
+                      //   },
+                      //   deep: true
+
                     },
                     events: {
 

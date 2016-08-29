@@ -13,6 +13,7 @@ use emutoday\Page;
 use emutoday\Magazine;
 use emutoday\Tweet;
 use emutoday\Announcement;
+use emutoday\StoryImage;
 
 use Carbon\Carbon;
 use JavaScript;
@@ -106,8 +107,21 @@ class PreviewController extends Controller
             return view('preview.magazine.story', compact('magazine','story','sroute','form', 'mainImage','sideStoryBlurbs','sideNewsStorys', 'authorInfo'));
 
 
+            } else if($stype == 'external') {
+                $currentStorysBasic = $this->story->where('story_type', 'news')->paginate(3);
+                $currentAnnouncements = $this->announcement->where('is_approved', 1)->orderBy('priority','desc')->paginate(3);
+                $events = $this->event->where([
+                        ['is_approved',1],
+                        ['start_date', '>=', Carbon::now()->startOfDay()]
+                        ])->orderBy('start_date', 'asc')
+                        ->paginate(4);
+                $tweets = Tweet::where('approved',1)->orderBy('created_at','desc')->take(4)->get();
+                $currentStoryImageWithVideoTag = $story->storyImages()->where('image_type','small')->first();
+
+                return view('preview.story.external', compact('story','sroute', 'form','currentStorysBasic', 'currentAnnouncements', 'events','tweets','currentStoryImageWithVideoTag'));
+
             } else {
-                return 'no story type';
+
             }
         }
 
@@ -135,8 +149,20 @@ class PreviewController extends Controller
             }
 
         }
-       //$events = $this->event->where(['start_date', '>=', $currentDateTime])->orderBy('start_date','desc')->get();
-    //   $fakeDate = Carbon::now()->subYear();
+
+        $allStorysWithVideoTag = Story::whereHas('tags', function ($query) {
+            $query->where('name', 'video');
+        })->where([
+            ['is_approved',1],
+            ['story_type', 'external'],
+            ['start_date', '>=', Carbon::now()->startOfDay()]
+        ])
+        ->with('storyImages')->get();
+
+        $currentStoryWithVideoTag = $allStorysWithVideoTag->first();
+
+        $currentStoryImageWithVideoTag = $currentStoryWithVideoTag->storyImages()->first();
+    
         $events = $this->event->where([
                 ['is_approved',1],
                 ['start_date', '>=', Carbon::now()->startOfDay()]
@@ -156,7 +182,7 @@ class PreviewController extends Controller
             'currentPage' => $page
         ]);
 
-        return view('preview.hub', compact('page', 'storyImages', 'heroImg', 'barImgs', 'currentStorysBasic', 'currentAnnouncements', 'events','tweets'));
+        return view('preview.hub', compact('page', 'storyImages', 'heroImg', 'barImgs', 'currentStorysBasic', 'currentAnnouncements', 'events','tweets','currentStoryImageWithVideoTag'));
 
     }
 

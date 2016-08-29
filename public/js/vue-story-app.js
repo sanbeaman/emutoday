@@ -16134,20 +16134,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 // import EventViewContent from './EventViewContent.vue'
 exports.default = {
-    components: {
-        StoryPod: _StoryPod2.default, IconToggleBtn: _IconToggleBtn2.default
-    },
+    components: { StoryPod: _StoryPod2.default, IconToggleBtn: _IconToggleBtn2.default },
     props: ['allrecords', 'stypes', 'cuser', 'role'],
-    created: function created() {
-        // this.currentDate = moment().format();
-    },
-    ready: function ready() {
-        // this.resource = this.$resource('/api/announcement/:id');
-        this.fetchAllRecords();
-
-        // this.fetchUnapprovedRecords();
-    },
-
     data: function data() {
         return {
             singleStype: false,
@@ -16160,6 +16148,7 @@ exports.default = {
             // ],
             storytype: '',
             items_unapproved_filter_storytype: '',
+            items_unapproved_filter_isready: '',
             items_approved_filter_storytype: '',
             items_live_filter_storytype: '',
             storytype_approved: '',
@@ -16175,6 +16164,16 @@ exports.default = {
             currentTypesFilter: []
         };
     },
+    created: function created() {
+        // this.currentDate = moment().format();
+    },
+    ready: function ready() {
+        // this.resource = this.$resource('/api/announcement/:id');
+        this.fetchAllRecords();
+
+        // this.fetchUnapprovedRecords();
+    },
+
     computed: {
 
         checkRole: function checkRole() {
@@ -16225,12 +16224,32 @@ exports.default = {
 
             // return  moment(value).format("ddd")
         },
+        filterUnapprovedByValues: function filterUnapprovedByValues(value) {
+            console.log('value.story_type' + value.story_type + 'value.is_ready' + value.is_ready + '_storytype=' + this.items_unapproved_filter_storytype + 'is_ready=' + this.items_unapproved_filter_isready);
+            if (this.items_unapproved_filter_storytype === '' && this.items_unapproved_filter_isready === '') {
+                return value.story_type !== '' && value.is_ready !== '';
+            } else if (this.items_unapproved_filter_storytype === '' && this.items_unapproved_filter_isready !== '') {
+                return value.story_type !== '' && value.is_ready === this.items_unapproved_filter_isready;
+            } else if (this.items_unapproved_filter_storytype !== '' && this.items_unapproved_filter_isready === '') {
+                return value.story_type === this.items_unapproved_filter_storytype && value.is_ready !== '';
+            } else {
+                return value.story_type === this.items_unapproved_filter_storytype && value.is_ready === this.items_unapproved_filter_isready;
+            }
+        },
         filterUnapprovedByStoryType: function filterUnapprovedByStoryType(value) {
             console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype);
             if (this.items_unapproved_filter_storytype === '') {
                 return value.story_type !== '';
             } else {
                 return value.story_type === this.items_unapproved_filter_storytype;
+            }
+        },
+        filterUnapprovedByIsReady: function filterUnapprovedByIsReady(value) {
+            console.log('value' + value.is_ready + 'stmodel=' + this.items_unapproved_filter_isready);
+            if (this.items_unapproved_filter_isready === '') {
+                return value.is_ready !== '';
+            } else {
+                return value.is_ready === this.items_unapproved_filter_isready;
             }
         },
         filterApprovedByStoryType: function filterApprovedByStoryType(value) {
@@ -16420,7 +16439,7 @@ exports.default = {
     events: {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <!-- <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"btn-toolbar\" role=\"toolbar\">\n                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                    <label>Filter: </label>\n                </div>\n                <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"storytype\">\n                     <template v-for=\"item in storyTypeIcons\">\n                         <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" /><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\"></span></label>\n                    </template>\n              </div>\n\n\n</div>\n        </div>\n\n    </div> -->\n    <!-- /.row -->\n    <div class=\"row\" _v-0e037730=\"\">\n        <div class=\"col-md-4\" _v-0e037730=\"\">\n            <!-- <div v-if=\"singleStype\" class=\"form-group\">\n              <label class=\"sr-only\" for=\"story-type\">Type</label>\n                  <select id=\"story-type\" v-model=\"storytype\" class=\"form-control\">\n                      <option v-for=\"stype in s_types\" v-bind:value=\"stype.shortname\">\n                          {{stype.name}}\n                      </option>\n                  </select>\n            </div> -->\n            <h4 _v-0e037730=\"\">Unapproved<p _v-0e037730=\"\">{{storytype}}</p></h4>\n            <div v-show=\"checkRole\" class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n                <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                    <label _v-0e037730=\"\">Filter: </label>\n                </div>\n                <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_unapproved_filter_storytype\" _v-0e037730=\"\">\n                     <template v-for=\"item in storyTypeIcons\">\n                         <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                    </template>\n              </div>\n            </div>\n            <div id=\"items-unapproved\" _v-0e037730=\"\">\n                <story-pod pid=\"items-unapproved\" v-for=\"item in items_unapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByStoryType items_unapproved_filter_storytype\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-unapproved\" _v-0e037730=\"\">\n                </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h4 _v-0e037730=\"\">Approved</h4>\n        <div v-show=\"checkRole\" class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n            <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                <label _v-0e037730=\"\">Filter: </label>\n            </div>\n            <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_approved_filter_storytype\" _v-0e037730=\"\">\n                 <template v-for=\"item in storyTypeIcons\">\n                     <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                </template>\n          </div>\n      </div>\n        <div id=\"items-approved\" _v-0e037730=\"\">\n            <story-pod pid=\"items-approved\" v-for=\"item in items_approved | orderBy 'start_date' 1 | filterBy filterApprovedByStoryType items_approved_filter_storytype\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"items-approved\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n\n\n\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h4 _v-0e037730=\"\">Live <small _v-0e037730=\"\">Approved and StartDate is past</small></h4>\n        <div v-show=\"checkRole\" class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n            <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                <label _v-0e037730=\"\">Filter: </label>\n            </div>\n            <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_live_filter_storytype\" _v-0e037730=\"\">\n                 <template v-for=\"item in storyTypeIcons\">\n                     <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                </template>\n          </div>\n      </div>\n        <div id=\"items-live\" _v-0e037730=\"\">\n            <story-pod pid=\"items-live\" v-for=\"item in itemsLive | orderBy 'start_date' 1 | filterBy filterLiveByStoryType\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"items-live\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n</div><!-- ./row -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <!-- <div class=\"row\">\n        <div class=\"col-md-12\">\n            <div class=\"btn-toolbar\" role=\"toolbar\">\n                <div class=\"btn-group btn-group-xs\" role=\"group\">\n                    <label>Filter: </label>\n                </div>\n                <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"storytype\">\n                     <template v-for=\"item in storyTypeIcons\">\n                         <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" /><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\"></span></label>\n                    </template>\n              </div>\n\n\n</div>\n        </div>\n\n    </div> -->\n    <!-- /.row -->\n    <div class=\"row\" _v-0e037730=\"\">\n        <div class=\"col-md-4\" _v-0e037730=\"\">\n            <!-- <div v-if=\"singleStype\" class=\"form-group\">\n              <label class=\"sr-only\" for=\"story-type\">Type</label>\n                  <select id=\"story-type\" v-model=\"storytype\" class=\"form-control\">\n                      <option v-for=\"stype in s_types\" v-bind:value=\"stype.shortname\">\n                          {{stype.name}}\n                      </option>\n                  </select>\n            </div> -->\n            <h4 _v-0e037730=\"\">Unapproved<p _v-0e037730=\"\">{{storytype}}</p></h4>\n            <div v-show=\"checkRole\" class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n                <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                    <label _v-0e037730=\"\">Filter: </label>\n                </div>\n                <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_unapproved_filter_storytype\" _v-0e037730=\"\">\n                     <template v-for=\"item in storyTypeIcons\">\n                         <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                    </template>\n              </div>\n              <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                  <label _v-0e037730=\"\">IsReady: </label>\n              </div>\n              <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"isReadyLabel\" data-toggle=\"buttons\" v-iconradio=\"items_unapproved_filter_isready\" _v-0e037730=\"\">\n                  <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"ready\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"1\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt fa fa-circle\" _v-0e037730=\"\"></span></label>\n                  <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"not ready\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"0\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt fa fa-circle-o\" _v-0e037730=\"\"></span></label>\n              </div>\n            </div>\n            <div id=\"items-unapproved\" _v-0e037730=\"\">\n                <story-pod pid=\"items-unapproved\" v-for=\"item in items_unapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByValues items_unapproved_filter_storytype items_unapproved_filter_isready\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"items-unapproved\" _v-0e037730=\"\">\n                </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h4 _v-0e037730=\"\">Approved</h4>\n        <div v-show=\"checkRole\" class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n            <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                <label _v-0e037730=\"\">Filter: </label>\n            </div>\n            <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_approved_filter_storytype\" _v-0e037730=\"\">\n                 <template v-for=\"item in storyTypeIcons\">\n                     <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                </template>\n          </div>\n      </div>\n        <div id=\"items-approved\" _v-0e037730=\"\">\n            <story-pod pid=\"items-approved\" v-for=\"item in items_approved | orderBy 'start_date' 1 | filterBy filterApprovedByStoryType items_approved_filter_storytype\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"items-approved\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n\n\n\n    </div><!-- /.col-md-4 -->\n    <div class=\"col-md-4\" _v-0e037730=\"\">\n        <h4 _v-0e037730=\"\">Live <small _v-0e037730=\"\">Approved and StartDate is past</small></h4>\n        <div v-show=\"checkRole\" class=\"btn-toolbar\" role=\"toolbar\" _v-0e037730=\"\">\n            <div class=\"btn-group btn-group-xs\" role=\"group\" _v-0e037730=\"\">\n                <label _v-0e037730=\"\">Filter: </label>\n            </div>\n            <div class=\"btn-group btn-group-xs\" role=\"group\" aria-label=\"typeFiltersLabel\" data-toggle=\"buttons\" v-iconradio=\"items_live_filter_storytype\" _v-0e037730=\"\">\n                 <template v-for=\"item in storyTypeIcons\">\n                     <label class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.name}}\" _v-0e037730=\"\"><input type=\"radio\" autocomplete=\"off\" value=\"{{item.shortname}}\" _v-0e037730=\"\"><span class=\"item-type-icon-shrt\" :class=\"typeIcon(item.shortname)\" _v-0e037730=\"\"></span></label>\n                </template>\n          </div>\n      </div>\n        <div id=\"items-live\" _v-0e037730=\"\">\n            <story-pod pid=\"items-live\" v-for=\"item in itemsLive | orderBy 'start_date' 1 | filterBy filterLiveByStoryType\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"items-live\" _v-0e037730=\"\">\n            </story-pod>\n        </div>\n    </div><!-- /.col-md-4 -->\n</div><!-- ./row -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16451,6 +16470,8 @@ var _VuiFlipSwitch2 = _interopRequireDefault(_VuiFlipSwitch);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
+    directives: {},
+    components: { VuiFlipSwitch: _VuiFlipSwitch2.default },
     props: ['item', 'pid', 'sroute'],
     data: function data() {
         return {
@@ -16469,18 +16490,10 @@ module.exports = {
                 level: '',
                 msg: ''
             }
-
         };
     },
-    created: function created() {
-        // this.currentDate = moment();
-        // console.log('this.currentDate=' + this.currentDate)
-    },
-    ready: function ready() {
-        //ready function
-        // this.record = this.props.item;
-        //console.log('type'+ this.item.story_type);
-    },
+    created: function created() {},
+    ready: function ready() {},
     computed: {
         timefromNow: function timefromNow() {
             return (0, _moment2.default)(this.item.start_date).fromNow();
@@ -16495,24 +16508,28 @@ module.exports = {
             return '/preview/' + this.sroute + '/' + this.item.story_type + '/' + this.item.id;
         },
         typeClass: function typeClass() {},
-        promotedIcon: function promotedIcon() {
-
-            if (this.item.is_promoted === 1) {
+        readyIcon: function readyIcon() {
+            if (this.item.is_ready === 1) {
                 pIcon = 'fa fa-circle';
             } else {
                 pIcon = 'fa fa-circle-o';
             }
-
+            return pIcon;
+        },
+        promotedIcon: function promotedIcon() {
+            if (this.item.is_promoted === 1) {
+                pIcon = 'fa fa-arrow-circle-up';
+            } else {
+                pIcon = '';
+            }
             return pIcon;
         },
         liveIcon: function liveIcon() {
-
             if (this.item.is_live === 1) {
                 lIcon = 'fa fa-home';
             } else {
                 lIcon = '';
             }
-
             return lIcon;
         },
         homeIcon: function homeIcon() {
@@ -16542,14 +16559,17 @@ module.exports = {
         },
         featuredIcon: function featuredIcon() {
 
-            if (this.item.featured === 1) {
+            if (this.item.is_featured === 1) {
                 featuredicon = 'fa fa-star';
             } else {
                 //   featuredicon = ''
-                featuredicon = 'fa fa-star-o';
+                featuredicon = '';
             }
 
             return featuredicon;
+        },
+        isReadyStatus: function isReadyStatus() {
+            return this.item.is_ready === 1 ? 'Ready' : 'Not Ready';
         },
         typeIcon: function typeIcon() {
             switch (this.item.story_type) {
@@ -16667,16 +16687,7 @@ module.exports = {
             }
         }
     },
-    directives: {
-        // mydatedropper: require('../directives/mydatedropper.js')
-        // dtpicker: require('../directives/dtpicker.js')
-    },
-    components: {
-        VuiFlipSwitch: _VuiFlipSwitch2.default
-        // autocomplete: require('./vue-autocomplete.vue'),
-        // 'datepicker': require('../vendor/datepicker.vue'),
 
-    },
     filters: {
 
         momentPretty: {
@@ -16707,7 +16718,7 @@ module.exports = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div _v-2522fd54=\"\">\n\n\n    <div v-show=\"itemMsgStatus.show\" class=\"callout callout-{{itemMsgStatus.level}}\" _v-2522fd54=\"\">\n         <span class=\"Alert__close\" @click=\"itemMsgStatus.show = false\" _v-2522fd54=\"\">X</span>\n        <h5 _v-2522fd54=\"\">{{itemMsgStatus.msg}}</h5>\n    </div>\n    <div class=\"box box-solid {{item.group}}\" _v-2522fd54=\"\">\n        <div class=\"box-header with-border\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <div class=\"pull-left\" _v-2522fd54=\"\">\n                            <span class=\"item-type-icon\" :class=\"typeIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"promotedIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"featuredIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"homeIcon\" _v-2522fd54=\"\"></span>\n                            <span class=\"item-featured-icon\" :class=\"archivedIcon\" _v-2522fd54=\"\"></span>\n                        </div><!-- /.pull-left -->\n                        <div class=\" form-inline pull-right\" _v-2522fd54=\"\">\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n                                <label _v-2522fd54=\"\">approved:</label>\n                            </div><!-- /.form-group -->\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n\n                                <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"approveItem\" :value=\"isApproved\" _v-2522fd54=\"\">\n                                </vui-flip-switch>\n                            </div>\n                        </div><!-- /.pull-right -->\n                    </div><!-- /.col-md-12-->\n                </div><!-- /.row -->\n                <div class=\"row\" _v-2522fd54=\"\">\n                        <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <h6 class=\"box-title\" _v-2522fd54=\"\">{{item.title}}</h6>\n                    </div><!-- /.col-md-12 -->\n  </a>\n                </div><!-- /.row -->\n\n        </div>  <!-- /.box-header -->\n\n      <div v-if=\"showBody\" class=\"box-body\" _v-2522fd54=\"\">\n            <p _v-2522fd54=\"\">ID: {{item.id}}</p>\n            <p _v-2522fd54=\"\">Type: {{item.story_type}}</p>\n            <p _v-2522fd54=\"\">Title: {{item.title}}</p>\n            <p _v-2522fd54=\"\">Approved: {{item.is_approved}}</p>\n            <p _v-2522fd54=\"\">Promoted: {{item.is_promoted}}</p>\n            <p _v-2522fd54=\"\">Featured: {{item.is_featured}}</p>\n            <p _v-2522fd54=\"\">Live: {{item.is_live}}</p>\n            <p _v-2522fd54=\"\">Archived: {{item.is_archived}}</p>\n            <p _v-2522fd54=\"\">Tags: {{item.tags | json}}</p>\n            <p _v-2522fd54=\"\">Start Date: {{item.start_date}}</p>\n            <p _v-2522fd54=\"\">User: {{item.user | json}}</p>\n            <p _v-2522fd54=\"\">Author: {{item.author | json}}</p>\n\n      </div><!-- /.box-body -->\n            <div class=\"box-footer list-footer\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-sm-7\" _v-2522fd54=\"\">\n                        <h5 _v-2522fd54=\"\">Live {{timefromNow}}</h5>\n                    </div><!-- /.col-md-7 -->\n                    <div class=\"col-sm-5\" _v-2522fd54=\"\">\n                        <div class=\"btn-group pull-right\" _v-2522fd54=\"\">\n                                <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-pencil\" _v-2522fd54=\"\"></i></button>\n                                <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\" :disabled=\"disabledPreview\" _v-2522fd54=\"\"><i class=\"fa fa-eye\" _v-2522fd54=\"\"></i></button>\n\n                        </div><!-- /.btn-toolbar -->\n\n                    </div><!-- /.col-md-7 -->\n                </div><!-- /.row -->\n\n\n            </div><!-- /.box-footer -->\n\n    </div><!-- /.box- -->\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div _v-2522fd54=\"\">\n\n\n    <div v-show=\"itemMsgStatus.show\" class=\"callout callout-{{itemMsgStatus.level}}\" _v-2522fd54=\"\">\n         <span class=\"Alert__close\" @click=\"itemMsgStatus.show = false\" _v-2522fd54=\"\">X</span>\n        <h5 _v-2522fd54=\"\">{{itemMsgStatus.msg}}</h5>\n    </div>\n    <div class=\"box box-solid {{item.group}}\" _v-2522fd54=\"\">\n        <div class=\"box-header with-border\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <div class=\"pull-left\" _v-2522fd54=\"\">\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.story_type}}\" _v-2522fd54=\"\"><span class=\"item-type-icon\" :class=\"typeIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" :title=\"isReadyStatus\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"readyIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Promoted\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"promotedIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Featured\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"featuredIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"on HomePage\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"homeIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Archived\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"archivedIcon\" _v-2522fd54=\"\"></span></label>\n                        </div><!-- /.pull-left -->\n                        <div class=\" form-inline pull-right\" _v-2522fd54=\"\">\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n                                <label _v-2522fd54=\"\">approved:</label>\n                            </div><!-- /.form-group -->\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n\n                                <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"approveItem\" :value=\"isApproved\" _v-2522fd54=\"\">\n                                </vui-flip-switch>\n                            </div>\n                        </div><!-- /.pull-right -->\n                    </div><!-- /.col-md-12-->\n                </div><!-- /.row -->\n                <div class=\"row\" _v-2522fd54=\"\">\n                        <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <h6 class=\"box-title\" _v-2522fd54=\"\">{{item.title}}</h6>\n                    </div><!-- /.col-md-12 -->\n  </a>\n                </div><!-- /.row -->\n\n        </div>  <!-- /.box-header -->\n\n      <div v-if=\"showBody\" class=\"box-body\" _v-2522fd54=\"\">\n            <p _v-2522fd54=\"\">ID: {{item.id}}</p>\n            <p _v-2522fd54=\"\">Type: {{item.story_type}}</p>\n            <p _v-2522fd54=\"\">Title: {{item.title}}</p>\n            <p _v-2522fd54=\"\">Ready: {{item.is_ready}}</p>\n            <p _v-2522fd54=\"\">Approved: {{item.is_approved}}</p>\n            <p _v-2522fd54=\"\">Promoted: {{item.is_promoted}}</p>\n            <p _v-2522fd54=\"\">Featured: {{item.is_featured}}</p>\n            <p _v-2522fd54=\"\">Live: {{item.is_live}}</p>\n            <p _v-2522fd54=\"\">Archived: {{item.is_archived}}</p>\n            <p _v-2522fd54=\"\">Tags: {{item.tags | json}}</p>\n            <p _v-2522fd54=\"\">Start Date: {{item.start_date}}</p>\n            <p _v-2522fd54=\"\">User: {{item.user | json}}</p>\n            <p _v-2522fd54=\"\">Author: {{item.author | json}}</p>\n\n      </div><!-- /.box-body -->\n            <div class=\"box-footer list-footer\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-sm-7\" _v-2522fd54=\"\">\n                        <h5 _v-2522fd54=\"\">Live {{timefromNow}}</h5>\n                    </div><!-- /.col-md-7 -->\n                    <div class=\"col-sm-5\" _v-2522fd54=\"\">\n                        <div class=\"btn-group pull-right\" _v-2522fd54=\"\">\n                                <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-pencil\" _v-2522fd54=\"\"></i></button>\n                                <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\" :disabled=\"disabledPreview\" _v-2522fd54=\"\"><i class=\"fa fa-eye\" _v-2522fd54=\"\"></i></button>\n\n                        </div><!-- /.btn-toolbar -->\n\n                    </div><!-- /.col-md-7 -->\n                </div><!-- /.row -->\n\n\n            </div><!-- /.box-footer -->\n\n    </div><!-- /.box- -->\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16774,14 +16785,21 @@ module.exports = {
         var btns = $(self.el).find('.btn');
 
         btns.each(function () {
+            var initValue = $(this).find('input').get(0).value;
+            if (initValue === '') {
+                $(this).addClass('active');
+                //   $(this).addClass('bg-purple');
+            }
             $(this).on('click', function () {
-                var v = $(this).find('input').get(0).value;
-                self.set(v);
+                self.set(initValue);
+                //var v = $(this).find('input').get(0).value
+                //   self.set(v);
             });
         });
     },
     update: function update() {
         var value = this._watcher.value;
+        console.log('xxxxxxxxxvalue=' + value);
         if (value) {
             this.set(value);
 
@@ -16789,11 +16807,9 @@ module.exports = {
             btns.each(function () {
                 $(this).removeClass('active');
                 $(this).removeClass('bg-purple');
-
                 var v = $(this).find('input').get(0).value;
                 //   $(this).find('span').removeClass('prpstyle');
                 if (v === value) {
-
                     $(this).addClass('active');
                     $(this).addClass('bg-purple');
                 }
@@ -16801,7 +16817,6 @@ module.exports = {
         } else {
             var input = $(this.el).find('.active input').get(0);
             if (input) {
-
                 this.set(input.value);
                 console.log('input.value=' + input.value);
             }

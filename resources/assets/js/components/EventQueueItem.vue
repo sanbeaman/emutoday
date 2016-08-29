@@ -1,17 +1,45 @@
 <template>
 
     <div class="box box-default box-solid">
-        <a v-on:click.prevent="toggleBody" href="#">
-            <div class="box-header with-border" >
-                <div class="box-date pull-left">
-                    <div class="box-date-top">{{item.start_date | titleDay}}</div>
-                    <div class="box-date-bot">{{item.start_date | titleDate}}</div>
-                </div>
-                <h5 class="box-title pull-right">{{item.title}}</h5>
-            </div>  <!-- /.box-header -->
-        </a>
-        <div class="box-body">
-        <div v-if="showBody" class="panel">
+        <div class="box-header with-border">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="box-date-top">{{item.start_date | titleDateLong}}</div>
+                </div><!-- /.col-sm-6 -->
+                <div class="col-sm-6">
+                    <form class="form-inline pull-right">
+                      <div class="form-group">
+                        <label class="sr-only" for="priority-number">Priority</label>
+                            <select id="priority-{{item.id}}" v-model="item.priority" class="form-control" number>
+                                <option v-for="option in options" v-bind:value="option.value">
+                                    {{option.text}}
+                                </option>
+                            </select>
+                      </div>
+                      <div class="form-group">
+                              <label>approved:</label>
+                          </div><!-- /.form-group -->
+                         <div class="form-group">
+                              <vui-flip-switch id="switch-{{item.id}}"
+                                  v-on:click="doThis"
+                                  :value="isApproved" >
+                              </vui-flip-switch>
+                          </div>
+                      </form>
+                </div><!-- /.col-sm-6 -->
+            </div><!-- /.row -->
+
+            <div class="row">
+              <a v-on:click.prevent="toggleBody" href="#">
+                <div class="col-sm-12">
+                    <h6 class="box-title">{{item.title}}</h6>
+                </div><!-- /.col-md-12 -->
+              </a>
+            </div><!-- /.row -->
+        </div>  <!-- /.box-header -->
+
+        <div v-if="showBody" class="box-body">
+
             <p>From: {{item.start_time}} to {{item.end_time}}</p>
             <p>{{item.description}}</p>
             <div class="item-info">
@@ -32,37 +60,56 @@
                 </form>
             </div><!-- /.panel mediaform -->
         </template>
-            </div><!-- /.panel -->
+
         </div><!-- /.box-body -->
+
+
         <div class="box-footer list-footer">
             <div class="row">
-                <div class="col-md-4">
-                    <h4>{{item.id}}</h4>
-                </div><!-- /.col-md-8 -->
-                <div class="col-md-8">
-                    <form class="form-inline pull-right">
-                    <div class="form-group">
-                        <label class="sr-only" for="priority-number">Priority</label>
-                        <select id="priority-{{item.id}}" v-model="item.priority" class="form-control" number>
-                            <option v-for="option in options" v-bind:value="option.value">
-                                {{option.text}}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <vui-flip-switch id="smitch-{{item.id}}"
-                            v-on:click="doThis"
-                            :value="is_approved" >
-                        </vui-flip-switch>
-                    </div>
-                    </form>
-                </div><!-- /.col-md-4 -->
+                <div class="col-sm-7">
+                    <h5>Live {{timefromNow}}</h5>
+                </div><!-- /.col-md-7 -->
+                <div class="col-sm-5">
+                    <div class="btn-group pull-right">
+                            <button v-on:click.prevent="editItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-pencil"></i></button>
+                            <!-- <button v-on:click.prevent="previewItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-eye"></i></button> -->
+                    </div><!-- /.btn-toolbar -->
+
+                </div><!-- /.col-md-7 -->
             </div><!-- /.row -->
-    </div><!-- /.box-footer -->
+        </div><!-- /.box-footer -->
 </div><!-- /.box- -->
 
 </template>
 <style scoped>
+.box {
+    color: #1B1B1B;
+    margin-bottom: 10px;
+}
+.box-body {
+    background-color: #fff;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin:0;
+}
+
+.box-header {
+    padding: 3px;
+}
+.box-footer {
+    padding: 3px;
+}
+h5.box-footer {
+    padding: 3px;
+}
+button.footer-btn {
+    border-color: #1B1B1B;
+
+}
+h6.box-title {
+    font-size: 16px;
+    color: #1B1B1B;
+}
     .box-date-top {
 
     }
@@ -77,24 +124,27 @@
             border: 1px solid #999999;
         }
 
-
         h6 {
-            font-size: 14px;
             margin-top: 0;
             margin-bottom: 0;
         }
+        h5 {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
         .form-group {
             /*border: 1px solid red;*/
         }
         .form-group label{
             margin-bottom: 0;
         }
-        .box.box-solid.box-default {
+        /*.box.box-solid.box-default {
             border: 1px solid #999999;
         }
         .box-body {
             padding: 3px 6px;
-        }
+        }*/
 </style>
 <script>
 var moment = require('moment')
@@ -166,6 +216,18 @@ module.exports  = {
             console.log(pth + fname)
             return pth + fname;
         },
+        timefromNow:function() {
+            return moment(this.item.start_date).fromNow()
+        },
+        isApproved: function() {
+            return this.item.is_approved;
+        },
+        itemEditPath: function(){
+            return '/admin/event/'+ this.item.id + '/edit'
+        },
+        itemPreviewPath: function(){
+            return '/preview/event/'+ this.item.id
+        },
 
 
 
@@ -177,6 +239,12 @@ module.exports  = {
             //     this.formInputs.attachment = event.target.file;
             // },
             // Handle the form submission here
+            editItem: function(ev) {
+
+
+                window.location.href = this.itemEditPath;
+            },
+
            uploadMediaFile(event) {
                event.preventDefault();
                event.stopPropagation();
@@ -292,6 +360,9 @@ module.exports  = {
         },
         titleDate: function (value) {
             return  moment(value).format("MM/DD")
+        },
+        titleDateLong: function (value) {
+            return  moment(value).format("ddd MM/DD")
         },
         momentPretty: {
             read: function(val) {

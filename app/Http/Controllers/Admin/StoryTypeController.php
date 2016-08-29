@@ -483,8 +483,10 @@ public function update(Requests\UpdateStoryRequest $request, $id)
     $countCurrentStoryImages = $currentStoryImages->count();
 
     if($countCurrentStoryImages >= $countRequiredImages){
+        $story->is_ready = 1;
         $story->is_promoted = 1;
     } else {
+        $story->is_ready = 0;
         $story->is_promoted = 0;
     }
     $story->save();

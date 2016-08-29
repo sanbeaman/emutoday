@@ -37,11 +37,18 @@
                          <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="{{item.name}}"><input type="radio" autocomplete="off" value="{{item.shortname}}" /><span class="item-type-icon-shrt" :class="typeIcon(item.shortname)"></span></label>
                     </template>
               </div>
+              <div class="btn-group btn-group-xs" role="group">
+                  <label>IsReady: </label>
+              </div>
+              <div class="btn-group btn-group-xs" role="group" aria-label="isReadyLabel" data-toggle="buttons" v-iconradio="items_unapproved_filter_isready">
+                  <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="ready"><input type="radio" autocomplete="off" value="1" /><span class="item-type-icon-shrt fa fa-circle"></span></label>
+                  <label class="btn btn-default" data-toggle="tooltip" data-placement="top" title="not ready"><input type="radio" autocomplete="off" value="0" /><span class="item-type-icon-shrt fa fa-circle-o"></span></label>
+              </div>
             </div>
             <div id="items-unapproved">
                 <story-pod
                     pid="items-unapproved"
-                    v-for="item in items_unapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByStoryType items_unapproved_filter_storytype"
+                    v-for="item in items_unapproved | orderBy 'start_date' 1 | filterBy filterUnapprovedByValues items_unapproved_filter_storytype items_unapproved_filter_isready"
                     @item-change="moveToApproved"
 
                     :item="item"
@@ -143,23 +150,8 @@ import IconToggleBtn from './IconToggleBtn.vue'
 import iconradio from '../directives/iconradio.js'
 // import EventViewContent from './EventViewContent.vue'
 export default  {
-    components: {
-        StoryPod,IconToggleBtn
-    },
-    props: [
-        'allrecords','stypes','cuser','role'
-    ],
-    created(){
-        // this.currentDate = moment().format();
-    },
-
-    ready() {
-        // this.resource = this.$resource('/api/announcement/:id');
-        this.fetchAllRecords();
-
-        // this.fetchUnapprovedRecords();
-
-    },
+    components: {StoryPod,IconToggleBtn},
+    props: ['allrecords','stypes','cuser','role'],
     data: function() {
         return {
             singleStype: false,
@@ -172,6 +164,7 @@ export default  {
             // ],
             storytype:'',
             items_unapproved_filter_storytype: '',
+            items_unapproved_filter_isready: '',
             items_approved_filter_storytype: '',
             items_live_filter_storytype: '',
             storytype_approved: '',
@@ -186,6 +179,16 @@ export default  {
             items_live: [],
             currentTypesFilter: [],
         }
+    },
+    created(){
+        // this.currentDate = moment().format();
+    },
+    ready() {
+        // this.resource = this.$resource('/api/announcement/:id');
+        this.fetchAllRecords();
+
+        // this.fetchUnapprovedRecords();
+
     },
     computed: {
 
@@ -238,12 +241,33 @@ export default  {
 
             // return  moment(value).format("ddd")
         },
+        filterUnapprovedByValues: function (value) {
+            console.log('value.story_type' + value.story_type + 'value.is_ready' + value.is_ready + '_storytype=' + this.items_unapproved_filter_storytype  + 'is_ready=' + this.items_unapproved_filter_isready)
+            if (this.items_unapproved_filter_storytype === '' && this.items_unapproved_filter_isready === '') {
+                return value.story_type !== '' && value.is_ready !== '';
+            } else if (this.items_unapproved_filter_storytype === '' && this.items_unapproved_filter_isready !== '') {
+                return value.story_type !== '' && value.is_ready === this.items_unapproved_filter_isready
+            } else if (this.items_unapproved_filter_storytype !== '' && this.items_unapproved_filter_isready === '') {
+                return value.story_type === this.items_unapproved_filter_storytype && value.is_ready !== ''
+            }else {
+                return value.story_type === this.items_unapproved_filter_storytype && value.is_ready === this.items_unapproved_filter_isready
+
+            }
+        },
         filterUnapprovedByStoryType: function (value) {
             console.log('value' + value.story_type + 'stmodel=' + this.items_unapproved_filter_storytype)
             if (this.items_unapproved_filter_storytype === '') {
                 return value.story_type !== '';
             } else {
                 return value.story_type === this.items_unapproved_filter_storytype;
+            }
+        },
+        filterUnapprovedByIsReady: function (value) {
+            console.log('value' + value.is_ready + 'stmodel=' + this.items_unapproved_filter_isready)
+            if (this.items_unapproved_filter_isready === '') {
+                return value.is_ready !== '';
+            } else {
+                return value.is_ready === this.items_unapproved_filter_isready;
             }
         },
         filterApprovedByStoryType: function (value) {

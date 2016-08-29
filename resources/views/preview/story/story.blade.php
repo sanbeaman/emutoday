@@ -49,7 +49,9 @@
           <div class="large-9 medium-8 small-12 columns">
             <div class="addthis"><img src="/assets/imgs/icons/fake-addthis.png" /></div>
             <h3>{{ $story->title }}</h3>
-            <h5>{{ $story->subtitle }}</h5>
+            @if(isset($story->subtitle))
+                <h5>{{ $story->subtitle }}</h5>
+            @endif
             @if(isset($mainStoryImage))
             <div id="big-feature-image">
               <img src="{{$mainStoryImage->present()->mainImageURL }}" alt="feature-image"></a>
@@ -60,14 +62,15 @@
             <div id="story-content-edit">
             {!! Form::textarea('content', null, ['class' => 'form-control', 'id' => 'cktextarea']) !!}
         </div>
-{{--
-                @if($story->author_id === 0)
-                <div class="story-author">{{ $story->author->name }}</div>
-                <p class="news-contacts">Contact {{ $story->author->email }}</p>
+        @if($story->author_id === 0)
+            <div class="story-author">{{$story->user->first_name}} {{$story->user->last_name}}</div>
+            <p class="news-contacts">Contact {{ $story->user->full_name }}, {{ $story->user->email }}{{ empty($story->user->phone) ?'': ',' . $story->user->phone  }}</p>
+
+
             @else
-                <div class="story-author">{{ $story->user->name }}</div>
-                <p class="news-contacts">Contact {{ $story->user->email }}</p>
-            @endif --}}
+                <div class="story-author">{{ $story->author->first_name }} {{ $story->author->last_name }}</div>
+                <p class="news-contacts">Contact {{ $story->author->full_name }}, {{ $story->author->email }}{{ empty($story->author->phone) ? '': ',' . $story->author->phone }}</p>
+            @endif
 
         {{--    @if($story->author) @if($story->author_id == 0)
             <div class="story-author">{{ $story->user->full_name }}</div>
