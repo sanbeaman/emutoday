@@ -506,7 +506,6 @@ class StoryController extends Controller
         // $ruteurl = "/emu-today/".$stype."/".$story->id;
         // return redirect(route('admin.story.edit', $story->id));
         return redirect()->route('emutoday_preview',['stype'=> $stype, 'id' => $story->id]);
-        // return view('public.story.main', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
 
     }
     /**

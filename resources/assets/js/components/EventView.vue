@@ -18,11 +18,6 @@
         components: { EventViewSideBar, EventViewContent},
         props: [ 'varYearUnit', 'varMonthUnit','varDayUnit', ],
 
-        ready() {
-          console.log('varYearUnit');
-        this.freshPageLand();
-
-        },
         data: function() {
           return {
             startEventObject: {
@@ -36,6 +31,10 @@
               day: '',
             }
           }
+        },
+        ready() {
+            console.log('varYearUnit');
+            this.freshPageLand();
         },
         methods : {
           handleEventFetch: function(eobject) {

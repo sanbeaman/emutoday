@@ -111,7 +111,7 @@ require('laravel-elixir-vueify');
                         'app.js'
                     ], 'public/js/public-scripts.js' );
 
-                    mix.browserify('calview.js', 'public/js/calview.js');
+                    mix.browserify('vue-caleventview.js', 'public/js/vue-caleventview.js');
                     mix.browserify('vue-event-form.js', 'public/js/vue-event-form.js');
                     mix.browserify('vue-announcement-form.js', 'public/js/vue-announcement-form.js');
                     // mix.version(['css/public-styles.css','js/public-scripts.js']);

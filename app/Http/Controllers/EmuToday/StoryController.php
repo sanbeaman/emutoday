@@ -83,7 +83,7 @@ class StoryController extends Controller
                     'sidestudentblurbs' => $sideStudentBlurbs,
                     'sideStoryBlurbs' => $sideStoryBlurbs,
                     ]);
-          return view('public.story.main', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
+          return view('public.story.story', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
         }
 
     }

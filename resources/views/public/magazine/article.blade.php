@@ -1,7 +1,7 @@
 {{-- Magazine Article Page --}}
 @extends('public.layouts.global')
 @section('offcanvaslist')
-	@include('public.magazine.partials.offcanvaslist')
+    @include('public.magazine.partials.offcanvaslist')
 @endsection
   @section('connectionbar')
     @include('public.magazine.partials.connectionbar')
@@ -16,21 +16,27 @@
                 </div>
                 <div class="large-4 medium-4 small-12 columns noleftpadding">
                   <div class="addthis magazine-top"><a href=""><img src="/assets/imgs/icons/fake-addthis.png" alt="addthis "></a></div>
-								</div>
+                                </div>
               </div>
-							<div class="row">
-								<div class="large-8 medium-8 small-12 columns">
-									<h3>{{ $story->title }}</h3>
-			            <h5>{{ $story->subtitle }}</h5>
-								</div>
-							</div><!-- /.row -->
+                            <div class="row">
+                                <div class="large-8 medium-8 small-12 columns">
+                                    <h3>{{ $story->title }}</h3>
+                        <h5>{{ $story->subtitle }}</h5>
+                                </div>
+                            </div><!-- /.row -->
               <div id="big-feature-image">
                   <img src="{{$mainImage->present()->mainImageURL}}" alt="feature-image">
               </div>
               <!-- <div class="magazine-titlebar"><img src="/assets/imgs/graphic-title.png" alt="Lost Voices"></div> -->
               {!! $story->content !!}
-              <div class="story-author">Author's name</div>
-              <p class="news-contacts">Contact Author, author@emich.edu, 734.487.XXXX</p>
+              @if($story->author_id === 0)
+                  <div class="story-author">{{$story->user->first_name}} {{$story->user->last_name}}</div>
+                  <p class="news-contacts">Contact {{ $story->user->full_name }}, {{ $story->user->email }}{{ empty($story->user->phone) ?'': ', ' . $story->user->phone  }}</p>
+              @else
+                  <div class="story-author">{{ $story->author->first_name }} {{ $story->author->last_name }}</div>
+                  <p class="news-contacts">Contact {{ $story->author->full_name }}, {{ $story->author->email }}{{ empty($story->author->phone) ? '': ', ' . $story->author->phone }}</p>
+              @endif
+
             </div>
             <div class="large-3 medium-4 small-12 columns featurepadding">
               <div class="featured-content-block magazine-block">

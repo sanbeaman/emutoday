@@ -152,7 +152,7 @@ class MainController extends Controller
             'cdend' => Carbon::now()->addDays(7),
             'cstory' => $story
         ]);
-        return view('public.story.main', compact('story','mainStoryImage', 'sideStorysFeatured', 'sideStorysStudent'));
+        return view('public.story.story', compact('story','mainStoryImage', 'sideStorysFeatured', 'sideStorysStudent'));
 
     }
 }

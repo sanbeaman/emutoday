@@ -14,7 +14,7 @@
       <div class="small-12 columns">
         <div v-for="eitem in elist">
           <div class="event-day">
-              <h4>{{$key | reformatDate}}</h4>
+              <h4>{{$key | titleDateLongWithYear }}</h4>
               <event-view-single
                 v-for="item in eitem"
                   :item="item"
@@ -63,7 +63,13 @@
 
 </style>
 <script>
+import moment from 'moment'
+import EventViewSingle from './EventViewSingle.vue'
 module.exports  = {
+    components: {EventViewSingle},
+    created: function() {
+    //  this.fetchEvents();
+    },
   data: function() {
     return {
       monthVar: '',
@@ -76,21 +82,14 @@ module.exports  = {
       hasevents: 0,
     }
   },
-  filters: {
-    reformatDate: function (value) {
-      var arr = value.split('-');
-      return arr[1] + '/' + arr[2] + '/' + arr[0];
-    },
-    yesNo: function(value) {
-      return (value == 1) ? 'Yes' : 'No';
-    }
-  },
+
   props: {
     elist: {},
     eventlist: [],
 
   },
   computed: {
+
     currentDate: function () {
       return this.monthVar+ ' ' + this.dayVar + ', ' + this.yearVar;
     },
@@ -132,17 +131,37 @@ module.exports  = {
     //   });
     // }
   },
+  events: {
+             'responseCalEvent': 'updateCalEvent'
+         },
 watch: {
 
 },
-created: function() {
-//  this.fetchEvents();
-},
-components: {
-  eventViewSingle: require('./EventViewSingle.vue'),
-},
-events: {
-           'responseCalEvent': 'updateCalEvent'
-       }
+filters: {
+    titleDay: function (value) {
+        return  moment(value).format("ddd")
+    },
+    titleDate: function (value) {
+        return  moment(value).format("MM/DD")
+    },
+    titleDateLongWithYear: function (value) {
+        console.log('titleDateLongWithYear=' + value)
+        let m = moment(value, "YYYY-MM-DD");
+        if (m.isValid()) {
+            return  moment(m).format("ddd MMM Do, YYYY")
+        } else {
+            console.log(m.invalidAt())
+        }
+
+    },
+  reformatDate: function (value) {
+    var arr = value.split('-');
+    return arr[1] + '/' + arr[2] + '/' + arr[0];
+  },
+  yesNo: function(value) {
+    return (value == 1) ? 'Yes' : 'No';
+  }
+}
+
 };
 </script>

@@ -31,12 +31,12 @@
             <div id="story-content-edit">
               {!! $story->content !!}
             </div>
-            @if($story->author)
-                <div class="story-author">{{ $story->author->name }}</div>
-                <p class="news-contacts">Contact {{ $story->author->email }}</p>
+            @if($story->author_id === 0)
+                <div class="story-author">{{$story->user->first_name}} {{$story->user->last_name}}</div>
+                <p class="news-contacts">Contact {{ $story->user->full_name }}, {{ $story->user->email }}{{ empty($story->user->phone) ?'': ', ' . $story->user->phone  }}</p>
             @else
-                <div class="story-author">{{ $story->user->name }}</div>
-                <p class="news-contacts">Contact {{ $story->user->email }}</p>
+                <div class="story-author">{{ $story->author->first_name }} {{ $story->author->last_name }}</div>
+                <p class="news-contacts">Contact {{ $story->author->full_name }}, {{ $story->author->email }}{{ empty($story->author->phone) ? '': ', ' . $story->author->phone }}</p>
             @endif
 
           </div>
