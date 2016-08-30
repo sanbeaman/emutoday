@@ -61,7 +61,7 @@
                       @foreach ($currentAnnouncements as $announcement)
                       <li><a href="/emu-today/announcement/{{$announcement->id}}">{{$announcement->title}}</a></li>
                       @endforeach
-                                            <li><a href="/emu-today/announcement" class="bottom-tab-link">More Announcement</a></li>
+                                            <li><a href="/emu-today/announcement" class="bottom-tab-link">More Announcements</a></li>
                                             </ul>
                   </div>
 

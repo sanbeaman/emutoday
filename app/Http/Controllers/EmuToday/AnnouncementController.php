@@ -25,8 +25,12 @@ class AnnouncementController extends Controller
   // public function index($id = null)
   public function index($id = null)
   {
-
-      $announcements = $this->announcement->paginate(4);
+      $currentDate = Carbon::now();
+      $announcements = $this->announcement->where([
+          ['is_approved', 1],
+          ['start_date', '<=', $currentDate],
+          ['end_date', '>=', $currentDate]
+          ])->paginate(8);
       return view('public.announcement.index', compact('announcements', 'id'));
 
   }

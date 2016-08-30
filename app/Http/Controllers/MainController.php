@@ -47,7 +47,12 @@ class MainController extends Controller
         ])->first();
 
         $currentStorysBasic = $this->story->where('story_type', 'news')->paginate(3);
-        $currentAnnouncements = $this->announcement->where('is_approved', 1)->orderBy('priority','desc')->paginate(3);
+        $currentAnnouncements = $this->announcement->where([
+            ['is_approved', 1],
+            ['start_date', '<=', $currentDateTime],
+            ['end_date', '>=', $currentDateTime]
+            ])->orderBy('priority','desc')->paginate(3);
+        // $currentAnnouncements = $this->announcement->where('is_approved', 1)->orderBy('priority','desc')->paginate(3);
         $barImgs = collect();
         $storys = $page->storys()->get();
 

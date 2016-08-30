@@ -57,6 +57,8 @@ class AnnouncementController extends ApiController
     }
     public function queueload()
     {
+        $currentDate = Carbon::now();
+
         if (\Auth::check()) {
             $user = \Auth::user();
 
@@ -64,7 +66,8 @@ class AnnouncementController extends ApiController
                 // dd($user->id);
                 $announcements = $user->announcements()->get();
             } else {
-                $announcements = Announcement::all();
+                $announcements = Announcement::where('end_date', '>=', $currentDate)->get();
+                // Announcement::all();
             }
             $fractal = new Manager();
             // $storys = Story::all();
@@ -80,7 +83,7 @@ class AnnouncementController extends ApiController
         }
     public function listall()
         {
-
+                $currentDate = Carbon::now();
                 $fractal = new Manager();
 
                 $announcements = Announcement::all();
