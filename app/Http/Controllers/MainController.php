@@ -46,12 +46,37 @@ class MainController extends Controller
             ['end_date', '>=',  $currentDateTime]
         ])->first();
 
-        $currentStorysBasic = $this->story->where('story_type', 'news')->paginate(3);
+        $currentStorysBasic = $this->story->where([
+            ['is_approved', 1],
+            ['is_archived', 0],
+            ['start_date', '<=', $currentDateTime],
+            ['end_date', '>=', $currentDateTime]
+            ])
+            ->orderBy('start_date','desc')
+            ->paginate(3);
+
         $currentAnnouncements = $this->announcement->where([
+            ['is_approved', 1],
+            ['is_archived', 0],
+            ['start_date', '<=', $currentDateTime],
+            ['end_date', '>=', $currentDateTime]
+        ])
+        ->orderBy('priority','desc')
+        ->orderBy('start_date','desc')
+        ->paginate(3);
+
+        $events = $this->event->where([
             ['is_approved', 1],
             ['start_date', '<=', $currentDateTime],
             ['end_date', '>=', $currentDateTime]
-            ])->orderBy('priority','desc')->paginate(3);
+        ])
+        ->orderBy('priority','desc')
+        ->orderBy('start_date','desc')
+        ->paginate(4);
+
+
+
+
         // $currentAnnouncements = $this->announcement->where('is_approved', 1)->orderBy('priority','desc')->paginate(3);
         $barImgs = collect();
         $storys = $page->storys()->get();
@@ -67,7 +92,6 @@ class MainController extends Controller
         }
        //$events = $this->event->where(['start_date', '>=', $currentDateTime])->orderBy('start_date','desc')->get();
     //   $fakeDate = Carbon::now()->subYear();
-        $events = $this->event->where('start_date', '>=', Carbon::now()->startOfDay())->orderBy('start_date', 'asc')->paginate(4);
 
 
         $storyImages = $page->storyImages();
@@ -112,11 +136,14 @@ class MainController extends Controller
             ['id', '<>', $id],
             ['is_approved', 1],
             ])->orderBy('created_at', 'desc')->take(3)->get();
-        $sideStorysStudent = $this->story->where([
-            ['story_type', 'student'],
-            ['id', '<>', $id],
-            ['is_approved', 1],
-        ])->orderBy('created_at', 'desc')->take(3)->get();
+
+        // Remove All reference to Student until Further notice
+        $sideStorysStudent = null;
+        // $sideStorysStudent = $this->story->where([
+        //     ['story_type', 'student'],
+        //     ['id', '<>', $id],
+        //     ['is_approved', 1],
+        // ])->orderBy('created_at', 'desc')->take(3)->get();
 
         JavaScript::put([
             'jsis' => 'hi',

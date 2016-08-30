@@ -22,6 +22,7 @@ class AnnouncementPresenter extends Presenter
       return 'Not Published';
   }
 
+
   public function timelineHighlight()
   {
       if ($this->start_date && $this->end_date) {

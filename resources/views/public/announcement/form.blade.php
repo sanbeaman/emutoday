@@ -2,90 +2,84 @@
 @extends('public.layouts.global')
 @section('content')
     <div id="calendar-bar">
-		<div class="row">
-			<div class="medium-12 column">
+        <div class="row">
+            <div class="medium-12 column">
 
-				@include('public.layouts.components.errors')
-				<div class="row">
-						<div class="medium-6 columns">
-							<h3 class="cal-caps toptitle">Announcements</h3>
-							<div id="vue-announcements">
-									<announcement-form framework="foundation" authorid="{{$currentUser->id}}" recordexists="{{$announcement->exists ? true: false}}" editid="{{$announcement->exists ? $announcement->id : null }}">
-										<input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
-									</announcement-form>
-							</div><!-- /#vue-event-form -->
-						</div><!-- /.medium-6 column -->
-						<div class="medium-6 columns">
-							<div class="row">
-								<div class="small-12 column">
-									<h3 class="cal-caps toptitle">Approved Announcements</h3>
-									<table id="user-events-table" class="table table-bordered table-hover">
-														<thead>
-															<tr>
-																	<th class="text-center">ID</th>
-																	<th class="text-left">Title</th>
-																	<th class="text-left">Submitted On</th>
+                @include('public.layouts.components.errors')
+                <div class="row">
+                        <div class="medium-6 columns">
+                            <h3 class="cal-caps toptitle">Announcements</h3>
+                            <div id="vue-announcements">
+                                    <announcement-form framework="foundation" authorid="{{$currentUser->id}}" recordexists="{{$announcement->exists ? true: false}}" editid="{{$announcement->exists ? $announcement->id : null }}">
+                                        <input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    </announcement-form>
+                            </div><!-- /#vue-event-form -->
+                        </div><!-- /.medium-6 column -->
+                        <div class="medium-6 columns">
 
-																	<th class="text-left">Approved On</th>
-																	<th class="text-left">Start Date</th>
-																</tr>
-														</thead>
-														<tbody>
-																@foreach($approveditems as $item)
-																		<tr>
-																			<td>{{ $item->id }}</td>
-																				<td>{{ $item->title }}</td>
-																			<td>{{ $item->submission_date }}</td>
+                            <div class="row">
+                                <div class="small-12 column">
+                                    <h3 class="cal-caps toptitle">Your Submitted Events</h3>
+                                    <table id="user-events-submitted-table" class="table table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
 
-																			<td>{{ $item->approved_date }}</td>
-																			<td>{{ $item->start_date }}</td>
-																		</tr>
-																@endforeach
-														</tbody>
-													</table>
-													{{-- {!! $storys->render() !!} --}}
-													{{-- {{ $storys->links() }} --}}
-								</div><!-- /.small-12 column -->
-							</div><!-- /.row -->
-							<div class="row">
-								<div class="small-12 column">
-									<h3 class="cal-caps toptitle">Submitted Events</h3>
-									<table id="user-events-table" class="table table-bordered table-hover">
-														<thead>
-															<tr>
-																	<th class="text-center">ID</th>
-																	<th class="text-left">Title</th>
-																	<th class="text-left">Submitted On</th>
+                                                                    <th class="text-left">Title</th>
+                                                                    <th class="text-left">Start Date</th>
+                                                                    <th class="text-left">End Date</th>
+                                                                    <th class="text-left">Submitted</th>
+                                                                </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                @foreach($submitteditems as $item)
+                                                                        <tr>
+                                                                            <td>{{ $item->title }}</td>
+                                                                            <td>{{ $item->start_date->toFormattedDateString() }}</td>
+                                                                            <td>{{ $item->end_date->toFormattedDateString() }}</td>
+                                                                            <td>{{ $item->submission_date->toFormattedDateString() }}</td>
 
-																	<th class="text-left">Approved On</th>
-																	<th class="text-left">Start Date</th>
-																</tr>
-														</thead>
-														<tbody>
-																@foreach($submitteditems as $item)
-																		<tr>
-																			<td>{{ $item->id }}</td>
-																				<td>{{ $item->title }}</td>
-																			<td>{{ $item->submission_date }}</td>
-
-																			<td>{{ $item->approved_date }}</td>
-																			<td>{{ $item->start_date }}</td>
-																		</tr>
-																@endforeach
-														</tbody>
-													</table>
-													{{-- {!! $storys->render() !!} --}}
-													{{-- {{ $storys->links() }} --}}
-								</div><!-- /.small-12 column -->
-							</div><!-- /.row -->
+                                                                        </tr>
+                                                                @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                    {{-- {!! $storys->render() !!} --}}
+                                                    {{-- {{ $storys->links() }} --}}
+                                </div><!-- /.small-12 column -->
+                            </div><!-- /.row -->
+                            <div class="row">
+                                <div class="small-12 column">
+                                    <h3 class="cal-caps toptitle">Your Approved Announcements</h3>
+                                    <table id="user-events-approved-table" class="table table-bordered table-hover">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-left">Title</th>
+                                                                <th class="text-left">Start Date</th>
+                                                                <th class="text-left">End Date</th>
+                                                                <th class="text-left">Approved</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                                @foreach($approveditems as $item)
+                                                                <tr>
+                                                                    <td>{{ $item->title }}</td>
+                                                                    <td>{{ $item->start_date->toFormattedDateString() }}</td>
+                                                                    <td>{{ $item->end_date->toFormattedDateString() }}</td>
+                                                                    <td>{{ $item->approved_date->toFormattedDateString() }}</td>
+                                                                </tr>
+                                                                @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                    {{-- {!! $storys->render() !!} --}}
+                                                    {{-- {{ $storys->links() }} --}}
+                                </div><!-- /.small-12 column -->
+                            </div><!-- /.row -->
 
 
-
-						</div><!-- /.medium-6 columns -->
-					</div><!-- /.row -->
-			</div><!-- /.small-12 column -->
-		</div><!-- /.row -->
-	</div><!-- /#calendar-bar -->
+                        </div><!-- /.medium-6 columns -->
+                    </div><!-- /.row -->
+            </div><!-- /.small-12 column -->
+        </div><!-- /.row -->
+    </div><!-- /#calendar-bar -->
 @endsection
 
 @section('scriptsfooter')

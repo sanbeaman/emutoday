@@ -23,15 +23,15 @@
               <li><a href="/emu-today/calendar">Calendar</a></li>
               <li><a href="/emu-today/announcement">Announcements</a></li>
               <li><a href="/emu-today/news">News</a></li>
-              <li><a href="/emu-today/student">Student Profiles</a></li>
+              <li><a href="http://www.wemu.org">WEMU</a></li>
               <li><a href="#">Athletics</a></li>
             </ul>
             <ul class="tier3-menu vertical dropdown menu" data-dropdown-menu>
-              <li><a href="#">Media Highlights</a></li>
+              <li><a href="http://www.emich.edu/media_highlights/">Media Highlights</a></li>
               <li><a href="/emu-today/magazine">Eastern Magazine</a></li>
-              <li><a href="#">Submit an Event</a></li>
-              <li><a href="#">Submit an Announcement</a></li>
-            </ul>
+              <li><a href="/emu-today/event/create">Submit an Event</a></li>
+              <li><a href="/emu-today/announcement/create">Submit an Announcement</a></li>
+          </ul>
            @show
         </div> <!-- off-canvas position-right -->
              <div class="off-canvas-content" data-off-canvas-content>
@@ -85,8 +85,8 @@
                                                     <li ><a class="{{ set_active('emu-today/calendar')}}" href="/emu-today/calendar"><i class="fi-play"></i>Calendar</a></li>
                                                     <li ><a class="{{ set_active('emu-today/announcement')}}" href="/emu-today/announcement"><i class="fi-play"></i>Announcements</a></li>
                                                     <li ><a class="{{ set_active('emu-today/news')}}" href="/emu-today/news"><i class="fi-play"></i>News</a></li>
-                                                    <li ><a class="{{ set_active('emu-today/student')}}" href="/emu-today/student"><i class="fi-play"></i>Student Profiles</a></li>
-                                                    <li><a href="#">Athletics</a></li>
+                                                    <li ><a href="http://www.wemu.org"><i class="fi-play"></i>WEMU</a></li>
+                                                    <li><a href="http://www.emueagles.com/">Athletics</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -102,7 +102,7 @@
                                             <div class="large-12 show-for-medium columns">
                                             <ul>
                                                 <!-- '/admin/php/secondary_nav.php'); -->
-                                                <li><a href="#">For the Media</a></li>
+                                                <li><a href="http://www.emich.edu/communications/media/">For the Media</a></li>
                                                 <li><a href="/emu-today/magazine">Eastern Magazine</a></li>
                                                 <li><a href="/emu-today/event/create">Submit an Event</a></li>
                                                 <li><a href="/emu-today/announcement/create">Submit an Announcement</a></li>

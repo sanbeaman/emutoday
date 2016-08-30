@@ -18,8 +18,8 @@ class StoryController extends Controller
     {
 
         $this->storys = $storys;
-				$this->storyImage = $storyImage;
-				$this->imagetype = $imagetype;
+                $this->storyImage = $storyImage;
+                $this->imagetype = $imagetype;
     }
 
     public function index($id = null)
@@ -27,100 +27,62 @@ class StoryController extends Controller
         if ($id == null) {
           $storys = $this->storys->where('story_type', 'story')
                                   ->orWhere('story_type', 'news')
+                                  ->where([
+                                      ['is_approved', 1],
+                                      ['is_archived', 0]
+                                  ])
                                   ->orderBy('start_date', 'desc')
                                   ->paginate(8);
                                   // dd($storys->count());
           return view('public.story.index', compact('storys'));
 
         } else {
-          $story = $this->storys->findOrFail($id);
-					// $mainStoryImage = $story->storyImages()->ofType('imagemain')->first();
-					$mainStoryImage = null;
-					$mainStoryImages = $story->storyImages()->where('image_type','story')->get();
-					// dd($mainStoryImage);
-					foreach($mainStoryImages as $mainimg){
-						if($mainimg->imgtype->type == 'story') {
-							$mainStoryImage = $mainimg;
-							break;
-						}
-					}
-					// dd($mainStoryImage);
-					//
-          // $mainStoryImage = $story->storyImages()->where('image_type', 'imagemain')->first();
-					// $small_type_imgs = $this->imagetype
-					// 						->where('name', 'emutoday_small')
-					// 						->orWhere('name','student_small')
-					// 						->get();
-					// $small_story_imgs = $small_type_imgs
-					// 						->storyImgs;
-
-					// $storyImages = $this->storyImage->with('imagetype.imgtype')->get();
-						//  dd($imagetypes);
-
-
-							// $sideFeaturedStorys = $this->storys->where([
-							// 		['story_type', 'storypromoted'],
-							// 		['id', '<>', $id],
-							// 		['is_approved', 1],
-							// 		])->orderBy('created_at', 'desc')->with('storyImages')->take(3)->get();
-							//
-							// 		$sideStoryBlurbs = collect();
-							// 		foreach ($sideFeaturedStorys as $sideFeaturedStory) {
-							// 				$sideStoryBlurbs->push($sideFeaturedStory->storyImages()->where('image_type', 'emutoday_small')->first());
-							// 		}
+            $story = $this->storys->findOrFail($id);
+            // $mainStoryImage = $story->storyImages()->ofType('imagemain')->first();
+            $mainStoryImage = null;
+            $mainStoryImages = $story->storyImages()->where('image_type','story')->get();
+            // dd($mainStoryImage);
+            foreach($mainStoryImages as $mainimg){
+                if($mainimg->imgtype->type == 'story') {
+                    $mainStoryImage = $mainimg;
+                    break;
+                }
+            }
+            $sideFeaturedStorys = $this->storys->where([
+                ['story_type', 'story'],
+                ['id', '<>', $id],
+                ['is_approved', 1],
+                ])->orderBy('created_at', 'desc')->with(['storyImages'=> function($query) {
+                    $query->where('image_type', 'small');
+                }])->take(3)->get();
+                $sideStoryBlurbs = collect();
+                foreach ($sideFeaturedStorys as $sideFeaturedStory) {
+                        $sideStoryBlurbs->push($sideFeaturedStory->storyImages()->where('image_type', 'small')->first());
+                }
 
 
-							$sideFeaturedStorys = $this->storys->where([
-									['story_type', 'story'],
-									['id', '<>', $id],
-									['is_approved', 1],
-									])->orderBy('created_at', 'desc')->with(['storyImages'=> function($query) {
-										$query->where('image_type', 'small');
-									}])->take(3)->get();
-									$sideStoryBlurbs = collect();
-									foreach ($sideFeaturedStorys as $sideFeaturedStory) {
-											$sideStoryBlurbs->push($sideFeaturedStory->storyImages()->where('image_type', 'small')->first());
-									}
-							//  dd($sideFeaturedStorys);
-						$sideStudentStorys = $this->storys->where([
-											['story_type', 'student'],
-											['id', '<>', $id],
-											['is_approved', 1],
-											])->orderBy('created_at', 'desc')->with(['storyImages'=> function($query) {
-												$query->where('image_type', 'small');
-											}])->take(3)->get();
+            //Removed Student Side Bar until firther notice
+            $sideStudentBlurbs = null;
 
-											$sideStudentBlurbs = collect();
-											foreach ($sideStudentStorys as $sideStudentStory) {
-											    $sideStudentBlurbs->push($sideStudentStory->storyImages()->where('image_type', 'small')->first());
-											}
+            //   $sideStudentStorys = $this->storys->where([
+            // 		['story_type', 'student'],
+            // 		['id', '<>', $id],
+            // 		['is_approved', 1],
+            // 		])->orderBy('created_at', 'desc')->with(['storyImages'=> function($query) {
+            // 			$query->where('image_type', 'small');
+            // 		}])->take(3)->get();
+              //
+            // 		$sideStudentBlurbs = collect();
+            // 		foreach ($sideStudentStorys as $sideStudentStory) {
+            // 		    $sideStudentBlurbs->push($sideStudentStory->storyImages()->where('image_type', 'small')->first());
+            // 		}
 
-									// dd($sideStudentBlurbs);
-
-									// $sideStoryBlurbs = collect();
-									// foreach ($sideFeaturedStorys as $sideFeaturedStory) {
-									// 		$sideStoryBlurbs->push($sideFeaturedStory->storyImages()->where('image_type', 'emutoday_small')->first());
-									// }
-
-
-          // $sideStudentStorys = $this->storys->where([
-          //     ['story_type', 'storystudent'],
-          //     ['id', '<>', $id],
-					// 			['is_approved', 1],
-          // ])->orderBy('created_at', 'desc')->take(3)->get();
-          // $sideStudentBlurbs = collect();
-          // foreach ($sideStudentStorys as $sideStudentStory) {
-          //     $sideStudentBlurbs->push($sideStudentStory->storyImages()->where('image_type', 'student_small')->first());
-          // }
-          // dd($sideStoryBlurbs->first()->present()->mainImageURL);
-					// dd($sideFeaturedStorys);
-					//
-					JavaScript::put([
-							'jsis' => 'hi',
-							'mainStoryImage' => $mainStoryImage,
-							'sidestudentblurbs' => $sideStudentBlurbs,
-							'sideStoryBlurbs' => $sideStoryBlurbs,
-							]);
+            JavaScript::put([
+                    'jsis' => 'hi',
+                    'mainStoryImage' => $mainStoryImage,
+                    'sidestudentblurbs' => $sideStudentBlurbs,
+                    'sideStoryBlurbs' => $sideStoryBlurbs,
+                    ]);
           return view('public.story.main', compact('story', 'mainStoryImage', 'sideStoryBlurbs','sideStudentBlurbs'));
         }
 
