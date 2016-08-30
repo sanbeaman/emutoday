@@ -18,15 +18,11 @@
                   {{-- <li class="accordion-item" data-accordion-item> --}}
                     <a href="#" class="accordion-title">{{$announcement->title}}</a>
                     <div class="accordion-content" data-tab-content>
-
-                      {!! $announcement->announcement !!}
-
-                      @if($announcement->link)
-                          <br/>
-                      <a href="http://{{$announcement->link}}" class="accordion-link">{{$announcement->link_txt or 'More Info'}}</a>
+                        <p>{{ $announcement->announcement }}</p>
+                        @if($announcement->link)
+                            <p>For more information click: <a href="http://{{$announcement->link}}" class="accordion-link" target="_blank">{{$announcement->link_txt or 'More Info'}}</a></p>
                         @endif
-                      <p>Posted {{$announcement->present()->prettyDate}}</p>
-
+                        <p>Posted {{$announcement->present()->prettyDate}}</p>
                     </div>
                   </li>
                 @endforeach
