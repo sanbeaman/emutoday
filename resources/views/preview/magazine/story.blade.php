@@ -51,7 +51,7 @@
                  @if($mainImage)
                   <img src="{{$mainImage->present()->mainImageURL}}" alt="feature-image">
               @else
-                  <img src="/imagecache/original/article_front.jpg" alt="feature-image">
+                  <img src="/assets/imgs/placeholder/article_front.jpg" alt="feature-image">
 
               @endif
               </div>
