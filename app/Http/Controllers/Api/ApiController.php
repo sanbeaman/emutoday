@@ -108,6 +108,13 @@ protected $statusCode = 200;
           'newdata' => $data
         ]);
     }
+    public function respondUpdated($message)
+    {
+
+        return $this->setStatusCode(201)->respond([
+          'message' => $message
+        ]);
+    }
     public function respondCreated($message)
     {
 

@@ -1,13 +1,11 @@
 @extends('admin.layouts.adminlte')
-@section('title', $announcement->exists ? 'Editing '.$announcement->title : 'Create New Announcement')
+@section('title','Announcement Queue')
 @section('style-vendor')
     @parent
 @endsection
 @section('style-plugin')
     @parent
 <!-- iCheck for checkboxes and radio inputs -->
-<link rel="stylesheet" type="text/css" href="/themes/plugins/flatpickr.min.css">
-
 <link rel="stylesheet" href="/themes/admin-lte/plugins/iCheck/all.css">
 {{-- <link rel="stylesheet" href="/themes/plugins/eonasdan-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"> --}}
 
@@ -20,26 +18,17 @@
         @parent
     @endsection
 @section('content')
-    <div class="row">
-        <div class="col-md-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">{{$announcement->exists ? 'Edit Announcement' : 'New Announcement'}}</h3>
-                    @include('admin.layouts.components.boxtools', ['rte' => 'announcement', 'path' => 'admin/announcement'])
-                </div>	<!-- /.box-header -->
-                <div class="box-body">
-                    <div id="vue-announcements">
-                            <announcement-form framework="bootstrap" authorid="{{$currentUser->id}}" recordexists="{{$announcement->exists ? true: false}}" recordid="{{$announcement->exists ? $announcement->id : null }}">
-                                <input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
-                            </announcement-form>
-                    </div><!-- /#vue-event-form -->
-            </div><!-- /.box-body -->
-      </div><!-- /.box -->
-        </div><!-- /.col-md-6 -->
-        <div class="col-md-6">
-
-        </div><!-- /.col-md-6 -->
-    </div><!-- /.row -->
+    {{-- <div id="vueapp">
+    <component  :var-year-unit="{!! $varYearUnit !!}"
+                            :var-month-unit="{!! $varMonthUnit !!}"
+                            :var-day-unit="{!! $varDayUnit !!}"
+                            is="event-view">
+    </component>
+</div><!-- vue-app --> --}}
+    <div id="vue-announcement-queue">
+            <announcement-queue>
+            </announcement-queue>
+    </div><!-- /.vue-announcement-app -->
 
 @endsection
 @section('footer-vendor')
@@ -73,7 +62,7 @@
 
     @section('footer-app')
     @parent
-      <script type="text/javascript" src="/js/vue-announcement-form.js"></script>
+      <script type="text/javascript" src="/js/vue-announcement-queue.js"></script>
     @endsection
 @section('footer-script')
         @parent

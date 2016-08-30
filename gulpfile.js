@@ -215,7 +215,7 @@ require('laravel-elixir-vueify');
         //  mix.browserify('vue-drag.js', 'public/js/vue-drag.js');
         mix.browserify('vue-ajax-form.js', 'public/js/vue-ajax-form.js');
         mix.browserify('mg-event-form-vue.js', 'public/js/mg-event-form-vue.js');
-        mix.browserify('vue-announcement-app.js', 'public/js/vue-announcement-app.js');
+        mix.browserify('vue-announcement-queue.js', 'public/js/vue-announcement-queue.js');
         mix.browserify('vue-bugz-app.js', 'public/js/vue-bugz-app.js');
         // mix.browserify('vue-page-builder-app.js', 'public/js/vue-page-builder-app.js');
         mix.browserify('vue-story-app.js', 'public/js/vue-story-app.js');

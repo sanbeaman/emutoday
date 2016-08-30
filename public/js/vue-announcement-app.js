@@ -16356,7 +16356,7 @@ module.exports = {
             return this.item.is_approved;
         },
         itemEditPath: function itemEditPath() {
-            return '/admin/story/' + this.item.id + '/edit';
+            return '/admin/announcement/' + this.item.id + '/edit';
         },
         itemPreviewPath: function itemPreviewPath() {
             return '/preview/story/' + this.item.id;

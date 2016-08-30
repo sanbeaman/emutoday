@@ -9,7 +9,7 @@
         <!-- DataTables -->
         <link rel="stylesheet" type="text/css" href="/themes/plugins/flatpickr.min.css">
 
-        <link rel="stylesheet" href="/themes/adminlte/plugins/datatables/dataTables.bootstrap.css">
+        {{-- <link rel="stylesheet" href="/themes/adminlte/plugins/datatables/dataTables.bootstrap.css"> --}}
     @endsection
 
     @section('style-app')
@@ -31,8 +31,11 @@
                     <!-- /.box-header -->
                     <div class="box-body">
                         <div id="vue-event-form">
-                            <event-form framework="bootstrap" authorid="{{$currentUser->id}}" eventexists="{{$event->exists ? true: false}}" editeventid="{{$event->exists ? $event->id : null }}">
-                                <input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <event-form framework="bootstrap"
+                                        authorid="{{$currentUser->id}}"
+                                        recordexists="{{$event->exists ? true: false}}"
+                                        recordid="{{$event->exists ? $event->id : null }}">
+                                        <input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
                             </event-form>
                         </div><!-- /#vue-event-form -->
                         {{-- <div id="event-form-vue">

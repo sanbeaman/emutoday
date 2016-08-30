@@ -446,7 +446,7 @@
             props:{
                 authorid: {default : '0'},
                 recordexists: {default: false},
-                editid: {default: ''},
+                recordid: {default: ''},
                 framework: {default: 'foundation'}
             },
             data: function() {
@@ -583,11 +583,11 @@
                 });
                 //  this.fetchCategoryList();
                 // console.log('editevent='+ this.editevent)
-                console.log('eventexists'+ this.eventexists)
+                console.log('eventexists'+ this.recordexists)
 
-                if(this.eventexists){
-                    console.log('editeventid'+ this.editeventid)
-                    this.fetchCurrentEvent(this.editeventid)
+                if(this.recordexists){
+                    console.log('editeventid'+ this.recordid)
+                    this.fetchCurrentRecord(this.recordid)
 
                 }
 
@@ -710,8 +710,8 @@
 
             },
             methods: {
-                fetchCurrentEvent: function() {
-                    this.$http.get('/api/event/'+ this.editeventid)
+                fetchCurrentRecord: function() {
+                    this.$http.get('/api/event/'+ this.recordid + '/edit')
 
                     .then((response) =>{
                         //response.status;
@@ -719,7 +719,7 @@
                         console.log('response.ok=' + response.ok);
                         console.log('response.statusText=' + response.statusText);
                         // console.log('response.data=' + response.data.json());
-                        this.newevent = response.data;
+                        this.newevent = response.data.data;
 
                         this.checkOverData();
                     }, (response) => {

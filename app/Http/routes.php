@@ -96,6 +96,8 @@ Route::group(['prefix' => 'api'], function() {
     Route::resource('author', 'Api\AuthorController');
     //  Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
     //  Route::get('announcement/{announcement}', ['as' => 'api_announcement_get', 'uses' => 'Api\AnnouncementController@edit']);
+    Route::get('announcement/queueload', ['as' => 'api.announcement.queueload', 'uses' => 'Api\AnnouncementController@queueload']);
+
     Route::get('announcement/listall', ['as' => 'api.announcement.listall', 'uses' => 'Api\AnnouncementController@listall']);
 
     Route::get('announcement/unapprovedItems', ['as' => 'api.announcement.unapprovedItems', 'uses' => 'Api\AnnouncementController@unapprovedItems']);
@@ -270,6 +272,7 @@ Route::group(['middleware' => ['web']], function() {
         // });
 
         Route::get('announcement/app', ['as' => 'admin.announcement.app', 'uses' => 'Admin\AnnouncementController@appload']);
+        Route::get('announcement/queue', ['as' => 'admin.announcement.queue', 'uses' => 'Admin\AnnouncementController@queue']);
 
         Route::get('announcement/{announcement}/confirm', ['as' => 'admin.announcement.confirm', 'uses' => 'Admin\AnnouncementController@confirm']);
         Route::post('announcement/delete', ['as' => 'admin_announcement_delete', 'uses' => 'Admin\AnnouncementController@delete'] );

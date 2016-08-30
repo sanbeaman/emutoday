@@ -361,18 +361,30 @@ class EventController extends ApiController
     public function edit($id)
     {
 
-            if (\Auth::check()) {
-        // The user is logged in...
-            $user = \Auth::user();
-        } else {
-            return 'Need to Connect to LDAP';
-        }
-        $event = $this->event->findOrFail($id);
+        // if (\Auth::check()) {
+        // // The user is logged in...
+        //     $user = \Auth::user();
+        // } else {
+        //     return 'Need to Connect to LDAP';
+        // }
 
-        $approved = $user->events->where('approved', '1');
-        $submitted = $user->events->where('approved', '0');
+        $fractal = new Manager();
+        // $fractal->setSerializer(new ArraySerializer());
+        // $fractal->setSerializer(new DataArraySerializer());
+        $event = Event::findOrFail($id);
 
-        return view('public.event.form', compact('event', 'approved','submitted'));
+        $resource = new Fractal\Resource\Item($event, new FractalEventTransformerModel);
+            // Turn all of that into a JSON string
+        return $fractal->createData($resource)->toArray();
+
+    //    $event = $this->event->findOrFail($id);
+
+    //    $approved = $user->events->where('approved', '1');
+    //    $submitted = $user->events->where('approved', '0');
+
+
+
+        //return view('public.event.form', compact('event', 'approved','submitted'));
 
             // $event = Event::with('eventcategories')->findOrFail($id);
             // $eventcategories = $event->eventcategories;

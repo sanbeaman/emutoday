@@ -24,12 +24,16 @@ class AnnouncementController extends ApiController
      */
     // protected $storyTransformer;
 
-    function __construct(AnnouncementTransformer $announcementTransformer, FractalAnnouncementTransformerModel $fractalAnnouncementTransformerModel )
+    function __construct()
     {
         // $this->storyTransformer = $storyTransformer;
-                    $this->announcementTransformer = $announcementTransformer;
-                    $this->fractalAnnouncementTransformerModel = $fractalAnnouncementTransformerModel;
+                    // $this->announcementTransformer = $announcementTransformer;
+                    // $this->fractalAnnouncementTransformerModel = $fractalAnnouncementTransformerModel;
         //$this->beforeFilter('auth.basic', ['on' => 'post']);
+        $this->middleware('web', ['only' => [
+           'queueload'
+        ]]);
+
     }
 
     /**
@@ -51,8 +55,30 @@ class AnnouncementController extends ApiController
         //     'data' => $this->storyTransformer->transformCollection($storys->all())
         // ]);
     }
+    public function queueload()
+    {
+        if (\Auth::check()) {
+            $user = \Auth::user();
 
-        public function listall()
+            if ($user->hasRole('contributor_1')){
+                // dd($user->id);
+                $announcements = $user->announcements()->get();
+            } else {
+                $announcements = Announcement::all();
+            }
+            $fractal = new Manager();
+            // $storys = Story::all();
+            $resource = new Fractal\Resource\Collection($announcements->all(), new FractalAnnouncementTransformerModel);
+            // Turn all of that into a Array string
+            return $fractal->createData($resource)->toArray();
+        } else {
+            return $this->setStatusCode(501)->respondWithError('Error');
+
+        }
+
+
+        }
+    public function listall()
         {
 
                 $fractal = new Manager();
@@ -131,7 +157,7 @@ class AnnouncementController extends ApiController
             //
         //  if (! Input::get('title') or ! Input::get('location'))
         $validation = \Validator::make( Input::all(), [
-                    'title'           => 'required',
+                    'title'           => 'required|max:50',
                     'start_date'      => 'required|date',
                     'end_date'        => 'required|date',
                     'announcement'     => 'required|max:255'
@@ -152,9 +178,22 @@ class AnnouncementController extends ApiController
             $announcement->announcement     	= $request->get('announcement');
             $announcement->submission_date 				= \Carbon\Carbon::now();
 
+            $announcement->link              = $request->get('link', null);
+            $announcement->link_txt          = $request->get('link_txt', null);
+            $announcement->is_approved      	= $request->get('is_approved', 0);
+            $announcement->approved_date     =  null;
+            $announcement->is_promoted     	=  0;
+
+            $announcement->priority     	    = $request->get('priority', 0);
+            $announcement->is_archived     	= $request->get('is_archived', 0);
+
+
+
             if($announcement->save()) {
+
                     return $this->setStatusCode(201)
-                                                ->respondCreated('Announcement successfully created!!!!!!!!!!');
+                    ->respondSavedWithData('Announcement successfully created!',[ 'record_id' => $announcement->id ]);
+
                     // flash()->success('Announcement has been updated and will be sent for approval');
                     // return redirect(route('emu-today.announcement.edit',$announcement->id ));
 
@@ -273,26 +312,63 @@ class AnnouncementController extends ApiController
      */
     public function update(Request $request, $id)
     {
-            // $announcement = Announcement::findOrFail($id);
-            // dd($request->all());
-            // $announcement->is_approved     		= $request->get('approved');
-            // $announcement->priority       		= $request->get('priority');
-            // $announcement->approved_date 			= \Carbon\Carbon::now();
-            // if($announcement->save()) {
-            // 		return $this->setStatusCode(201)
-            // 					->respondCreated('Announcement successfully Updated');
-            // 				}
+        $announcement = Announcement::findOrFail($id);
+
+        $validation = \Validator::make( Input::all(), [
+                    'title'           => 'required|max:50',
+                    'start_date'      => 'required|date',
+                    'end_date'        => 'required|date',
+                    'announcement'     => 'required|max:255'
+            ]);
+
+            if( $validation->fails() )
+            {
+                return $this->setStatusCode(422)
+                                        ->respondWithError($validation->errors()->getMessages());
+            }
+            if($validation->passes())
+           {
+
+               $announcement->user_id       	= $request->get('user_id');
+               $announcement->title           	= $request->get('title');
+               $announcement->start_date      	= $request->get('start_date');
+               $announcement->end_date      	= $request->get('end_date');
+               $announcement->announcement     	= $request->get('announcement');
+               $announcement->link              = $request->get('link', null);
+               $announcement->link_txt          = $request->get('link_txt', null);
+               $announcement->submission_date   = $request->get('submission_date');
+               $announcement->is_approved      	= $request->get('is_approved', 0);
+               $announcement->approved_date     = $request->get('approved_date', null);
+               $announcement->is_promoted     	= $request->get('is_promoted', 0);
+
+               $announcement->priority     	    = $request->get('priority', 0);
+               $announcement->is_archived     	= $request->get('is_archived', 0);
+
+
+
+
+               if($announcement->save()) {
+                    return $this->setStatusCode(201)
+                    ->respondSavedWithData('Announcement successfully Updated!',[ 'record_id' => $announcement->id ]);
+                        // ->respondUpdated('Announcement Successfully Updated!');
+                       }
+            }
+
       }
 
         public function updateItem($id, Request $request)
         {
             $announcement = Announcement::findOrFail($id);
+
             $announcement->is_approved = $request->get('is_approved');
-            $announcement->priority = $request->get('priority');
-            $announcement->approved_date 			= \Carbon\Carbon::now();
+            $announcement->priority = $request->get('priority', 0);
+            if($announcement->approved_date === null) {
+                $announcement->approved_date  = \Carbon\Carbon::now();
+            }
+
             if($announcement->save()) {
                     return $this->setStatusCode(201)
-                                ->respondCreated('Announcement successfully patched');
+                                ->respondUpdated('Announcement successfully Updated!');
                             }
         }
 

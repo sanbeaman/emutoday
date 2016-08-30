@@ -258,7 +258,7 @@ module.exports  = {
                       return this.item.is_approved;
                   },
                   itemEditPath: function(){
-                      return '/admin/story/'+ this.item.id + '/edit'
+                      return '/admin/announcement/'+ this.item.id + '/edit'
                   },
                   itemPreviewPath: function(){
                       return '/preview/story/'+ this.item.id

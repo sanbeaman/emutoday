@@ -17382,18 +17382,16 @@ var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _flatpickr2 = require('flatpickr');
+var _flatpickr = require('flatpickr');
 
-var _flatpickr3 = _interopRequireDefault(_flatpickr2);
+var _flatpickr2 = _interopRequireDefault(_flatpickr);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 // var moment = require('moment')
-
-
 module.exports = {
+    directives: {},
+    components: {},
     props: {
         authorid: {
             default: '0'
@@ -17401,7 +17399,7 @@ module.exports = {
         recordexists: {
             default: false
         },
-        editid: {
+        recordid: {
             default: ''
         },
         framework: {
@@ -17412,17 +17410,38 @@ module.exports = {
         return {
             startdatePicker: null,
             enddatePicker: null,
-            date: {},
+
             currentDate: {},
+            dateObject: {
+                startDateMin: '',
+                startDateDefault: '',
+                endDateMin: '',
+                endDateDefault: ''
+            },
             record: {
                 title: '',
                 announcement: '',
                 start_date: '',
-                end_date: ''
+                end_date: '',
+                approved_date: '',
+                submission_date: '',
+                is_approved: 0,
+                is_archived: 0,
+                is_promoted: 0,
+                link_txt: '',
+                link: ''
             },
+            // dateOptions: {
+            //     minDate: "today",
+            //     enableTime: false,
+            //     altFormat: "m-d-Y",
+            //     altInput: true,
+            //     altInputClass:"form-control",
+            //     dateFormat: "Y-m-d",
+            // },
             totalChars: {
                 start: 0,
-                title: 100,
+                title: 50,
                 announcement: 255
             },
             response: {},
@@ -17439,37 +17458,14 @@ module.exports = {
         console.log('this.currentDate=' + this.currentDate);
     },
     ready: function ready() {
-        var _flatpickr;
-
         this.record.user_id = this.authorid;
-        var self = this;
-        this.startdatePicker = (0, _flatpickr3.default)(document.getElementById("start-date"), (_flatpickr = {
-            minDate: "today",
-            enableTime: false,
-            altFormat: "m-d-Y",
-            altInput: true,
-            altInputClass: "form-control",
-            dateFormat: "Y-m-d"
-        }, _defineProperty(_flatpickr, 'minDate', new Date()), _defineProperty(_flatpickr, 'onChange', function onChange(dateObject, dateString) {
-            self.enddatePicker.set("minDate", dateObject);
-            self.record.start_date = dateString;
-            self.startdatePicker.value = dateString;
-        }), _flatpickr));
-
-        this.enddatePicker = (0, _flatpickr3.default)(document.getElementById("end-date"), {
-
-            enableTime: false,
-            altFormat: "m-d-Y",
-            altInput: true,
-            altInputClass: "form-control",
-            dateFormat: "Y-m-d",
-            minDate: new Date(),
-            onChange: function onChange(dateObject, dateString) {
-                self.startdatePicker.set("maxDate", dateObject);
-                self.record.end_date = dateString;
-                self.enddatePicker.value = dateString;
-            }
-        });
+        if (this.recordexists) {
+            console.log('recordid' + this.recordid);
+            this.fetchCurrentRecord(this.recordid);
+        } else {
+            //this.record.start_date = this.currentDate;
+            this.setupDatePickers();
+        }
 
         //
         //    if (this.date)
@@ -17509,21 +17505,36 @@ module.exports = {
         formControl: function formControl() {
             return this.framework == 'foundation' ? '' : 'form-control';
         },
+        calloutSuccess: function calloutSuccess() {
+            return this.framework == 'foundation' ? 'callout success' : 'alert alert-success';
+        },
+
         iconStar: function iconStar() {
             return this.framework == 'foundation' ? 'fi-star ' : 'fa fa-star';
         },
         inputGroupLabel: function inputGroupLabel() {
             return this.framework == 'foundation' ? 'input-group-label' : 'input-group-addon';
         },
-        readyForEndDate: function readyForEndDate() {
-            console.log('record' + this.record.start_date);
-            if (this.record.start_date === undefined || this.record.start_date == '') {
-                console.log('true' + true);
-                return "true";
-            } else {
-                return "false";
-            }
+        submitBtnLabel: function submitBtnLabel() {
+
+            return this.recordexists ? 'Update Announcement' : 'Submit For Approval';
         },
+        // disableEndDate: function(){
+        //     if (this.record.start_date === undefined || this.record.start_date == '') {
+        //         return true
+        //     } else {
+        //         return false
+        //     }
+        // },
+        // readyForEndDate: function() {
+        //     console.log('record' + this.record.start_date)
+        //     if (this.record.start_date === undefined || this.record.start_date == '') {
+        //         return false
+        //     } else {
+        //         return true
+        //     }
+        //
+        // },
         hasStartDate: function hasStartDate() {
             if (this.record.start_date === undefined || this.record.start_date == '') {
                 return false;
@@ -17549,28 +17560,31 @@ module.exports = {
 
     },
     methods: {
-        checkSetEndDate: function checkSetEndDate() {
-            document.getElementById("end-date").flatpickr({
-                disable: [{
-                    from: "2016-08-16",
-                    to: "2016-08-19"
-                }, "2016-08-24", new Date().fp_incr(30) // 30 days from now
-                ]
-            });
-        },
-
-        fetchCurrentRecord: function fetchCurrentRecord() {
+        //     checkSetEndDate: function() {
+        //         document.getElementById("end-date").flatpickr({
+        //             disable: [
+        //                 {
+        //                     from: "2016-08-16",
+        //                     to: "2016-08-19"
+        //                 },
+        //         "2016-08-24",
+        //         new Date().fp_incr(30) // 30 days from now
+        //     ]
+        // });
+        //     },
+        readyAgain: function readyAgain() {},
+        fetchCurrentRecord: function fetchCurrentRecord(recid) {
             var _this = this;
 
-            this.$http.get('/api/announcement/' + this.editid + '/edit').then(function (response) {
+            this.$http.get('/api/announcement/' + recid + '/edit').then(function (response) {
                 //response.status;
                 console.log('response.status=' + response.status);
                 console.log('response.ok=' + response.ok);
                 console.log('response.statusText=' + response.statusText);
                 console.log('response.data=' + response.data);
                 // data = response.data;
-
-                _this.record = response.data.data;
+                _this.$set('record', response.data.data);
+                //this.record = response.data.data;
                 console.log('this.record= ' + _this.record);
 
                 _this.checkOverData();
@@ -17583,7 +17597,61 @@ module.exports = {
         },
         checkOverData: function checkOverData() {
             console.log('this.record' + this.record.id);
+
+            if (this.startdatePicker === null) {
+                this.setupDatePickers();
+            }
+            // this.setupDatePickers();
+            //this.startdate = this.record.start_date;
         },
+        setupDatePickers: function setupDatePickers() {
+            var self = this;
+            console.log("setupDatePickers");
+            if (this.record.start_date === '') {
+                this.dateObject.startDateMin = this.currentDate;
+                this.dateObject.startDateDefault = null;
+
+                this.dateObject.endDateMin = null;
+                this.dateObject.endDateDefault = null;
+            } else {
+                this.dateObject.startDateMin = this.record.start_date;
+                this.dateObject.startDateDefault = this.record.start_date;
+                this.dateObject.endDateMin = this.record.start_date;
+                this.dateObject.endDateDefault = this.record.end_date;
+            }
+            this.startdatePicker = (0, _flatpickr2.default)(document.getElementById("start-date"), {
+                minDate: self.dateObject.startDateMin,
+                defaultDate: self.dateObject.startDateDefault,
+                enableTime: false,
+                altFormat: "m-d-Y",
+                altInput: true,
+                altInputClass: "form-control",
+                dateFormat: "Y-m-d",
+                // minDate: new Date(),
+                onChange: function onChange(dateObject, dateString) {
+                    self.enddatePicker.set("minDate", dateObject);
+                    self.record.start_date = dateString;
+                    self.startdatePicker.value = dateString;
+                }
+            });
+
+            this.enddatePicker = (0, _flatpickr2.default)(document.getElementById("end-date"), {
+                minDate: self.dateObject.endDateMin,
+                defaultDate: self.dateObject.endDateDefault,
+                enableTime: false,
+                altFormat: "m-d-Y",
+                altInput: true,
+                altInputClass: "form-control",
+                dateFormat: "Y-m-d",
+                // minDate: new Date(),
+                onChange: function onChange(dateObject, dateString) {
+                    self.startdatePicker.set("maxDate", dateObject);
+                    self.record.end_date = dateString;
+                    self.enddatePicker.value = dateString;
+                }
+            });
+        },
+
         submitForm: function submitForm(e) {
             var _this2 = this;
 
@@ -17593,16 +17661,33 @@ module.exports = {
             // this.newevent.end_date = this.edate;
             // this.newevent.reg_deadline = this.rdate;
             this.record.user_id = this.authorid;
+            var tempid = void 0;
+            if (typeof this.currentRecordId != 'undefined') {
+                tempid = this.currentRecordId;
+            } else {
+                tempid = this.record.id;
+            }
+            var method = this.recordexists ? 'put' : 'post';
+            var route = this.recordexists ? '/api/announcement/' + tempid : '/api/announcement/';
 
-            this.$http.post('/api/announcement', this.record).then(function (response) {
+            //   this.$http.post('/api/story', this.record)
+            this.$http[method](route, this.record)
+
+            //this.$http.post('/api/announcement', this.record)
+
+            .then(function (response) {
                 //response.status;
                 console.log('response.status=' + response.status);
                 console.log('response.ok=' + response.ok);
                 console.log('response.statusText=' + response.statusText);
                 console.log('response.data=' + response.data.message);
-
                 _this2.formMessage.msg = response.data.message;
+                _this2.currentRecordId = response.data.newdata.record_id;
                 _this2.formMessage.isOk = response.ok;
+                _this2.recordexists = true;
+                // this.record.id = this.currentRecordId;
+                _this2.formErrors = {};
+                _this2.fetchCurrentRecord(_this2.currentRecordId);
             }, function (response) {
                 //error callback
                 _this2.formErrors = response.data.error.message;
@@ -17610,20 +17695,7 @@ module.exports = {
         }
     },
     watch: {},
-    directives: {
 
-        // myflatpickr: require('../directives/myflatpickr.js')
-        // dtpicker: require('../directives/dtpicker.js')
-    },
-    components: {
-        // Datepicker: require('vue-bulma-datepicker')
-        // datepicker: require('datepicker')
-
-        // listselect2: require('./ListSelect2.vue')
-        // autocomplete: require('./vue-autocomplete.vue'),
-        // 'datepicker': require('../vendor/datepicker.vue'),
-
-    },
     filters: {
         momentstart: {
             read: function read(val) {
@@ -17664,7 +17736,7 @@ module.exports = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n<form _v-53150522=\"\">\n    <slot name=\"csrf\" _v-53150522=\"\"></slot>\n    <!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n    <div class=\"row\" _v-53150522=\"\">\n        <div v-bind:class=\"md12col\" _v-53150522=\"\">\n            <div v-show=\"formMessage.isOk\" class=\"callout success\" _v-53150522=\"\">\n                <h5 _v-53150522=\"\">{{formMessage.msg}}</h5>\n            </div>\n        </div>\n        <!-- /.small-12 columns -->\n    </div>\n    <!-- /.row -->\n    <div class=\"row\" _v-53150522=\"\">\n\n        <div v-bind:class=\"md12col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label _v-53150522=\"\">Title <span v-bind:class=\"iconStar\" class=\"reqstar\" _v-53150522=\"\"></span></label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-53150522=\"\">Please enter a title ({{titleChars}} characters left)</p>\n                <input v-model=\"record.title\" class=\"form-control\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-53150522=\"\">\n                <p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-53150522=\"\"> Please Include a Title!</p>\n            </div>\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label _v-53150522=\"\">Announcement <span v-bind:class=\"iconStar\" class=\"reqstar\" _v-53150522=\"\"></span>\n                    <p class=\"help-text\" id=\"announcement-helptext\" _v-53150522=\"\">({{descriptionChars}} characters left)</p>\n\n                    <textarea v-model=\"record.announcement\" class=\"form-control\" v-bind:class=\"[formErrors.announcement ? 'invalid-input' : '']\" name=\"announcement\" type=\"textarea\" rows=\"8\" _v-53150522=\"\"></textarea>\n                </label>\n                <p v-if=\"formErrors.announcement\" class=\"help-text invalid\" _v-53150522=\"\">Need a Description!</p>\n            </div>\n        </div>\n        <!-- /.small-12 columns -->\n    </div>\n    <!-- /.row -->\n\n    <div class=\"row\" _v-53150522=\"\">\n        <div :class=\"md12col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label _v-53150522=\"\">External Link</label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-53150522=\"\">Please enter the url for your external web page. (www.yourlink.com)</p>\n                <div class=\"input-group\" _v-53150522=\"\">\n                    <span :class=\"inputGroupLabel\" _v-53150522=\"\">http://</span>\n                    <input v-model=\"record.link\" class=\"form-control\" v-bind:class=\"[formErrors.link ? 'invalid-input' : '']\" name=\"link\" type=\"text\" _v-53150522=\"\">\n                </div>\n                <p v-if=\"formErrors.link\" class=\"help-text invalid\" _v-53150522=\"\">Please make sure url is properly formed.</p>\n            </div>\n        </div><!-- /.col-md-4 -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-53150522=\"\">\n        <div :class=\"md4col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label _v-53150522=\"\">External Link Text</label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-53150522=\"\">Please enter link text</p>\n                <input v-model=\"record.link_txt\" class=\"form-control\" v-bind:class=\"[formErrors.link_txt ? 'invalid-input' : '']\" name=\"link_txt\" type=\"text\" _v-53150522=\"\">\n                <p v-if=\"formErrors.link_txt\" class=\"help-text invalid\" _v-53150522=\"\"> Please include a descriptive text for your external link.</p>\n            </div>\n        </div><!-- /.col-md-4 -->\n        <div :class=\"md8col\" _v-53150522=\"\">\n            <template v-if=\"record.link_txt\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label _v-53150522=\"\">Example of External Link</label>\n                <p class=\"help-text\" _v-53150522=\"\">Below is how it may look. </p>\n                <h5 class=\"form-control\" _v-53150522=\"\">For more information click: <a href=\"#\" _v-53150522=\"\"> {{record.link_txt}}</a>.</h5>\n            </div>\n            </template>\n        </div><!-- /.md6col -->\n    </div>\n    <div class=\"row\" _v-53150522=\"\">\n        <div v-bind:class=\"md6col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label for=\"start-date\" _v-53150522=\"\">Start Date: <span v-bind:class=\"iconStar\" class=\"reqstar\" _v-53150522=\"\"></span></label>\n                <input id=\"start-date\" :class=\"formControl\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.start_date\" _v-53150522=\"\">\n                <p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-53150522=\"\">Need a Start Date</p>\n            </div>\n            <!--form-group -->\n        </div>\n        <!-- /.small-6 columns -->\n        <div v-bind:class=\"md6col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <!-- <input id=\"my-end-date\" v-dtpicker ddate=\"currentDate\" /> -->\n                <label for=\"end-date\" _v-53150522=\"\">End Date: <span v-bind:class=\"iconStar\" class=\"reqstar\" _v-53150522=\"\"></span></label>\n                <input id=\"end-date\" v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.end_date\" :disabled=\"readyForEndDate\" _v-53150522=\"\">\n                <!-- <template v-if=\"hasStartDate\">\n                    <input id=\"end-date\" v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.end_date\"   />\n\n                </template>\n                <template v-else>\n                <input v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.end_date\"  disabled=\"disabled\" />\n\n            </template> -->\n                <!-- <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\"></datepicker> -->\n                <p v-if=\"formErrors.end_date\" class=\"help-text invalid\" _v-53150522=\"\">Need an End Date</p>\n\n            </div>\n            <!--form-group -->\n        </div>\n        <!-- /.small-6 columns -->\n    </div>\n    <!-- /.row -->\n    <div class=\"row\" _v-53150522=\"\">\n        <div v-bind:class=\"md12col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <button v-on:click=\"submitForm\" type=\"submit\" v-bind:class=\"btnPrimary\" _v-53150522=\"\">Submit For Approval</button>\n            </div>\n        </div>\n    </div>\n</form>\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form _v-53150522=\"\">\n    <slot name=\"csrf\" _v-53150522=\"\"></slot>\n    <!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n    <div class=\"row\" _v-53150522=\"\">\n        <div v-bind:class=\"md12col\" _v-53150522=\"\">\n            <div v-show=\"formMessage.isOk\" :class=\"calloutSuccess\" _v-53150522=\"\">\n                <h5 _v-53150522=\"\">{{formMessage.msg}}</h5>\n            </div>\n        </div>\n        <!-- /.small-12 columns -->\n    </div>\n    <!-- /.row -->\n    <div class=\"row\" _v-53150522=\"\">\n\n        <div v-bind:class=\"md12col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label _v-53150522=\"\">Title <span v-bind:class=\"iconStar\" class=\"reqstar\" _v-53150522=\"\"></span></label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-53150522=\"\">Please enter a title ({{titleChars}} characters left)</p>\n                <input v-model=\"record.title\" class=\"form-control\" v-bind:class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-53150522=\"\">\n                <p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-53150522=\"\"> Please Include a Title!</p>\n            </div>\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label _v-53150522=\"\">Announcement <span v-bind:class=\"iconStar\" class=\"reqstar\" _v-53150522=\"\"></span>\n                    <p class=\"help-text\" id=\"announcement-helptext\" _v-53150522=\"\">({{descriptionChars}} characters left)</p>\n\n                    <textarea v-model=\"record.announcement\" class=\"form-control\" v-bind:class=\"[formErrors.announcement ? 'invalid-input' : '']\" name=\"announcement\" type=\"textarea\" rows=\"8\" _v-53150522=\"\"></textarea>\n                </label>\n                <p v-if=\"formErrors.announcement\" class=\"help-text invalid\" _v-53150522=\"\">Need a Description!</p>\n            </div>\n        </div>\n        <!-- /.small-12 columns -->\n    </div>\n    <!-- /.row -->\n\n    <div class=\"row\" _v-53150522=\"\">\n        <div :class=\"md12col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label _v-53150522=\"\">External Link</label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-53150522=\"\">Please enter the url for your external web page. (www.yourlink.com)</p>\n                <div class=\"input-group\" _v-53150522=\"\">\n                    <span :class=\"inputGroupLabel\" _v-53150522=\"\">http://</span>\n                    <input v-model=\"record.link\" class=\"form-control\" v-bind:class=\"[formErrors.link ? 'invalid-input' : '']\" name=\"link\" type=\"text\" _v-53150522=\"\">\n                </div>\n                <p v-if=\"formErrors.link\" class=\"help-text invalid\" _v-53150522=\"\">Please make sure url is properly formed.</p>\n            </div>\n        </div><!-- /.col-md-4 -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-53150522=\"\">\n        <div :class=\"md4col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label _v-53150522=\"\">External Link Text</label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-53150522=\"\">Please enter link text</p>\n                <input v-model=\"record.link_txt\" class=\"form-control\" v-bind:class=\"[formErrors.link_txt ? 'invalid-input' : '']\" name=\"link_txt\" type=\"text\" _v-53150522=\"\">\n                <p v-if=\"formErrors.link_txt\" class=\"help-text invalid\" _v-53150522=\"\"> Please include a descriptive text for your external link.</p>\n            </div>\n        </div><!-- /.col-md-4 -->\n        <div :class=\"md8col\" _v-53150522=\"\">\n            <template v-if=\"record.link_txt\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label _v-53150522=\"\">Example of External Link</label>\n                <p class=\"help-text\" _v-53150522=\"\">Below is how it may look. </p>\n                <h5 class=\"form-control\" _v-53150522=\"\">For more information click: <a href=\"#\" _v-53150522=\"\"> {{record.link_txt}}</a>.</h5>\n            </div>\n            </template>\n        </div><!-- /.md6col -->\n    </div>\n    <div class=\"row\" _v-53150522=\"\">\n\n        <div v-bind:class=\"md6col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <label for=\"start-date\" _v-53150522=\"\">Start Date: <span v-bind:class=\"iconStar\" class=\"reqstar\" _v-53150522=\"\"></span></label>\n                <input id=\"start-date\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" _v-53150522=\"\">\n\n                <!-- <input v-if=\"startdate\" :class=\"formControl\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" :value=\"startdate\" :initval=\"startdate\"  v-flatpickr=\"startdate\"> -->\n\n                <!-- <input id=\"start-date\" :class=\"formControl\" v-bind:class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" :value=\"record.start_date\" /> -->\n                <p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-53150522=\"\">Need a Start Date</p>\n            </div>\n            <!--form-group -->\n        </div>\n        <!-- /.small-6 columns -->\n        <div v-bind:class=\"md6col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <!-- <input id=\"my-end-date\" v-dtpicker ddate=\"currentDate\" /> -->\n                <label for=\"end-date\" _v-53150522=\"\">End Date: <span v-bind:class=\"iconStar\" class=\"reqstar\" _v-53150522=\"\"></span></label>\n                <input id=\"end-date\" v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" :value=\"record.end_date\" _v-53150522=\"\">\n                <!-- <template v-if=\"hasStartDate\">\n                    <input id=\"end-date\" v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.end_date\"   />\n\n                </template>\n                <template v-else>\n                <input v-bind:class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.end_date\"  disabled=\"disabled\" />\n\n            </template> -->\n                <!-- <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\"></datepicker> -->\n                <p v-if=\"formErrors.end_date\" class=\"help-text invalid\" _v-53150522=\"\">Need an End Date</p>\n\n            </div>\n            <!--form-group -->\n        </div>\n        <!-- /.small-6 columns -->\n    </div>\n    <!-- /.row -->\n    <div class=\"row\" _v-53150522=\"\">\n        <div v-bind:class=\"md12col\" _v-53150522=\"\">\n            <div v-bind:class=\"formGroup\" _v-53150522=\"\">\n                <button v-on:click=\"submitForm\" type=\"submit\" v-bind:class=\"btnPrimary\" _v-53150522=\"\">{{submitBtnLabel}}</button>\n            </div>\n        </div>\n    </div>\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

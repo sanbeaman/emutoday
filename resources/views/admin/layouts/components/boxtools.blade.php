@@ -47,14 +47,18 @@
                             <a href="/admin/{{$rte}}/create" class="btn bg-orange {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
                             <a href="/admin/{{$rte}}" class="btn bg-orange {{ set_active($path, 'disabled') }}"><i class="fa fa-list-alt"></i></a>
                 @elseif($rte == 'page')
-                    @if(isset($id))
-                        <a href="/preview/{{$rte}}/{{$id}}" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
-                    @endif
-                        <a href="/admin/{{$rte}}/create" class="btn bg-orange {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
-                        <a href="/admin/{{$rte}}" class="btn bg-orange {{ set_active($path, 'disabled') }}"><i class="fa fa-list-alt"></i></a>
-                    @else
+                        @if(isset($id))
+                            <a href="/preview/{{$rte}}/{{$id}}" class="btn bg-orange btn-sm"><i class="fa fa-eye"></i></a>
+                        @endif
+                            <a href="/admin/{{$rte}}/create" class="btn bg-orange {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
+                            <a href="/admin/{{$rte}}" class="btn bg-orange {{ set_active($path, 'disabled') }}"><i class="fa fa-list-alt"></i></a>
+                @elseif($rte == 'announcement')
+                    <a href="/admin/{{$rte}}/create" class="btn bg-orange {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
+                    <a href="/admin/{{$rte}}/queue" class="btn bg-orange {{ set_active($path, 'disabled') }}"><i class="fa fa-list-alt"></i></a>
+
+                @else
                         <a href="/admin/{{$rte}}/create" class="btn bg-purple {{ set_active($path.'/create', 'disabled') }}"><i class="fa fa-plus-square"></i></a>
-                    @endif
+                @endif
     </div><!-- /.btn-toolbar -->
 
 </div><!-- /.box-tools -->
