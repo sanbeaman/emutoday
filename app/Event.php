@@ -24,7 +24,20 @@ class Event extends Model
    * [$fillable description]
    * @var [type]
    */
-  protected $fillable = ['user_id', 'title', 'short_title', 'location', 'start_date', 'start_time', 'end_date', 'end_time' ,'all_day', 'no_end_time', 'description', 'building','room'];
+  protected $fillable = ['user_id', 'title', 'short_title', 'description',
+                        'location', 'building','room',
+                        'start_date', 'start_time', 'end_date', 'end_time' ,'all_day', 'no_end_time',
+                        'contact_person','contact_phone', 'contact_email',
+                        'related_link_1', 'related_link_1_txt',
+                        'related_link_2', 'related_link_2_txt',
+                        'related_link_3', 'related_link_3_txt',
+                        'reg_deadline', 'cost','free','participants', 'lbc_approved',
+                        'is_promoted', 'is_featured','is_approved', 'is_canceled',
+                        'homepage', 'submitter',
+                        'tickets', 'ticket_details_online','ticket_details_phone','ticket_details_office','ticket_details_other',
+                        'submission_date', 'approved_date','contact_fax','mini_calendar', 'lbc_reviewed', 'ensemble',
+                        'mba','mini_calendar_alt', 'feature_image',
+                        'on_campus','medifile_id','building_id','priority'];
 
 /**
  * [$dates description]

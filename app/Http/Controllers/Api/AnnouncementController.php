@@ -55,7 +55,7 @@ class AnnouncementController extends ApiController
         //     'data' => $this->storyTransformer->transformCollection($storys->all())
         // ]);
     }
-    public function queueload()
+    public function queueLoad()
     {
         $currentDate = Carbon::now();
 

@@ -19,7 +19,7 @@
                 <div id="items-approved">
                     <event-queue-item
                     pid="items-approved"
-                    v-for="item in itemsApproved | orderBy 'priority' -1"
+                    v-for="item in itemsApproved | orderBy 'priority' 'start_date' -1"
                     @item-change="moveToUnApproved"
                     :item="item"
                     :index="$index"
@@ -32,7 +32,7 @@
                 <div id="items-other">
                 <event-queue-item
                     pid="items-other"
-                    v-for="item in itemsPromoted | orderBy 'priority' -1"
+                    v-for="item in itemsPromoted | orderBy 'priority' 'start_date' -1"
                     @item-change="moveToUnApproved"
                     :item="item"
                     :index="$index"
@@ -55,20 +55,8 @@
     import EventQueueItem from './EventQueueItem.vue'
     // import EventViewContent from './EventViewContent.vue'
       export default  {
-        components: {
-                    EventQueueItem
-                },
-                props: [
-                    'annrecords'
-                ],
-
-
-        ready() {
-                    // this.resource = this.$resource('/api/announcement/:id');
-                    this.fetchAllRecords();
-                    // this.fetchUnapprovedRecords();
-
-        },
+        components: {EventQueueItem},
+        props: ['annrecords'],
         data: function() {
           return {
             resource: {},
@@ -81,6 +69,9 @@
             objs: {}
             }
         },
+        ready() {
+            this.fetchAllRecords();
+        },
         computed: {
             itemsApproved:function() {
                 return  this.filterItemsApproved(this.allitems);
@@ -92,21 +83,53 @@
                 return  this.filterItemsPromoted(this.itemsApproved);
             }
         },
-
         methods : {
+            fetchAllRecords: function() {
+                this.$http.get('/api/event/queueload')
+                    .then((response) =>{
+                    //response.status;
+                    console.log('response.status=' + response.status);
+                    console.log('response.ok=' + response.ok);
+                    console.log('response.statusText=' + response.statusText);
+                    console.log('response.data=' + response.data);
+                    this.$set('allitems', response.data.data)
+                    this.checkOverDataFilter();
+                }, (response) => {
+                    //error callback
+                    console.log("ERRORS");
+                }).bind(this);
+            },
+            checkOverDataFilter: function() {
+                console.log('items=' + this.items)
+                // var unapprovedItems = this.allitems.filter(function(item) {
+                // 	return item.approved === 0
+                // });
+                //
+                // this.xitems = unapprovedItems;
+                //
+                //
+                // var approvedItems = this.allitems.filter(function(item) {
+                // 	return item.approved === 1
+                // });
+                //
+                // this.items = approvedItems.sort(function(a,b){
+                // 	return parseFloat(b.priority) - parseFloat(a.priority);
+                // });
+
+            },
             filterItemsApproved: function(items) {
                 return items.filter(function(item) {
-                    return item.approved === 1
+                    return item.is_approved === 1
                 });
             },
             filterItemsUnapproved: function(items) {
                 return items.filter(function(item) {
-                    return item.approved === 0
+                    return item.is_approved === 0
                 });
             },
             filterItemsPromoted: function(items) {
                 return items.filter(function(item) {
-                    return item.promoted === 1
+                    return item.is_promoted === 1
                 });
             },
                     // checkIndexWithValue: function (chitem){
@@ -117,7 +140,7 @@
 
             // this.xitems.pop(changeditem);
                 console.log('moveToApproved'+ changeditem.priority);
-                changeditem.approved = 1;
+                changeditem.is_approved = 1;
                 changeditem.priority = changeditem.priority;
                 this.updateRecord(changeditem)
             },
@@ -125,7 +148,7 @@
 
             // this.xitems.pop(changeditem);
                 console.log('moveToUnApproved'+ changeditem)
-                changeditem.approved = 0;
+                changeditem.is_approved = 0;
 
                 this.updateRecord(changeditem)
             },
@@ -204,28 +227,7 @@
 
                     }).bind(this);
             },
-            fetchAllRecords: function() {
-                    this.$http.get('/api/event/queue')
-                    .then((response) =>{
-                    //response.status;
-                    console.log('response.status=' + response.status);
-                    console.log('response.ok=' + response.ok);
-                    console.log('response.statusText=' + response.statusText);
-                    console.log('response.data=' + response.data);
 
-                    this.$set('allitems', response.data.data)
-
-
-
-                    this.checkOverDataFilter();
-            }, (response) => {
-                //error callback
-                console.log("ERRORS");
-
-                //  this.formErrors =  response.data.error.message;
-
-            }).bind(this);
-        },
         fetchOtherRecords: function() {
             this.$http.get('/api/event/otherItems')
 
@@ -254,7 +256,7 @@
                 checkOverData: function() {
                     console.log('this.items='+ this.allitems)
                     for (var i=0; i < this.allitems.length; i++ ) {
-                        if( this.allitems[i].approved == 1) {
+                        if( this.allitems[i].is_approved == 1) {
                             this.items.push(this.allitems.splice(i,1));
                         } else {
                             this.xitems.push(this.allitems.splice(i,1));
@@ -262,24 +264,7 @@
                     }
 
                 },
-                checkOverDataFilter: function() {
-                    console.log('items=' + this.items)
-                    // var unapprovedItems = this.allitems.filter(function(item) {
-                    // 	return item.approved === 0
-                    // });
-                    //
-                    // this.xitems = unapprovedItems;
-                    //
-                    //
-                    // var approvedItems = this.allitems.filter(function(item) {
-                    // 	return item.approved === 1
-                    // });
-                    //
-                    // this.items = approvedItems.sort(function(a,b){
-                    // 	return parseFloat(b.priority) - parseFloat(a.priority);
-                    // });
 
-                }
         },
 
 

@@ -1,7 +1,7 @@
 <template>
     <form>
         <slot name="csrf"></slot>
-        <!-- <slot name="author_id" v-model="newevent.author_id"></slot> -->
+        <!-- <slot name="author_id" v-model="record.author_id"></slot> -->
         <div class="row">
             <div :class="md12col">
                 <div v-show="formMessage.isOk"  :class="calloutSuccess">
@@ -10,12 +10,12 @@
                 <div class="form-group">
                     <label>Title <span :class="iconStar" class="reqstar"></span></label>
                     <p class="help-text" id="title-helptext">Please enter a title ({{titleChars}} characters left)</p>
-                    <input v-model="newevent.title" class="form-control" :class="[formErrors.title ? 'invalid-input' : '']"  name="title" type="text">
+                    <input v-model="record.title" class="form-control" :class="[formErrors.title ? 'invalid-input' : '']"  name="title" type="text">
                     <p v-if="formErrors.title" class="help-text invalid">	Please Include a Title!</p>
                 </div>
                 <div class="form-group">
                     <label>Short Title	</label>
-                    <input v-model="newevent.short_title" class="form-control" type="text" placeholder="Short Title" name="short-title" >
+                    <input v-model="record.short_title" class="form-control" type="text" placeholder="Short Title" name="short-title" >
                 </div>
             </div><!-- /.md12col -->
         </div><!-- /.row -->
@@ -23,7 +23,7 @@
             <div :class="md6col">
                 <div class="form-group">
                     <label>Is Event on Campus?
-                        <input id="on-campus-yes" name="on_campus" type="checkbox" value="1" v-model="newevent.on_campus"/>
+                        <input id="on-campus-yes" name="on_campus" type="checkbox" value="1" v-model="record.on_campus"/>
                     </label>
                 </div>
             </div><!-- /.md6col -->
@@ -50,7 +50,7 @@
                         </div><!-- /.md8col -->
                         <div :class="md4col">
                             <label>Room</label>
-                            <input v-model="newevent.room" :class="[formErrors.room ? 'invalid-input' : '']" name="room" type="text">
+                            <input v-model="record.room" :class="[formErrors.room ? 'invalid-input' : '']" name="room" type="text">
 
                         </div><!-- /.md4col -->
                     </div><!-- /.row -->
@@ -63,7 +63,7 @@
                         </template>
                         <template v-else>
                             <label>Location <span :class="iconStar" class="reqstar"></span></label>
-                            <input v-model="newevent.locationoffcampus" class="form-control" :class="[formErrors.location ? 'invalid-input' : '']" name="location" type="text">
+                            <input v-model="record.locationoffcampus" class="form-control" :class="[formErrors.location ? 'invalid-input' : '']" name="location" type="text">
                         </template>
                     </div><!-- /.md12col -->
                 </div><!-- /.row -->
@@ -73,14 +73,14 @@
             <div :class="md6col">
                 <div class="form-group">
                     <label for="start-date">Start Date: <span :class="iconStar" class="reqstar"></span></label>
-                    <input id="start-date" :class="[formErrors.start_date ? 'invalid-input' : '']" type="text" v-model="newevent.start_date" aria-describedby="errorStartDate" />
+                    <input id="start-date" :class="[formErrors.start_date ? 'invalid-input' : '']" type="text" v-model="record.start_date" aria-describedby="errorStartDate" />
                     <p v-if="formErrors.start_date" class="help-text invalid">Need a Start Date</p>
                 </div><!--form-group -->
             </div><!-- /.md6col -->
             <div :class="md6col">
                 <div class="form-group">
                     <label for="end-date">End Date: <span :class="iconStar" class="reqstar"></span></label>
-                    <input id="end-date" :class="[formErrors.end_date ? 'invalid-input' : '']" type="text" v-model="newevent.end_date"  aria-describedby="errorEndDate" />
+                    <input id="end-date" :class="[formErrors.end_date ? 'invalid-input' : '']" type="text" v-model="record.end_date"  aria-describedby="errorEndDate" />
                     <!-- <datepicker id="end-date" :readonly="true" format="YYYY-MM-DD" name="end-date" :value.sync="edate"></datepicker> -->
                     <p v-if="formErrors.end_date" class="help-text invalid">Need an End Date</p>
 
@@ -92,15 +92,15 @@
             <div :class="md6col">
                 <div class="form-group">
                     <label for="all-day">All Day Event:
-                        <input id="all-day" name="all_day" type="checkbox" value="1" v-model="newevent.all_day"/>
+                        <input id="all-day" name="all_day" type="checkbox" value="1" v-model="record.all_day"/>
                     </label>
                 </div>
             </div><!-- /.small-6 column -->
             <div :class="md6col">
                 <div v-show="hasEndTime" class="form-group">
                     <label for="no-end-time">No End Time:
-                        <input id="no-end-time" name="no_end_time" type="checkbox" value="1" v-model="newevent.no_end_time"/>
-                        <!-- <label for="no-end-time-no" class="radiobtns">no</label><input id="no-end-time-no"  name="no_end_time" type="radio" value="0" v-model="newevent.no_end_time"/> -->
+                        <input id="no-end-time" name="no_end_time" type="checkbox" value="1" v-model="record.no_end_time"/>
+                        <!-- <label for="no-end-time-no" class="radiobtns">no</label><input id="no-end-time-no"  name="no_end_time" type="radio" value="0" v-model="record.no_end_time"/> -->
                     </div>
                 </div><!-- /.small-6 column -->
             </div><!-- /.row -->
@@ -108,13 +108,13 @@
                 <div :class="md6col">
                     <div v-show="hasStartTime" class="form-group">
                         <label for="start-time">Start Time: <span :class="iconStar" class="reqstar"></span></label>
-                        <input id="start-time" class="form-control" type="text" v-model="newevent.start_time" />
+                        <input id="start-time" class="form-control" type="text" v-model="record.start_time" />
                     </div><!-- /.form-group -->
                 </div><!-- /.md6col -->
                 <div :class="md6col">
                     <div v-show="hasEndTime" class="form-group">
                         <label for="end-time">End Time: <span :class="iconStar" class="reqstar"></span></label>
-                        <input id="end-time" class="form-control" type="text" v-model="newevent.end_time" />
+                        <input id="end-time" class="form-control" type="text" v-model="record.end_time" />
                     </div><!-- /.form-group -->
                 </div><!-- /.md6col -->
             </div><!-- /.row -->
@@ -125,7 +125,7 @@
                         <v-select
                         :class="[formErrors.categories ? 'invalid-input' : '']"
                             :debounce="250"
-                            :value.sync="newevent.categories"
+                            :value.sync="record.categories"
                             :on-search="fetchForSelectCategoriesList"
                             :options="zcats"
                             :multiple="true"
@@ -150,7 +150,7 @@
                 <div :class="md6col">
                     <div class="form-group">
                         <label>Contact Person: <span :class="iconStar" class="reqstar"></span><em>(Jane Doe)</em></label>
-                            <input v-model="newevent.contact_person" class="form-control" :class="[formErrors.contact_person ? 'invalid-input' : '']" name="contact-person" type="text">
+                            <input v-model="record.contact_person" class="form-control" :class="[formErrors.contact_person ? 'invalid-input' : '']" name="contact-person" type="text">
                             <p v-if="formErrors.contact_person" class="help-text invalid">Need a Contact Person!</p>
 
                     </div>
@@ -158,7 +158,7 @@
                 <div :class="md6col">
                     <div class="form-group">
                         <label>Contact Email: <span :class="iconStar" class="reqstar"></span><em>(ex.janedoe@emich.edu)</em></label>
-                            <input v-model="newevent.contact_email" class="form-control" :class="[formErrors.contact_email ? 'invalid-input' : '']" name="contact-email" type="text">
+                            <input v-model="record.contact_email" class="form-control" :class="[formErrors.contact_email ? 'invalid-input' : '']" name="contact-email" type="text">
                             <p v-if="formErrors.contact_email" class="help-text invalid">Need a Contact Email!</p>
 
                     </div>
@@ -169,7 +169,7 @@
                     <div class="form-group">
 
                         <label>Contact Phone <span :class="iconStar" class="reqstar"></span> <em>(ex. 734.487.1849)</em>
-                            <input v-model="newevent.contact_phone" class="form-control" :class="[formErrors.contact_phone ? 'invalid-input' : '']" name="contact-phone" type="text">
+                            <input v-model="record.contact_phone" class="form-control" :class="[formErrors.contact_phone ? 'invalid-input' : '']" name="contact-phone" type="text">
                             <p v-if="formErrors.contact_phone" class="help-text invalid">Need a Contact Phone!</p>
                         </label>
                     </div>
@@ -177,7 +177,7 @@
                 <div :class="md6col">
                     <div class="form-group">
                         <label>Contact Fax: <em>(ex. 734.487.1849)</em>
-                            <input v-model="newevent.contact_fax" class="form-control" :class="[formErrors.contact_fax ? 'invalid-input' : '']" name="contact-fax" type="text">
+                            <input v-model="record.contact_fax" class="form-control" :class="[formErrors.contact_fax ? 'invalid-input' : '']" name="contact-fax" type="text">
                         </label>
                     </div>
                 </div><!-- /.md6col -->
@@ -188,16 +188,58 @@
                         <label>Related Link: <em>(ex. http://www.emich.edu/calendar)</em></label>
                         <div class="row">
                             <div :class="md6col">
-                                <label for="link_text_1">Link Text</label><input v-model="linkText1" class="form-control" name="link_text_1" type="text">
+                                <label for="related_link_1_txt">Link Text</label><input v-model="record.related_link_1_txt" class="form-control" name="related_link_1_txt" type="text">
                             </div><!-- /.md6col -->
                         </div><!-- /.row -->
                         <div class="row">
                             <div :class="md12col">
-                                <label for="link_url_1">Link URL</label><input v-model="linkUrl1" class="form-control" name="link_url_1" type="text">
+                                <label for="related_link_1">Link URL</label><input v-model="record.related_link_1" class="form-control" name="related_link_1_txt" type="text">
                             </div><!-- /.md12col -->
                         </div><!-- /.row -->
                         {{relatedLink1}}
+                        <template v-if="record.related_link_1">
+                            <div class="row">
+                                <div :class="md6col">
+                                    <label for="related_link_2_txt">Link Text</label><input v-model="record.related_link_2_txt" class="form-control" name="related_link_2_txt" type="text">
+                                </div><!-- /.md6col -->
+                            </div><!-- /.row -->
+                            <div class="row">
+                                <div :class="md12col">
+                                    <label for="related_link_2">Link URL</label><input v-model="record.related_link_2" class="form-control" name="related_link_2_txt" type="text">
+                                </div><!-- /.md12col -->
+                            </div><!-- /.row -->
+                            {{relatedLink2}}
+
+
+                        </template>
+                        <template v-if="record.related_link_1">
+                            <div class="row">
+                                <div :class="md6col">
+                                    <label for="related_link_2_txt">Link Text</label><input v-model="record.related_link_2_txt" class="form-control" name="related_link_2_txt" type="text">
+                                </div><!-- /.md6col -->
+                            </div><!-- /.row -->
+                            <div class="row">
+                                <div :class="md12col">
+                                    <label for="related_link_2">Link URL</label><input v-model="record.related_link_2" class="form-control" name="related_link_2_txt" type="text">
+                                </div><!-- /.md12col -->
+                            </div><!-- /.row -->
+                            {{relatedLink2}}
+                        </template>
+                        <template v-if="record.related_link_2">
+                            <div class="row">
+                                <div :class="md6col">
+                                    <label for="related_link_3_txt">Link Text</label><input v-model="record.related_link_3_txt" class="form-control" name="related_link_3_txt" type="text">
+                                </div><!-- /.md6col -->
+                            </div><!-- /.row -->
+                            <div class="row">
+                                <div :class="md12col">
+                                    <label for="related_link_3">Link URL</label><input v-model="record.related_link_3" class="form-control" name="related_link_3_txt" type="text">
+                                </div><!-- /.md12col -->
+                            </div><!-- /.row -->
+                            {{relatedLink3}}
+                        </template>
                     </div>
+
                         <!-- <label>Related Link: <em>(ex. http://www.emich.edu/calendar)</em>
                             <label for="link_text_2">Link Text</label><input v-model="linkText2"  name="link_text_2" type="text">
                             <label for="link_url_2">Link URL</label><input v-model="linkUrl2"  name="link_url_2" type="text">
@@ -213,7 +255,7 @@
                 <div :class="md6col">
                     <div class="form-group">
                         <label for="reg-deadline">Registration Deadline</label>
-                        <input id="reg-deadline" type="text" v-model="newevent.reg_deadline" :value.sync="rdate" aria-describedby="errorRegDeadline"  />
+                        <input id="reg-deadline" type="text" v-model="record.reg_deadline" :value.sync="rdate" aria-describedby="errorRegDeadline"  />
                     </div>
                 </div><!-- /.md6col-->
             </div><!-- /.row -->
@@ -224,7 +266,7 @@
                         <div :class="md2col">
                             <label>Free</label>
                             <div :class="formGroup">
-                                <input id="free" name="free" type="checkbox" value="1" v-model="newevent.free"/>
+                                <input id="free" name="free" type="checkbox" value="1" v-model="record.free"/>
                             </div><!-- /.form-group -->
                         </div><!-- /.md4col -->
                         <div :class="md10col">
@@ -232,13 +274,13 @@
                             <div v-show="hasCost" class="form-group">
                                 <div class="input-group">
                                     <span :class="inputGroupLabel">$</span>
-                                    <input v-model="newevent.cost" class="form-control" :class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="number">
+                                    <input v-model="record.cost" class="form-control" :class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="number">
                                 </div><!-- /. input-group -->
                             </div>
                             <div v-else :class="formGroup">
                                 <div class="input-group">
                                     <span :class="inputGroupLabel">$</span>
-                                    <input v-model="newevent.cost" class="form-control" :class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="number" readonly="readonly">
+                                    <input v-model="record.cost" class="form-control" :class="[formErrors.cost ? 'invalid-input' : '']" name="event-cost"  type="number" readonly="readonly">
                                 </div><!-- /. input-group -->
                             </div>
                         </div><!-- /.md8col -->
@@ -251,30 +293,30 @@
                 <div :class="md12col">
                     <div :class="formGroup">
                         <label>Tickets Available
-                            <select v-model="newevent.tickets" class="form-control">
+                            <select v-model="record.tickets" class="form-control">
                                 <option v-for="ticketoption in ticketoptions" :value="ticketoption.value">
                                     {{ ticketoption.label }}
                                 </option>
                             </select>
                         </label>
-                        <template v-if="newevent.tickets == 'online' || newevent.tickets == 'all'">
+                        <template v-if="record.tickets == 'online' || record.tickets == 'all'">
                             <label>Link: <em>(ex. http://www.emich.edu/calendar)</em>
-                                <input v-model="newevent.ticket_details_online" class="form-control" :class="[formErrors.ticket_details_online ? 'invalid-input' : '']" name="ticket-details-online" type="text">
+                                <input v-model="record.ticket_details_online" class="form-control" :class="[formErrors.ticket_details_online ? 'invalid-input' : '']" name="ticket-details-online" type="text">
                             </label>
                         </template>
-                        <template v-if="newevent.tickets == 'phone' || newevent.tickets == 'all'">
+                        <template v-if="record.tickets == 'phone' || record.tickets == 'all'">
                             <label>Tickets by Phone <em>(ex. 734.487.1849)</em>
-                                <input v-model="newevent.ticket_details_phone" class="form-control" :class="[formErrors.ticket_details_phone ? 'invalid-input' : '']" name="ticket-details-phone" type="text">
+                                <input v-model="record.ticket_details_phone" class="form-control" :class="[formErrors.ticket_details_phone ? 'invalid-input' : '']" name="ticket-details-phone" type="text">
                             </label>
                         </template>
-                        <template v-if="newevent.tickets == 'office' || newevent.tickets == 'all'">
+                        <template v-if="record.tickets == 'office' || record.tickets == 'all'">
                             <label>Address
-                                <input v-model="newevent.ticket_details_office" class="form-control" :class="[formErrors.ticket_details_office ? 'invalid-input' : '']" name="ticket-details-office" type="text">
+                                <input v-model="record.ticket_details_office" class="form-control" :class="[formErrors.ticket_details_office ? 'invalid-input' : '']" name="ticket-details-office" type="text">
                             </label>
                         </template>
-                        <template v-if="newevent.tickets == 'other'">
+                        <template v-if="record.tickets == 'other'">
                             <label>Other
-                                <input v-model="newevent.ticket_details_other" class="form-control" :class="[formErrors.ticket_details_other ? 'invalid-input' : '']" name="ticket-details-other" type="text">
+                                <input v-model="record.ticket_details_other" class="form-control" :class="[formErrors.ticket_details_other ? 'invalid-input' : '']" name="ticket-details-other" type="text">
                             </label>
                         </template>
                     </div><!-- /.form-group -->
@@ -284,12 +326,12 @@
                 <div :class="md12col">
                     <div :class="formGroup">
                         <label>Participants</label>
-                        <select v-model="newevent.participants" class="form-control">
+                        <select v-model="record.participants" class="form-control">
                             <option v-for="participant in participants" :value="participant.value">
                                 {{ participant.label }}
                          </option>
                 </select>
-                            <!-- <v-select :value="newevent.participants"
+                            <!-- <v-select :value="record.participants"
                                         :options="participants"
                                         :searchable="false"
                             >
@@ -303,7 +345,7 @@
                 <div :class="md6col">
                     <div :class="formGroup">
                         <label for="lbc-reviewed">LBC Approved: <em>(pre-approval required)</em>
-                            <input id="lbc-reviewed" name="lbc-reviewed" type="checkbox" value="1" v-model="newevent.lbc_reviewed"/>
+                            <input id="lbc-reviewed" name="lbc-reviewed" type="checkbox" value="1" v-model="record.lbc_reviewed"/>
                         </label>
                     </div>
                 </div><!-- /.md6col -->
@@ -316,7 +358,7 @@
                     <div :class="formGroup">
                         <label>Description <span :class="iconStar" class="reqstar"></span> <p class="help-text" id="description-helptext">({{descriptionChars}} characters left)</p>
 
-                            <textarea v-model="newevent.description" class="form-control" :class="[formErrors.description ? 'invalid-input' : '']" name="description" type="textarea" rows="6"></textarea>
+                            <textarea v-model="record.description" class="form-control" :class="[formErrors.description ? 'invalid-input' : '']" name="description" type="textarea" rows="6"></textarea>
                         </label>
                         <p v-if="formErrors.description" class="help-text invalid">Need a Description!</p>
 
@@ -330,7 +372,7 @@
                         <label>Group Website Calendar <p class="help-text" id="minicalendar-helptext">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>
                             <v-select
                                 :debounce="250"
-                                :value="newevent.mini_calendar"
+                                :value="record.mini_calendar"
                                 :on-search="fetchForSelectMiniCalendarList"
                                 :options="minicals"
                                 placeholder="Select a minicalendar..."
@@ -341,10 +383,16 @@
                 </div><!-- /.md12col -->
 
                 <div :class="md12col">
+                    <v-select
+                        :value.sync="minicals"
+                        :options="minicalslist"
+                        placeholder="Select Mini Calendar"
+                        label="calendars">
+                    </v-select>
 
                     <!-- <div :class="formGroup">
                         <label>Group Website Calendar <p class="help-text" id="minicalendar-helptext">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>
-                            <select v-model="newevent.mini_calendar" id="mini_calendar" v-myselect="mini_calendar">
+                            <select v-model="record.mini_calendar" id="mini_calendar" v-myselect="mini_calendar">
                                 <option v-for="minicalendar in minicalendars" :value="minicalendar.id">
                                     {{minicalendar.calendar}}
                                 </option>
@@ -437,12 +485,8 @@
     import vSelect from "vue-select"
     import myselect from "../directives/myselect.js"
     module.exports  = {
-            directives: {
-                myselect
-            },
-            components: {
-                vSelect
-            },
+            directives: {myselect},
+            components: {vSelect},
             props:{
                 authorid: {default : '0'},
                 recordexists: {default: false},
@@ -451,6 +495,13 @@
             },
             data: function() {
                 return {
+                    minicalslist:[],
+                    dateObject:{
+                        startDateMin: '',
+                        startDateDefault: '',
+                        endDateMin: '',
+                        endDateDefault: ''
+                    },
                     linkText1: '',
                     linkUrl1: '',
                     linkText2: '',
@@ -495,7 +546,8 @@
                     categories: {},
                     minicals: null,
                     minicalendars: {},
-                    newevent: {
+                    record: {
+                        user_id: 0,
                         on_campus: 1,
                         all_day: 0,
                         no_end_time: 0,
@@ -518,82 +570,93 @@
                     formErrors : {}
                 }
             },
-            ready: function() {
-                this.newevent.author_id = this.authorid;
-                var self = this;
-
-
-                this.startdatePicker = flatpickr(document.getElementById("start-date"),{
-                    minDate: "today",
-                    enableTime: false,
-                    altFormat: "m-d-Y",
-                    altInput: true,
-                    altInputClass:"form-control",
-                    dateFormat: "Y-m-d",
-                    onChange(dateObject, dateString) {
-                        self.newevent.start_date = dateString;
-                        self.startdatePicker.value = dateString;
-                    }
-
-                });
-                this.enddatePicker = flatpickr(document.getElementById("end-date"),{
-                    minDate: "today",
-                    enableTime: false,
-                    altFormat: "m-d-Y",
-                    altInput: true,
-                    altInputClass:"form-control",
-                    dateFormat: "Y-m-d",
-                    onChange(dateObject, dateString) {
-                        self.newevent.end_date = dateString;
-                        self.enddatePicker.value = dateString;
-                    }
-
-                });
-                this.starttimePicker = flatpickr(document.getElementById("start-time"),{
-                    noCalendar: true,
-                    enableTime: true,
-                    onChange(timeObject, timeString) {
-                        self.newevent.start_time = timeString;
-                        self.starttimePicker.value = timeString;
-                    }
-
-                });
-                this.endtimePicker = flatpickr(document.getElementById("end-time"),{
-                    noCalendar: true,
-                    enableTime: true,
-                    onChange(timeObject, timeString) {
-                        self.newevent.end_time = timeString;
-                        self.endtimePicker.value = timeString;
-                    }
-
-                });
-
-                this.regdeadlinePicker = flatpickr(document.getElementById("reg-deadline"),{
-                    minDate: "today",
-                    enableTime: false,
-                    altFormat: "m-d-Y",
-                    altInput: true,
-                    altInputClass:"form-control",
-                    dateFormat: "Y-m-d",
-                    onChange(dateObject, dateString) {
-                        self.record.reg_deadline = dateString;
-                        self.regdeadlinePicker.value = dateString;
-                    }
-
-                });
-                //  this.fetchCategoryList();
-                // console.log('editevent='+ this.editevent)
-                console.log('eventexists'+ this.recordexists)
-
+            ready() {
+                this.record.user_id = this.authorid;
                 if(this.recordexists){
-                    console.log('editeventid'+ this.recordid)
+                    console.log('recordid'+ this.recordid)
                     this.fetchCurrentRecord(this.recordid)
-
+                } else {
+                    //this.record.start_date = this.currentDate;
+                    this.setupDatePickers();
                 }
-
-
-                //this.fetchMiniCalendarList();
+                this.fetchMiniCalsList();
             },
+            // ready: function() {
+            //     this.record.author_id = this.authorid;
+            //     var self = this;
+            //
+            //
+            //     this.startdatePicker = flatpickr(document.getElementById("start-date"),{
+            //         minDate: "today",
+            //         enableTime: false,
+            //         altFormat: "m-d-Y",
+            //         altInput: true,
+            //         altInputClass:"form-control",
+            //         dateFormat: "Y-m-d",
+            //         onChange(dateObject, dateString) {
+            //             self.record.start_date = dateString;
+            //             self.startdatePicker.value = dateString;
+            //         }
+            //
+            //     });
+            //     this.enddatePicker = flatpickr(document.getElementById("end-date"),{
+            //         minDate: "today",
+            //         enableTime: false,
+            //         altFormat: "m-d-Y",
+            //         altInput: true,
+            //         altInputClass:"form-control",
+            //         dateFormat: "Y-m-d",
+            //         onChange(dateObject, dateString) {
+            //             self.record.end_date = dateString;
+            //             self.enddatePicker.value = dateString;
+            //         }
+            //
+            //     });
+            //     this.starttimePicker = flatpickr(document.getElementById("start-time"),{
+            //         noCalendar: true,
+            //         enableTime: true,
+            //         onChange(timeObject, timeString) {
+            //             self.record.start_time = timeString;
+            //             self.starttimePicker.value = timeString;
+            //         }
+            //
+            //     });
+            //     this.endtimePicker = flatpickr(document.getElementById("end-time"),{
+            //         noCalendar: true,
+            //         enableTime: true,
+            //         onChange(timeObject, timeString) {
+            //             self.record.end_time = timeString;
+            //             self.endtimePicker.value = timeString;
+            //         }
+            //
+            //     });
+            //
+            //     this.regdeadlinePicker = flatpickr(document.getElementById("reg-deadline"),{
+            //         minDate: "today",
+            //         enableTime: false,
+            //         altFormat: "m-d-Y",
+            //         altInput: true,
+            //         altInputClass:"form-control",
+            //         dateFormat: "Y-m-d",
+            //         onChange(dateObject, dateString) {
+            //             self.record.reg_deadline = dateString;
+            //             self.regdeadlinePicker.value = dateString;
+            //         }
+            //
+            //     });
+            //     //  this.fetchCategoryList();
+            //     // console.log('editevent='+ this.editevent)
+            //     console.log('eventexists'+ this.recordexists)
+            //
+            //     if(this.recordexists){
+            //         console.log('editeventid'+ this.recordid)
+            //         this.fetchCurrentRecord(this.recordid)
+            //
+            //     }
+            //
+            //
+            //     //this.fetchMiniCalendarList();
+            // },
 
 
             computed: {
@@ -635,62 +698,62 @@
                 computedLocation: function() {
                     let bldg,room;
                     if (this.building) {
-                        this.newevent.building = this.building.name
-                        bldg = this.newevent.building
-                        room = (this.newevent.room)?' - Room:' + this.newevent.room:'';
+                        this.record.building = this.building.name
+                        bldg = this.record.building
+                        room = (this.record.room)?' - Room:' + this.record.room:'';
 
                     } else {
                         bldg = ''
                         room = ''
                     }
                     return bldg + room;
-                    // let  buildingChoice = 	this.newevent.building
-                    // let room = (this.newevent.room)?' - Room:' + this.newevent.room:'';
-                    // return this.newevent.building+ room;
+                    // let  buildingChoice = 	this.record.building
+                    // let room = (this.record.room)?' - Room:' + this.record.room:'';
+                    // return this.record.building+ room;
                     // return this.zbuilding[0] + room
                 },
                 isOnCampus: function() {
-                    return this.newevent.on_campus == 1 ? true:false;
+                    return this.record.on_campus == 1 ? true:false;
                 },
                 realCost: function() {
-                    if(this.newevent.free == 1 ) {
+                    if(this.record.free == 1 ) {
                         return '0.00';
                     } else {
-                        // this.newevent.cost = '';
+                        // this.record.cost = '';
                         return '';
                     }
-                    // return this.newevent.free == 1 ? false:true;
+                    // return this.record.free == 1 ? false:true;
                 },
                 hasCost: function() {
-                    if(this.newevent.free == 1 ) {
-                        this.newevent.cost = '0.00';
+                    if(this.record.free == 1 ) {
+                        this.record.cost = '0.00';
                         return false;
                     } else {
-                        // this.newevent.cost = '';
+                        // this.record.cost = '';
                         return true;
                     }
-                    // return this.newevent.free == 1 ? false:true;
+                    // return this.record.free == 1 ? false:true;
                 },
                 titleChars: function() {
-                    var str = this.newevent.title;
+                    var str = this.record.title;
                     console.log(str.length);
                     var cclength = str.length;
                     return this.totalChars.title - cclength;
-                    // this.totalChars.title - (this.newevent.title).length
+                    // this.totalChars.title - (this.record.title).length
                 },
                 descriptionChars: function() {
-                    var str = this.newevent.description;
+                    var str = this.record.description;
                     console.log(str.length);
                     var cclength = str.length;
                     return this.totalChars.description - cclength;
-                    // this.totalChars.title - (this.newevent.title).length
+                    // this.totalChars.title - (this.record.title).length
                 },
                 hasStartTime: function() {
-                    return this.newevent.all_day == 1? false : true;
+                    return this.record.all_day == 1? false : true;
 
                 },
                 hasEndTime: function() {
-                    return (this.newevent.all_day == 1 || this.newevent.no_end_time == 1)?false : true;
+                    return (this.record.all_day == 1 || this.record.no_end_time == 1)?false : true;
                 },
                 relatedLink1: function() {
                     if (this.linkUrl1 || this.linkText1) {
@@ -710,6 +773,108 @@
 
             },
             methods: {
+                fetchMiniCalsList: function() {
+
+                    this.$http.get('/api/minicalslist')
+                        .then((response) =>{
+                          //   let taglistraw = response.data;
+                          //   let taglistformat = this.foreachTagListRaw(response.data);
+
+
+                                this.$set('minicalslist', response.data)
+                            }, (response) => {
+                                //error callback
+                                console.log("ERRORS");
+                                this.formErrors =  response.data.error.message;
+
+                            }).bind(this);
+                },
+                setupDatePickers:function(){
+                    var self = this;
+                    console.log("setupDatePickers");
+                    if (this.record.start_date === '') {
+                        this.dateObject.startDateMin = this.currentDate;
+                        this.dateObject.startDateDefault = null;
+
+                        this.dateObject.endDateMin = null;
+                        this.dateObject.endDateDefault = null;
+                    } else {
+                        this.dateObject.startDateMin = this.record.start_date;
+                        this.dateObject.startDateDefault = this.record.start_date;
+                        this.dateObject.endDateMin = this.record.start_date;
+                        this.dateObject.endDateDefault = this.record.end_date;
+                        this.dateObject.startTimeDefault = this.record.end_time;
+                    }
+                    this.startdatePicker = flatpickr(document.getElementById("start-date"), {
+                        minDate: self.dateObject.startDateMin,
+                        defaultDate: self.dateObject.startDateDefault,
+                        enableTime: false,
+                        altFormat: "m-d-Y",
+                        altInput: true,
+                        altInputClass: "form-control",
+                        dateFormat: "Y-m-d",
+                        // minDate: new Date(),
+                        onChange(dateObject, dateString) {
+                            self.enddatePicker.set("minDate", dateObject);
+                            self.record.start_date = dateString;
+                            self.startdatePicker.value = dateString;
+                        }
+
+                    });
+
+                    this.enddatePicker = flatpickr(document.getElementById("end-date"), {
+                        minDate: self.dateObject.endDateMin,
+                        defaultDate: self.dateObject.endDateDefault,
+                        enableTime: false,
+                        altFormat: "m-d-Y",
+                        altInput: true,
+                        altInputClass: "form-control",
+                        dateFormat: "Y-m-d",
+                        // minDate: new Date(),
+                        onChange(dateObject, dateString) {
+                            self.startdatePicker.set("maxDate", dateObject);
+                            self.record.end_date = dateString;
+                            self.enddatePicker.value = dateString;
+                        }
+
+                    });
+
+                    this.starttimePicker = flatpickr(document.getElementById("start-time"),{
+                        noCalendar: true,
+                        enableTime: true,
+                        defaultDate: self.dateObject.endDateDefault,
+                        onChange(timeObject, timeString) {
+                            self.record.start_time = timeString;
+                            self.starttimePicker.value = timeString;
+                        }
+
+                    });
+                    this.endtimePicker = flatpickr(document.getElementById("end-time"),{
+                        noCalendar: true,
+                        enableTime: true,
+                        onChange(timeObject, timeString) {
+                            self.record.end_time = timeString;
+                            self.endtimePicker.value = timeString;
+                        }
+
+                    });
+
+                    this.regdeadlinePicker = flatpickr(document.getElementById("reg-deadline"),{
+                        minDate: "today",
+                        enableTime: false,
+                        altFormat: "m-d-Y",
+                        altInput: true,
+                        altInputClass:"form-control",
+                        dateFormat: "Y-m-d",
+                        onChange(dateObject, dateString) {
+                            self.record.reg_deadline = dateString;
+                            self.regdeadlinePicker.value = dateString;
+                        }
+
+                    });
+                },
+
+
                 fetchCurrentRecord: function() {
                     this.$http.get('/api/event/'+ this.recordid + '/edit')
 
@@ -719,7 +884,8 @@
                         console.log('response.ok=' + response.ok);
                         console.log('response.statusText=' + response.statusText);
                         // console.log('response.data=' + response.data.json());
-                        this.newevent = response.data.data;
+                        // this.record = response.data.data;
+                        this.$set('record', response.data.data)
 
                         this.checkOverData();
                     }, (response) => {
@@ -732,16 +898,16 @@
                 },
                 checkOverData: function() {
 
-                    if (this.newevent.building) {
-                        this.buildings.push(this.newevent.building);
+                    if (this.record.building) {
+                        this.buildings.push(this.record.building);
                     }
-                    if (this.newevent.room) {
-                        this.newevent.room = this.newevent.room;
+                    if (this.record.room) {
+                        this.record.room = this.record.room;
                     }
 
-                    if (this.newevent.eventcategories){
-                        for (var i= 0; i < this.newevent.eventcategories.length ; i++){
-                            var reduceobj = this.newevent.eventcategories[i].id;
+                    if (this.record.eventcategories){
+                        for (var i= 0; i < this.record.eventcategories.length ; i++){
+                            var reduceobj = this.record.eventcategories[i].id;
                             this.zcats.push(reduceobj)
 
                         }
@@ -749,8 +915,8 @@
                         console.log('this.zcats'+ this.zcats.length)
                     }
 
-                    // this.newbuilding = this.newevent.building;
-                    // this.zbuilding.push(this.newevent.building);
+                    // this.newbuilding = this.record.building;
+                    // this.zbuilding.push(this.record.building);
 
                 },
                 fetchForSelectCategoriesList(search,loading){
@@ -794,20 +960,20 @@
                 submitForm: function(e) {
                     //  console.log('this.eventform=' + this.eventform.$valid);
                     e.preventDefault();
-                    // this.newevent.start_date = this.sdate;
-                    // this.newevent.end_date = this.edate;
-                    // this.newevent.reg_deadline = this.rdate;
-                    this.newevent.author_id = this.authorid;
-                    this.newevent.related_link_1 = this.relatedLink1;
-                    if(this.newevent.on_campus == true) {
-                        this.newevent.location = this.computedLocation;
+                    // this.record.start_date = this.sdate;
+                    // this.record.end_date = this.edate;
+                    // this.record.reg_deadline = this.rdate;
+                    this.record.author_id = this.authorid;
+                    this.record.related_link_1 = this.relatedLink1;
+                    if(this.record.on_campus == true) {
+                        this.record.location = this.computedLocation;
                     } else {
-                        this.newevent.location = this.newevent.locationoffcampus;
+                        this.record.location = this.record.locationoffcampus;
                     }
-                    // this.newevent.location = (this.on_campus)?this.computedLocation: this.newevent.location;
-                    // this.newevent.categories = this.zcategories;
-                    // console.log("cats="+ this.newevent.categories);
-                    this.$http.post('/api/event', this.newevent)
+                    // this.record.location = (this.on_campus)?this.computedLocation: this.record.location;
+                    // this.record.categories = this.zcategories;
+                    // console.log("cats="+ this.record.categories);
+                    this.$http.post('/api/event', this.record)
 
                     .then((response) =>{
                         //response.status;

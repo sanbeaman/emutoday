@@ -16,10 +16,7 @@ Vue.use(VueResource);
 import EventFormUniversal from './components/EventFormUniversal.vue'
 new Vue({
     el: '#vue-event-form',
-    components: {
-      EventForm:EventFormUniversal
-
-    },
+    components: {EventForm:EventFormUniversal},
     ready() {
       console.log('vue ready');
     }

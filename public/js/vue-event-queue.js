@@ -16056,17 +16056,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // import EventViewContent from './EventViewContent.vue'
 exports.default = {
-    components: {
-        EventQueueItem: _EventQueueItem2.default
-    },
+    components: { EventQueueItem: _EventQueueItem2.default },
     props: ['annrecords'],
-
-    ready: function ready() {
-        // this.resource = this.$resource('/api/announcement/:id');
-        this.fetchAllRecords();
-        // this.fetchUnapprovedRecords();
-    },
-
     data: function data() {
         return {
             resource: {},
@@ -16079,6 +16070,10 @@ exports.default = {
             objs: {}
         };
     },
+    ready: function ready() {
+        this.fetchAllRecords();
+    },
+
     computed: {
         itemsApproved: function itemsApproved() {
             return this.filterItemsApproved(this.allitems);
@@ -16090,21 +16085,53 @@ exports.default = {
             return this.filterItemsPromoted(this.itemsApproved);
         }
     },
-
     methods: {
+        fetchAllRecords: function fetchAllRecords() {
+            var _this = this;
+
+            this.$http.get('/api/event/queueload').then(function (response) {
+                //response.status;
+                console.log('response.status=' + response.status);
+                console.log('response.ok=' + response.ok);
+                console.log('response.statusText=' + response.statusText);
+                console.log('response.data=' + response.data);
+                _this.$set('allitems', response.data.data);
+                _this.checkOverDataFilter();
+            }, function (response) {
+                //error callback
+                console.log("ERRORS");
+            }).bind(this);
+        },
+        checkOverDataFilter: function checkOverDataFilter() {
+            console.log('items=' + this.items);
+            // var unapprovedItems = this.allitems.filter(function(item) {
+            // 	return item.approved === 0
+            // });
+            //
+            // this.xitems = unapprovedItems;
+            //
+            //
+            // var approvedItems = this.allitems.filter(function(item) {
+            // 	return item.approved === 1
+            // });
+            //
+            // this.items = approvedItems.sort(function(a,b){
+            // 	return parseFloat(b.priority) - parseFloat(a.priority);
+            // });
+        },
         filterItemsApproved: function filterItemsApproved(items) {
             return items.filter(function (item) {
-                return item.approved === 1;
+                return item.is_approved === 1;
             });
         },
         filterItemsUnapproved: function filterItemsUnapproved(items) {
             return items.filter(function (item) {
-                return item.approved === 0;
+                return item.is_approved === 0;
             });
         },
         filterItemsPromoted: function filterItemsPromoted(items) {
             return items.filter(function (item) {
-                return item.promoted === 1;
+                return item.is_promoted === 1;
             });
         },
         // checkIndexWithValue: function (chitem){
@@ -16115,7 +16142,7 @@ exports.default = {
 
             // this.xitems.pop(changeditem);
             console.log('moveToApproved' + changeditem.priority);
-            changeditem.approved = 1;
+            changeditem.is_approved = 1;
             changeditem.priority = changeditem.priority;
             this.updateRecord(changeditem);
         },
@@ -16123,7 +16150,7 @@ exports.default = {
 
             // this.xitems.pop(changeditem);
             console.log('moveToUnApproved' + changeditem);
-            changeditem.approved = 0;
+            changeditem.is_approved = 0;
 
             this.updateRecord(changeditem);
         },
@@ -16157,7 +16184,7 @@ exports.default = {
             });
         },
         fetchUnapprovedRecords: function fetchUnapprovedRecords() {
-            var _this = this;
+            var _this2 = this;
 
             this.$http.get('/api/event/unapprovedItems').then(function (response) {
                 console.log('response.status=' + response.status);
@@ -16165,9 +16192,9 @@ exports.default = {
                 console.log('response.statusText=' + response.statusText);
                 console.log('response.data=' + response.data);
 
-                _this.$set('unappitems', response.data.data);
+                _this2.$set('unappitems', response.data.data);
 
-                _this.fetchApprovedRecords();
+                _this2.fetchApprovedRecords();
             }, function (response) {
                 //error callback
                 console.log("ERRORS");
@@ -16176,7 +16203,7 @@ exports.default = {
             }).bind(this);
         },
         fetchApprovedRecords: function fetchApprovedRecords() {
-            var _this2 = this;
+            var _this3 = this;
 
             this.$http.get('/api/event/approvedItems').then(function (response) {
                 //response.status;
@@ -16186,30 +16213,10 @@ exports.default = {
                 console.log('response.data=' + response.data);
                 // data = response.data;
                 //
-                _this2.$set('allitems', response.data.data);
+                _this3.$set('allitems', response.data.data);
 
                 // this.allitems = response.data.data;
                 // console.log('this.record= ' + this.record);
-
-                _this2.checkOverDataFilter();
-            }, function (response) {
-                //error callback
-                console.log("ERRORS");
-
-                //  this.formErrors =  response.data.error.message;
-            }).bind(this);
-        },
-        fetchAllRecords: function fetchAllRecords() {
-            var _this3 = this;
-
-            this.$http.get('/api/event/queue').then(function (response) {
-                //response.status;
-                console.log('response.status=' + response.status);
-                console.log('response.ok=' + response.ok);
-                console.log('response.statusText=' + response.statusText);
-                console.log('response.data=' + response.data);
-
-                _this3.$set('allitems', response.data.data);
 
                 _this3.checkOverDataFilter();
             }, function (response) {
@@ -16219,6 +16226,7 @@ exports.default = {
                 //  this.formErrors =  response.data.error.message;
             }).bind(this);
         },
+
         fetchOtherRecords: function fetchOtherRecords() {
             var _this4 = this;
 
@@ -16246,30 +16254,14 @@ exports.default = {
         checkOverData: function checkOverData() {
             console.log('this.items=' + this.allitems);
             for (var i = 0; i < this.allitems.length; i++) {
-                if (this.allitems[i].approved == 1) {
+                if (this.allitems[i].is_approved == 1) {
                     this.items.push(this.allitems.splice(i, 1));
                 } else {
                     this.xitems.push(this.allitems.splice(i, 1));
                 }
             }
-        },
-        checkOverDataFilter: function checkOverDataFilter() {
-            console.log('items=' + this.items);
-            // var unapprovedItems = this.allitems.filter(function(item) {
-            // 	return item.approved === 0
-            // });
-            //
-            // this.xitems = unapprovedItems;
-            //
-            //
-            // var approvedItems = this.allitems.filter(function(item) {
-            // 	return item.approved === 1
-            // });
-            //
-            // this.items = approvedItems.sort(function(a,b){
-            // 	return parseFloat(b.priority) - parseFloat(a.priority);
-            // });
         }
+
     },
 
     // the `events` option simply calls `$on` for you
@@ -16283,7 +16275,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-35d5cc5b=\"\">\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n            <h3 _v-35d5cc5b=\"\">Unapproved Events</h3>\n                <div id=\"items-unapproved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-unapproved\" v-for=\"item in itemsUnapproved | orderBy 'start_date'\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"unapproved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Approved Events</h3>\n                <div id=\"items-approved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-approved\" v-for=\"item in itemsApproved | orderBy 'priority' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"approved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Events</h3>\n                <div id=\"items-other\" _v-35d5cc5b=\"\">\n                <event-queue-item pid=\"items-other\" v-for=\"item in itemsPromoted | orderBy 'priority' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"other-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n</div><!-- ./row -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-35d5cc5b=\"\">\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n            <h3 _v-35d5cc5b=\"\">Unapproved Events</h3>\n                <div id=\"items-unapproved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-unapproved\" v-for=\"item in itemsUnapproved | orderBy 'start_date'\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"unapproved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Approved Events</h3>\n                <div id=\"items-approved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-approved\" v-for=\"item in itemsApproved | orderBy 'priority' 'start_date' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"approved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Events</h3>\n                <div id=\"items-other\" _v-35d5cc5b=\"\">\n                <event-queue-item pid=\"items-other\" v-for=\"item in itemsPromoted | orderBy 'priority' 'start_date' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"other-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n</div><!-- ./row -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16303,9 +16295,18 @@ var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-19815ee4] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-19815ee4] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-19815ee4] {\n    padding: 3px;\n}\n.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nh5.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-19815ee4] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-19815ee4] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n    .box-date-top[_v-19815ee4] {\n\n    }\n    .box-date-bot[_v-19815ee4] {\n\n    }\n    .box-date[_v-19815ee4] {\n\n    }\n        select.form-control[_v-19815ee4] {\n            height:22px;\n            border: 1px solid #999999;\n        }\n\n        h6[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n        h5[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n\n        .form-group[_v-19815ee4] {\n            /*border: 1px solid red;*/\n        }\n        .form-group label[_v-19815ee4]{\n            margin-bottom: 0;\n        }\n        /*.box.box-solid.box-default {\n            border: 1px solid #999999;\n        }\n        .box-body {\n            padding: 3px 6px;\n        }*/\n")
 'use strict';
 
-var moment = require('moment');
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _VuiFlipSwitch = require('./VuiFlipSwitch.vue');
+
+var _VuiFlipSwitch2 = _interopRequireDefault(_VuiFlipSwitch);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
+    components: { VuiFlipSwitch: _VuiFlipSwitch2.default },
     props: ['item', 'pid'],
     data: function data() {
         return {
@@ -16328,7 +16329,7 @@ module.exports = {
         // console.log('this.currentDate=' + this.currentDate)
     },
     ready: function ready() {
-        this.is_approved = this.item.approved;
+        this.is_approved = this.item.is_approved;
         // this.formInputs.event_id = this.item.id;
         //ready function
     },
@@ -16341,7 +16342,7 @@ module.exports = {
             }
         },
         canHaveImage: function canHaveImage() {
-            if (this.item.approved) {
+            if (this.item.is_approved) {
                 return true;
             } else {
                 return false;
@@ -16354,7 +16355,7 @@ module.exports = {
             return pth + fname;
         },
         timefromNow: function timefromNow() {
-            return moment(this.item.start_date).fromNow();
+            return (0, _moment2.default)(this.item.start_date).fromNow();
         },
         isApproved: function isApproved() {
             return this.item.is_approved;
@@ -16470,42 +16471,37 @@ module.exports = {
 
     },
     watch: {
-        'isapproved': function isapproved(val, oldVal) {
-            if (val != oldVal) {
-                console.log('val change');
-            }
-        }
+        // 'isapproved': function(val, oldVal) {
+        //     if (val !=  oldVal) {
+        //         console.log('val change')
+        //     }
+        // }
     },
     directives: {
         // mydatedropper: require('../directives/mydatedropper.js')
         // dtpicker: require('../directives/dtpicker.js')
     },
-    components: {
-        VuiFlipSwitch: require('./VuiFlipSwitch.vue')
-        // autocomplete: require('./vue-autocomplete.vue'),
-        // 'datepicker': require('../vendor/datepicker.vue'),
 
-    },
     filters: {
         titleDay: function titleDay(value) {
-            return moment(value).format("ddd");
+            return (0, _moment2.default)(value).format("ddd");
         },
         titleDate: function titleDate(value) {
-            return moment(value).format("MM/DD");
+            return (0, _moment2.default)(value).format("MM/DD");
         },
         titleDateLong: function titleDateLong(value) {
-            return moment(value).format("ddd MM/DD");
+            return (0, _moment2.default)(value).format("ddd MM/DD");
         },
         momentPretty: {
             read: function read(val) {
                 console.log('read-val' + val);
 
-                return val ? moment(val).format('MM-DD-YYYY') : '';
+                return val ? (0, _moment2.default)(val).format('MM-DD-YYYY') : '';
             },
             write: function write(val, oldVal) {
                 console.log('write-val' + val + '--' + oldVal);
 
-                return moment(val).format('YYYY-MM-DD');
+                return (0, _moment2.default)(val).format('YYYY-MM-DD');
             }
         }
     },

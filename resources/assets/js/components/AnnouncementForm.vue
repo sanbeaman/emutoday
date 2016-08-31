@@ -50,7 +50,7 @@
             <div :class="md4col">
                 <div v-bind:class="formGroup">
                     <label>External Link Text</label>
-                    <p class="help-text" id="title-helptext">Please enter link text</p>
+                    <p class="help-text" id="link_txt-helptext">Please enter link text</p>
                     <input v-model="record.link_txt" class="form-control" v-bind:class="[formErrors.link_txt ? 'invalid-input' : '']" name="link_txt" type="text">
                     <p v-if="formErrors.link_txt" class="help-text invalid"> Please include a descriptive text for your external link.</p>
                 </div>
@@ -60,7 +60,38 @@
                 <div v-bind:class="formGroup">
                     <label>Example of External Link</label>
                     <p class="help-text">Below is how it may look. </p>
-                    <h5 class="form-control">For more information click: <a href="#"> {{record.link_txt}}</a>.</h5>
+                    <h5 class="form-control">For more information visit: <a href="#"> {{record.link_txt}}</a>.</h5>
+                </div>
+                </template>
+            </div><!-- /.md6col -->
+        </div>
+        <div class="row">
+            <div :class="md12col">
+                <div v-bind:class="formGroup">
+                    <label>Email Link</label>
+                    <p class="help-text" id="title-helptext">Please enter the url for your external web page. (www.yourlink.com)</p>
+                    <div class="input-group">
+                        <span :class="inputGroupLabel">mailto:</span>
+                        <input v-model="record.email_link" class="form-control" v-bind:class="[formErrors.email_link ? 'invalid-input' : '']" name="email_link" type="text">
+                    </div>
+                    <p v-if="formErrors.email_link" class="help-text invalid">Please make sure email is properly formed.</p>
+                </div>
+            </div><!-- /.col-md-4 -->
+        </div><!-- /.row -->
+        <div class="row">
+            <div :class="md4col">
+                <div v-bind:class="formGroup">
+                    <label>Email Link Text</label>
+                    <p class="help-text" id="email-link-helptext">Please enter email link text</p>
+                    <input v-model="record.email_link_txt" class="form-control" v-bind:class="[formErrors.email_link_txt ? 'invalid-input' : '']" name="email_link_txt" type="text">
+                </div>
+            </div><!-- /.col-md-4 -->
+            <div :class="md8col">
+                <template v-if="record.email_link">
+                <div v-bind:class="formGroup">
+                    <label>Example of Email Link</label>
+                    <p class="help-text">Below is how it may look. </p>
+                    <h5 class="form-control">To request more information click: <a href="#"> {{record.email_link_txt}}</a>.</h5>
                 </div>
                 </template>
             </div><!-- /.md6col -->

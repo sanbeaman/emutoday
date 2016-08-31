@@ -15299,12 +15299,8 @@ var _myselect2 = _interopRequireDefault(_myselect);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = {
-    directives: {
-        myselect: _myselect2.default
-    },
-    components: {
-        vSelect: _vueSelect2.default
-    },
+    directives: { myselect: _myselect2.default },
+    components: { vSelect: _vueSelect2.default },
     props: {
         authorid: { default: '0' },
         recordexists: { default: false },
@@ -15313,6 +15309,13 @@ module.exports = {
     },
     data: function data() {
         return {
+            minicalslist: [],
+            dateObject: {
+                startDateMin: '',
+                startDateDefault: '',
+                endDateMin: '',
+                endDateDefault: ''
+            },
             linkText1: '',
             linkUrl1: '',
             linkText2: '',
@@ -15345,7 +15348,8 @@ module.exports = {
             categories: {},
             minicals: null,
             minicalendars: {},
-            newevent: {
+            record: {
+                user_id: 0,
                 on_campus: 1,
                 all_day: 0,
                 no_end_time: 0,
@@ -15367,73 +15371,94 @@ module.exports = {
         };
     },
     ready: function ready() {
-        this.newevent.author_id = this.authorid;
-        var self = this;
-
-        this.startdatePicker = (0, _flatpickr2.default)(document.getElementById("start-date"), {
-            minDate: "today",
-            enableTime: false,
-            altFormat: "m-d-Y",
-            altInput: true,
-            altInputClass: "form-control",
-            dateFormat: "Y-m-d",
-            onChange: function onChange(dateObject, dateString) {
-                self.newevent.start_date = dateString;
-                self.startdatePicker.value = dateString;
-            }
-        });
-        this.enddatePicker = (0, _flatpickr2.default)(document.getElementById("end-date"), {
-            minDate: "today",
-            enableTime: false,
-            altFormat: "m-d-Y",
-            altInput: true,
-            altInputClass: "form-control",
-            dateFormat: "Y-m-d",
-            onChange: function onChange(dateObject, dateString) {
-                self.newevent.end_date = dateString;
-                self.enddatePicker.value = dateString;
-            }
-        });
-        this.starttimePicker = (0, _flatpickr2.default)(document.getElementById("start-time"), {
-            noCalendar: true,
-            enableTime: true,
-            onChange: function onChange(timeObject, timeString) {
-                self.newevent.start_time = timeString;
-                self.starttimePicker.value = timeString;
-            }
-        });
-        this.endtimePicker = (0, _flatpickr2.default)(document.getElementById("end-time"), {
-            noCalendar: true,
-            enableTime: true,
-            onChange: function onChange(timeObject, timeString) {
-                self.newevent.end_time = timeString;
-                self.endtimePicker.value = timeString;
-            }
-        });
-
-        this.regdeadlinePicker = (0, _flatpickr2.default)(document.getElementById("reg-deadline"), {
-            minDate: "today",
-            enableTime: false,
-            altFormat: "m-d-Y",
-            altInput: true,
-            altInputClass: "form-control",
-            dateFormat: "Y-m-d",
-            onChange: function onChange(dateObject, dateString) {
-                self.record.reg_deadline = dateString;
-                self.regdeadlinePicker.value = dateString;
-            }
-        });
-        //  this.fetchCategoryList();
-        // console.log('editevent='+ this.editevent)
-        console.log('eventexists' + this.recordexists);
-
+        this.record.user_id = this.authorid;
         if (this.recordexists) {
-            console.log('editeventid' + this.recordid);
+            console.log('recordid' + this.recordid);
             this.fetchCurrentRecord(this.recordid);
+        } else {
+            //this.record.start_date = this.currentDate;
+            this.setupDatePickers();
         }
-
-        //this.fetchMiniCalendarList();
+        this.fetchMiniCalsList();
     },
+
+    // ready: function() {
+    //     this.record.author_id = this.authorid;
+    //     var self = this;
+    //
+    //
+    //     this.startdatePicker = flatpickr(document.getElementById("start-date"),{
+    //         minDate: "today",
+    //         enableTime: false,
+    //         altFormat: "m-d-Y",
+    //         altInput: true,
+    //         altInputClass:"form-control",
+    //         dateFormat: "Y-m-d",
+    //         onChange(dateObject, dateString) {
+    //             self.record.start_date = dateString;
+    //             self.startdatePicker.value = dateString;
+    //         }
+    //
+    //     });
+    //     this.enddatePicker = flatpickr(document.getElementById("end-date"),{
+    //         minDate: "today",
+    //         enableTime: false,
+    //         altFormat: "m-d-Y",
+    //         altInput: true,
+    //         altInputClass:"form-control",
+    //         dateFormat: "Y-m-d",
+    //         onChange(dateObject, dateString) {
+    //             self.record.end_date = dateString;
+    //             self.enddatePicker.value = dateString;
+    //         }
+    //
+    //     });
+    //     this.starttimePicker = flatpickr(document.getElementById("start-time"),{
+    //         noCalendar: true,
+    //         enableTime: true,
+    //         onChange(timeObject, timeString) {
+    //             self.record.start_time = timeString;
+    //             self.starttimePicker.value = timeString;
+    //         }
+    //
+    //     });
+    //     this.endtimePicker = flatpickr(document.getElementById("end-time"),{
+    //         noCalendar: true,
+    //         enableTime: true,
+    //         onChange(timeObject, timeString) {
+    //             self.record.end_time = timeString;
+    //             self.endtimePicker.value = timeString;
+    //         }
+    //
+    //     });
+    //
+    //     this.regdeadlinePicker = flatpickr(document.getElementById("reg-deadline"),{
+    //         minDate: "today",
+    //         enableTime: false,
+    //         altFormat: "m-d-Y",
+    //         altInput: true,
+    //         altInputClass:"form-control",
+    //         dateFormat: "Y-m-d",
+    //         onChange(dateObject, dateString) {
+    //             self.record.reg_deadline = dateString;
+    //             self.regdeadlinePicker.value = dateString;
+    //         }
+    //
+    //     });
+    //     //  this.fetchCategoryList();
+    //     // console.log('editevent='+ this.editevent)
+    //     console.log('eventexists'+ this.recordexists)
+    //
+    //     if(this.recordexists){
+    //         console.log('editeventid'+ this.recordid)
+    //         this.fetchCurrentRecord(this.recordid)
+    //
+    //     }
+    //
+    //
+    //     //this.fetchMiniCalendarList();
+    // },
+
 
     computed: {
         md6col: function md6col() {
@@ -15474,60 +15499,60 @@ module.exports = {
             var bldg = void 0,
                 room = void 0;
             if (this.building) {
-                this.newevent.building = this.building.name;
-                bldg = this.newevent.building;
-                room = this.newevent.room ? ' - Room:' + this.newevent.room : '';
+                this.record.building = this.building.name;
+                bldg = this.record.building;
+                room = this.record.room ? ' - Room:' + this.record.room : '';
             } else {
                 bldg = '';
                 room = '';
             }
             return bldg + room;
-            // let  buildingChoice = 	this.newevent.building
-            // let room = (this.newevent.room)?' - Room:' + this.newevent.room:'';
-            // return this.newevent.building+ room;
+            // let  buildingChoice = 	this.record.building
+            // let room = (this.record.room)?' - Room:' + this.record.room:'';
+            // return this.record.building+ room;
             // return this.zbuilding[0] + room
         },
         isOnCampus: function isOnCampus() {
-            return this.newevent.on_campus == 1 ? true : false;
+            return this.record.on_campus == 1 ? true : false;
         },
         realCost: function realCost() {
-            if (this.newevent.free == 1) {
+            if (this.record.free == 1) {
                 return '0.00';
             } else {
-                // this.newevent.cost = '';
+                // this.record.cost = '';
                 return '';
             }
-            // return this.newevent.free == 1 ? false:true;
+            // return this.record.free == 1 ? false:true;
         },
         hasCost: function hasCost() {
-            if (this.newevent.free == 1) {
-                this.newevent.cost = '0.00';
+            if (this.record.free == 1) {
+                this.record.cost = '0.00';
                 return false;
             } else {
-                // this.newevent.cost = '';
+                // this.record.cost = '';
                 return true;
             }
-            // return this.newevent.free == 1 ? false:true;
+            // return this.record.free == 1 ? false:true;
         },
         titleChars: function titleChars() {
-            var str = this.newevent.title;
+            var str = this.record.title;
             console.log(str.length);
             var cclength = str.length;
             return this.totalChars.title - cclength;
-            // this.totalChars.title - (this.newevent.title).length
+            // this.totalChars.title - (this.record.title).length
         },
         descriptionChars: function descriptionChars() {
-            var str = this.newevent.description;
+            var str = this.record.description;
             console.log(str.length);
             var cclength = str.length;
             return this.totalChars.description - cclength;
-            // this.totalChars.title - (this.newevent.title).length
+            // this.totalChars.title - (this.record.title).length
         },
         hasStartTime: function hasStartTime() {
-            return this.newevent.all_day == 1 ? false : true;
+            return this.record.all_day == 1 ? false : true;
         },
         hasEndTime: function hasEndTime() {
-            return this.newevent.all_day == 1 || this.newevent.no_end_time == 1 ? false : true;
+            return this.record.all_day == 1 || this.record.no_end_time == 1 ? false : true;
         },
         relatedLink1: function relatedLink1() {
             if (this.linkUrl1 || this.linkText1) {
@@ -15547,8 +15572,103 @@ module.exports = {
 
     },
     methods: {
-        fetchCurrentRecord: function fetchCurrentRecord() {
+        fetchMiniCalsList: function fetchMiniCalsList() {
             var _this = this;
+
+            this.$http.get('/api/minicalslist').then(function (response) {
+                //   let taglistraw = response.data;
+                //   let taglistformat = this.foreachTagListRaw(response.data);
+
+
+                _this.$set('minicalslist', response.data);
+            }, function (response) {
+                //error callback
+                console.log("ERRORS");
+                _this.formErrors = response.data.error.message;
+            }).bind(this);
+        },
+        setupDatePickers: function setupDatePickers() {
+            var self = this;
+            console.log("setupDatePickers");
+            if (this.record.start_date === '') {
+                this.dateObject.startDateMin = this.currentDate;
+                this.dateObject.startDateDefault = null;
+
+                this.dateObject.endDateMin = null;
+                this.dateObject.endDateDefault = null;
+            } else {
+                this.dateObject.startDateMin = this.record.start_date;
+                this.dateObject.startDateDefault = this.record.start_date;
+                this.dateObject.endDateMin = this.record.start_date;
+                this.dateObject.endDateDefault = this.record.end_date;
+                this.dateObject.startTimeDefault = this.record.end_time;
+            }
+            this.startdatePicker = (0, _flatpickr2.default)(document.getElementById("start-date"), {
+                minDate: self.dateObject.startDateMin,
+                defaultDate: self.dateObject.startDateDefault,
+                enableTime: false,
+                altFormat: "m-d-Y",
+                altInput: true,
+                altInputClass: "form-control",
+                dateFormat: "Y-m-d",
+                // minDate: new Date(),
+                onChange: function onChange(dateObject, dateString) {
+                    self.enddatePicker.set("minDate", dateObject);
+                    self.record.start_date = dateString;
+                    self.startdatePicker.value = dateString;
+                }
+            });
+
+            this.enddatePicker = (0, _flatpickr2.default)(document.getElementById("end-date"), {
+                minDate: self.dateObject.endDateMin,
+                defaultDate: self.dateObject.endDateDefault,
+                enableTime: false,
+                altFormat: "m-d-Y",
+                altInput: true,
+                altInputClass: "form-control",
+                dateFormat: "Y-m-d",
+                // minDate: new Date(),
+                onChange: function onChange(dateObject, dateString) {
+                    self.startdatePicker.set("maxDate", dateObject);
+                    self.record.end_date = dateString;
+                    self.enddatePicker.value = dateString;
+                }
+            });
+
+            this.starttimePicker = (0, _flatpickr2.default)(document.getElementById("start-time"), {
+                noCalendar: true,
+                enableTime: true,
+                defaultDate: self.dateObject.endDateDefault,
+                onChange: function onChange(timeObject, timeString) {
+                    self.record.start_time = timeString;
+                    self.starttimePicker.value = timeString;
+                }
+            });
+            this.endtimePicker = (0, _flatpickr2.default)(document.getElementById("end-time"), {
+                noCalendar: true,
+                enableTime: true,
+                onChange: function onChange(timeObject, timeString) {
+                    self.record.end_time = timeString;
+                    self.endtimePicker.value = timeString;
+                }
+            });
+
+            this.regdeadlinePicker = (0, _flatpickr2.default)(document.getElementById("reg-deadline"), {
+                minDate: "today",
+                enableTime: false,
+                altFormat: "m-d-Y",
+                altInput: true,
+                altInputClass: "form-control",
+                dateFormat: "Y-m-d",
+                onChange: function onChange(dateObject, dateString) {
+                    self.record.reg_deadline = dateString;
+                    self.regdeadlinePicker.value = dateString;
+                }
+            });
+        },
+
+        fetchCurrentRecord: function fetchCurrentRecord() {
+            var _this2 = this;
 
             this.$http.get('/api/event/' + this.recordid + '/edit').then(function (response) {
                 //response.status;
@@ -15556,9 +15676,10 @@ module.exports = {
                 console.log('response.ok=' + response.ok);
                 console.log('response.statusText=' + response.statusText);
                 // console.log('response.data=' + response.data.json());
-                _this.newevent = response.data.data;
+                // this.record = response.data.data;
+                _this2.$set('record', response.data.data);
 
-                _this.checkOverData();
+                _this2.checkOverData();
             }, function (response) {
                 //error callback
                 console.log("ERRORS");
@@ -15568,55 +15689,55 @@ module.exports = {
         },
         checkOverData: function checkOverData() {
 
-            if (this.newevent.building) {
-                this.buildings.push(this.newevent.building);
+            if (this.record.building) {
+                this.buildings.push(this.record.building);
             }
-            if (this.newevent.room) {
-                this.newevent.room = this.newevent.room;
+            if (this.record.room) {
+                this.record.room = this.record.room;
             }
 
-            if (this.newevent.eventcategories) {
-                for (var i = 0; i < this.newevent.eventcategories.length; i++) {
-                    var reduceobj = this.newevent.eventcategories[i].id;
+            if (this.record.eventcategories) {
+                for (var i = 0; i < this.record.eventcategories.length; i++) {
+                    var reduceobj = this.record.eventcategories[i].id;
                     this.zcats.push(reduceobj);
                 }
 
                 console.log('this.zcats' + this.zcats.length);
             }
 
-            // this.newbuilding = this.newevent.building;
-            // this.zbuilding.push(this.newevent.building);
+            // this.newbuilding = this.record.building;
+            // this.zbuilding.push(this.record.building);
         },
         fetchForSelectCategoriesList: function fetchForSelectCategoriesList(search, loading) {
-            var _this2 = this;
+            var _this3 = this;
 
             loading(true);
             this.$http.get('/api/categorylist', {
                 q: search
             }).then(function (resp) {
-                _this2.zcats = resp.data;
+                _this3.zcats = resp.data;
                 loading(false);
             });
         },
         fetchForSelectBuildingList: function fetchForSelectBuildingList(search, loading) {
-            var _this3 = this;
+            var _this4 = this;
 
             loading(true);
             this.$http.get('/api/buildinglist', {
                 q: search
             }).then(function (resp) {
-                _this3.buildings = resp.data;
+                _this4.buildings = resp.data;
                 loading(false);
             });
         },
         fetchForSelectMiniCalendarList: function fetchForSelectMiniCalendarList(search, loading) {
-            var _this4 = this;
+            var _this5 = this;
 
             loading(true);
             this.$http.get('/api/minicals', {
                 q: search
             }).then(function (resp) {
-                _this4.minicals = resp.data;
+                _this5.minicals = resp.data;
                 loading(false);
             });
         },
@@ -15632,36 +15753,36 @@ module.exports = {
         },
 
         submitForm: function submitForm(e) {
-            var _this5 = this;
+            var _this6 = this;
 
             //  console.log('this.eventform=' + this.eventform.$valid);
             e.preventDefault();
-            // this.newevent.start_date = this.sdate;
-            // this.newevent.end_date = this.edate;
-            // this.newevent.reg_deadline = this.rdate;
-            this.newevent.author_id = this.authorid;
-            this.newevent.related_link_1 = this.relatedLink1;
-            if (this.newevent.on_campus == true) {
-                this.newevent.location = this.computedLocation;
+            // this.record.start_date = this.sdate;
+            // this.record.end_date = this.edate;
+            // this.record.reg_deadline = this.rdate;
+            this.record.author_id = this.authorid;
+            this.record.related_link_1 = this.relatedLink1;
+            if (this.record.on_campus == true) {
+                this.record.location = this.computedLocation;
             } else {
-                this.newevent.location = this.newevent.locationoffcampus;
+                this.record.location = this.record.locationoffcampus;
             }
-            // this.newevent.location = (this.on_campus)?this.computedLocation: this.newevent.location;
-            // this.newevent.categories = this.zcategories;
-            // console.log("cats="+ this.newevent.categories);
-            this.$http.post('/api/event', this.newevent).then(function (response) {
+            // this.record.location = (this.on_campus)?this.computedLocation: this.record.location;
+            // this.record.categories = this.zcategories;
+            // console.log("cats="+ this.record.categories);
+            this.$http.post('/api/event', this.record).then(function (response) {
                 //response.status;
                 console.log('response.status=' + response.status);
                 console.log('response.ok=' + response.ok);
                 console.log('response.statusText=' + response.statusText);
                 console.log('response.data=' + response.data.message);
-                _this5.formMessage.msg = response.data.message;
-                _this5.formMessage.isOk = response.ok;
+                _this6.formMessage.msg = response.data.message;
+                _this6.formMessage.isOk = response.ok;
             }, function (response) {
                 //error callback
                 // console.log("FORM ERRORS     "+ response.json() );
 
-                _this5.formErrors = response.data.error.message;
+                _this6.formErrors = response.data.error.message;
             }).bind(this);
         }
     },
@@ -15683,7 +15804,7 @@ module.exports = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form _v-af7b979e=\"\">\n    <slot name=\"csrf\" _v-af7b979e=\"\"></slot>\n    <!-- <slot name=\"author_id\" v-model=\"newevent.author_id\"></slot> -->\n    <div class=\"row\" _v-af7b979e=\"\">\n        <div :class=\"md12col\" _v-af7b979e=\"\">\n            <div v-show=\"formMessage.isOk\" :class=\"calloutSuccess\" _v-af7b979e=\"\">\n                <h5 _v-af7b979e=\"\">{{formMessage.msg}}</h5>\n            </div>\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label _v-af7b979e=\"\">Title <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-af7b979e=\"\">Please enter a title ({{titleChars}} characters left)</p>\n                <input v-model=\"newevent.title\" class=\"form-control\" :class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-af7b979e=\"\">\n                <p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-af7b979e=\"\">\tPlease Include a Title!</p>\n            </div>\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label _v-af7b979e=\"\">Short Title\t</label>\n                <input v-model=\"newevent.short_title\" class=\"form-control\" type=\"text\" placeholder=\"Short Title\" name=\"short-title\" _v-af7b979e=\"\">\n            </div>\n        </div><!-- /.md12col -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-af7b979e=\"\">\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label _v-af7b979e=\"\">Is Event on Campus?\n                    <input id=\"on-campus-yes\" name=\"on_campus\" type=\"checkbox\" value=\"1\" v-model=\"newevent.on_campus\" _v-af7b979e=\"\">\n                </label>\n            </div>\n        </div><!-- /.md6col -->\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n\n        </div><!-- /.md6col -->\n    </div><!-- /.row -->\n            <div class=\"row\" _v-af7b979e=\"\">\n        <div :class=\"md12col\" _v-af7b979e=\"\">\n            <template v-if=\"isOnCampus\">\n                <div class=\"row\" _v-af7b979e=\"\">\n                    <div :class=\"md8col\" _v-af7b979e=\"\">\n                        <label _v-af7b979e=\"\">Building</label>\n                        <v-select :debounce=\"250\" :value.sync=\"building\" :on-search=\"fetchForSelectBuildingList\" :options=\"buildings\" placeholder=\"Select a Building ...\" label=\"name\" _v-af7b979e=\"\">\n                        </v-select>\n                        <!-- <select id=\"select-zbuilding\" class=\"js-example-basic-multiple\" style=\"width: 100%\" v-myselect=\"zbuildings\"  ajaxurl=\"/api/zbuildings\" v-bind:resultvalue=\"buildings\" data-tags=\"false\" multiple=\"multiple\" data-maximum-selection-length=\"1\">\n                        </select> -->\n                    </div><!-- /.md8col -->\n                    <div :class=\"md4col\" _v-af7b979e=\"\">\n                        <label _v-af7b979e=\"\">Room</label>\n                        <input v-model=\"newevent.room\" :class=\"[formErrors.room ? 'invalid-input' : '']\" name=\"room\" type=\"text\" _v-af7b979e=\"\">\n\n                    </div><!-- /.md4col -->\n                </div><!-- /.row -->\n            </template>\n            <div class=\"row\" _v-af7b979e=\"\">\n                <div :class=\"md12col\" _v-af7b979e=\"\">\n                    <template v-if=\"isOnCampus\">\n                        <label _v-af7b979e=\"\">Location <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                        <input v-model=\"computedLocation\" class=\"form-control\" :class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" readonly=\"readonly\" _v-af7b979e=\"\">\n                    </template>\n                    <template v-else=\"\">\n                        <label _v-af7b979e=\"\">Location <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                        <input v-model=\"newevent.locationoffcampus\" class=\"form-control\" :class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" _v-af7b979e=\"\">\n                    </template>\n                </div><!-- /.md12col -->\n            </div><!-- /.row -->\n        </div><!-- /.md12col -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-af7b979e=\"\">\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label for=\"start-date\" _v-af7b979e=\"\">Start Date: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                <input id=\"start-date\" :class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"newevent.start_date\" aria-describedby=\"errorStartDate\" _v-af7b979e=\"\">\n                <p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Start Date</p>\n            </div><!--form-group -->\n        </div><!-- /.md6col -->\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label for=\"end-date\" _v-af7b979e=\"\">End Date: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                <input id=\"end-date\" :class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"newevent.end_date\" aria-describedby=\"errorEndDate\" _v-af7b979e=\"\">\n                <!-- <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\"></datepicker> -->\n                <p v-if=\"formErrors.end_date\" class=\"help-text invalid\" _v-af7b979e=\"\">Need an End Date</p>\n\n            </div><!--form-group -->\n        </div><!-- /.md6col -->\n    </div><!-- /.row -->\n\n    <div class=\"row\" _v-af7b979e=\"\">\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label for=\"all-day\" _v-af7b979e=\"\">All Day Event:\n                    <input id=\"all-day\" name=\"all_day\" type=\"checkbox\" value=\"1\" v-model=\"newevent.all_day\" _v-af7b979e=\"\">\n                </label>\n            </div>\n        </div><!-- /.small-6 column -->\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n            <div v-show=\"hasEndTime\" class=\"form-group\" _v-af7b979e=\"\">\n                <label for=\"no-end-time\" _v-af7b979e=\"\">No End Time:\n                    <input id=\"no-end-time\" name=\"no_end_time\" type=\"checkbox\" value=\"1\" v-model=\"newevent.no_end_time\" _v-af7b979e=\"\">\n                    <!-- <label for=\"no-end-time-no\" class=\"radiobtns\">no</label><input id=\"no-end-time-no\"  name=\"no_end_time\" type=\"radio\" value=\"0\" v-model=\"newevent.no_end_time\"/> -->\n                </label></div>\n            </div><!-- /.small-6 column -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div v-show=\"hasStartTime\" class=\"form-group\" _v-af7b979e=\"\">\n                    <label for=\"start-time\" _v-af7b979e=\"\">Start Time: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                    <input id=\"start-time\" class=\"form-control\" type=\"text\" v-model=\"newevent.start_time\" _v-af7b979e=\"\">\n                </div><!-- /.form-group -->\n            </div><!-- /.md6col -->\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div v-show=\"hasEndTime\" class=\"form-group\" _v-af7b979e=\"\">\n                    <label for=\"end-time\" _v-af7b979e=\"\">End Time: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                    <input id=\"end-time\" class=\"form-control\" type=\"text\" v-model=\"newevent.end_time\" _v-af7b979e=\"\">\n                </div><!-- /.form-group -->\n            </div><!-- /.md6col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Categories: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                    <v-select :class=\"[formErrors.categories ? 'invalid-input' : '']\" :debounce=\"250\" :value.sync=\"newevent.categories\" :on-search=\"fetchForSelectCategoriesList\" :options=\"zcats\" :multiple=\"true\" placeholder=\"Select related categories ...\" label=\"category\" _v-af7b979e=\"\">\n                    </v-select>\n\n                </div><!-- /.form-group -->\n            </div><!-- /.md12col -->\n            <!-- <div :class=\"md12col\">\n                <div class=\"form-group\">\n                    <label>Categories: <span :class=\"iconStar\" class=\"reqstar\"></span></label>\n                    <select  :class=\"[formErrors.categories ? 'invalid-input' : '']\" id=\"select-zcats\" style=\"width: 100%\" v-myselect=\"zcategories\" v-bind:resultvalue=\"zcats\" ajaxurl=\"/api/zcats\" data-close-on-select=\"false\" data-placeholder=\"zcats\" data-tags=\"false\"  multiple=\"multiple\">\n                        <option value=\"0\">\n                            default\n                        </option>\n                    </select>\n                </div>\n            </div> -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Contact Person: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span><em _v-af7b979e=\"\">(Jane Doe)</em></label>\n                        <input v-model=\"newevent.contact_person\" class=\"form-control\" :class=\"[formErrors.contact_person ? 'invalid-input' : '']\" name=\"contact-person\" type=\"text\" _v-af7b979e=\"\">\n                        <p v-if=\"formErrors.contact_person\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Contact Person!</p>\n\n                </div>\n            </div><!-- /.md6col -->\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Contact Email: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span><em _v-af7b979e=\"\">(ex.janedoe@emich.edu)</em></label>\n                        <input v-model=\"newevent.contact_email\" class=\"form-control\" :class=\"[formErrors.contact_email ? 'invalid-input' : '']\" name=\"contact-email\" type=\"text\" _v-af7b979e=\"\">\n                        <p v-if=\"formErrors.contact_email\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Contact Email!</p>\n\n                </div>\n            </div><!-- /.md6col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n\n                    <label _v-af7b979e=\"\">Contact Phone <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span> <em _v-af7b979e=\"\">(ex. 734.487.1849)</em>\n                        <input v-model=\"newevent.contact_phone\" class=\"form-control\" :class=\"[formErrors.contact_phone ? 'invalid-input' : '']\" name=\"contact-phone\" type=\"text\" _v-af7b979e=\"\">\n                        <p v-if=\"formErrors.contact_phone\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Contact Phone!</p>\n                    </label>\n                </div>\n            </div><!-- /.md6col -->\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Contact Fax: <em _v-af7b979e=\"\">(ex. 734.487.1849)</em>\n                        <input v-model=\"newevent.contact_fax\" class=\"form-control\" :class=\"[formErrors.contact_fax ? 'invalid-input' : '']\" name=\"contact-fax\" type=\"text\" _v-af7b979e=\"\">\n                    </label>\n                </div>\n            </div><!-- /.md6col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Related Link: <em _v-af7b979e=\"\">(ex. http://www.emich.edu/calendar)</em></label>\n                    <div class=\"row\" _v-af7b979e=\"\">\n                        <div :class=\"md6col\" _v-af7b979e=\"\">\n                            <label for=\"link_text_1\" _v-af7b979e=\"\">Link Text</label><input v-model=\"linkText1\" class=\"form-control\" name=\"link_text_1\" type=\"text\" _v-af7b979e=\"\">\n                        </div><!-- /.md6col -->\n                    </div><!-- /.row -->\n                    <div class=\"row\" _v-af7b979e=\"\">\n                        <div :class=\"md12col\" _v-af7b979e=\"\">\n                            <label for=\"link_url_1\" _v-af7b979e=\"\">Link URL</label><input v-model=\"linkUrl1\" class=\"form-control\" name=\"link_url_1\" type=\"text\" _v-af7b979e=\"\">\n                        </div><!-- /.md12col -->\n                    </div><!-- /.row -->\n                    {{relatedLink1}}\n                </div>\n                    <!-- <label>Related Link: <em>(ex. http://www.emich.edu/calendar)</em>\n                        <label for=\"link_text_2\">Link Text</label><input v-model=\"linkText2\"  name=\"link_text_2\" type=\"text\">\n                        <label for=\"link_url_2\">Link URL</label><input v-model=\"linkUrl2\"  name=\"link_url_2\" type=\"text\">\n                    </label>{{relatedLink2}}\n                    <label>Related Link: <em>(ex. http://www.emich.edu/calendar)</em>\n                        <label for=\"link_text_3\">Link Text</label><input v-model=\"linkText3\"  name=\"link_text_3\" type=\"text\">\n                        <label for=\"link_url_3\">Link URL</label><input v-model=\"linkUrl3\"  name=\"link_url_3\" type=\"text\">\n                    </label>{{relatedLink3}} -->\n\n            </div><!-- /.md12col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <label for=\"reg-deadline\" _v-af7b979e=\"\">Registration Deadline</label>\n                    <input id=\"reg-deadline\" type=\"text\" v-model=\"newevent.reg_deadline\" :value.sync=\"rdate\" aria-describedby=\"errorRegDeadline\" _v-af7b979e=\"\">\n                </div>\n            </div><!-- /.md6col-->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n\n                <div class=\"row\" _v-af7b979e=\"\">\n                    <div :class=\"md2col\" _v-af7b979e=\"\">\n                        <label _v-af7b979e=\"\">Free</label>\n                        <div :class=\"formGroup\" _v-af7b979e=\"\">\n                            <input id=\"free\" name=\"free\" type=\"checkbox\" value=\"1\" v-model=\"newevent.free\" _v-af7b979e=\"\">\n                        </div><!-- /.form-group -->\n                    </div><!-- /.md4col -->\n                    <div :class=\"md10col\" _v-af7b979e=\"\">\n                        <label _v-af7b979e=\"\">Event Cost <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                        <div v-show=\"hasCost\" class=\"form-group\" _v-af7b979e=\"\">\n                            <div class=\"input-group\" _v-af7b979e=\"\">\n                                <span :class=\"inputGroupLabel\" _v-af7b979e=\"\">$</span>\n                                <input v-model=\"newevent.cost\" class=\"form-control\" :class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"number\" _v-af7b979e=\"\">\n                            </div><!-- /. input-group -->\n                        </div>\n                        <div v-else=\"\" :class=\"formGroup\" _v-af7b979e=\"\">\n                            <div class=\"input-group\" _v-af7b979e=\"\">\n                                <span :class=\"inputGroupLabel\" _v-af7b979e=\"\">$</span>\n                                <input v-model=\"newevent.cost\" class=\"form-control\" :class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"number\" readonly=\"readonly\" _v-af7b979e=\"\">\n                            </div><!-- /. input-group -->\n                        </div>\n                    </div><!-- /.md8col -->\n                </div><!-- /.row -->\n\n\n            </div><!-- /.medium-6 -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Tickets Available\n                        <select v-model=\"newevent.tickets\" class=\"form-control\" _v-af7b979e=\"\">\n                            <option v-for=\"ticketoption in ticketoptions\" :value=\"ticketoption.value\" _v-af7b979e=\"\">\n                                {{ ticketoption.label }}\n                            </option>\n                        </select>\n                    </label>\n                    <template v-if=\"newevent.tickets == 'online' || newevent.tickets == 'all'\">\n                        <label _v-af7b979e=\"\">Link: <em _v-af7b979e=\"\">(ex. http://www.emich.edu/calendar)</em>\n                            <input v-model=\"newevent.ticket_details_online\" class=\"form-control\" :class=\"[formErrors.ticket_details_online ? 'invalid-input' : '']\" name=\"ticket-details-online\" type=\"text\" _v-af7b979e=\"\">\n                        </label>\n                    </template>\n                    <template v-if=\"newevent.tickets == 'phone' || newevent.tickets == 'all'\">\n                        <label _v-af7b979e=\"\">Tickets by Phone <em _v-af7b979e=\"\">(ex. 734.487.1849)</em>\n                            <input v-model=\"newevent.ticket_details_phone\" class=\"form-control\" :class=\"[formErrors.ticket_details_phone ? 'invalid-input' : '']\" name=\"ticket-details-phone\" type=\"text\" _v-af7b979e=\"\">\n                        </label>\n                    </template>\n                    <template v-if=\"newevent.tickets == 'office' || newevent.tickets == 'all'\">\n                        <label _v-af7b979e=\"\">Address\n                            <input v-model=\"newevent.ticket_details_office\" class=\"form-control\" :class=\"[formErrors.ticket_details_office ? 'invalid-input' : '']\" name=\"ticket-details-office\" type=\"text\" _v-af7b979e=\"\">\n                        </label>\n                    </template>\n                    <template v-if=\"newevent.tickets == 'other'\">\n                        <label _v-af7b979e=\"\">Other\n                            <input v-model=\"newevent.ticket_details_other\" class=\"form-control\" :class=\"[formErrors.ticket_details_other ? 'invalid-input' : '']\" name=\"ticket-details-other\" type=\"text\" _v-af7b979e=\"\">\n                        </label>\n                    </template>\n                </div><!-- /.form-group -->\n            </div><!-- /.md12col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Participants</label>\n                    <select v-model=\"newevent.participants\" class=\"form-control\" _v-af7b979e=\"\">\n                        <option v-for=\"participant in participants\" :value=\"participant.value\" _v-af7b979e=\"\">\n                            {{ participant.label }}\n                     </option>\n            </select>\n                        <!-- <v-select :value=\"newevent.participants\"\n                                    :options=\"participants\"\n                                    :searchable=\"false\"\n                        >\n\n                        </v-select> -->\n\n                </div>\n            </div><!--/.md12col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label for=\"lbc-reviewed\" _v-af7b979e=\"\">LBC Approved: <em _v-af7b979e=\"\">(pre-approval required)</em>\n                        <input id=\"lbc-reviewed\" name=\"lbc-reviewed\" type=\"checkbox\" value=\"1\" v-model=\"newevent.lbc_reviewed\" _v-af7b979e=\"\">\n                    </label>\n                </div>\n            </div><!-- /.md6col -->\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n\n            </div><!-- /.md6col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Description <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span> <p class=\"help-text\" id=\"description-helptext\" _v-af7b979e=\"\">({{descriptionChars}} characters left)</p>\n\n                        <textarea v-model=\"newevent.description\" class=\"form-control\" :class=\"[formErrors.description ? 'invalid-input' : '']\" name=\"description\" type=\"textarea\" rows=\"6\" _v-af7b979e=\"\"></textarea>\n                    </label>\n                    <p v-if=\"formErrors.description\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Description!</p>\n\n                </div>\n            </div><!-- /.md12col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Group Website Calendar <p class=\"help-text\" id=\"minicalendar-helptext\" _v-af7b979e=\"\">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>\n                        <v-select :debounce=\"250\" :value=\"newevent.mini_calendar\" :on-search=\"fetchForSelectMiniCalendarList\" :options=\"minicals\" placeholder=\"Select a minicalendar...\" label=\"calendar\" _v-af7b979e=\"\">\n                        </v-select>\n                    </label>\n                </div>\n            </div><!-- /.md12col -->\n\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n\n                <!-- <div :class=\"formGroup\">\n                    <label>Group Website Calendar <p class=\"help-text\" id=\"minicalendar-helptext\">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>\n                        <select v-model=\"newevent.mini_calendar\" id=\"mini_calendar\" v-myselect=\"mini_calendar\">\n                            <option v-for=\"minicalendar in minicalendars\" :value=\"minicalendar.id\">\n                                {{minicalendar.calendar}}\n                            </option>\n                        </select>\n                    </label>\n                </div> -->\n            </div><!-- /.md12col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <button id=\"btn-event\" @click=\"submitForm\" type=\"submit\" :class=\"btnPrimary\" _v-af7b979e=\"\">Submit For Approval</button>\n                </div>\n            </div></div></form>\n        <!-- /.md12col -->\n\n\n    "
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form _v-af7b979e=\"\">\n    <slot name=\"csrf\" _v-af7b979e=\"\"></slot>\n    <!-- <slot name=\"author_id\" v-model=\"record.author_id\"></slot> -->\n    <div class=\"row\" _v-af7b979e=\"\">\n        <div :class=\"md12col\" _v-af7b979e=\"\">\n            <div v-show=\"formMessage.isOk\" :class=\"calloutSuccess\" _v-af7b979e=\"\">\n                <h5 _v-af7b979e=\"\">{{formMessage.msg}}</h5>\n            </div>\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label _v-af7b979e=\"\">Title <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                <p class=\"help-text\" id=\"title-helptext\" _v-af7b979e=\"\">Please enter a title ({{titleChars}} characters left)</p>\n                <input v-model=\"record.title\" class=\"form-control\" :class=\"[formErrors.title ? 'invalid-input' : '']\" name=\"title\" type=\"text\" _v-af7b979e=\"\">\n                <p v-if=\"formErrors.title\" class=\"help-text invalid\" _v-af7b979e=\"\">\tPlease Include a Title!</p>\n            </div>\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label _v-af7b979e=\"\">Short Title\t</label>\n                <input v-model=\"record.short_title\" class=\"form-control\" type=\"text\" placeholder=\"Short Title\" name=\"short-title\" _v-af7b979e=\"\">\n            </div>\n        </div><!-- /.md12col -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-af7b979e=\"\">\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label _v-af7b979e=\"\">Is Event on Campus?\n                    <input id=\"on-campus-yes\" name=\"on_campus\" type=\"checkbox\" value=\"1\" v-model=\"record.on_campus\" _v-af7b979e=\"\">\n                </label>\n            </div>\n        </div><!-- /.md6col -->\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n\n        </div><!-- /.md6col -->\n    </div><!-- /.row -->\n            <div class=\"row\" _v-af7b979e=\"\">\n        <div :class=\"md12col\" _v-af7b979e=\"\">\n            <template v-if=\"isOnCampus\">\n                <div class=\"row\" _v-af7b979e=\"\">\n                    <div :class=\"md8col\" _v-af7b979e=\"\">\n                        <label _v-af7b979e=\"\">Building</label>\n                        <v-select :debounce=\"250\" :value.sync=\"building\" :on-search=\"fetchForSelectBuildingList\" :options=\"buildings\" placeholder=\"Select a Building ...\" label=\"name\" _v-af7b979e=\"\">\n                        </v-select>\n                        <!-- <select id=\"select-zbuilding\" class=\"js-example-basic-multiple\" style=\"width: 100%\" v-myselect=\"zbuildings\"  ajaxurl=\"/api/zbuildings\" v-bind:resultvalue=\"buildings\" data-tags=\"false\" multiple=\"multiple\" data-maximum-selection-length=\"1\">\n                        </select> -->\n                    </div><!-- /.md8col -->\n                    <div :class=\"md4col\" _v-af7b979e=\"\">\n                        <label _v-af7b979e=\"\">Room</label>\n                        <input v-model=\"record.room\" :class=\"[formErrors.room ? 'invalid-input' : '']\" name=\"room\" type=\"text\" _v-af7b979e=\"\">\n\n                    </div><!-- /.md4col -->\n                </div><!-- /.row -->\n            </template>\n            <div class=\"row\" _v-af7b979e=\"\">\n                <div :class=\"md12col\" _v-af7b979e=\"\">\n                    <template v-if=\"isOnCampus\">\n                        <label _v-af7b979e=\"\">Location <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                        <input v-model=\"computedLocation\" class=\"form-control\" :class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" readonly=\"readonly\" _v-af7b979e=\"\">\n                    </template>\n                    <template v-else=\"\">\n                        <label _v-af7b979e=\"\">Location <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                        <input v-model=\"record.locationoffcampus\" class=\"form-control\" :class=\"[formErrors.location ? 'invalid-input' : '']\" name=\"location\" type=\"text\" _v-af7b979e=\"\">\n                    </template>\n                </div><!-- /.md12col -->\n            </div><!-- /.row -->\n        </div><!-- /.md12col -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-af7b979e=\"\">\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label for=\"start-date\" _v-af7b979e=\"\">Start Date: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                <input id=\"start-date\" :class=\"[formErrors.start_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.start_date\" aria-describedby=\"errorStartDate\" _v-af7b979e=\"\">\n                <p v-if=\"formErrors.start_date\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Start Date</p>\n            </div><!--form-group -->\n        </div><!-- /.md6col -->\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label for=\"end-date\" _v-af7b979e=\"\">End Date: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                <input id=\"end-date\" :class=\"[formErrors.end_date ? 'invalid-input' : '']\" type=\"text\" v-model=\"record.end_date\" aria-describedby=\"errorEndDate\" _v-af7b979e=\"\">\n                <!-- <datepicker id=\"end-date\" :readonly=\"true\" format=\"YYYY-MM-DD\" name=\"end-date\" :value.sync=\"edate\"></datepicker> -->\n                <p v-if=\"formErrors.end_date\" class=\"help-text invalid\" _v-af7b979e=\"\">Need an End Date</p>\n\n            </div><!--form-group -->\n        </div><!-- /.md6col -->\n    </div><!-- /.row -->\n\n    <div class=\"row\" _v-af7b979e=\"\">\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n            <div class=\"form-group\" _v-af7b979e=\"\">\n                <label for=\"all-day\" _v-af7b979e=\"\">All Day Event:\n                    <input id=\"all-day\" name=\"all_day\" type=\"checkbox\" value=\"1\" v-model=\"record.all_day\" _v-af7b979e=\"\">\n                </label>\n            </div>\n        </div><!-- /.small-6 column -->\n        <div :class=\"md6col\" _v-af7b979e=\"\">\n            <div v-show=\"hasEndTime\" class=\"form-group\" _v-af7b979e=\"\">\n                <label for=\"no-end-time\" _v-af7b979e=\"\">No End Time:\n                    <input id=\"no-end-time\" name=\"no_end_time\" type=\"checkbox\" value=\"1\" v-model=\"record.no_end_time\" _v-af7b979e=\"\">\n                    <!-- <label for=\"no-end-time-no\" class=\"radiobtns\">no</label><input id=\"no-end-time-no\"  name=\"no_end_time\" type=\"radio\" value=\"0\" v-model=\"record.no_end_time\"/> -->\n                </label></div>\n            </div><!-- /.small-6 column -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div v-show=\"hasStartTime\" class=\"form-group\" _v-af7b979e=\"\">\n                    <label for=\"start-time\" _v-af7b979e=\"\">Start Time: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                    <input id=\"start-time\" class=\"form-control\" type=\"text\" v-model=\"record.start_time\" _v-af7b979e=\"\">\n                </div><!-- /.form-group -->\n            </div><!-- /.md6col -->\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div v-show=\"hasEndTime\" class=\"form-group\" _v-af7b979e=\"\">\n                    <label for=\"end-time\" _v-af7b979e=\"\">End Time: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                    <input id=\"end-time\" class=\"form-control\" type=\"text\" v-model=\"record.end_time\" _v-af7b979e=\"\">\n                </div><!-- /.form-group -->\n            </div><!-- /.md6col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Categories: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                    <v-select :class=\"[formErrors.categories ? 'invalid-input' : '']\" :debounce=\"250\" :value.sync=\"record.categories\" :on-search=\"fetchForSelectCategoriesList\" :options=\"zcats\" :multiple=\"true\" placeholder=\"Select related categories ...\" label=\"category\" _v-af7b979e=\"\">\n                    </v-select>\n\n                </div><!-- /.form-group -->\n            </div><!-- /.md12col -->\n            <!-- <div :class=\"md12col\">\n                <div class=\"form-group\">\n                    <label>Categories: <span :class=\"iconStar\" class=\"reqstar\"></span></label>\n                    <select  :class=\"[formErrors.categories ? 'invalid-input' : '']\" id=\"select-zcats\" style=\"width: 100%\" v-myselect=\"zcategories\" v-bind:resultvalue=\"zcats\" ajaxurl=\"/api/zcats\" data-close-on-select=\"false\" data-placeholder=\"zcats\" data-tags=\"false\"  multiple=\"multiple\">\n                        <option value=\"0\">\n                            default\n                        </option>\n                    </select>\n                </div>\n            </div> -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Contact Person: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span><em _v-af7b979e=\"\">(Jane Doe)</em></label>\n                        <input v-model=\"record.contact_person\" class=\"form-control\" :class=\"[formErrors.contact_person ? 'invalid-input' : '']\" name=\"contact-person\" type=\"text\" _v-af7b979e=\"\">\n                        <p v-if=\"formErrors.contact_person\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Contact Person!</p>\n\n                </div>\n            </div><!-- /.md6col -->\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Contact Email: <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span><em _v-af7b979e=\"\">(ex.janedoe@emich.edu)</em></label>\n                        <input v-model=\"record.contact_email\" class=\"form-control\" :class=\"[formErrors.contact_email ? 'invalid-input' : '']\" name=\"contact-email\" type=\"text\" _v-af7b979e=\"\">\n                        <p v-if=\"formErrors.contact_email\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Contact Email!</p>\n\n                </div>\n            </div><!-- /.md6col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n\n                    <label _v-af7b979e=\"\">Contact Phone <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span> <em _v-af7b979e=\"\">(ex. 734.487.1849)</em>\n                        <input v-model=\"record.contact_phone\" class=\"form-control\" :class=\"[formErrors.contact_phone ? 'invalid-input' : '']\" name=\"contact-phone\" type=\"text\" _v-af7b979e=\"\">\n                        <p v-if=\"formErrors.contact_phone\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Contact Phone!</p>\n                    </label>\n                </div>\n            </div><!-- /.md6col -->\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Contact Fax: <em _v-af7b979e=\"\">(ex. 734.487.1849)</em>\n                        <input v-model=\"record.contact_fax\" class=\"form-control\" :class=\"[formErrors.contact_fax ? 'invalid-input' : '']\" name=\"contact-fax\" type=\"text\" _v-af7b979e=\"\">\n                    </label>\n                </div>\n            </div><!-- /.md6col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Related Link: <em _v-af7b979e=\"\">(ex. http://www.emich.edu/calendar)</em></label>\n                    <div class=\"row\" _v-af7b979e=\"\">\n                        <div :class=\"md6col\" _v-af7b979e=\"\">\n                            <label for=\"related_link_1_txt\" _v-af7b979e=\"\">Link Text</label><input v-model=\"record.related_link_1_txt\" class=\"form-control\" name=\"related_link_1_txt\" type=\"text\" _v-af7b979e=\"\">\n                        </div><!-- /.md6col -->\n                    </div><!-- /.row -->\n                    <div class=\"row\" _v-af7b979e=\"\">\n                        <div :class=\"md12col\" _v-af7b979e=\"\">\n                            <label for=\"related_link_1\" _v-af7b979e=\"\">Link URL</label><input v-model=\"record.related_link_1\" class=\"form-control\" name=\"related_link_1_txt\" type=\"text\" _v-af7b979e=\"\">\n                        </div><!-- /.md12col -->\n                    </div><!-- /.row -->\n                    {{relatedLink1}}\n                    <template v-if=\"record.related_link_1\">\n                        <div class=\"row\" _v-af7b979e=\"\">\n                            <div :class=\"md6col\" _v-af7b979e=\"\">\n                                <label for=\"related_link_2_txt\" _v-af7b979e=\"\">Link Text</label><input v-model=\"record.related_link_2_txt\" class=\"form-control\" name=\"related_link_2_txt\" type=\"text\" _v-af7b979e=\"\">\n                            </div><!-- /.md6col -->\n                        </div><!-- /.row -->\n                        <div class=\"row\" _v-af7b979e=\"\">\n                            <div :class=\"md12col\" _v-af7b979e=\"\">\n                                <label for=\"related_link_2\" _v-af7b979e=\"\">Link URL</label><input v-model=\"record.related_link_2\" class=\"form-control\" name=\"related_link_2_txt\" type=\"text\" _v-af7b979e=\"\">\n                            </div><!-- /.md12col -->\n                        </div><!-- /.row -->\n                        {{relatedLink2}}\n\n\n                    </template>\n                    <template v-if=\"record.related_link_1\">\n                        <div class=\"row\" _v-af7b979e=\"\">\n                            <div :class=\"md6col\" _v-af7b979e=\"\">\n                                <label for=\"related_link_2_txt\" _v-af7b979e=\"\">Link Text</label><input v-model=\"record.related_link_2_txt\" class=\"form-control\" name=\"related_link_2_txt\" type=\"text\" _v-af7b979e=\"\">\n                            </div><!-- /.md6col -->\n                        </div><!-- /.row -->\n                        <div class=\"row\" _v-af7b979e=\"\">\n                            <div :class=\"md12col\" _v-af7b979e=\"\">\n                                <label for=\"related_link_2\" _v-af7b979e=\"\">Link URL</label><input v-model=\"record.related_link_2\" class=\"form-control\" name=\"related_link_2_txt\" type=\"text\" _v-af7b979e=\"\">\n                            </div><!-- /.md12col -->\n                        </div><!-- /.row -->\n                        {{relatedLink2}}\n                    </template>\n                    <template v-if=\"record.related_link_2\">\n                        <div class=\"row\" _v-af7b979e=\"\">\n                            <div :class=\"md6col\" _v-af7b979e=\"\">\n                                <label for=\"related_link_3_txt\" _v-af7b979e=\"\">Link Text</label><input v-model=\"record.related_link_3_txt\" class=\"form-control\" name=\"related_link_3_txt\" type=\"text\" _v-af7b979e=\"\">\n                            </div><!-- /.md6col -->\n                        </div><!-- /.row -->\n                        <div class=\"row\" _v-af7b979e=\"\">\n                            <div :class=\"md12col\" _v-af7b979e=\"\">\n                                <label for=\"related_link_3\" _v-af7b979e=\"\">Link URL</label><input v-model=\"record.related_link_3\" class=\"form-control\" name=\"related_link_3_txt\" type=\"text\" _v-af7b979e=\"\">\n                            </div><!-- /.md12col -->\n                        </div><!-- /.row -->\n                        {{relatedLink3}}\n                    </template>\n                </div>\n\n                    <!-- <label>Related Link: <em>(ex. http://www.emich.edu/calendar)</em>\n                        <label for=\"link_text_2\">Link Text</label><input v-model=\"linkText2\"  name=\"link_text_2\" type=\"text\">\n                        <label for=\"link_url_2\">Link URL</label><input v-model=\"linkUrl2\"  name=\"link_url_2\" type=\"text\">\n                    </label>{{relatedLink2}}\n                    <label>Related Link: <em>(ex. http://www.emich.edu/calendar)</em>\n                        <label for=\"link_text_3\">Link Text</label><input v-model=\"linkText3\"  name=\"link_text_3\" type=\"text\">\n                        <label for=\"link_url_3\">Link URL</label><input v-model=\"linkUrl3\"  name=\"link_url_3\" type=\"text\">\n                    </label>{{relatedLink3}} -->\n\n            </div><!-- /.md12col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div class=\"form-group\" _v-af7b979e=\"\">\n                    <label for=\"reg-deadline\" _v-af7b979e=\"\">Registration Deadline</label>\n                    <input id=\"reg-deadline\" type=\"text\" v-model=\"record.reg_deadline\" :value.sync=\"rdate\" aria-describedby=\"errorRegDeadline\" _v-af7b979e=\"\">\n                </div>\n            </div><!-- /.md6col-->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n\n                <div class=\"row\" _v-af7b979e=\"\">\n                    <div :class=\"md2col\" _v-af7b979e=\"\">\n                        <label _v-af7b979e=\"\">Free</label>\n                        <div :class=\"formGroup\" _v-af7b979e=\"\">\n                            <input id=\"free\" name=\"free\" type=\"checkbox\" value=\"1\" v-model=\"record.free\" _v-af7b979e=\"\">\n                        </div><!-- /.form-group -->\n                    </div><!-- /.md4col -->\n                    <div :class=\"md10col\" _v-af7b979e=\"\">\n                        <label _v-af7b979e=\"\">Event Cost <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span></label>\n                        <div v-show=\"hasCost\" class=\"form-group\" _v-af7b979e=\"\">\n                            <div class=\"input-group\" _v-af7b979e=\"\">\n                                <span :class=\"inputGroupLabel\" _v-af7b979e=\"\">$</span>\n                                <input v-model=\"record.cost\" class=\"form-control\" :class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"number\" _v-af7b979e=\"\">\n                            </div><!-- /. input-group -->\n                        </div>\n                        <div v-else=\"\" :class=\"formGroup\" _v-af7b979e=\"\">\n                            <div class=\"input-group\" _v-af7b979e=\"\">\n                                <span :class=\"inputGroupLabel\" _v-af7b979e=\"\">$</span>\n                                <input v-model=\"record.cost\" class=\"form-control\" :class=\"[formErrors.cost ? 'invalid-input' : '']\" name=\"event-cost\" type=\"number\" readonly=\"readonly\" _v-af7b979e=\"\">\n                            </div><!-- /. input-group -->\n                        </div>\n                    </div><!-- /.md8col -->\n                </div><!-- /.row -->\n\n\n            </div><!-- /.medium-6 -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Tickets Available\n                        <select v-model=\"record.tickets\" class=\"form-control\" _v-af7b979e=\"\">\n                            <option v-for=\"ticketoption in ticketoptions\" :value=\"ticketoption.value\" _v-af7b979e=\"\">\n                                {{ ticketoption.label }}\n                            </option>\n                        </select>\n                    </label>\n                    <template v-if=\"record.tickets == 'online' || record.tickets == 'all'\">\n                        <label _v-af7b979e=\"\">Link: <em _v-af7b979e=\"\">(ex. http://www.emich.edu/calendar)</em>\n                            <input v-model=\"record.ticket_details_online\" class=\"form-control\" :class=\"[formErrors.ticket_details_online ? 'invalid-input' : '']\" name=\"ticket-details-online\" type=\"text\" _v-af7b979e=\"\">\n                        </label>\n                    </template>\n                    <template v-if=\"record.tickets == 'phone' || record.tickets == 'all'\">\n                        <label _v-af7b979e=\"\">Tickets by Phone <em _v-af7b979e=\"\">(ex. 734.487.1849)</em>\n                            <input v-model=\"record.ticket_details_phone\" class=\"form-control\" :class=\"[formErrors.ticket_details_phone ? 'invalid-input' : '']\" name=\"ticket-details-phone\" type=\"text\" _v-af7b979e=\"\">\n                        </label>\n                    </template>\n                    <template v-if=\"record.tickets == 'office' || record.tickets == 'all'\">\n                        <label _v-af7b979e=\"\">Address\n                            <input v-model=\"record.ticket_details_office\" class=\"form-control\" :class=\"[formErrors.ticket_details_office ? 'invalid-input' : '']\" name=\"ticket-details-office\" type=\"text\" _v-af7b979e=\"\">\n                        </label>\n                    </template>\n                    <template v-if=\"record.tickets == 'other'\">\n                        <label _v-af7b979e=\"\">Other\n                            <input v-model=\"record.ticket_details_other\" class=\"form-control\" :class=\"[formErrors.ticket_details_other ? 'invalid-input' : '']\" name=\"ticket-details-other\" type=\"text\" _v-af7b979e=\"\">\n                        </label>\n                    </template>\n                </div><!-- /.form-group -->\n            </div><!-- /.md12col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Participants</label>\n                    <select v-model=\"record.participants\" class=\"form-control\" _v-af7b979e=\"\">\n                        <option v-for=\"participant in participants\" :value=\"participant.value\" _v-af7b979e=\"\">\n                            {{ participant.label }}\n                     </option>\n            </select>\n                        <!-- <v-select :value=\"record.participants\"\n                                    :options=\"participants\"\n                                    :searchable=\"false\"\n                        >\n\n                        </v-select> -->\n\n                </div>\n            </div><!--/.md12col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label for=\"lbc-reviewed\" _v-af7b979e=\"\">LBC Approved: <em _v-af7b979e=\"\">(pre-approval required)</em>\n                        <input id=\"lbc-reviewed\" name=\"lbc-reviewed\" type=\"checkbox\" value=\"1\" v-model=\"record.lbc_reviewed\" _v-af7b979e=\"\">\n                    </label>\n                </div>\n            </div><!-- /.md6col -->\n            <div :class=\"md6col\" _v-af7b979e=\"\">\n\n            </div><!-- /.md6col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Description <span :class=\"iconStar\" class=\"reqstar\" _v-af7b979e=\"\"></span> <p class=\"help-text\" id=\"description-helptext\" _v-af7b979e=\"\">({{descriptionChars}} characters left)</p>\n\n                        <textarea v-model=\"record.description\" class=\"form-control\" :class=\"[formErrors.description ? 'invalid-input' : '']\" name=\"description\" type=\"textarea\" rows=\"6\" _v-af7b979e=\"\"></textarea>\n                    </label>\n                    <p v-if=\"formErrors.description\" class=\"help-text invalid\" _v-af7b979e=\"\">Need a Description!</p>\n\n                </div>\n            </div><!-- /.md12col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <label _v-af7b979e=\"\">Group Website Calendar <p class=\"help-text\" id=\"minicalendar-helptext\" _v-af7b979e=\"\">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>\n                        <v-select :debounce=\"250\" :value=\"record.mini_calendar\" :on-search=\"fetchForSelectMiniCalendarList\" :options=\"minicals\" placeholder=\"Select a minicalendar...\" label=\"calendar\" _v-af7b979e=\"\">\n                        </v-select>\n                    </label>\n                </div>\n            </div><!-- /.md12col -->\n\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <v-select :value.sync=\"minicals\" :options=\"minicalslist\" placeholder=\"Select Mini Calendar\" label=\"calendars\" _v-af7b979e=\"\">\n                </v-select>\n\n                <!-- <div :class=\"formGroup\">\n                    <label>Group Website Calendar <p class=\"help-text\" id=\"minicalendar-helptext\">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>\n                        <select v-model=\"record.mini_calendar\" id=\"mini_calendar\" v-myselect=\"mini_calendar\">\n                            <option v-for=\"minicalendar in minicalendars\" :value=\"minicalendar.id\">\n                                {{minicalendar.calendar}}\n                            </option>\n                        </select>\n                    </label>\n                </div> -->\n            </div><!-- /.md12col -->\n        </div><!-- /.row -->\n        <div class=\"row\" _v-af7b979e=\"\">\n            <div :class=\"md12col\" _v-af7b979e=\"\">\n                <div :class=\"formGroup\" _v-af7b979e=\"\">\n                    <button id=\"btn-event\" @click=\"submitForm\" type=\"submit\" :class=\"btnPrimary\" _v-af7b979e=\"\">Submit For Approval</button>\n                </div>\n            </div></div></form>\n        <!-- /.md12col -->\n\n\n    "
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -15808,14 +15929,11 @@ Vue.use(_vueResource2.default);
 // Vue.component('autocomplete', autocomplete)
 
 new Vue({
-  el: '#vue-event-form',
-  components: {
-    EventForm: _EventFormUniversal2.default
-
-  },
-  ready: function ready() {
-    console.log('vue ready');
-  }
+    el: '#vue-event-form',
+    components: { EventForm: _EventFormUniversal2.default },
+    ready: function ready() {
+        console.log('vue ready');
+    }
 });
 
 },{"./components/EventFormUniversal.vue":108,"vue":106,"vue-resource":104}]},{},[110]);

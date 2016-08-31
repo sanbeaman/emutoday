@@ -147,13 +147,12 @@ h6.box-title {
         }*/
 </style>
 <script>
-var moment = require('moment')
+import moment from 'moment'
+import VuiFlipSwitch from './VuiFlipSwitch.vue'
 
 module.exports  = {
-    props: [
-        'item',
-        'pid'
-    ],
+    components: {VuiFlipSwitch},
+    props: ['item','pid'],
     data: function() {
         return {
             is_approved: 0,
@@ -189,7 +188,7 @@ module.exports  = {
         // console.log('this.currentDate=' + this.currentDate)
     },
     ready: function() {
-        this.is_approved = this.item.approved;
+        this.is_approved = this.item.is_approved;
             // this.formInputs.event_id = this.item.id;
         //ready function
     },
@@ -203,7 +202,7 @@ module.exports  = {
 
         },
         canHaveImage:function() {
-            if(this.item.approved){
+            if(this.item.is_approved){
                 return true;
             } else {
                 return false;
@@ -338,22 +337,17 @@ module.exports  = {
 
     },
     watch: {
-        'isapproved': function(val, oldVal) {
-            if (val !=  oldVal) {
-                console.log('val change')
-            }
-        }
+        // 'isapproved': function(val, oldVal) {
+        //     if (val !=  oldVal) {
+        //         console.log('val change')
+        //     }
+        // }
     },
     directives: {
         // mydatedropper: require('../directives/mydatedropper.js')
         // dtpicker: require('../directives/dtpicker.js')
     },
-    components: {
-        VuiFlipSwitch: require('./VuiFlipSwitch.vue')
-        // autocomplete: require('./vue-autocomplete.vue'),
-        // 'datepicker': require('../vendor/datepicker.vue'),
 
-    },
     filters: {
         titleDay: function (value) {
             return  moment(value).format("ddd")

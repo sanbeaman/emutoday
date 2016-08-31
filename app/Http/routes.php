@@ -35,6 +35,10 @@ Route::group(['prefix' => 'api'], function() {
 
         return Tag::select('name', 'id as value')->get();
     });
+    Route::get('minicalslist', function() {
+
+        return MiniCalendar::select('calendar', 'id as value')->get();
+    });
     // Route::get('taglist', function() {
     //     $text = Input::get('q');
     //     return Tag::likeSearch('name', $text)->select('name', 'id')->get();
@@ -66,7 +70,8 @@ Route::group(['prefix' => 'api'], function() {
 
     Route::patch('event/updateItem/{event}', 'Api\EventController@updateItem');
     Route::post('event/addMediaFile/{event}', 'Api\EventController@addMediaFile');
-    Route::get('event/queue', ['as' => 'api.event.queue', 'uses' => 'Api\EventController@queue']);
+
+    Route::get('event/queueload', ['as' => 'api.event.queueload', 'uses' => 'Api\EventController@queueLoad']);
     Route::get('event/otherItems', ['as' => 'api.event.otheritems', 'uses' => 'Api\EventController@otherItems']);
     Route::get('event/unapprovedItems', ['as' => 'api.event.unapproveditems', 'uses' => 'Api\EventController@unapprovedItems']);
     Route::get('event/approvedItems', ['as' => 'api.event.approveditems', 'uses' => 'Api\EventController@approvedItems']);
@@ -96,7 +101,7 @@ Route::group(['prefix' => 'api'], function() {
     Route::resource('author', 'Api\AuthorController');
     //  Route::get('announcement', ['as' => 'api.announcement', 'uses' => 'Api\AnnouncementController@index']);
     //  Route::get('announcement/{announcement}', ['as' => 'api_announcement_get', 'uses' => 'Api\AnnouncementController@edit']);
-    Route::get('announcement/queueload', ['as' => 'api.announcement.queueload', 'uses' => 'Api\AnnouncementController@queueload']);
+    Route::get('announcement/queueload', ['as' => 'api.announcement.queueload', 'uses' => 'Api\AnnouncementController@queueLoad']);
 
     Route::get('announcement/listall', ['as' => 'api.announcement.listall', 'uses' => 'Api\AnnouncementController@listall']);
 

@@ -26,6 +26,7 @@ use Carbon\Carbon;
 
 use emutoday\Emutoday\Transformers\FractalEventTransformer;
 use emutoday\Emutoday\Transformers\FractalEventTransformerModel;
+use emutoday\Emutoday\Transformers\FractalEventTransformerModelFull;
 use emutoday\Emutoday\Transformers\FractalBuildingTransformer;
 use emutoday\Emutoday\Transformers\FractalCategoryTransformer;
 
@@ -36,20 +37,49 @@ class EventController extends ApiController
   function __construct()
   {
         // $this->middleware('auth');
-    //     $this->middleware('web', ['only' => [
-    //        'store'
-    //    ]]);
+        $this->middleware('web', ['only' => [
+           'queueLoad'
+       ]]);
   }
 
-  public function queue()
+  public function queueLoad()
   {
-        $cFullDateSub3Months = Carbon::now()->subMonths(6);
-        $fractal = new Manager();
-        $events = Event::where('end_date', '>', $cFullDateSub3Months)->get();
-        $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
-         // Turn all of that into a JSON string
-         return $fractal->createData($resource)->toArray();
-  }
+      $currentDate = Carbon::now();
+
+        if (\Auth::check()) {
+            $user = \Auth::user();
+
+            if ($user->hasRole('contributor_1')){
+              // dd($user->id);
+              $events = $user->events()->get();
+            } else {
+              $events = Event::where('end_date', '>=', $currentDate)->get();
+              // Announcement::all();
+            }
+            $fractal = new Manager();
+            $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
+            return $fractal->createData($resource)->toArray();
+        } else {
+          return $this->setStatusCode(501)->respondWithError('Error');
+      }
+
+
+     }
+
+
+
+
+
+
+
+  //
+  //       $cFullDateSub3Months = Carbon::now()->subMonths(6);
+  //       $fractal = new Manager();
+  //       $events = Event::where('end_date', '>', $cFullDateSub3Months)->get();
+  //       $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
+  //        // Turn all of that into a JSON string
+  //        return $fractal->createData($resource)->toArray();
+  // }
   public function otherItems()
   {
       $cFullDateSub3Months = Carbon::now()->subMonths(3);
@@ -373,7 +403,7 @@ class EventController extends ApiController
         // $fractal->setSerializer(new DataArraySerializer());
         $event = Event::findOrFail($id);
 
-        $resource = new Fractal\Resource\Item($event, new FractalEventTransformerModel);
+        $resource = new Fractal\Resource\Item($event, new FractalEventTransformerModelFull);
             // Turn all of that into a JSON string
         return $fractal->createData($resource)->toArray();
 
