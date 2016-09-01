@@ -4,7 +4,7 @@
     <a href="#"><i class="fa fa-bullhorn"></i> <span>Announcements</span> <i class="fa fa-angle-left pull-right"></i></a>
     <ul class="treeview-menu">
         <li class="{{ set_active('admin/announcement*') }}"><a href="/admin/announcement/queue"><i class="fa fa-rocket"></i> <span>Queue</span></a></li>
-        <li class="{{ set_active('admin/announcement*') }}"><a href="/admin/announcement"><i class="fa fa-list"></i> <span>List</span></a></li>
+        {{-- <li class="{{ set_active('admin/announcement*') }}"><a href="/admin/announcement"><i class="fa fa-list"></i> <span>List</span></a></li> --}}
         <li class="{{ set_active('admin/announcement*') }}"><a href="/admin/announcement/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
     </ul>
 </li>
@@ -13,7 +13,7 @@
     <ul class="treeview-menu">
         <li class="{{ set_active('admin/event*') }}"><a href="/admin/event/queue"><i class="fa fa-rocket"></i> <span>Queue</span></a></li>
 
-        <li class="{{ set_active('admin/event*') }}"><a href="/admin/event"><i class="fa fa-list"></i> <span>List</span></a></li>
+        {{-- <li class="{{ set_active('admin/event*') }}"><a href="/admin/event"><i class="fa fa-list"></i> <span>List</span></a></li> --}}
         <li class="{{ set_active('admin/event*') }}"><a href="/admin/event/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
     </ul>
 </li>
@@ -46,7 +46,7 @@
     </ul>
 </li>
 @endcan
-@can('super',$currentUser)
+{{-- @can('super',$currentUser)
 <li class="treeview {{ set_active('admin/page*') }}">
     <a href="#"><i class="fa fa-envelope-o"></i> <span>Email Blasts</span> <i class="fa fa-angle-left pull-right"></i></a>
     <ul class="treeview-menu">
@@ -54,7 +54,7 @@
         <li class="{{ set_active('admin/emailblast*') }}"><a href="#"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>
     </ul>
 </li>
-@endcan
+@endcan --}}
 
 @can('admin', $currentUser)
 <li class="treeview {{ set_active('admin/magazine*') }}">

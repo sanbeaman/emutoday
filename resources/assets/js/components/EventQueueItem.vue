@@ -97,34 +97,34 @@
 
 </template>
 <style scoped>
-.box {
-    color: #1B1B1B;
-    margin-bottom: 10px;
-}
-.box-body {
-    background-color: #fff;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    margin:0;
-}
+    .box {
+        color: #1B1B1B;
+        margin-bottom: 10px;
+    }
+    .box-body {
+        background-color: #fff;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        margin:0;
+    }
 
-.box-header {
-    padding: 3px;
-}
-.box-footer {
-    padding: 3px;
-}
-h5.box-footer {
-    padding: 3px;
-}
-button.footer-btn {
-    border-color: #999999;
+    .box-header {
+        padding: 3px;
+    }
+    .box-footer {
+        padding: 3px;
+    }
+    h5.box-footer {
+        padding: 3px;
+    }
+    button.footer-btn {
+        border-color: #999999;
 
-}
-h6.box-title {
-    font-size: 16px;
-    color: #1B1B1B;
-}
+    }
+    h6.box-title {
+        font-size: 16px;
+        color: #1B1B1B;
+    }
     .box-date-top {
 
     }
@@ -134,69 +134,69 @@ h6.box-title {
     .box-date {
 
     }
-        select.form-control {
-            height:22px;
-            border: 1px solid #999999;
-        }
+    select.form-control {
+        height:22px;
+        border: 1px solid #999999;
+    }
 
-        h6 {
-            margin-top: 0;
-            margin-bottom: 0;
-        }
-        h5 {
-            margin-top: 0;
-            margin-bottom: 0;
-        }
+    h6 {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    h5 {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
 
-        .form-group {
-            /*border: 1px solid red;*/
-        }
-        .form-group label{
-            margin-bottom: 0;
-        }
-        .topitems {
-            /*background-color: #9B59B6;*/
-            background-color: #76D7EA;
-            border: 2px solid #9B59B6;
-        }
-        .ongoing {
-            background-color: #bfff00;
-            border: 1px solid #999999
-        }
-        .event-positive {
+    .form-group {
+        /*border: 1px solid red;*/
+    }
+    .form-group label{
+        margin-bottom: 0;
+    }
+    .topitems {
+        /*background-color: #9B59B6;*/
+        background-color: #76D7EA;
+        border: 2px solid #9B59B6;
+    }
+    .ongoing {
+        background-color: #bfff00;
+        border: 1px solid #999999
+    }
+    .event-positive {
 
-            background-color: #D8D8D8;
-            border: 1px solid #999999;
-        }
-        .event-negative {
+        background-color: #D8D8D8;
+        border: 1px solid #999999;
+    }
+    .event-negative {
 
-            background-color: #ffcc33;
-            border: 1px solid #999999;
-        }
-        .is-promoted {
+        background-color: #ffcc33;
+        border: 1px solid #999999;
+    }
+    .is-promoted {
 
-            background-color: #76D7EA;
-            /*border: 1px solid #999999*/
-        }
-        .time-is-short {
-            color: #F39C12;
-        }
-        .time-is-long {
-            color: #999999;
-        }
-        .time-is-over {
-            color: #9B59B6;
-        }
-        .last-special-event {
-            margin-bottom: 50px;
-        }
+        background-color: #76D7EA;
+        /*border: 1px solid #999999*/
+    }
+    .time-is-short {
+        color: #F39C12;
+    }
+    .time-is-long {
+        color: #999999;
+    }
+    .time-is-over {
+        color: #9B59B6;
+    }
+    .last-special-event {
+        margin-bottom: 50px;
+    }
 
-        /*.box.box-solid.box-default {
-            border: 1px solid #999999;
-        }
-        .box-body {
-            padding: 3px 6px;
-        }*/
+    /*.box.box-solid.box-default {
+    border: 1px solid #999999;
+    }
+    .box-body {
+    padding: 3px 6px;
+    }*/
 </style>
 <script>
 import moment from 'moment'

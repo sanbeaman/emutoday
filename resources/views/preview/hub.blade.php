@@ -66,7 +66,7 @@
                       @foreach ($currentStorysBasic as $basicstory)
                       <li><a href="/emu-today/news/{{$basicstory->id}}">{{$basicstory->title}}</a></li>
                       @endforeach
-                                            <li><a href="/emu-today/news" class="bottom-tab-link">More Headlines</a></li>
+                                    <li><a href="/emu-today/news" class="bottom-tab-link">More Headlines</a></li>
                     </ul>
                   </div>
                   <div class="tabs-panel newshub-tab-front" id="newshub-announcements-front">

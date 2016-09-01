@@ -358,20 +358,29 @@ class AnnouncementController extends ApiController
             }
 
       }
-
-        public function updateItem($id, Request $request)
+      /**
+       * [API Call from AnnouncementItem to change some variables]
+       * @param  [type]  $id      [description]
+       * @param  Request $request [description]
+       * @return [type]           [description]
+       */
+      public function updateItem($id, Request $request)
         {
             $announcement = Announcement::findOrFail($id);
-
-            $announcement->is_approved = $request->get('is_approved');
+            $announcement->is_approved = $request->get('is_approved',0);
             $announcement->priority = $request->get('priority', 0);
-            if($announcement->approved_date === null) {
-                $announcement->approved_date  = \Carbon\Carbon::now();
+            $announcement->is_archived = $request->get('is_archived',0);
+            if (is_null($announcement->approved_date)) {
+                $announcement->approved_date  = Carbon::now();
             }
 
             if($announcement->save()) {
-                    return $this->setStatusCode(201)
-                                ->respondUpdated('Announcement successfully Updated!');
+
+                $returnData = ['is_approved' => $announcement->is_approved,'priority'=> $announcement->priority, 'is_archived'=> $announcement->is_archived];
+                return $this->setStatusCode(201)
+                ->respondUpdatedWithData('announcement updated',$returnData );
+                    // return $this->setStatusCode(201)
+                    //             ->respondUpdated('Announcement successfully Updated!');
                             }
         }
 
