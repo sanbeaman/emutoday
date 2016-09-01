@@ -31,7 +31,7 @@ class AnnouncementController extends ApiController
                     // $this->fractalAnnouncementTransformerModel = $fractalAnnouncementTransformerModel;
         //$this->beforeFilter('auth.basic', ['on' => 'post']);
         $this->middleware('web', ['only' => [
-           'queueload'
+           'queueLoad'
         ]]);
 
     }

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Input;
 Route::group(['prefix' => 'api'], function() {
 
     Route::get('active-categories/{year?}/{month?}/{day?}','Api\CategoriesController@activeCategories');
+    
     Route::get('calendar/month/{year?}/{month?}/{day?}','Api\CalendarController@eventsInMonth');
     Route::get('calendar/events/{year?}/{month?}/{day?}','Api\CalendarController@eventsByDay');
 

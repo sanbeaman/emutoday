@@ -1,16 +1,24 @@
 <template>
 
-    <div class="box box-default box-solid">
+    <!-- <div class="box box-default box-solid"> -->
+    <div :class="itemStatus" class="box box-solid">
+
         <div class="box-header with-border">
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="box-date-top">{{item.start_date | titleDateLong}}</div>
+                <div class="col-sm-4">
+                    <div class="box-date-top pull-left">{{item.start_date | titleDateLong}}</div>
+                    <div class="pull-right">
+                        <label data-toggle="tooltip" data-placement="top" title="Promoted"><span class="item-promoted-icon" :class="promotedIcon"></span></label>
+                    </div><!-- /.pull-right -->
                 </div><!-- /.col-sm-6 -->
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                     <form class="form-inline pull-right">
+                        <div class="form-group">
+                            <button v-if="hasPriorityChanged" @click.prevent="updateItem" class="btn footer-btn bg-orange btn-xs" href="#"><span class="fa fa-floppy-o"></span></button>
+                        </div><!-- /.form-group -->
                       <div class="form-group">
                         <label class="sr-only" for="priority-number">Priority</label>
-                            <select id="priority-{{item.id}}" v-model="item.priority" class="form-control" number>
+                            <select id="priority-{{item.id}}" v-model="patchRecord.priority" @change="priorityChange($event)" class="form-control" number>
                                 <option v-for="option in options" v-bind:value="option.value">
                                     {{option.text}}
                                 </option>
@@ -21,8 +29,8 @@
                           </div><!-- /.form-group -->
                          <div class="form-group">
                               <vui-flip-switch id="switch-{{item.id}}"
-                                  v-on:click="doThis"
-                                  :value="isApproved" >
+                                  v-on:click.prevent="changeIsApproved"
+                                  :value.sync="patchRecord.is_approved" >
                               </vui-flip-switch>
                           </div>
                       </form>
@@ -43,7 +51,7 @@
             <p>From: {{item.start_time}} to {{item.end_time}}</p>
             <p>{{item.description}}</p>
             <div class="item-info">
-                Dates: {{item.start_date}} - {{item.end_date}}
+            Dates: {{item.start_date}} - {{item.end_date}}
             </div>
 
         <template v-if="canHaveImage">
@@ -66,11 +74,16 @@
 
         <div class="box-footer list-footer">
             <div class="row">
-                <div class="col-sm-7">
-                    <h5>Live {{timefromNow}}</h5>
+                <div class="col-sm-9">
+                    <span :class="timeFromNowStatus">Live {{timefromNow}}</span> <span :class="timeLeftStatus">{{timeLeft}}</span>
+
+
+
                 </div><!-- /.col-md-7 -->
-                <div class="col-sm-5">
+                <div class="col-sm-3">
+                    {{item.id}}
                     <div class="btn-group pull-right">
+
                             <button v-on:click.prevent="editItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-pencil"></i></button>
                             <!-- <button v-on:click.prevent="previewItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-eye"></i></button> -->
                     </div><!-- /.btn-toolbar -->
@@ -103,7 +116,7 @@ h5.box-footer {
     padding: 3px;
 }
 button.footer-btn {
-    border-color: #1B1B1B;
+    border-color: #999999;
 
 }
 h6.box-title {
@@ -139,6 +152,25 @@ h6.box-title {
         .form-group label{
             margin-bottom: 0;
         }
+        .topitems {
+            /*background-color: #9B59B6;*/
+            background-color: #76D7EA;
+            border: 2px solid #9B59B6
+        }
+        .is-promoted {
+
+            background-color: #76D7EA;
+            /*border: 1px solid #999999*/
+        }
+        .time-is-short {
+            color: #F39C12;
+        }
+        .time-is-long {
+            color: #999999;
+        }
+        .time-is-over {
+            color: #9B59B6;
+        }
         /*.box.box-solid.box-default {
             border: 1px solid #999999;
         }
@@ -152,10 +184,10 @@ import VuiFlipSwitch from './VuiFlipSwitch.vue'
 
 module.exports  = {
     components: {VuiFlipSwitch},
-    props: ['item','pid'],
+    props: ['item','pid','index'],
     data: function() {
         return {
-            is_approved: 0,
+            hasPriorityChanged:0,
             options: [
                 { text: '0', value: 0 },
                 { text: '1', value: 1 },
@@ -177,6 +209,16 @@ module.exports  = {
             },
             showBody: false,
             showPanel: false,
+            initRecord: {
+                is_approved: 0,
+                priority: 0,
+                is_canceled: 0
+            },
+            patchRecord: {
+                is_approved: 0,
+                priority: 0,
+                is_canceled: 0
+            },
             currentDate: {},
             record: {
             }
@@ -188,11 +230,83 @@ module.exports  = {
         // console.log('this.currentDate=' + this.currentDate)
     },
     ready: function() {
-        this.is_approved = this.item.is_approved;
-            // this.formInputs.event_id = this.item.id;
-        //ready function
+        this.initRecord.is_approved = this.patchRecord.is_approved =  this.item.is_approved;
+        this.initRecord.priority = this.patchRecord.priority = this.item.priority;
+        this.initRecord.is_canceled = this.patchRecord.is_canceled = this.item.is_canceled;
     },
     computed: {
+        hasPriorityChanged: function(){
+            if (this.initRecord.priority != this.patchRecord.priority){
+                return true
+            } else {
+                return false
+            }
+        },
+        hasIsApprovedChanged: function(){
+            if (this.initRecord.is_approved != this.patchRecord.is_approved){
+                console.log('is_approved => initRecord='+ this.initRecord.is_approved  + ' patchRecord=>' +this.patchRecord.is_approved );
+                return true
+            } else {
+                return false
+            }
+        },
+        timeLeftStatus: function(){
+            let diff = moment().diff(moment(this.item.start_date_time), 'hours');
+            if(diff <= 0){
+                return 'time-is-over'
+            } else if(diff > 0 && diff <=25) {
+                return 'time-is-short'
+            } else {
+                return 'time-is-long'
+            }
+
+
+        },
+        timeFromNowStatus: function(){
+            let diff = moment(this.item.start_date_time).diff(moment(), 'hours');
+            if(diff <= 0){
+                return 'time-is-over'
+            } else if(diff > 0 && diff <=25) {
+                return 'time-is-short'
+            } else {
+                return 'time-is-long'
+            }
+        },
+        timeLeft: function() {
+            if(moment(this.item.start_date_time).isSameOrBefore(moment())){
+                return  ' and Ends ' + moment(this.item.start_date_time).fromNow()
+            }  else {
+                return ''
+            }
+
+
+        },
+        itemStatus : function() {
+            let sclass = 'box-default';
+
+            // console.log('pid' + this.pid + ' index='+ this.index);
+            if (this.pid == 'items-other'){
+                if(this.index < 4){
+                    console.log('topitems');
+                    sclass = 'topitems';
+                }
+            }
+            // if (this.item.is_promoted === 1){
+            //     pclass =  'is-promoted'
+            //   } else {
+            //      pclass = 'box-default'
+            //   }
+              return sclass;
+
+        },
+        promotedIcon: function() {
+            if (this.item.is_promoted === 1){
+                pIcon = 'fa fa fa-star'
+              } else {
+                  pIcon = ''
+              }
+              return pIcon
+         },
         hasEventImage:function() {
             if(this.item.eventimage){
                 return true;
@@ -216,7 +330,7 @@ module.exports  = {
             return pth + fname;
         },
         timefromNow:function() {
-            return moment(this.item.start_date).fromNow()
+            return moment(this.item.start_date_time).fromNow()
         },
         isApproved: function() {
             return this.item.is_approved;
@@ -238,10 +352,17 @@ module.exports  = {
             //     this.formInputs.attachment = event.target.file;
             // },
             // Handle the form submission here
+            changeIsApproved: function(){
+                this.patchRecord.is_approved = (this.item.is_approved === 0)?1:0;
+                console.log('this.patchRecord.is_approved ='+this.patchRecord.is_approved );
+                this.updateItem();
+
+            },
             editItem: function(ev) {
-
-
                 window.location.href = this.itemEditPath;
+            },
+            priorityChange(event){
+                console.log('priority=' + this.item.priority)
             },
 
            uploadMediaFile(event) {
@@ -274,6 +395,31 @@ module.exports  = {
             //        console.log('Success:', response)
             //    })
            },
+           updateItem: function(){
+            //    this.patchRecord.is_approved = this.item.is_approved;
+            //    this.patchRecord.priority = this.item.priority;
+               this.patchRecord.is_canceled = this.item.is_canceled;
+
+               this.$http.patch('/api/event/updateItem/' + this.item.id , this.patchRecord , {
+                   method: 'PATCH'
+               } )
+               .then((response) => {
+                   console.log('good?'+ response)
+                   this.checkAfterUpdate(response.data.newdata)
+
+                   }, (response) => {
+                       console.log('bad?'+ response)
+                   });
+           },
+           checkAfterUpdate: function(ndata){
+               this.item.is_approved = this.initRecord.is_approved =   ndata.is_approved;
+               this.item.priority = this.initRecord.priority =  ndata.priority;
+               this.item.is_canceled = this.initRecord.is_canceled = ndata.is_canceled;
+               this.hasPriorityChanged = 0;
+
+               console.log(ndata);
+           },
+
            AddMediaFileToEvent: function(item, args){
                console.log(args)
                var currentRecordId =  item.id;
@@ -337,11 +483,13 @@ module.exports  = {
 
     },
     watch: {
-        // 'isapproved': function(val, oldVal) {
-        //     if (val !=  oldVal) {
-        //         console.log('val change')
-        //     }
-        // }
+        priorityChanged: function(val, oldVal) {
+            if (val !=  oldVal) {
+                return true
+            } else {
+                return false
+            }
+        }
     },
     directives: {
         // mydatedropper: require('../directives/mydatedropper.js')

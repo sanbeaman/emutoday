@@ -1,11 +1,18 @@
 <template>
     <div class="row">
+        <div class="col-md-12">
+            <p>
+                Today is:{{currentDateAndTime}}
+            </p>
+        </div><!-- /.col-md-12 -->
+    </div><!-- /.row -->
+    <div class="row">
             <div class="col-md-4">
             <h3>Unapproved Events</h3>
                 <div id="items-unapproved">
                     <event-queue-item
                     pid="items-unapproved"
-                    v-for="item in itemsUnapproved | orderBy 'start_date'"
+                    v-for="item in itemsUnapproved | orderBy 'start_date' 1"
                     @item-change="moveToApproved"
 
                     :item="item"
@@ -18,8 +25,9 @@
                     <h3>Approved Events</h3>
                 <div id="items-approved">
                     <event-queue-item
+
                     pid="items-approved"
-                    v-for="item in itemsApproved | orderBy 'priority' 'start_date' -1"
+                    v-for="item in itemsApproved | orderBy 'start_date' 1"
                     @item-change="moveToUnApproved"
                     :item="item"
                     :index="$index"
@@ -28,11 +36,12 @@
                     </div>
             </div><!-- /.col-md-6 -->
             <div class="col-md-4">
-                    <h3>Events</h3>
+                    <h3>Live Events</h3>
                 <div id="items-other">
                 <event-queue-item
+                    
                     pid="items-other"
-                    v-for="item in itemsPromoted | orderBy 'priority' 'start_date' -1"
+                    v-for="item in itemsLive | orderBy 'priority' -1"
                     @item-change="moveToUnApproved"
                     :item="item"
                     :index="$index"
@@ -73,6 +82,12 @@
             this.fetchAllRecords();
         },
         computed: {
+            top4:function(){
+
+            },
+            currentDateAndTime:function(){
+                return moment()
+            },
             itemsApproved:function() {
                 return  this.filterItemsApproved(this.allitems);
             },
@@ -81,6 +96,9 @@
             },
             itemsPromoted:function() {
                 return  this.filterItemsPromoted(this.itemsApproved);
+            },
+            itemsLive:function() {
+                return  this.filterItemsLive(this.allitems);
             }
         },
         methods : {
@@ -119,7 +137,9 @@
             },
             filterItemsApproved: function(items) {
                 return items.filter(function(item) {
-                    return item.is_approved === 1
+                    return moment(item.start_date_time).isAfter(moment()) && item.is_approved === 1 && item.priority === 0 && item.is_promoted === 0;  // true
+
+                    // return item.is_approved === 1
                 });
             },
             filterItemsUnapproved: function(items) {
@@ -130,6 +150,17 @@
             filterItemsPromoted: function(items) {
                 return items.filter(function(item) {
                     return item.is_promoted === 1
+                });
+            },
+            filterItemsLive: function(items) {
+                return items.filter(function(item) {
+                    return moment(item.start_date_time).isSameOrBefore(moment()) && item.is_approved === 1 || item.is_approved === 1 && item.priority > 0 || item.is_promoted === 1;  // true
+
+                    // let thisDateTime = item.start_date + ' ' + item.start_time;
+                    // return moment(thisDateTime, "YYYY-MM-DD h:mm A").isSameOrBefore(moment()) && item.is_approved === 1 || item.is_approved === 1 && item.priority > 0 || item.is_promoted === 1;  // true
+
+                    // return moment(item.start_date).isAfter(moment())
+                    // return item.live === 1
                 });
             },
                     // checkIndexWithValue: function (chitem){
@@ -163,7 +194,7 @@
                     method: 'PATCH'
                 } )
                 .then((response) => {
-                    console.log('good?'+ response)
+                    console.log('good_eventQueue'+ response)
 
 
 

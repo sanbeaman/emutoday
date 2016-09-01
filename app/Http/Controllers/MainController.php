@@ -34,7 +34,9 @@ class MainController extends Controller
 
     public function index()
     {
-        $currentDateTime = Carbon::now();
+        $currentDateTimeStart = Carbon::now()->startOfDay();
+        $currentDateTimeEnd = Carbon::now()->endOfDay();
+
         // $page = $this->page->where([
         //     ['start_date', '<=', $currentDateTime],
         //     ['end_date', '>=', $currentDateTime],
@@ -42,15 +44,15 @@ class MainController extends Controller
         $page = $this->page->where([
             ['is_ready', 1],
             ['is_archived', 0],
-            ['start_date', '<=', $currentDateTime],
-            ['end_date', '>=',  $currentDateTime]
+            ['start_date', '<=', $currentDateTimeStart],
+            ['end_date', '>=',  $currentDateTimeEnd]
         ])->first();
 
         $currentStorysBasic = $this->story->where([
             ['is_approved', 1],
             ['is_archived', 0],
-            ['start_date', '<=', $currentDateTime],
-            ['end_date', '>=', $currentDateTime]
+            ['start_date', '<=', $currentDateTimeStart],
+            ['end_date', '>=', $currentDateTimeEnd]
             ])
             ->orderBy('start_date','desc')
             ->paginate(3);
@@ -58,8 +60,8 @@ class MainController extends Controller
         $currentAnnouncements = $this->announcement->where([
             ['is_approved', 1],
             ['is_archived', 0],
-            ['start_date', '<=', $currentDateTime],
-            ['end_date', '>=', $currentDateTime]
+            ['start_date', '<=', $currentDateTimeStart],
+            ['end_date', '>=', $currentDateTimeEnd]
         ])
         ->orderBy('priority','desc')
         ->orderBy('start_date','desc')
@@ -67,11 +69,11 @@ class MainController extends Controller
 
         $events = $this->event->where([
             ['is_approved', 1],
-            ['start_date', '<=', $currentDateTime],
-            ['end_date', '>=', $currentDateTime]
+            ['priority', '>', 0],
+            ['end_date', '>=', $currentDateTimeStart]
         ])
         ->orderBy('priority','desc')
-        ->orderBy('start_date','desc')
+
         ->paginate(4);
 
 

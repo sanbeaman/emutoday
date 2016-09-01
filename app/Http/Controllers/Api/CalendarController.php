@@ -254,9 +254,9 @@ class CalendarController extends ApiController
             $cdate_end =  Carbon::create($year, $currentMonth, 1)->endOfMonth();
         } else {
             if ($day == null ){
-              $currentDay = Carbon::now()->day;
-              $selectedDate = Carbon::create($year, $month, $currentDay );
-              $cdate_start = Carbon::create($year, $month, $currentDay)->startOfMonth();
+
+              $selectedDate = Carbon::create($year, $month, 1 );
+              $cdate_start = Carbon::create($year, $month, 1)->startOfMonth();
               $cdate_end =  Carbon::create($year, $month, 1)->endOfMonth();
             } else {
               $selectedDate = Carbon::create($year, $month, $day );
@@ -267,19 +267,6 @@ class CalendarController extends ApiController
         }
 
       }
-      // $cdate_start;
-      // $cdate_end;
-      // if ($modifier == "C") {
-      //     $cdate_start = Carbon::now()->startOfDay();
-      //     $cdate_end = Carbon::now()->endOfMonth();
-      // } else if ($modifier == "Y"){
-      //     $currentMonth = Carbon::now()->month;
-      //   $cdate_start = Carbon::create($year, $currentMonth, 1)->startOfMonth();
-      //   $cdate_end =  Carbon::create($year, $currentMonth, 1)->endOfMonth();
-      // } else {
-      //   $cdate_start = Carbon::create($year, $month, 1)->startOfMonth();
-      //   $cdate_end =  Carbon::create($year, $month, 1)->endOfMonth();
-      // }
 
 
       $selectedYear = $selectedDate->year;
@@ -302,11 +289,6 @@ class CalendarController extends ApiController
       $selectedMonth_StartOnDay =  $cdate_start->firstOfMonth()->dayOfWeek;
       $selectedMonth_daysInMonth = $cdate_start->daysInMonth;
 
-    //  $cd_dayMonthStarts = $cdate_start->firstOfMonth()->dayOfWeek;
-  //    $cd_daysInMonth = $cdate_start->daysInMonth;
-      //
-      // $cdate_monthstart = Carbon::create($yearVar, $cdate->month, 1, 12);
-      // $cdate_monthend = Carbon::create($yearVar, $cdate->month, $cd_daysInMonth, 12);
 
       $eventsInMonth = Event::select('id', 'start_date', 'end_date')->where([
         ['start_date', '>', $cdate_start],
@@ -337,28 +319,23 @@ class CalendarController extends ApiController
         // $monthArray = array_add($monthArray,$dayCounter, $dayObject);
         $dayCounter++;
       }
-// dd($calDaysArray);
+
       $totalDaysInArray = count($calDaysArray);
 
 
-      return ['uniqueByDay'        => $uniqueByDay,
-        'calDaysArray'        => $calDaysArray,
-              'selectedYear'        => $selectedYear,
-              'selectedMonth'       => $selectedMonth,
-              'selectedMonthWord'   => $selectedMonthWord,
-              'selectedDay'         => $selectedDay,
-              'currentYear'        => $currentYear,
-              'currentMonth'       => $currentMonth,
-              'currentMonthWord'   => $currentMonthWord,
-              'currentDay'         => $currentDay,
+      return    [
+          'uniqueByDay'         => $uniqueByDay,
+          'calDaysArray'        => $calDaysArray,
+          'selectedYear'        => $selectedYear,
+          'selectedMonth'       => $selectedMonth,
+          'selectedMonthWord'   => $selectedMonthWord,
+          'selectedDay'         => $selectedDay,
+          'currentYear'        => $currentYear,
+          'currentMonth'       => $currentMonth,
+          'currentMonthWord'   => $currentMonthWord,
+          'currentDay'         => $currentDay,
             ];
-
-          //     'yearVar' => $yearVar,
-          //     'monthVar' => $monthVar,
-          //       'monthVarUnit' => $monthVarUnit,
-          //   'dayInMonth' => $dayInMonth,
-          // 'currentDate'=> $currentDate];
-          }
+    }
 
 
     public function byDate(Request $request)

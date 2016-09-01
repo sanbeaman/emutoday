@@ -1,7 +1,7 @@
 <template>
   <div class="eventview">
     <a v-on:click.prevent="toggleBody" href="#">
-        <h6>{{item.title}}</h6>
+        <h6>{{item.title}}<small>{{item.id}}</small></h6>
     </a>
     <template v-if="item.all_day">
       <p>All Day</p>

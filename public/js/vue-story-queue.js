@@ -16797,7 +16797,7 @@ if (module.hot) {(function () {  module.hot.accept()
 },{"../directives/iconradio.js":11,"./IconToggleBtn.vue":7,"./StoryPod.vue":8,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],10:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.vuiflipswitch {\n    position: relative; width: 36px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.vuiflipswitch-checkbox {\n    display: none;\n}\n.vuiflipswitch-label {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 1px solid #666666; border-radius: 4px;\n}\n.vuiflipswitch-inner {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.vuiflipswitch-inner:before, .vuiflipswitch-inner:after {\n    display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;\n    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.vuiflipswitch-inner:before {\n    content: \"Y\";\n    padding-left: 5px;\n    background-color: #EEEEEE; color: #605CA8;\n}\n.vuiflipswitch-inner:after {\n    content: \"N\";\n    padding-right: 5px;\n    background-color: #EEEEEE; color: #666666;\n    text-align: right;\n}\n.vuiflipswitch-switch {\n    display: block;\n    width: 16px;\n    margin: 0;\n    background: #666666;\n    position: absolute; top: 0; bottom: 0;\n    /*right: 16px;*/\n    /*border: 2px solid #666666; */\n    border-radius: 4px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-inner {\n    margin-left: 0;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-switch {\n    right: 0px;\n    background-color: #605CA8;\n}\nselect.form-control {\n    height:22px;\n    border: 1px solid #666666;\n}\n\n\nh6 {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group {\n    /*border: 1px solid red;*/\n}\n.form-group label{\n    margin-bottom: 0;\n}\n.box.box-solid.box-default {\n    border: 1px solid #666666;\n}\n")
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -16817,11 +16817,15 @@ exports.default = {
             // compval: $('#slct').val()
         };
     },
-    methods: {},
+    methods: {
+        vuiValueChange: function vuiValueChange(event) {
+            console.log('this.value' + this.value);
+        }
+    },
     events: {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"vuiflipswitch\">\n    <input v-model=\"value\" type=\"checkbox\" name=\"vuiflipswitch\" class=\"vuiflipswitch-checkbox\" :disabled=\"disabled\" lazy=\"\">\n    <label class=\"vuiflipswitch-label\" :class=\"{checked:value}\">\n            <span class=\"vuiflipswitch-inner\"></span>\n            <span class=\"vuiflipswitch-switch\"></span>\n    </label>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"vuiflipswitch\">\n    <input v-model=\"value\" type=\"checkbox\" @change=\"vuiValueChange\" name=\"vuiflipswitch\" class=\"vuiflipswitch-checkbox\" :disabled=\"disabled\" lazy=\"\">\n    <label class=\"vuiflipswitch-label\" :class=\"{checked:value}\">\n            <span class=\"vuiflipswitch-inner\"></span>\n            <span class=\"vuiflipswitch-switch\"></span>\n    </label>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

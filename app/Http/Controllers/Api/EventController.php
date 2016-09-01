@@ -53,11 +53,13 @@ class EventController extends ApiController
               // dd($user->id);
               $events = $user->events()->get();
             } else {
-              $events = Event::where('end_date', '>=', $currentDate)->get();
+              $events = Event::where([
+                  ['end_date', '>', $currentDate->subDay(2)]
+                  ])->get();
               // Announcement::all();
             }
             $fractal = new Manager();
-            $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
+            $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModelFull);
             return $fractal->createData($resource)->toArray();
         } else {
           return $this->setStatusCode(501)->respondWithError('Error');
@@ -502,11 +504,16 @@ class EventController extends ApiController
     {
         $event = Event::findOrFail($id);
         //$event->priority = $request->get('priority');
+        $event->priority = $request->get('priority');
         $event->is_approved = $request->get('is_approved');
+        $event->is_canceled = $request->get('is_canceled');
 
             if($event->save()) {
-                    return $this->setStatusCode(201)
-                    ->respond([$event->is_approved]);
+                $returnData = ['is_approved' => $event->is_approved,'priority'=> $event->priority, 'is_canceled'=> $event->is_canceled];
+                return $this->setStatusCode(201)
+                ->respondUpdatedWithData('event updated',$returnData );
+                    // return $this->setStatusCode(201)
+                    // ->respond([$event->is_approved]);
                                 // ->respondCreated('Event successfully patched');
                             }
         }

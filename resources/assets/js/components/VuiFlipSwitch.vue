@@ -1,6 +1,6 @@
 <template>
     <div class="vuiflipswitch">
-        <input v-model="value" type="checkbox" name="vuiflipswitch" class="vuiflipswitch-checkbox" :disabled="disabled" lazy>
+        <input v-model="value" type="checkbox" @change="vuiValueChange" name="vuiflipswitch" class="vuiflipswitch-checkbox" :disabled="disabled" lazy>
         <label class="vuiflipswitch-label" :class="{checked:value}">
                 <span class="vuiflipswitch-inner"></span>
                 <span class="vuiflipswitch-switch"></span>
@@ -23,7 +23,9 @@
             }
         },
         methods : {
-
+            vuiValueChange: function(event){
+                console.log('this.value' + this.value);
+            }
         },
         events: {
 

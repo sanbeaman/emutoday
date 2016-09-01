@@ -34,6 +34,8 @@ class FractalEventTransformerModelFull extends Fractal\TransformerAbstract
             'room'               => $event->room,
              'start_date'   => is_null($event->start_date)?null:$event->start_date->toDateString(),
             'start_time'           => $event->start_time,
+            'start_date_time' => $event->start_date_time,
+            'end_date_time' => $event->end_date_time,
             'end_date'   => is_null($event->end_date) ?null: $event->end_date->toDateString(),
             'end_time'            => $event->end_time,
             'all_day'           => $event->all_day,

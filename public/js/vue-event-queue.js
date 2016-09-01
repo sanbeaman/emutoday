@@ -16075,6 +16075,10 @@ exports.default = {
     },
 
     computed: {
+        top4: function top4() {},
+        currentDateAndTime: function currentDateAndTime() {
+            return moment();
+        },
         itemsApproved: function itemsApproved() {
             return this.filterItemsApproved(this.allitems);
         },
@@ -16083,6 +16087,9 @@ exports.default = {
         },
         itemsPromoted: function itemsPromoted() {
             return this.filterItemsPromoted(this.itemsApproved);
+        },
+        itemsLive: function itemsLive() {
+            return this.filterItemsLive(this.allitems);
         }
     },
     methods: {
@@ -16121,7 +16128,9 @@ exports.default = {
         },
         filterItemsApproved: function filterItemsApproved(items) {
             return items.filter(function (item) {
-                return item.is_approved === 1;
+                return moment(item.start_date_time).isAfter(moment()) && item.is_approved === 1 && item.priority === 0 && item.is_promoted === 0; // true
+
+                // return item.is_approved === 1
             });
         },
         filterItemsUnapproved: function filterItemsUnapproved(items) {
@@ -16132,6 +16141,17 @@ exports.default = {
         filterItemsPromoted: function filterItemsPromoted(items) {
             return items.filter(function (item) {
                 return item.is_promoted === 1;
+            });
+        },
+        filterItemsLive: function filterItemsLive(items) {
+            return items.filter(function (item) {
+                return moment(item.start_date_time).isSameOrBefore(moment()) && item.is_approved === 1 || item.is_approved === 1 && item.priority > 0 || item.is_promoted === 1; // true
+
+                // let thisDateTime = item.start_date + ' ' + item.start_time;
+                // return moment(thisDateTime, "YYYY-MM-DD h:mm A").isSameOrBefore(moment()) && item.is_approved === 1 || item.is_approved === 1 && item.priority > 0 || item.is_promoted === 1;  // true
+
+                // return moment(item.start_date).isAfter(moment())
+                // return item.live === 1
             });
         },
         // checkIndexWithValue: function (chitem){
@@ -16166,7 +16186,7 @@ exports.default = {
             this.$http.patch('/api/event/updateItem/' + item.id, item, {
                 method: 'PATCH'
             }).then(function (response) {
-                console.log('good?' + response);
+                console.log('good_eventQueue' + response);
 
                 //var movedIndex = this.movedItemIndex(movedid);
                 // this.xitems.pop(movedRecord);
@@ -16275,7 +16295,7 @@ exports.default = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-35d5cc5b=\"\">\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n            <h3 _v-35d5cc5b=\"\">Unapproved Events</h3>\n                <div id=\"items-unapproved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-unapproved\" v-for=\"item in itemsUnapproved | orderBy 'start_date'\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"unapproved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Approved Events</h3>\n                <div id=\"items-approved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-approved\" v-for=\"item in itemsApproved | orderBy 'priority' 'start_date' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"approved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Events</h3>\n                <div id=\"items-other\" _v-35d5cc5b=\"\">\n                <event-queue-item pid=\"items-other\" v-for=\"item in itemsPromoted | orderBy 'priority' 'start_date' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"other-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n</div><!-- ./row -->\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div class=\"row\" _v-35d5cc5b=\"\">\n        <div class=\"col-md-12\" _v-35d5cc5b=\"\">\n            <p _v-35d5cc5b=\"\">\n                Today is:{{currentDateAndTime}}\n            </p>\n        </div><!-- /.col-md-12 -->\n    </div><!-- /.row -->\n    <div class=\"row\" _v-35d5cc5b=\"\">\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n            <h3 _v-35d5cc5b=\"\">Unapproved Events</h3>\n                <div id=\"items-unapproved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-unapproved\" v-for=\"item in itemsUnapproved | orderBy 'start_date' 1\" @item-change=\"moveToApproved\" :item=\"item\" :index=\"$index\" :is=\"unapproved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Approved Events</h3>\n                <div id=\"items-approved\" _v-35d5cc5b=\"\">\n                    <event-queue-item pid=\"items-approved\" v-for=\"item in itemsApproved | orderBy 'start_date' 1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"approved-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n            <div class=\"col-md-4\" _v-35d5cc5b=\"\">\n                    <h3 _v-35d5cc5b=\"\">Live Events</h3>\n                <div id=\"items-other\" _v-35d5cc5b=\"\">\n                <event-queue-item pid=\"items-other\" v-for=\"item in itemsLive | orderBy 'priority' -1\" @item-change=\"moveToUnApproved\" :item=\"item\" :index=\"$index\" :is=\"other-list\" _v-35d5cc5b=\"\">\n                </event-queue-item>\n                    </div>\n            </div><!-- /.col-md-6 -->\n</div><!-- ./row -->\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -16292,7 +16312,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"./EventQueueItem.vue":8,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-19815ee4] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-19815ee4] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-19815ee4] {\n    padding: 3px;\n}\n.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nh5.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-19815ee4] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-19815ee4] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n    .box-date-top[_v-19815ee4] {\n\n    }\n    .box-date-bot[_v-19815ee4] {\n\n    }\n    .box-date[_v-19815ee4] {\n\n    }\n        select.form-control[_v-19815ee4] {\n            height:22px;\n            border: 1px solid #999999;\n        }\n\n        h6[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n        h5[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n\n        .form-group[_v-19815ee4] {\n            /*border: 1px solid red;*/\n        }\n        .form-group label[_v-19815ee4]{\n            margin-bottom: 0;\n        }\n        /*.box.box-solid.box-default {\n            border: 1px solid #999999;\n        }\n        .box-body {\n            padding: 3px 6px;\n        }*/\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-19815ee4] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-19815ee4] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-19815ee4] {\n    padding: 3px;\n}\n.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nh5.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-19815ee4] {\n    border-color: #999999;\n\n}\nh6.box-title[_v-19815ee4] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n    .box-date-top[_v-19815ee4] {\n\n    }\n    .box-date-bot[_v-19815ee4] {\n\n    }\n    .box-date[_v-19815ee4] {\n\n    }\n        select.form-control[_v-19815ee4] {\n            height:22px;\n            border: 1px solid #999999;\n        }\n\n        h6[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n        h5[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n\n        .form-group[_v-19815ee4] {\n            /*border: 1px solid red;*/\n        }\n        .form-group label[_v-19815ee4]{\n            margin-bottom: 0;\n        }\n        .topitems[_v-19815ee4] {\n            /*background-color: #9B59B6;*/\n            background-color: #76D7EA;\n            border: 2px solid #9B59B6\n        }\n        .is-promoted[_v-19815ee4] {\n\n            background-color: #76D7EA;\n            /*border: 1px solid #999999*/\n        }\n        .time-is-short[_v-19815ee4] {\n            color: #F39C12;\n        }\n        .time-is-long[_v-19815ee4] {\n            color: #999999;\n        }\n        .time-is-over[_v-19815ee4] {\n            color: #9B59B6;\n        }\n        /*.box.box-solid.box-default {\n            border: 1px solid #999999;\n        }\n        .box-body {\n            padding: 3px 6px;\n        }*/\n")
 'use strict';
 
 var _moment = require('moment');
@@ -16307,10 +16327,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 module.exports = {
     components: { VuiFlipSwitch: _VuiFlipSwitch2.default },
-    props: ['item', 'pid'],
+    props: ['item', 'pid', 'index'],
     data: function data() {
         return {
-            is_approved: 0,
+            hasPriorityChanged: 0,
             options: [{ text: '0', value: 0 }, { text: '1', value: 1 }, { text: '2', value: 2 }, { text: '3', value: 3 }, { text: '4', value: 4 }, { text: '5', value: 5 }, { text: '6', value: 6 }, { text: '7', value: 7 }, { text: '8', value: 8 }, { text: '9', value: 9 }, { text: '10', value: 10 }, { text: '99', value: 99 }],
             formInputs: {
                 event_id: '',
@@ -16319,6 +16339,16 @@ module.exports = {
             },
             showBody: false,
             showPanel: false,
+            initRecord: {
+                is_approved: 0,
+                priority: 0,
+                is_canceled: 0
+            },
+            patchRecord: {
+                is_approved: 0,
+                priority: 0,
+                is_canceled: 0
+            },
             currentDate: {},
             record: {}
         };
@@ -16329,11 +16359,78 @@ module.exports = {
         // console.log('this.currentDate=' + this.currentDate)
     },
     ready: function ready() {
-        this.is_approved = this.item.is_approved;
-        // this.formInputs.event_id = this.item.id;
-        //ready function
+        this.initRecord.is_approved = this.patchRecord.is_approved = this.item.is_approved;
+        this.initRecord.priority = this.patchRecord.priority = this.item.priority;
+        this.initRecord.is_canceled = this.patchRecord.is_canceled = this.item.is_canceled;
     },
     computed: {
+        hasPriorityChanged: function hasPriorityChanged() {
+            if (this.initRecord.priority != this.patchRecord.priority) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        hasIsApprovedChanged: function hasIsApprovedChanged() {
+            if (this.initRecord.is_approved != this.patchRecord.is_approved) {
+                console.log('is_approved => initRecord=' + this.initRecord.is_approved + ' patchRecord=>' + this.patchRecord.is_approved);
+                return true;
+            } else {
+                return false;
+            }
+        },
+        timeLeftStatus: function timeLeftStatus() {
+            var diff = (0, _moment2.default)().diff((0, _moment2.default)(this.item.start_date_time), 'hours');
+            if (diff <= 0) {
+                return 'time-is-over';
+            } else if (diff > 0 && diff <= 25) {
+                return 'time-is-short';
+            } else {
+                return 'time-is-long';
+            }
+        },
+        timeFromNowStatus: function timeFromNowStatus() {
+            var diff = (0, _moment2.default)(this.item.start_date_time).diff((0, _moment2.default)(), 'hours');
+            if (diff <= 0) {
+                return 'time-is-over';
+            } else if (diff > 0 && diff <= 25) {
+                return 'time-is-short';
+            } else {
+                return 'time-is-long';
+            }
+        },
+        timeLeft: function timeLeft() {
+            if ((0, _moment2.default)(this.item.start_date_time).isSameOrBefore((0, _moment2.default)())) {
+                return ' and Ends ' + (0, _moment2.default)(this.item.start_date_time).fromNow();
+            } else {
+                return '';
+            }
+        },
+        itemStatus: function itemStatus() {
+            var sclass = 'box-default';
+
+            // console.log('pid' + this.pid + ' index='+ this.index);
+            if (this.pid == 'items-other') {
+                if (this.index < 4) {
+                    console.log('topitems');
+                    sclass = 'topitems';
+                }
+            }
+            // if (this.item.is_promoted === 1){
+            //     pclass =  'is-promoted'
+            //   } else {
+            //      pclass = 'box-default'
+            //   }
+            return sclass;
+        },
+        promotedIcon: function promotedIcon() {
+            if (this.item.is_promoted === 1) {
+                pIcon = 'fa fa fa-star';
+            } else {
+                pIcon = '';
+            }
+            return pIcon;
+        },
         hasEventImage: function hasEventImage() {
             if (this.item.eventimage) {
                 return true;
@@ -16355,7 +16452,7 @@ module.exports = {
             return pth + fname;
         },
         timefromNow: function timefromNow() {
-            return (0, _moment2.default)(this.item.start_date).fromNow();
+            return (0, _moment2.default)(this.item.start_date_time).fromNow();
         },
         isApproved: function isApproved() {
             return this.item.is_approved;
@@ -16375,11 +16472,17 @@ module.exports = {
         //     this.formInputs.attachment = event.target.file;
         // },
         // Handle the form submission here
+        changeIsApproved: function changeIsApproved() {
+            this.patchRecord.is_approved = this.item.is_approved === 0 ? 1 : 0;
+            console.log('this.patchRecord.is_approved =' + this.patchRecord.is_approved);
+            this.updateItem();
+        },
         editItem: function editItem(ev) {
-
             window.location.href = this.itemEditPath;
         },
-
+        priorityChange: function priorityChange(event) {
+            console.log('priority=' + this.item.priority);
+        },
         uploadMediaFile: function uploadMediaFile(event) {
             event.preventDefault();
             event.stopPropagation();
@@ -16409,8 +16512,33 @@ module.exports = {
             //    })
         },
 
-        AddMediaFileToEvent: function AddMediaFileToEvent(item, args) {
+        updateItem: function updateItem() {
             var _this = this;
+
+            //    this.patchRecord.is_approved = this.item.is_approved;
+            //    this.patchRecord.priority = this.item.priority;
+            this.patchRecord.is_canceled = this.item.is_canceled;
+
+            this.$http.patch('/api/event/updateItem/' + this.item.id, this.patchRecord, {
+                method: 'PATCH'
+            }).then(function (response) {
+                console.log('good?' + response);
+                _this.checkAfterUpdate(response.data.newdata);
+            }, function (response) {
+                console.log('bad?' + response);
+            });
+        },
+        checkAfterUpdate: function checkAfterUpdate(ndata) {
+            this.item.is_approved = this.initRecord.is_approved = ndata.is_approved;
+            this.item.priority = this.initRecord.priority = ndata.priority;
+            this.item.is_canceled = this.initRecord.is_canceled = ndata.is_canceled;
+            this.hasPriorityChanged = 0;
+
+            console.log(ndata);
+        },
+
+        AddMediaFileToEvent: function AddMediaFileToEvent(item, args) {
+            var _this2 = this;
 
             console.log(args);
             var currentRecordId = item.id;
@@ -16420,7 +16548,7 @@ module.exports = {
                 method: 'PATCH'
             }).then(function (response) {
                 console.log('good?' + response);
-                var movedIndex = _this.movedItemIndex(movedid);
+                var movedIndex = _this2.movedItemIndex(movedid);
                 // this.xitems.pop(movedRecord);
                 // if (movedRecord.approved == 1) {
                 //         this.xitems.splice(movedIndex, 1);
@@ -16471,11 +16599,13 @@ module.exports = {
 
     },
     watch: {
-        // 'isapproved': function(val, oldVal) {
-        //     if (val !=  oldVal) {
-        //         console.log('val change')
-        //     }
-        // }
+        priorityChanged: function priorityChanged(val, oldVal) {
+            if (val != oldVal) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     },
     directives: {
         // mydatedropper: require('../directives/mydatedropper.js')
@@ -16520,13 +16650,13 @@ module.exports = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n    <div class=\"box box-default box-solid\" _v-19815ee4=\"\">\n        <div class=\"box-header with-border\" _v-19815ee4=\"\">\n            <div class=\"row\" _v-19815ee4=\"\">\n                <div class=\"col-sm-6\" _v-19815ee4=\"\">\n                    <div class=\"box-date-top\" _v-19815ee4=\"\">{{item.start_date | titleDateLong}}</div>\n                </div><!-- /.col-sm-6 -->\n                <div class=\"col-sm-6\" _v-19815ee4=\"\">\n                    <form class=\"form-inline pull-right\" _v-19815ee4=\"\">\n                      <div class=\"form-group\" _v-19815ee4=\"\">\n                        <label class=\"sr-only\" for=\"priority-number\" _v-19815ee4=\"\">Priority</label>\n                            <select id=\"priority-{{item.id}}\" v-model=\"item.priority\" class=\"form-control\" number=\"\" _v-19815ee4=\"\">\n                                <option v-for=\"option in options\" v-bind:value=\"option.value\" _v-19815ee4=\"\">\n                                    {{option.text}}\n                                </option>\n                            </select>\n                      </div>\n                      <div class=\"form-group\" _v-19815ee4=\"\">\n                              <label _v-19815ee4=\"\">approved:</label>\n                          </div><!-- /.form-group -->\n                         <div class=\"form-group\" _v-19815ee4=\"\">\n                              <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"doThis\" :value=\"isApproved\" _v-19815ee4=\"\">\n                              </vui-flip-switch>\n                          </div>\n                      </form>\n                </div><!-- /.col-sm-6 -->\n            </div><!-- /.row -->\n\n            <div class=\"row\" _v-19815ee4=\"\">\n              <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-19815ee4=\"\">\n                <div class=\"col-sm-12\" _v-19815ee4=\"\">\n                    <h6 class=\"box-title\" _v-19815ee4=\"\">{{item.title}}</h6>\n                </div><!-- /.col-md-12 -->\n              </a>\n            </div><!-- /.row -->\n        </div>  <!-- /.box-header -->\n\n        <div v-if=\"showBody\" class=\"box-body\" _v-19815ee4=\"\">\n\n            <p _v-19815ee4=\"\">From: {{item.start_time}} to {{item.end_time}}</p>\n            <p _v-19815ee4=\"\">{{item.description}}</p>\n            <div class=\"item-info\" _v-19815ee4=\"\">\n                Dates: {{item.start_date}} - {{item.end_date}}\n            </div>\n\n        <template v-if=\"canHaveImage\">\n            <img v-if=\"hasEventImage\" :src=\"imageUrl\" _v-19815ee4=\"\">\n            <a v-on:click=\"togglePanel\" class=\"btn bg-olive btn-sm\" href=\"#\" _v-19815ee4=\"\">{{hasEventImage ? 'Change Image' : 'Promote Event'}}</a>\n            <div v-show=\"showPanel\" class=\"panel\" _v-19815ee4=\"\">\n                <form id=\"form-mediafile-upload{{item.id}}\" @submit.prevent=\"uploadMediaFile\" class=\"m-t\" role=\"form\" action=\"/api/event/addMediaFile/{{item.id}}\" enctype=\"multipart/form-data\" _v-19815ee4=\"\">\n                    <input class=\"hidden\" type=\"input\" value=\"{{item.id}}\" v-model=\"formInputs.event_id\" _v-19815ee4=\"\">\n                    <div class=\"form-group\" _v-19815ee4=\"\">\n                        <label for=\"event-image\" _v-19815ee4=\"\">Event Image</label><br _v-19815ee4=\"\">\n                        <input v-el:eventimg=\"\" type=\"file\" name=\"eventimg\" id=\"eventimg\" _v-19815ee4=\"\">\n                    </div>\n                    <button id=\"btn-mediafile-upload\" type=\"submit\" class=\"btn btn-primary block m-b\" _v-19815ee4=\"\">Submit</button>\n                </form>\n            </div><!-- /.panel mediaform -->\n        </template>\n\n        </div><!-- /.box-body -->\n\n\n        <div class=\"box-footer list-footer\" _v-19815ee4=\"\">\n            <div class=\"row\" _v-19815ee4=\"\">\n                <div class=\"col-sm-7\" _v-19815ee4=\"\">\n                    <h5 _v-19815ee4=\"\">Live {{timefromNow}}</h5>\n                </div><!-- /.col-md-7 -->\n                <div class=\"col-sm-5\" _v-19815ee4=\"\">\n                    <div class=\"btn-group pull-right\" _v-19815ee4=\"\">\n                            <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-19815ee4=\"\"><i class=\"fa fa-pencil\" _v-19815ee4=\"\"></i></button>\n                            <!-- <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\"><i class=\"fa fa-eye\"></i></button> -->\n                    </div><!-- /.btn-toolbar -->\n\n                </div><!-- /.col-md-7 -->\n            </div><!-- /.row -->\n        </div><!-- /.box-footer -->\n</div><!-- /.box- -->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n    <!-- <div class=\"box box-default box-solid\"> -->\n    <div :class=\"itemStatus\" class=\"box box-solid\" _v-19815ee4=\"\">\n\n        <div class=\"box-header with-border\" _v-19815ee4=\"\">\n            <div class=\"row\" _v-19815ee4=\"\">\n                <div class=\"col-sm-4\" _v-19815ee4=\"\">\n                    <div class=\"box-date-top pull-left\" _v-19815ee4=\"\">{{item.start_date | titleDateLong}}</div>\n                    <div class=\"pull-right\" _v-19815ee4=\"\">\n                        <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Promoted\" _v-19815ee4=\"\"><span class=\"item-promoted-icon\" :class=\"promotedIcon\" _v-19815ee4=\"\"></span></label>\n                    </div><!-- /.pull-right -->\n                </div><!-- /.col-sm-6 -->\n                <div class=\"col-sm-8\" _v-19815ee4=\"\">\n                    <form class=\"form-inline pull-right\" _v-19815ee4=\"\">\n                        <div class=\"form-group\" _v-19815ee4=\"\">\n                            <button v-if=\"hasPriorityChanged\" @click.prevent=\"updateItem\" class=\"btn footer-btn bg-orange btn-xs\" href=\"#\" _v-19815ee4=\"\"><span class=\"fa fa-floppy-o\" _v-19815ee4=\"\"></span></button>\n                        </div><!-- /.form-group -->\n                      <div class=\"form-group\" _v-19815ee4=\"\">\n                        <label class=\"sr-only\" for=\"priority-number\" _v-19815ee4=\"\">Priority</label>\n                            <select id=\"priority-{{item.id}}\" v-model=\"patchRecord.priority\" @change=\"priorityChange($event)\" class=\"form-control\" number=\"\" _v-19815ee4=\"\">\n                                <option v-for=\"option in options\" v-bind:value=\"option.value\" _v-19815ee4=\"\">\n                                    {{option.text}}\n                                </option>\n                            </select>\n                      </div>\n                      <div class=\"form-group\" _v-19815ee4=\"\">\n                              <label _v-19815ee4=\"\">approved:</label>\n                          </div><!-- /.form-group -->\n                         <div class=\"form-group\" _v-19815ee4=\"\">\n                              <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click.prevent=\"changeIsApproved\" :value.sync=\"patchRecord.is_approved\" _v-19815ee4=\"\">\n                              </vui-flip-switch>\n                          </div>\n                      </form>\n                </div><!-- /.col-sm-6 -->\n            </div><!-- /.row -->\n\n            <div class=\"row\" _v-19815ee4=\"\">\n              <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-19815ee4=\"\">\n                <div class=\"col-sm-12\" _v-19815ee4=\"\">\n                    <h6 class=\"box-title\" _v-19815ee4=\"\">{{item.title}}</h6>\n                </div><!-- /.col-md-12 -->\n              </a>\n            </div><!-- /.row -->\n        </div>  <!-- /.box-header -->\n\n        <div v-if=\"showBody\" class=\"box-body\" _v-19815ee4=\"\">\n\n            <p _v-19815ee4=\"\">From: {{item.start_time}} to {{item.end_time}}</p>\n            <p _v-19815ee4=\"\">{{item.description}}</p>\n            <div class=\"item-info\" _v-19815ee4=\"\">\n            Dates: {{item.start_date}} - {{item.end_date}}\n            </div>\n\n        <template v-if=\"canHaveImage\">\n            <img v-if=\"hasEventImage\" :src=\"imageUrl\" _v-19815ee4=\"\">\n            <a v-on:click=\"togglePanel\" class=\"btn bg-olive btn-sm\" href=\"#\" _v-19815ee4=\"\">{{hasEventImage ? 'Change Image' : 'Promote Event'}}</a>\n            <div v-show=\"showPanel\" class=\"panel\" _v-19815ee4=\"\">\n                <form id=\"form-mediafile-upload{{item.id}}\" @submit.prevent=\"uploadMediaFile\" class=\"m-t\" role=\"form\" action=\"/api/event/addMediaFile/{{item.id}}\" enctype=\"multipart/form-data\" _v-19815ee4=\"\">\n                    <input class=\"hidden\" type=\"input\" value=\"{{item.id}}\" v-model=\"formInputs.event_id\" _v-19815ee4=\"\">\n                    <div class=\"form-group\" _v-19815ee4=\"\">\n                        <label for=\"event-image\" _v-19815ee4=\"\">Event Image</label><br _v-19815ee4=\"\">\n                        <input v-el:eventimg=\"\" type=\"file\" name=\"eventimg\" id=\"eventimg\" _v-19815ee4=\"\">\n                    </div>\n                    <button id=\"btn-mediafile-upload\" type=\"submit\" class=\"btn btn-primary block m-b\" _v-19815ee4=\"\">Submit</button>\n                </form>\n            </div><!-- /.panel mediaform -->\n        </template>\n\n        </div><!-- /.box-body -->\n\n\n        <div class=\"box-footer list-footer\" _v-19815ee4=\"\">\n            <div class=\"row\" _v-19815ee4=\"\">\n                <div class=\"col-sm-9\" _v-19815ee4=\"\">\n                    <span :class=\"timeFromNowStatus\" _v-19815ee4=\"\">Live {{timefromNow}}</span> <span :class=\"timeLeftStatus\" _v-19815ee4=\"\">{{timeLeft}}</span>\n\n\n\n                </div><!-- /.col-md-7 -->\n                <div class=\"col-sm-3\" _v-19815ee4=\"\">\n                    {{item.id}}\n                    <div class=\"btn-group pull-right\" _v-19815ee4=\"\">\n\n                            <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-19815ee4=\"\"><i class=\"fa fa-pencil\" _v-19815ee4=\"\"></i></button>\n                            <!-- <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\"><i class=\"fa fa-eye\"></i></button> -->\n                    </div><!-- /.btn-toolbar -->\n\n                </div><!-- /.col-md-7 -->\n            </div><!-- /.row -->\n        </div><!-- /.box-footer -->\n</div><!-- /.box- -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.box[_v-19815ee4] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-19815ee4] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-19815ee4] {\n    padding: 3px;\n}\n.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nh5.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-19815ee4] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-19815ee4] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n    .box-date-top[_v-19815ee4] {\n\n    }\n    .box-date-bot[_v-19815ee4] {\n\n    }\n    .box-date[_v-19815ee4] {\n\n    }\n        select.form-control[_v-19815ee4] {\n            height:22px;\n            border: 1px solid #999999;\n        }\n\n        h6[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n        h5[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n\n        .form-group[_v-19815ee4] {\n            /*border: 1px solid red;*/\n        }\n        .form-group label[_v-19815ee4]{\n            margin-bottom: 0;\n        }\n        /*.box.box-solid.box-default {\n            border: 1px solid #999999;\n        }\n        .box-body {\n            padding: 3px 6px;\n        }*/\n"] = false
+    __vueify_insert__.cache["\n.box[_v-19815ee4] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-19815ee4] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-19815ee4] {\n    padding: 3px;\n}\n.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nh5.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-19815ee4] {\n    border-color: #999999;\n\n}\nh6.box-title[_v-19815ee4] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n    .box-date-top[_v-19815ee4] {\n\n    }\n    .box-date-bot[_v-19815ee4] {\n\n    }\n    .box-date[_v-19815ee4] {\n\n    }\n        select.form-control[_v-19815ee4] {\n            height:22px;\n            border: 1px solid #999999;\n        }\n\n        h6[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n        h5[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n\n        .form-group[_v-19815ee4] {\n            /*border: 1px solid red;*/\n        }\n        .form-group label[_v-19815ee4]{\n            margin-bottom: 0;\n        }\n        .topitems[_v-19815ee4] {\n            /*background-color: #9B59B6;*/\n            background-color: #76D7EA;\n            border: 2px solid #9B59B6\n        }\n        .is-promoted[_v-19815ee4] {\n\n            background-color: #76D7EA;\n            /*border: 1px solid #999999*/\n        }\n        .time-is-short[_v-19815ee4] {\n            color: #F39C12;\n        }\n        .time-is-long[_v-19815ee4] {\n            color: #999999;\n        }\n        .time-is-over[_v-19815ee4] {\n            color: #9B59B6;\n        }\n        /*.box.box-solid.box-default {\n            border: 1px solid #999999;\n        }\n        .box-body {\n            padding: 3px 6px;\n        }*/\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
@@ -16538,7 +16668,7 @@ if (module.hot) {(function () {  module.hot.accept()
 },{"./VuiFlipSwitch.vue":9,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],9:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.vuiflipswitch {\n    position: relative; width: 36px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.vuiflipswitch-checkbox {\n    display: none;\n}\n.vuiflipswitch-label {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 1px solid #666666; border-radius: 4px;\n}\n.vuiflipswitch-inner {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.vuiflipswitch-inner:before, .vuiflipswitch-inner:after {\n    display: block; float: left; width: 50%; height: 20px; padding: 0; line-height: 20px;\n    font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.vuiflipswitch-inner:before {\n    content: \"Y\";\n    padding-left: 5px;\n    background-color: #EEEEEE; color: #605CA8;\n}\n.vuiflipswitch-inner:after {\n    content: \"N\";\n    padding-right: 5px;\n    background-color: #EEEEEE; color: #666666;\n    text-align: right;\n}\n.vuiflipswitch-switch {\n    display: block;\n    width: 16px;\n    margin: 0;\n    background: #666666;\n    position: absolute; top: 0; bottom: 0;\n    /*right: 16px;*/\n    /*border: 2px solid #666666; */\n    border-radius: 4px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-inner {\n    margin-left: 0;\n}\n.vuiflipswitch-checkbox:checked + .vuiflipswitch-label .vuiflipswitch-switch {\n    right: 0px;\n    background-color: #605CA8;\n}\nselect.form-control {\n    height:22px;\n    border: 1px solid #666666;\n}\n\n\nh6 {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group {\n    /*border: 1px solid red;*/\n}\n.form-group label{\n    margin-bottom: 0;\n}\n.box.box-solid.box-default {\n    border: 1px solid #666666;\n}\n")
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -16558,11 +16688,15 @@ exports.default = {
             // compval: $('#slct').val()
         };
     },
-    methods: {},
+    methods: {
+        vuiValueChange: function vuiValueChange(event) {
+            console.log('this.value' + this.value);
+        }
+    },
     events: {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"vuiflipswitch\">\n    <input v-model=\"value\" type=\"checkbox\" name=\"vuiflipswitch\" class=\"vuiflipswitch-checkbox\" :disabled=\"disabled\" lazy=\"\">\n    <label class=\"vuiflipswitch-label\" :class=\"{checked:value}\">\n            <span class=\"vuiflipswitch-inner\"></span>\n            <span class=\"vuiflipswitch-switch\"></span>\n    </label>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"vuiflipswitch\">\n    <input v-model=\"value\" type=\"checkbox\" @change=\"vuiValueChange\" name=\"vuiflipswitch\" class=\"vuiflipswitch-checkbox\" :disabled=\"disabled\" lazy=\"\">\n    <label class=\"vuiflipswitch-label\" :class=\"{checked:value}\">\n            <span class=\"vuiflipswitch-inner\"></span>\n            <span class=\"vuiflipswitch-switch\"></span>\n    </label>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
