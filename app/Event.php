@@ -97,11 +97,14 @@ class Event extends Model
   }
   public function getEndDateTimeAttribute(){
     $endtime = (is_null($this->end_time))?'23:59:59':$this->end_time;
-       return Carbon::parse($this->end_date)->toDateString() . ' ' . $endtime;
+    $enddatestring = $this->end_date->toDateString() . ' ' . $endtime;
+    return Carbon::parse($enddatestring);
+    //    return Carbon::parse($this->end_date)->toDateString() . ' ' . $endtime;
   }
   public function getStartDateTimeAttribute(){
       $starttime = (is_null($this->start_time))?'00:00:00':$this->start_time;
-      return Carbon::parse($this->start_date)->toDateString() . ' ' . $starttime;
+      $startdatestring =  $this->start_date->toDateString() . ' ' . $starttime;
+      return Carbon::parse($startdatestring);
   }
   public function getStartDateYearAttribute()
   {

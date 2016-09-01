@@ -489,9 +489,12 @@ class EventController extends ApiController
             $event->is_promoted = 1;
 
             if($event->save()) {
-                    return $this->setStatusCode(201)
-                                ->respondCreated('Event successfully updated');
-                            }
+                $returnData = ['eventimage' => $event->mediaFile->filename , 'is_approved' => $event->is_approved,'priority'=> $event->priority, 'is_canceled'=> $event->is_canceled];
+                return $this->setStatusCode(201)
+                ->respondUpdatedWithData('event updated',$returnData );
+                    // return $this->setStatusCode(201)
+                    //             ->respondCreated('Event successfully updated');
+                }
         }
     /**
      * Update the specified resource in storage.

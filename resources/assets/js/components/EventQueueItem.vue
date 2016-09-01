@@ -1,7 +1,7 @@
 <template>
 
     <!-- <div class="box box-default box-solid"> -->
-    <div :class="itemStatus" class="box box-solid">
+    <div :class="liveTimeStatusClass" class="box box-solid">
 
         <div class="box-header with-border">
             <div class="row">
@@ -56,9 +56,9 @@
 
         <template v-if="canHaveImage">
             <img v-if="hasEventImage" :src="imageUrl" />
-            <a v-on:click="togglePanel" class="btn bg-olive btn-sm" href="#">{{hasEventImage ? 'Change Image' : 'Promote Event'}}</a>
+            <a v-on:click.prevent="togglePanel" class="btn bg-olive btn-sm" href="#">{{hasEventImage ? 'Change Image' : 'Promote Event'}}</a>
             <div v-show="showPanel" class="panel">
-                <form id="form-mediafile-upload{{item.id}}" @submit.prevent="uploadMediaFile" class="m-t" role="form" action="/api/event/addMediaFile/{{item.id}}"  enctype="multipart/form-data">
+                <form id="form-mediafile-upload{{item.id}}" @submit.prevent="addMediaFile" class="m-t" role="form" action="/api/event/addMediaFile/{{item.id}}"  enctype="multipart/form-data">
                     <input class="hidden" type="input" value="{{item.id}}" v-model="formInputs.event_id">
                     <div class="form-group">
                         <label for="event-image">Event Image</label><br>
@@ -72,9 +72,11 @@
         </div><!-- /.box-body -->
 
 
-        <div class="box-footer list-footer">
+        <div :class="addSeperator" class="box-footer list-footer">
             <div class="row">
                 <div class="col-sm-9">
+                    <span>Start {{item.start_date_time}}</span> <span>End {{item.end_date_time}}</span>
+
                     <span :class="timeFromNowStatus">Live {{timefromNow}}</span> <span :class="timeLeftStatus">{{timeLeft}}</span>
 
 
@@ -155,7 +157,21 @@ h6.box-title {
         .topitems {
             /*background-color: #9B59B6;*/
             background-color: #76D7EA;
-            border: 2px solid #9B59B6
+            border: 2px solid #9B59B6;
+        }
+        .ongoing {
+            background-color: #bfff00;
+            border: 1px solid #999999
+        }
+        .event-positive {
+
+            background-color: #D8D8D8;
+            border: 1px solid #999999;
+        }
+        .event-negative {
+
+            background-color: #ffcc33;
+            border: 1px solid #999999;
         }
         .is-promoted {
 
@@ -171,6 +187,10 @@ h6.box-title {
         .time-is-over {
             color: #9B59B6;
         }
+        .last-special-event {
+            margin-bottom: 50px;
+        }
+
         /*.box.box-solid.box-default {
             border: 1px solid #999999;
         }
@@ -212,12 +232,14 @@ module.exports  = {
             initRecord: {
                 is_approved: 0,
                 priority: 0,
-                is_canceled: 0
+                is_canceled: 0,
+                eventimage: ''
             },
             patchRecord: {
                 is_approved: 0,
                 priority: 0,
-                is_canceled: 0
+                is_canceled: 0,
+                eventimage: ''
             },
             currentDate: {},
             record: {
@@ -233,8 +255,16 @@ module.exports  = {
         this.initRecord.is_approved = this.patchRecord.is_approved =  this.item.is_approved;
         this.initRecord.priority = this.patchRecord.priority = this.item.priority;
         this.initRecord.is_canceled = this.patchRecord.is_canceled = this.item.is_canceled;
+        this.initRecord.eventimage = this.patchRecord.eventimage = this.item.eventimage;
     },
     computed: {
+        addSeperator: function(){
+            let asclass = 'box-footer-normal';
+            if(this.pid == 'items-other' && this.index == 3) {
+                asclass = 'box-footer-last-special';
+            }
+            return asclass;
+        },
         hasPriorityChanged: function(){
             if (this.initRecord.priority != this.patchRecord.priority){
                 return true
@@ -251,10 +281,10 @@ module.exports  = {
             }
         },
         timeLeftStatus: function(){
-            let diff = moment().diff(moment(this.item.start_date_time), 'hours');
+            let diff = this.timeDiffNow(this.item.end_date_time)
             if(diff <= 0){
                 return 'time-is-over'
-            } else if(diff > 0 && diff <=25) {
+            } else if(diff > 0 && diff <=720) {
                 return 'time-is-short'
             } else {
                 return 'time-is-long'
@@ -262,22 +292,59 @@ module.exports  = {
 
 
         },
+
         timeFromNowStatus: function(){
-            let diff = moment(this.item.start_date_time).diff(moment(), 'hours');
+            let diff = this.timeDiffNow(this.item.start_date_time)
             if(diff <= 0){
                 return 'time-is-over'
-            } else if(diff > 0 && diff <=25) {
+            } else if(diff > 0 && diff <=720) {
                 return 'time-is-short'
             } else {
                 return 'time-is-long'
             }
+        },
+        timefromNow:function() {
+            return moment(this.item.start_date_time).fromNow()
         },
         timeLeft: function() {
+
             if(moment(this.item.start_date_time).isSameOrBefore(moment())){
-                return  ' and Ends ' + moment(this.item.start_date_time).fromNow()
+                let tlft = this.timeDiffNow(this.item.end_date_time);
+                console.log('id='+ this.item.id + ' timeLeft'+tlft)
+                if (tlft < 0) {
+                    return 'Event Ended ' + moment(this.item.end_date_time).fromNow()
+                } else {
+                    return  ' and Ends ' + moment(this.item.end_date_time).fromNow()
+                }
+
             }  else {
                 return ''
             }
+
+
+        },
+        liveTimeStatusClass: function(){
+            let timepartstatus;
+            let extrasep;
+            if (moment().isBetween(this.item.start_date_time, this.item.end_date_time)){
+                timepartstatus=  'ongoing';
+            } else {
+                if(this.timeDiffNow(this.item.start_date_time) < 0 ) {
+                    timepartstatus = 'event-negative';
+                } else {
+                    timepartstatus = 'event-positive';
+
+                }
+
+            }
+
+            if (this.pid == 'items-other' && this.index === 3) {
+                extrasep = 'last-special-event'
+            } else {
+                extrasep = ''
+            }
+
+            return timepartstatus + ' ' + extrasep;
 
 
         },
@@ -329,9 +396,7 @@ module.exports  = {
             console.log(pth + fname)
             return pth + fname;
         },
-        timefromNow:function() {
-            return moment(this.item.start_date_time).fromNow()
-        },
+
         isApproved: function() {
             return this.item.is_approved;
         },
@@ -352,6 +417,10 @@ module.exports  = {
             //     this.formInputs.attachment = event.target.file;
             // },
             // Handle the form submission here
+            timeDiffNow:function(val){
+                return  moment(val).diff(moment(), 'minutes');
+
+            },
             changeIsApproved: function(){
                 this.patchRecord.is_approved = (this.item.is_approved === 0)?1:0;
                 console.log('this.patchRecord.is_approved ='+this.patchRecord.is_approved );
@@ -365,7 +434,7 @@ module.exports  = {
                 console.log('priority=' + this.item.priority)
             },
 
-           uploadMediaFile(event) {
+           addMediaFile(event) {
                event.preventDefault();
                event.stopPropagation();
 
@@ -385,7 +454,7 @@ module.exports  = {
                } )
                .then((response) => {
                    console.log('good?'+ response)
-
+                   this.checkAfterUpdate(response.data.newdata)
                }, (response) => {
                    console.log('bad?'+ response)
                });
@@ -415,36 +484,37 @@ module.exports  = {
                this.item.is_approved = this.initRecord.is_approved =   ndata.is_approved;
                this.item.priority = this.initRecord.priority =  ndata.priority;
                this.item.is_canceled = this.initRecord.is_canceled = ndata.is_canceled;
+               this.item.eventimage =  this.initRecord.eventimage = ndata.eventimage;
                this.hasPriorityChanged = 0;
 
                console.log(ndata);
            },
 
-           AddMediaFileToEvent: function(item, args){
-               console.log(args)
-               var currentRecordId =  item.id;
-               var currentRecord = args;
-
-               this.$http.patch('/api/event/updateItem/' + item.id , currentRecord , {
-                   method: 'PATCH'
-               } )
-               .then((response) => {
-                   console.log('good?'+ response)
-                   var movedIndex = this.movedItemIndex(movedid);
-                       // this.xitems.pop(movedRecord);
-                   // if (movedRecord.approved == 1) {
-                   //         this.xitems.splice(movedIndex, 1);
-                   //      this.items.push(movedRecord);
-                   //  } else {
-                   //      this.items.splice(movedIndex, 1);
-                   //     this.xitems.push(movedRecord);
-                   //  }
-
-                       console.log('movedIndex==='+ movedIndex)
-                   }, (response) => {
-                       console.log('bad?'+ response)
-                   });
-           },
+        //    AddMediaFileToEvent: function(item, args){
+        //        console.log(args)
+        //        var currentRecordId =  item.id;
+        //        var currentRecord = args;
+           //
+        //        this.$http.patch('/api/event/updateItem/' + item.id , currentRecord , {
+        //            method: 'PATCH'
+        //        } )
+        //        .then((response) => {
+        //            console.log('good?'+ response)
+        //            var movedIndex = this.movedItemIndex(movedid);
+        //                // this.xitems.pop(movedRecord);
+        //            // if (movedRecord.approved == 1) {
+        //            //         this.xitems.splice(movedIndex, 1);
+        //            //      this.items.push(movedRecord);
+        //            //  } else {
+        //            //      this.items.splice(movedIndex, 1);
+        //            //     this.xitems.push(movedRecord);
+        //            //  }
+           //
+        //                console.log('movedIndex==='+ movedIndex)
+        //            }, (response) => {
+        //                console.log('bad?'+ response)
+        //            });
+        //    },
 
 
 
@@ -469,17 +539,17 @@ module.exports  = {
            this.$emit('item-change',this.item);
         //console.log('ev ' + ev + 'this.item.id= '+  this.item.priority)
         },
-        addMediaFile: function(ev) {
-            var formData = new FormData();
-            formData.append('image', fileInput ,this.$els.finput.files[0]);
-
-            // var fileinputObject = this.$els.finput;
-            // console.log('fileinputObject.name= '+ fileinputObject.name)
-            // console.log('fileinputObject.value= '+ fileinputObject.value)
-            // console.log('fileinputObject.files= '+ fileinputObject.files[0])
-            this.$emit('add-media-file', formData);
-            console.log('ev ' + ev + 'this.item.id= '+  this.item)
-        }
+        // addMediaFile: function(ev) {
+        //     var formData = new FormData();
+        //     formData.append('image', fileInput ,this.$els.finput.files[0]);
+        //
+        //     // var fileinputObject = this.$els.finput;
+        //     // console.log('fileinputObject.name= '+ fileinputObject.name)
+        //     // console.log('fileinputObject.value= '+ fileinputObject.value)
+        //     // console.log('fileinputObject.files= '+ fileinputObject.files[0])
+        //     this.$emit('add-media-file', formData);
+        //     console.log('ev ' + ev + 'this.item.id= '+  this.item)
+        // }
 
     },
     watch: {

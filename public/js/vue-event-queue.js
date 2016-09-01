@@ -16312,7 +16312,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"./EventQueueItem.vue":8,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-19815ee4] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-19815ee4] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-19815ee4] {\n    padding: 3px;\n}\n.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nh5.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-19815ee4] {\n    border-color: #999999;\n\n}\nh6.box-title[_v-19815ee4] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n    .box-date-top[_v-19815ee4] {\n\n    }\n    .box-date-bot[_v-19815ee4] {\n\n    }\n    .box-date[_v-19815ee4] {\n\n    }\n        select.form-control[_v-19815ee4] {\n            height:22px;\n            border: 1px solid #999999;\n        }\n\n        h6[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n        h5[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n\n        .form-group[_v-19815ee4] {\n            /*border: 1px solid red;*/\n        }\n        .form-group label[_v-19815ee4]{\n            margin-bottom: 0;\n        }\n        .topitems[_v-19815ee4] {\n            /*background-color: #9B59B6;*/\n            background-color: #76D7EA;\n            border: 2px solid #9B59B6\n        }\n        .is-promoted[_v-19815ee4] {\n\n            background-color: #76D7EA;\n            /*border: 1px solid #999999*/\n        }\n        .time-is-short[_v-19815ee4] {\n            color: #F39C12;\n        }\n        .time-is-long[_v-19815ee4] {\n            color: #999999;\n        }\n        .time-is-over[_v-19815ee4] {\n            color: #9B59B6;\n        }\n        /*.box.box-solid.box-default {\n            border: 1px solid #999999;\n        }\n        .box-body {\n            padding: 3px 6px;\n        }*/\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-19815ee4] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-19815ee4] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-19815ee4] {\n    padding: 3px;\n}\n.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nh5.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-19815ee4] {\n    border-color: #999999;\n\n}\nh6.box-title[_v-19815ee4] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n    .box-date-top[_v-19815ee4] {\n\n    }\n    .box-date-bot[_v-19815ee4] {\n\n    }\n    .box-date[_v-19815ee4] {\n\n    }\n        select.form-control[_v-19815ee4] {\n            height:22px;\n            border: 1px solid #999999;\n        }\n\n        h6[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n        h5[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n\n        .form-group[_v-19815ee4] {\n            /*border: 1px solid red;*/\n        }\n        .form-group label[_v-19815ee4]{\n            margin-bottom: 0;\n        }\n        .topitems[_v-19815ee4] {\n            /*background-color: #9B59B6;*/\n            background-color: #76D7EA;\n            border: 2px solid #9B59B6;\n        }\n        .ongoing[_v-19815ee4] {\n            background-color: #bfff00;\n            border: 1px solid #999999\n        }\n        .event-positive[_v-19815ee4] {\n\n            background-color: #D8D8D8;\n            border: 1px solid #999999;\n        }\n        .event-negative[_v-19815ee4] {\n\n            background-color: #ffcc33;\n            border: 1px solid #999999;\n        }\n        .is-promoted[_v-19815ee4] {\n\n            background-color: #76D7EA;\n            /*border: 1px solid #999999*/\n        }\n        .time-is-short[_v-19815ee4] {\n            color: #F39C12;\n        }\n        .time-is-long[_v-19815ee4] {\n            color: #999999;\n        }\n        .time-is-over[_v-19815ee4] {\n            color: #9B59B6;\n        }\n        .last-special-event[_v-19815ee4] {\n            margin-bottom: 50px;\n        }\n\n        /*.box.box-solid.box-default {\n            border: 1px solid #999999;\n        }\n        .box-body {\n            padding: 3px 6px;\n        }*/\n")
 'use strict';
 
 var _moment = require('moment');
@@ -16342,12 +16342,14 @@ module.exports = {
             initRecord: {
                 is_approved: 0,
                 priority: 0,
-                is_canceled: 0
+                is_canceled: 0,
+                eventimage: ''
             },
             patchRecord: {
                 is_approved: 0,
                 priority: 0,
-                is_canceled: 0
+                is_canceled: 0,
+                eventimage: ''
             },
             currentDate: {},
             record: {}
@@ -16362,8 +16364,16 @@ module.exports = {
         this.initRecord.is_approved = this.patchRecord.is_approved = this.item.is_approved;
         this.initRecord.priority = this.patchRecord.priority = this.item.priority;
         this.initRecord.is_canceled = this.patchRecord.is_canceled = this.item.is_canceled;
+        this.initRecord.eventimage = this.patchRecord.eventimage = this.item.eventimage;
     },
     computed: {
+        addSeperator: function addSeperator() {
+            var asclass = 'box-footer-normal';
+            if (this.pid == 'items-other' && this.index == 3) {
+                asclass = 'box-footer-last-special';
+            }
+            return asclass;
+        },
         hasPriorityChanged: function hasPriorityChanged() {
             if (this.initRecord.priority != this.patchRecord.priority) {
                 return true;
@@ -16380,31 +16390,63 @@ module.exports = {
             }
         },
         timeLeftStatus: function timeLeftStatus() {
-            var diff = (0, _moment2.default)().diff((0, _moment2.default)(this.item.start_date_time), 'hours');
+            var diff = this.timeDiffNow(this.item.end_date_time);
             if (diff <= 0) {
                 return 'time-is-over';
-            } else if (diff > 0 && diff <= 25) {
+            } else if (diff > 0 && diff <= 720) {
                 return 'time-is-short';
             } else {
                 return 'time-is-long';
             }
         },
+
         timeFromNowStatus: function timeFromNowStatus() {
-            var diff = (0, _moment2.default)(this.item.start_date_time).diff((0, _moment2.default)(), 'hours');
+            var diff = this.timeDiffNow(this.item.start_date_time);
             if (diff <= 0) {
                 return 'time-is-over';
-            } else if (diff > 0 && diff <= 25) {
+            } else if (diff > 0 && diff <= 720) {
                 return 'time-is-short';
             } else {
                 return 'time-is-long';
             }
+        },
+        timefromNow: function timefromNow() {
+            return (0, _moment2.default)(this.item.start_date_time).fromNow();
         },
         timeLeft: function timeLeft() {
+
             if ((0, _moment2.default)(this.item.start_date_time).isSameOrBefore((0, _moment2.default)())) {
-                return ' and Ends ' + (0, _moment2.default)(this.item.start_date_time).fromNow();
+                var tlft = this.timeDiffNow(this.item.end_date_time);
+                console.log('id=' + this.item.id + ' timeLeft' + tlft);
+                if (tlft < 0) {
+                    return 'Event Ended ' + (0, _moment2.default)(this.item.end_date_time).fromNow();
+                } else {
+                    return ' and Ends ' + (0, _moment2.default)(this.item.end_date_time).fromNow();
+                }
             } else {
                 return '';
             }
+        },
+        liveTimeStatusClass: function liveTimeStatusClass() {
+            var timepartstatus = void 0;
+            var extrasep = void 0;
+            if ((0, _moment2.default)().isBetween(this.item.start_date_time, this.item.end_date_time)) {
+                timepartstatus = 'ongoing';
+            } else {
+                if (this.timeDiffNow(this.item.start_date_time) < 0) {
+                    timepartstatus = 'event-negative';
+                } else {
+                    timepartstatus = 'event-positive';
+                }
+            }
+
+            if (this.pid == 'items-other' && this.index === 3) {
+                extrasep = 'last-special-event';
+            } else {
+                extrasep = '';
+            }
+
+            return timepartstatus + ' ' + extrasep;
         },
         itemStatus: function itemStatus() {
             var sclass = 'box-default';
@@ -16451,9 +16493,7 @@ module.exports = {
             console.log(pth + fname);
             return pth + fname;
         },
-        timefromNow: function timefromNow() {
-            return (0, _moment2.default)(this.item.start_date_time).fromNow();
-        },
+
         isApproved: function isApproved() {
             return this.item.is_approved;
         },
@@ -16472,6 +16512,9 @@ module.exports = {
         //     this.formInputs.attachment = event.target.file;
         // },
         // Handle the form submission here
+        timeDiffNow: function timeDiffNow(val) {
+            return (0, _moment2.default)(val).diff((0, _moment2.default)(), 'minutes');
+        },
         changeIsApproved: function changeIsApproved() {
             this.patchRecord.is_approved = this.item.is_approved === 0 ? 1 : 0;
             console.log('this.patchRecord.is_approved =' + this.patchRecord.is_approved);
@@ -16483,7 +16526,9 @@ module.exports = {
         priorityChange: function priorityChange(event) {
             console.log('priority=' + this.item.priority);
         },
-        uploadMediaFile: function uploadMediaFile(event) {
+        addMediaFile: function addMediaFile(event) {
+            var _this = this;
+
             event.preventDefault();
             event.stopPropagation();
 
@@ -16502,6 +16547,7 @@ module.exports = {
                 method: 'PUT'
             }).then(function (response) {
                 console.log('good?' + response);
+                _this.checkAfterUpdate(response.data.newdata);
             }, function (response) {
                 console.log('bad?' + response);
             });
@@ -16513,7 +16559,7 @@ module.exports = {
         },
 
         updateItem: function updateItem() {
-            var _this = this;
+            var _this2 = this;
 
             //    this.patchRecord.is_approved = this.item.is_approved;
             //    this.patchRecord.priority = this.item.priority;
@@ -16523,7 +16569,7 @@ module.exports = {
                 method: 'PATCH'
             }).then(function (response) {
                 console.log('good?' + response);
-                _this.checkAfterUpdate(response.data.newdata);
+                _this2.checkAfterUpdate(response.data.newdata);
             }, function (response) {
                 console.log('bad?' + response);
             });
@@ -16532,37 +16578,38 @@ module.exports = {
             this.item.is_approved = this.initRecord.is_approved = ndata.is_approved;
             this.item.priority = this.initRecord.priority = ndata.priority;
             this.item.is_canceled = this.initRecord.is_canceled = ndata.is_canceled;
+            this.item.eventimage = this.initRecord.eventimage = ndata.eventimage;
             this.hasPriorityChanged = 0;
 
             console.log(ndata);
         },
 
-        AddMediaFileToEvent: function AddMediaFileToEvent(item, args) {
-            var _this2 = this;
+        //    AddMediaFileToEvent: function(item, args){
+        //        console.log(args)
+        //        var currentRecordId =  item.id;
+        //        var currentRecord = args;
+        //
+        //        this.$http.patch('/api/event/updateItem/' + item.id , currentRecord , {
+        //            method: 'PATCH'
+        //        } )
+        //        .then((response) => {
+        //            console.log('good?'+ response)
+        //            var movedIndex = this.movedItemIndex(movedid);
+        //                // this.xitems.pop(movedRecord);
+        //            // if (movedRecord.approved == 1) {
+        //            //         this.xitems.splice(movedIndex, 1);
+        //            //      this.items.push(movedRecord);
+        //            //  } else {
+        //            //      this.items.splice(movedIndex, 1);
+        //            //     this.xitems.push(movedRecord);
+        //            //  }
+        //
+        //                console.log('movedIndex==='+ movedIndex)
+        //            }, (response) => {
+        //                console.log('bad?'+ response)
+        //            });
+        //    },
 
-            console.log(args);
-            var currentRecordId = item.id;
-            var currentRecord = args;
-
-            this.$http.patch('/api/event/updateItem/' + item.id, currentRecord, {
-                method: 'PATCH'
-            }).then(function (response) {
-                console.log('good?' + response);
-                var movedIndex = _this2.movedItemIndex(movedid);
-                // this.xitems.pop(movedRecord);
-                // if (movedRecord.approved == 1) {
-                //         this.xitems.splice(movedIndex, 1);
-                //      this.items.push(movedRecord);
-                //  } else {
-                //      this.items.splice(movedIndex, 1);
-                //     this.xitems.push(movedRecord);
-                //  }
-
-                console.log('movedIndex===' + movedIndex);
-            }, function (response) {
-                console.log('bad?' + response);
-            });
-        },
 
         togglePanel: function togglePanel(ev) {
             if (this.showPanel === false) {
@@ -16584,19 +16631,7 @@ module.exports = {
             this.item.is_approved = this.is_approved === 0 ? 1 : 0;
             this.$emit('item-change', this.item);
             //console.log('ev ' + ev + 'this.item.id= '+  this.item.priority)
-        },
-        addMediaFile: function addMediaFile(ev) {
-            var formData = new FormData();
-            formData.append('image', fileInput, this.$els.finput.files[0]);
-
-            // var fileinputObject = this.$els.finput;
-            // console.log('fileinputObject.name= '+ fileinputObject.name)
-            // console.log('fileinputObject.value= '+ fileinputObject.value)
-            // console.log('fileinputObject.files= '+ fileinputObject.files[0])
-            this.$emit('add-media-file', formData);
-            console.log('ev ' + ev + 'this.item.id= ' + this.item);
         }
-
     },
     watch: {
         priorityChanged: function priorityChanged(val, oldVal) {
@@ -16650,13 +16685,13 @@ module.exports = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n    <!-- <div class=\"box box-default box-solid\"> -->\n    <div :class=\"itemStatus\" class=\"box box-solid\" _v-19815ee4=\"\">\n\n        <div class=\"box-header with-border\" _v-19815ee4=\"\">\n            <div class=\"row\" _v-19815ee4=\"\">\n                <div class=\"col-sm-4\" _v-19815ee4=\"\">\n                    <div class=\"box-date-top pull-left\" _v-19815ee4=\"\">{{item.start_date | titleDateLong}}</div>\n                    <div class=\"pull-right\" _v-19815ee4=\"\">\n                        <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Promoted\" _v-19815ee4=\"\"><span class=\"item-promoted-icon\" :class=\"promotedIcon\" _v-19815ee4=\"\"></span></label>\n                    </div><!-- /.pull-right -->\n                </div><!-- /.col-sm-6 -->\n                <div class=\"col-sm-8\" _v-19815ee4=\"\">\n                    <form class=\"form-inline pull-right\" _v-19815ee4=\"\">\n                        <div class=\"form-group\" _v-19815ee4=\"\">\n                            <button v-if=\"hasPriorityChanged\" @click.prevent=\"updateItem\" class=\"btn footer-btn bg-orange btn-xs\" href=\"#\" _v-19815ee4=\"\"><span class=\"fa fa-floppy-o\" _v-19815ee4=\"\"></span></button>\n                        </div><!-- /.form-group -->\n                      <div class=\"form-group\" _v-19815ee4=\"\">\n                        <label class=\"sr-only\" for=\"priority-number\" _v-19815ee4=\"\">Priority</label>\n                            <select id=\"priority-{{item.id}}\" v-model=\"patchRecord.priority\" @change=\"priorityChange($event)\" class=\"form-control\" number=\"\" _v-19815ee4=\"\">\n                                <option v-for=\"option in options\" v-bind:value=\"option.value\" _v-19815ee4=\"\">\n                                    {{option.text}}\n                                </option>\n                            </select>\n                      </div>\n                      <div class=\"form-group\" _v-19815ee4=\"\">\n                              <label _v-19815ee4=\"\">approved:</label>\n                          </div><!-- /.form-group -->\n                         <div class=\"form-group\" _v-19815ee4=\"\">\n                              <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click.prevent=\"changeIsApproved\" :value.sync=\"patchRecord.is_approved\" _v-19815ee4=\"\">\n                              </vui-flip-switch>\n                          </div>\n                      </form>\n                </div><!-- /.col-sm-6 -->\n            </div><!-- /.row -->\n\n            <div class=\"row\" _v-19815ee4=\"\">\n              <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-19815ee4=\"\">\n                <div class=\"col-sm-12\" _v-19815ee4=\"\">\n                    <h6 class=\"box-title\" _v-19815ee4=\"\">{{item.title}}</h6>\n                </div><!-- /.col-md-12 -->\n              </a>\n            </div><!-- /.row -->\n        </div>  <!-- /.box-header -->\n\n        <div v-if=\"showBody\" class=\"box-body\" _v-19815ee4=\"\">\n\n            <p _v-19815ee4=\"\">From: {{item.start_time}} to {{item.end_time}}</p>\n            <p _v-19815ee4=\"\">{{item.description}}</p>\n            <div class=\"item-info\" _v-19815ee4=\"\">\n            Dates: {{item.start_date}} - {{item.end_date}}\n            </div>\n\n        <template v-if=\"canHaveImage\">\n            <img v-if=\"hasEventImage\" :src=\"imageUrl\" _v-19815ee4=\"\">\n            <a v-on:click=\"togglePanel\" class=\"btn bg-olive btn-sm\" href=\"#\" _v-19815ee4=\"\">{{hasEventImage ? 'Change Image' : 'Promote Event'}}</a>\n            <div v-show=\"showPanel\" class=\"panel\" _v-19815ee4=\"\">\n                <form id=\"form-mediafile-upload{{item.id}}\" @submit.prevent=\"uploadMediaFile\" class=\"m-t\" role=\"form\" action=\"/api/event/addMediaFile/{{item.id}}\" enctype=\"multipart/form-data\" _v-19815ee4=\"\">\n                    <input class=\"hidden\" type=\"input\" value=\"{{item.id}}\" v-model=\"formInputs.event_id\" _v-19815ee4=\"\">\n                    <div class=\"form-group\" _v-19815ee4=\"\">\n                        <label for=\"event-image\" _v-19815ee4=\"\">Event Image</label><br _v-19815ee4=\"\">\n                        <input v-el:eventimg=\"\" type=\"file\" name=\"eventimg\" id=\"eventimg\" _v-19815ee4=\"\">\n                    </div>\n                    <button id=\"btn-mediafile-upload\" type=\"submit\" class=\"btn btn-primary block m-b\" _v-19815ee4=\"\">Submit</button>\n                </form>\n            </div><!-- /.panel mediaform -->\n        </template>\n\n        </div><!-- /.box-body -->\n\n\n        <div class=\"box-footer list-footer\" _v-19815ee4=\"\">\n            <div class=\"row\" _v-19815ee4=\"\">\n                <div class=\"col-sm-9\" _v-19815ee4=\"\">\n                    <span :class=\"timeFromNowStatus\" _v-19815ee4=\"\">Live {{timefromNow}}</span> <span :class=\"timeLeftStatus\" _v-19815ee4=\"\">{{timeLeft}}</span>\n\n\n\n                </div><!-- /.col-md-7 -->\n                <div class=\"col-sm-3\" _v-19815ee4=\"\">\n                    {{item.id}}\n                    <div class=\"btn-group pull-right\" _v-19815ee4=\"\">\n\n                            <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-19815ee4=\"\"><i class=\"fa fa-pencil\" _v-19815ee4=\"\"></i></button>\n                            <!-- <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\"><i class=\"fa fa-eye\"></i></button> -->\n                    </div><!-- /.btn-toolbar -->\n\n                </div><!-- /.col-md-7 -->\n            </div><!-- /.row -->\n        </div><!-- /.box-footer -->\n</div><!-- /.box- -->\n\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n\n    <!-- <div class=\"box box-default box-solid\"> -->\n    <div :class=\"liveTimeStatusClass\" class=\"box box-solid\" _v-19815ee4=\"\">\n\n        <div class=\"box-header with-border\" _v-19815ee4=\"\">\n            <div class=\"row\" _v-19815ee4=\"\">\n                <div class=\"col-sm-4\" _v-19815ee4=\"\">\n                    <div class=\"box-date-top pull-left\" _v-19815ee4=\"\">{{item.start_date | titleDateLong}}</div>\n                    <div class=\"pull-right\" _v-19815ee4=\"\">\n                        <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Promoted\" _v-19815ee4=\"\"><span class=\"item-promoted-icon\" :class=\"promotedIcon\" _v-19815ee4=\"\"></span></label>\n                    </div><!-- /.pull-right -->\n                </div><!-- /.col-sm-6 -->\n                <div class=\"col-sm-8\" _v-19815ee4=\"\">\n                    <form class=\"form-inline pull-right\" _v-19815ee4=\"\">\n                        <div class=\"form-group\" _v-19815ee4=\"\">\n                            <button v-if=\"hasPriorityChanged\" @click.prevent=\"updateItem\" class=\"btn footer-btn bg-orange btn-xs\" href=\"#\" _v-19815ee4=\"\"><span class=\"fa fa-floppy-o\" _v-19815ee4=\"\"></span></button>\n                        </div><!-- /.form-group -->\n                      <div class=\"form-group\" _v-19815ee4=\"\">\n                        <label class=\"sr-only\" for=\"priority-number\" _v-19815ee4=\"\">Priority</label>\n                            <select id=\"priority-{{item.id}}\" v-model=\"patchRecord.priority\" @change=\"priorityChange($event)\" class=\"form-control\" number=\"\" _v-19815ee4=\"\">\n                                <option v-for=\"option in options\" v-bind:value=\"option.value\" _v-19815ee4=\"\">\n                                    {{option.text}}\n                                </option>\n                            </select>\n                      </div>\n                      <div class=\"form-group\" _v-19815ee4=\"\">\n                              <label _v-19815ee4=\"\">approved:</label>\n                          </div><!-- /.form-group -->\n                         <div class=\"form-group\" _v-19815ee4=\"\">\n                              <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click.prevent=\"changeIsApproved\" :value.sync=\"patchRecord.is_approved\" _v-19815ee4=\"\">\n                              </vui-flip-switch>\n                          </div>\n                      </form>\n                </div><!-- /.col-sm-6 -->\n            </div><!-- /.row -->\n\n            <div class=\"row\" _v-19815ee4=\"\">\n              <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-19815ee4=\"\">\n                <div class=\"col-sm-12\" _v-19815ee4=\"\">\n                    <h6 class=\"box-title\" _v-19815ee4=\"\">{{item.title}}</h6>\n                </div><!-- /.col-md-12 -->\n              </a>\n            </div><!-- /.row -->\n        </div>  <!-- /.box-header -->\n\n        <div v-if=\"showBody\" class=\"box-body\" _v-19815ee4=\"\">\n\n            <p _v-19815ee4=\"\">From: {{item.start_time}} to {{item.end_time}}</p>\n            <p _v-19815ee4=\"\">{{item.description}}</p>\n            <div class=\"item-info\" _v-19815ee4=\"\">\n            Dates: {{item.start_date}} - {{item.end_date}}\n            </div>\n\n        <template v-if=\"canHaveImage\">\n            <img v-if=\"hasEventImage\" :src=\"imageUrl\" _v-19815ee4=\"\">\n            <a v-on:click.prevent=\"togglePanel\" class=\"btn bg-olive btn-sm\" href=\"#\" _v-19815ee4=\"\">{{hasEventImage ? 'Change Image' : 'Promote Event'}}</a>\n            <div v-show=\"showPanel\" class=\"panel\" _v-19815ee4=\"\">\n                <form id=\"form-mediafile-upload{{item.id}}\" @submit.prevent=\"addMediaFile\" class=\"m-t\" role=\"form\" action=\"/api/event/addMediaFile/{{item.id}}\" enctype=\"multipart/form-data\" _v-19815ee4=\"\">\n                    <input class=\"hidden\" type=\"input\" value=\"{{item.id}}\" v-model=\"formInputs.event_id\" _v-19815ee4=\"\">\n                    <div class=\"form-group\" _v-19815ee4=\"\">\n                        <label for=\"event-image\" _v-19815ee4=\"\">Event Image</label><br _v-19815ee4=\"\">\n                        <input v-el:eventimg=\"\" type=\"file\" name=\"eventimg\" id=\"eventimg\" _v-19815ee4=\"\">\n                    </div>\n                    <button id=\"btn-mediafile-upload\" type=\"submit\" class=\"btn btn-primary block m-b\" _v-19815ee4=\"\">Submit</button>\n                </form>\n            </div><!-- /.panel mediaform -->\n        </template>\n\n        </div><!-- /.box-body -->\n\n\n        <div :class=\"addSeperator\" class=\"box-footer list-footer\" _v-19815ee4=\"\">\n            <div class=\"row\" _v-19815ee4=\"\">\n                <div class=\"col-sm-9\" _v-19815ee4=\"\">\n                    <span _v-19815ee4=\"\">Start {{item.start_date_time}}</span> <span _v-19815ee4=\"\">End {{item.end_date_time}}</span>\n\n                    <span :class=\"timeFromNowStatus\" _v-19815ee4=\"\">Live {{timefromNow}}</span> <span :class=\"timeLeftStatus\" _v-19815ee4=\"\">{{timeLeft}}</span>\n\n\n\n                </div><!-- /.col-md-7 -->\n                <div class=\"col-sm-3\" _v-19815ee4=\"\">\n                    {{item.id}}\n                    <div class=\"btn-group pull-right\" _v-19815ee4=\"\">\n\n                            <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-19815ee4=\"\"><i class=\"fa fa-pencil\" _v-19815ee4=\"\"></i></button>\n                            <!-- <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\"><i class=\"fa fa-eye\"></i></button> -->\n                    </div><!-- /.btn-toolbar -->\n\n                </div><!-- /.col-md-7 -->\n            </div><!-- /.row -->\n        </div><!-- /.box-footer -->\n</div><!-- /.box- -->\n\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.box[_v-19815ee4] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-19815ee4] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-19815ee4] {\n    padding: 3px;\n}\n.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nh5.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-19815ee4] {\n    border-color: #999999;\n\n}\nh6.box-title[_v-19815ee4] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n    .box-date-top[_v-19815ee4] {\n\n    }\n    .box-date-bot[_v-19815ee4] {\n\n    }\n    .box-date[_v-19815ee4] {\n\n    }\n        select.form-control[_v-19815ee4] {\n            height:22px;\n            border: 1px solid #999999;\n        }\n\n        h6[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n        h5[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n\n        .form-group[_v-19815ee4] {\n            /*border: 1px solid red;*/\n        }\n        .form-group label[_v-19815ee4]{\n            margin-bottom: 0;\n        }\n        .topitems[_v-19815ee4] {\n            /*background-color: #9B59B6;*/\n            background-color: #76D7EA;\n            border: 2px solid #9B59B6\n        }\n        .is-promoted[_v-19815ee4] {\n\n            background-color: #76D7EA;\n            /*border: 1px solid #999999*/\n        }\n        .time-is-short[_v-19815ee4] {\n            color: #F39C12;\n        }\n        .time-is-long[_v-19815ee4] {\n            color: #999999;\n        }\n        .time-is-over[_v-19815ee4] {\n            color: #9B59B6;\n        }\n        /*.box.box-solid.box-default {\n            border: 1px solid #999999;\n        }\n        .box-body {\n            padding: 3px 6px;\n        }*/\n"] = false
+    __vueify_insert__.cache["\n.box[_v-19815ee4] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-19815ee4] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-19815ee4] {\n    padding: 3px;\n}\n.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nh5.box-footer[_v-19815ee4] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-19815ee4] {\n    border-color: #999999;\n\n}\nh6.box-title[_v-19815ee4] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n    .box-date-top[_v-19815ee4] {\n\n    }\n    .box-date-bot[_v-19815ee4] {\n\n    }\n    .box-date[_v-19815ee4] {\n\n    }\n        select.form-control[_v-19815ee4] {\n            height:22px;\n            border: 1px solid #999999;\n        }\n\n        h6[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n        h5[_v-19815ee4] {\n            margin-top: 0;\n            margin-bottom: 0;\n        }\n\n        .form-group[_v-19815ee4] {\n            /*border: 1px solid red;*/\n        }\n        .form-group label[_v-19815ee4]{\n            margin-bottom: 0;\n        }\n        .topitems[_v-19815ee4] {\n            /*background-color: #9B59B6;*/\n            background-color: #76D7EA;\n            border: 2px solid #9B59B6;\n        }\n        .ongoing[_v-19815ee4] {\n            background-color: #bfff00;\n            border: 1px solid #999999\n        }\n        .event-positive[_v-19815ee4] {\n\n            background-color: #D8D8D8;\n            border: 1px solid #999999;\n        }\n        .event-negative[_v-19815ee4] {\n\n            background-color: #ffcc33;\n            border: 1px solid #999999;\n        }\n        .is-promoted[_v-19815ee4] {\n\n            background-color: #76D7EA;\n            /*border: 1px solid #999999*/\n        }\n        .time-is-short[_v-19815ee4] {\n            color: #F39C12;\n        }\n        .time-is-long[_v-19815ee4] {\n            color: #999999;\n        }\n        .time-is-over[_v-19815ee4] {\n            color: #9B59B6;\n        }\n        .last-special-event[_v-19815ee4] {\n            margin-bottom: 50px;\n        }\n\n        /*.box.box-solid.box-default {\n            border: 1px solid #999999;\n        }\n        .box-body {\n            padding: 3px 6px;\n        }*/\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
