@@ -96,7 +96,7 @@ class PreviewController extends Controller
 
 
             } else if($stype == 'article'){
-                $magazine = $story->magazine()->first();
+                $magazine = $story->magazines()->first();
                 $mainImage = $story->storyImages()->where('image_type','story')->first();
                 // dd($magazine);
                 $sideStoryBlurbs->push($story->storyImages()->where('image_type', 'small')->first());
@@ -162,7 +162,7 @@ class PreviewController extends Controller
         $currentStoryWithVideoTag = $allStorysWithVideoTag->first();
 
         $currentStoryImageWithVideoTag = $currentStoryWithVideoTag->storyImages()->first();
-    
+
         $events = $this->event->where([
                 ['is_approved',1],
                 ['start_date', '>=', Carbon::now()->startOfDay()]

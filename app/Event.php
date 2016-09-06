@@ -51,17 +51,17 @@ class Event extends Model
       * @var array
       */
      protected $casts = [
-         'all_day' => 'boolean',
-        'no_end_time' => 'boolean',
-        'free' =>  'boolean',
-          'lbc_approved' =>  'boolean',
-          'featured' => 'boolean',
-          'approved' =>  'boolean',
-            'cancelled' =>  'boolean',
-            'homepage' => 'boolean',
-              'lbc_reviewed' =>  'boolean',
-                'ensemble' =>  'boolean',
-                  'mba' =>  'boolean'
+        //  'all_day' => 'boolean',
+        // 'no_end_time' => 'boolean',
+        // 'free' =>  'boolean',
+        //   'lbc_approved' =>  'boolean',
+        //   'featured' => 'boolean',
+        //   'approved' =>  'boolean',
+        //     'cancelled' =>  'boolean',
+        //     'homepage' => 'boolean',
+        //       'lbc_reviewed' =>  'boolean',
+        //         'ensemble' =>  'boolean',
+        //           'mba' =>  'boolean'
     ];
 
 

@@ -50,8 +50,8 @@ class MagazineController extends Controller
         // $storyImages = $this->magazines->storyImages();
         $storyImages = $this->magazine->storyImages();
         $barImgs = collect();
-				$magazineCover = $magazine->mediafiles()->where('type','cover')->first();
-				$magazineExtra = $magazine->mediafiles()->where('type','extra')->first();
+                $magazineCover = $magazine->mediafiles()->where('type','cover')->first();
+                $magazineExtra = $magazine->mediafiles()->where('type','extra')->first();
 
 
         if ($currentIssue){
@@ -144,8 +144,8 @@ class MagazineController extends Controller
             'jsis' => 'hi',
         ]);
 
-				$magazineCover = $magazine->mediafiles()->where('type','cover')->first();
-				$magazineExtra = $magazine->mediafiles()->where('type','extra')->first();
+                $magazineCover = $magazine->mediafiles()->where('type','cover')->first();
+                $magazineExtra = $magazine->mediafiles()->where('type','extra')->first();
         // $magazine = $this->magazines->findOrFail($id);
         // $storyImages = $this->magazines->storyImages();
         return view('public.magazine.issue', compact('magazine', 'storyImages', 'barImgs','magazineCover','magazineExtra'));
@@ -154,29 +154,29 @@ class MagazineController extends Controller
     public function article($id)
     {
         $story = $this->story->findOrFail($id);
-        $magazine = $story->magazine->first();
+        $magazine = $story->magazines->first();
         //$story = $magazine->storys()->where('id', $id)->first();
         $mainImage = $story->storyImages()->where('image_type', 'story')->first();
-				// dd($mainImage);
+                // dd($mainImage);
         $sideFeaturedStorys = $this->story
                                   ->where([
                                     ['story_type', 'story'],
                                     ['id', '<>', $id],
-																		['is_approved', 1],
+                                                                        ['is_approved', 1],
                                   ])
                                   ->orWhere([
                                     ['story_type', 'student'],
                                     ['id', '<>', $id],
-																		['is_approved', 1],
+                                                                        ['is_approved', 1],
                                   ])
                                   ->orderBy('created_at', 'desc')->with('storyImages')->take(3)->get();
 
         $sideStoryBlurbs = collect();
             foreach ($sideFeaturedStorys as $sideFeaturedStory) {
                 $sideStoryBlurbs->push($sideFeaturedStory
-																->storyImages()
-																->where('image_type', 'small')
-																->first());
+                                                                ->storyImages()
+                                                                ->where('image_type', 'small')
+                                                                ->first());
             }
 
 
@@ -184,7 +184,7 @@ class MagazineController extends Controller
                             ->where([
                               ['story_type', 'news'],
                               ['id', '<>', $id],
-															['is_approved', 1],
+                                                            ['is_approved', 1],
                                 ])->orderBy('created_at', 'desc')->take(3)->get();
 
         return view('public.magazine.article', compact('magazine','story', 'mainImage','sideStoryBlurbs','sideNewsStorys'));

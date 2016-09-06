@@ -5,6 +5,7 @@ namespace emutoday;
 use Illuminate\Database\Eloquent\Model;
 use emutoday\StoryImage;
 use Laracasts\Presenter\PresentableTrait;
+use Sofa\Eloquence\Eloquence;
 
 class Story extends Model
 {
@@ -15,6 +16,7 @@ class Story extends Model
      */
     protected $table = 'storys';
 
+    use Eloquence;
 
     use PresentableTrait;
     protected $presenter = 'emutoday\Presenters\StoryPresenter';
@@ -23,34 +25,22 @@ class Story extends Model
          *
          * @var array
          */
-    protected $fillable = ['user_id', 'title', 'slug','subtitle', 'teaser', 'content', 'external_link', 'start_date','end_date', 'is_featured','is_ready','is_approved', 'is_live' ,'story_type','author_id','author_info'];
+    protected $fillable = ['user_id', 'title', 'slug','subtitle', 'teaser', 'content', 'external_link', 'start_date','end_date', 'is_featured','is_ready','is_approved', 'is_live' ,'story_type','author_id','author_info','priority'];
 
     protected $dates = ['start_date', 'end_date'];
 
-
+    protected $searchableColumns = ['title', 'subtitle', 'teaser', 'content'];
 
 
     public function addImage($stype)
     {
-
         return $this->storyImages()->create([
             'image_name'=> 'img' . $this->id . '_'. $stype,
             'image_type'=> 'image'.$stype,
         ]);
-        // $storyImage = $story->storyImages()->create([
-        //         'image_name'=> 'img' . $story->id . '_hero',
-        //         'image_type'=> 'imagehero',
-        //     ]);
     }
 
-    /**
-     * [setPublishedAtAttribute description]
-     * @param [type] $value [description]
-     */
-    public function setStartDateAttribute($value)
-    {
-        $this->attributes['start_date'] = $value ?: null;
-    }
+
 
     /**
      * [grabStoryImageByType description]
@@ -88,10 +78,10 @@ class Story extends Model
     {
         return $this->hasMany(StoryImage::class);
     }
-        public function images()
-        {
-                return $this->hasMany('emutoday\StoryImage');
-        }
+    public function images()
+    {
+        return $this->hasMany('emutoday\StoryImage');
+    }
     /**
      * [tags description]
      * @return [type] [description]
@@ -170,11 +160,28 @@ class Story extends Model
         return $this->belongsToMany('emutoday\Page');
     }
 
-    public function magazine()
+    public function magazines()
     {
       return $this->belongsToMany('emutoday\Magazine');
     }
+    /** ************* ACCESSORS ************** */
 
+    /**
+     * [Determine if Story is part of emutoday hub]
+     * @return [type] [description]
+     */
+    // public function getOnHubAttribute(){
+    //       return $this->
+    // }
+
+    /**
+     * [setPublishedAtAttribute description]
+     * @param [type] $value [description]
+     */
+    public function setStartDateAttribute($value)
+    {
+        $this->attributes['start_date'] = $value ?: null;
+    }
     /** ************* QUERY SCOPES ************** */
     /**
      * Scope a query by story_type
@@ -186,12 +193,12 @@ class Story extends Model
         return $query->where('story_type', $type);
     }
 
-        public function scopeOfStoryType($query, $group)
-        {
-                return $query->storyType->where('group', $group);
+    public function scopeOfStoryType($query, $group)
+    {
+            return $query->storyType->where('group', $group);
 
-                // where('story_type', $type);
-        }
+            // where('story_type', $type);
+    }
 
 
 }

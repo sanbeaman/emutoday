@@ -30,6 +30,9 @@ class FractalStoryTransformerModel extends Fractal\TransformerAbstract
             'is_archived' =>  $story->is_archived,
             'tags' => $story->tags()->select('name', 'id as value')->get(),
             'start_date'   =>  $story->start_date->toDateString(),
+            'priority' => $story->priority,
+            'magazines' => $story->magazines,
+            'pages' => $story->pages,
             // 'start_date'   => $story->start_date->format('m-d-Y'),
             'author' => ($story->author_id == 0)? null:$story->author
         ];

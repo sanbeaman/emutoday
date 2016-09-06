@@ -49,12 +49,14 @@ class MainController extends Controller
         ])->first();
 
         $currentStorysBasic = $this->story->where([
+            ['story_type', 'news'],
             ['is_approved', 1],
             ['is_archived', 0],
             ['start_date', '<=', $currentDateTimeStart],
-            ['end_date', '>=', $currentDateTimeEnd]
+            ['priority', '>', 0]
             ])
-            ->orderBy('start_date','desc')
+            ->orderBy('priority','desc')
+            ->orderBy('start_date','asc')
             ->paginate(3);
 
         $currentAnnouncements = $this->announcement->where([
@@ -155,6 +157,18 @@ class MainController extends Controller
             'cstory' => $story
         ]);
         return view('public.story.story', compact('story','mainStoryImage', 'sideStorysFeatured', 'sideStorysStudent'));
+
+    }
+
+
+    public function search(Request $request)
+    {
+        $searchTerm = $request->searchterm;
+
+        $searchResults = Story::search($searchTerm)->select('title','subtitle','teaser','id')->paginate(10);
+
+        return view('public.searchresults', compact('searchTerm', 'searchResults'));
+
 
     }
 }

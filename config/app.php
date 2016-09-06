@@ -163,6 +163,7 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Laracasts\Utilities\JavaScript\JavaScriptServiceProvider::class,
+        Sofa\Eloquence\ServiceProvider::class,
 
     ],
 

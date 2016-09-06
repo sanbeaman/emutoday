@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Input;
 Route::group(['prefix' => 'api'], function() {
 
     Route::get('active-categories/{year?}/{month?}/{day?}','Api\CategoriesController@activeCategories');
-    
+
     Route::get('calendar/month/{year?}/{month?}/{day?}','Api\CalendarController@eventsInMonth');
     Route::get('calendar/events/{year?}/{month?}/{day?}','Api\CalendarController@eventsByDay');
 
@@ -24,12 +24,12 @@ Route::group(['prefix' => 'api'], function() {
     });
     Route::get('buildinglist', function() {
         $text = Input::get('q');
-        return Building::likeSearch('name', $text)->select('name', 'id')->get();
+        return Building::likeSearch('name', $text)->select('name')->get();
         //return Building::ofMapType('illustrated')->get();
     });
     Route::get('categorylist', function() {
         $text = Input::get('q');
-        return Category::likeSearch('category', $text)->select('category', 'id')->get();
+        return Category::likeSearch('category', $text)->select('category', 'id as value')->get();
         //return Building::ofMapType('illustrated')->get();
     });
     Route::get('taglist', function() {
@@ -47,7 +47,7 @@ Route::group(['prefix' => 'api'], function() {
 
     Route::get('minicals', function() {
         $text = Input::get('q');
-        return MiniCalendar::likeSearch('calendar', $text)->select('calendar','id')->get();
+        return MiniCalendar::likeSearch('calendar', $text)->select('calendar','id as value')->get();
         //return Building::ofMapType('illustrated')->get();
     });
 
@@ -67,7 +67,6 @@ Route::group(['prefix' => 'api'], function() {
     Route::get('list-event-categories', ['uses'=> 'Api\EventController@listEventCategories']);
 
     Route::get('buildings', ['uses'=> 'Api\EventController@buildings']);
-
 
     Route::patch('event/updateItem/{event}', 'Api\EventController@updateItem');
     Route::post('event/addMediaFile/{event}', 'Api\EventController@addMediaFile');
@@ -96,6 +95,7 @@ Route::group(['prefix' => 'api'], function() {
     Route::post('story/delete', ['as' => 'api.story.delete', 'uses' => 'Api\StoryController@delete']);
 
     Route::patch('story/updateQueue', ['as' => 'story_update_queue', 'uses' => 'Api\StoryController@updateQueue']);
+    Route::patch('story/updateItem/{story}', ['as' => 'story_update_item', 'uses' => 'Api\StoryController@updateItem']);
 
 
     Route::resource('story', 'Api\StoryController');
@@ -108,6 +108,8 @@ Route::group(['prefix' => 'api'], function() {
 
     Route::get('announcement/unapprovedItems', ['as' => 'api.announcement.unapprovedItems', 'uses' => 'Api\AnnouncementController@unapprovedItems']);
     Route::get('announcement/approvedItems', ['as' => 'api.announcement.approvedItems', 'uses' => 'Api\AnnouncementController@approvedItems']);
+
+    Route::patch('announcement/archiveItem/{id}', ['as' => 'api_announcement_archiveItem', 'uses' => 'Api\AnnouncementController@archiveItem']);
     Route::patch('announcement/updateItem/{id}', 'Api\AnnouncementController@updateItem');
 
 
@@ -176,6 +178,8 @@ Route::group(['middleware' => ['web']], function() {
 
 
         Route::resource('event', 'EmuToday\EventController');
+
+        Route::get('search','MainController@search' );
 
         Route::get('hub', 'MainController@index');
 
@@ -248,10 +252,12 @@ Route::group(['middleware' => ['web']], function() {
         Route::get('story/app', ['as' => 'admin_story_app', 'uses' => 'Admin\StoryController@app']);
 
         Route::get('story/queue', ['as' => 'admin_story_queue', 'uses' => 'Admin\StoryController@queue']);
+        Route::get('story/{stype}/queue', ['as' => 'admin_storytype_queue', 'uses' => 'Admin\StoryController@queueType']);
 
         Route::get('magazine/article/setup', ['as' => 'admin_magazine_article_setup', 'uses' => 'Admin\StoryTypeController@articleSetup']);
 
         Route::get('story/{stype}', ['as' => 'admin_storytype_list', 'uses' => 'Admin\StoryTypeController@list']);
+
         Route::get('story/{stype}/setup', ['as' => 'admin_storytype_setup', 'uses' => 'Admin\StoryTypeController@storyTypeSetUp']);
         Route::get('story/{stype}/{story}/edit', ['as' => 'admin_storytype_edit', 'uses' => 'Admin\StoryTypeController@storyTypeEdit']);
 
@@ -273,9 +279,7 @@ Route::group(['middleware' => ['web']], function() {
         ]);
 
         Route::resource('story', 'Admin\StoryController');
-        // Route::get('announcement/app', function () {
-        // 	return view('admin.announcement.app');
-        // });
+
 
         Route::get('announcement/app', ['as' => 'admin.announcement.app', 'uses' => 'Admin\AnnouncementController@appload']);
         Route::get('announcement/queue', ['as' => 'admin.announcement.queue', 'uses' => 'Admin\AnnouncementController@queue']);
@@ -302,8 +306,6 @@ Route::group(['middleware' => ['web']], function() {
 
         Route::get('event/{event}/confirm', ['as' => 'admin.event.confirm', 'uses' => 'Admin\EventController@confirm']);
         Route::resource('event', 'Admin\EventController');
-
-
 
         Route::resource('mediafile', 'Admin\MediafileController');
 

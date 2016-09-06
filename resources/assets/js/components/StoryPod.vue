@@ -1,8 +1,6 @@
 <template>
     <div>
-
-
-    <div v-show="itemMsgStatus.show" class="callout callout-{{itemMsgStatus.level}}">
+        <div v-show="itemMsgStatus.show" class="callout callout-{{itemMsgStatus.level}}">
          <span class="Alert__close" @click="itemMsgStatus.show = false">X</span>
         <h5>{{itemMsgStatus.msg}}</h5>
     </div>
@@ -16,17 +14,30 @@
                             <label data-toggle="tooltip" data-placement="top" title="Promoted"><span class="item-featured-icon" :class="promotedIcon"></span></label>
                             <label data-toggle="tooltip" data-placement="top" title="Featured"><span class="item-featured-icon" :class="featuredIcon"></span></label>
                             <label data-toggle="tooltip" data-placement="top" title="on HomePage"><span class="item-featured-icon" :class="homeIcon"></span></label>
-                            <label data-toggle="tooltip" data-placement="top" title="Archived"><span class="item-featured-icon" :class="archivedIcon"></span></label>
+                            <label data-toggle="tooltip" data-placement="top" title="linked"><span class="item-featured-icon" :class="linkedIcon"></span></label>
                         </div><!-- /.pull-left -->
-                        <div class=" form-inline pull-right">
+                        <div class="form-inline pull-right">
+                            <template v-if="isLiveColumn">
+                            <div class="form-group">
+                                <button v-if="hasPriorityChanged" @click.prevent="updateItem" class="btn footer-btn bg-orange btn-xs" href="#"><span class="fa fa-floppy-o"></span></button>
+                            </div><!-- /.form-group -->
+                          <div class="form-group">
+                            <label class="sr-only" for="priority-number">Priority</label>
+                                <select id="priority-{{item.id}}" v-model="patchRecord.priority" @change="priorityChange($event)" class="form-control" number>
+                                    <option v-for="option in priorityOptions" v-bind:value="option.value">
+                                        {{option.text}}
+                                    </option>
+                                </select>
+                          </div>
+                          </template>
                             <div class="form-group">
                                 <label>approved:</label>
                             </div><!-- /.form-group -->
                             <div class="form-group">
 
                                 <vui-flip-switch id="switch-{{item.id}}"
-                                    v-on:click="approveItem"
-                                    :value="isApproved" >
+                                v-on:click.prevent="changeIsApproved"
+                                :value.sync="patchRecord.is_approved" >
                                 </vui-flip-switch>
                             </div>
                         </div><!-- /.pull-right -->
@@ -56,6 +67,29 @@
             <p>Start Date: {{item.start_date}}</p>
             <p>User: {{item.user | json}}</p>
             <p>Author: {{item.author | json}}</p>
+            <template v-if="isPartOfHub">
+                <div class="btn-group btn-xs form-inline">
+                    <div class="form-group">
+                        <label>Hubs: </label>
+                    </div>
+                    <div class="form-group">
+                        <button  v-for="hub in connectedHubs" v-on:click.prevent="gotoHub(hub.id)" class="btn bg-hub btn-xs"  data-toggle="tooltip" data-placement="top" title="Edit Hub Id: {{hub.id}}"><i class="fa fa-newspaper-o"></i></button>
+                    </div>
+                </div>
+            </template>
+            <template v-if="isPartOfMag">
+                <div class="btn-group btn-xs form-inline">
+                    <div class="form-group">
+                        <label>Mags: </label>
+                    </div>
+                    <div class="form-group">
+                        <button  v-for="mag in connectedMags" v-on:click.prevent="gotoMag(mag.id)" class="btn bg-hub btn-xs"  data-toggle="tooltip" data-placement="top" title="Edit Mag Id: {{mag.id}}"><i class="fa fa-book"></i></button>
+                    </div>
+                </div>
+            </template>
+
+
+
 
       </div><!-- /.box-body -->
             <div class="box-footer list-footer">
@@ -65,8 +99,9 @@
                     </div><!-- /.col-md-7 -->
                     <div class="col-sm-5">
                         <div class="btn-group pull-right">
-                                <button v-on:click.prevent="editItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-pencil"></i></button>
-                                <button v-on:click.prevent="previewItem" class="btn bg-orange btn-xs footer-btn" :disabled="disabledPreview"><i class="fa fa-eye"></i></button>
+                            <button v-on:click.prevent="archiveItem" class="btn bg-orange btn-xs footer-btn" :disabled="disabledArchive" data-toggle="tooltip" data-placement="top" title="archive"><i class="fa fa-archive"></i></button>
+                            <button v-on:click.prevent="editItem" class="btn bg-orange btn-xs footer-btn" data-toggle="tooltip" data-placement="top" title="edit"><i class="fa fa-pencil"></i></button>
+                            <button v-on:click.prevent="previewItem" class="btn bg-orange btn-xs footer-btn" :disabled="disabledPreview" data-toggle="tooltip" data-placement="top" title="preview"><i class="fa fa-eye"></i></button>
 
                         </div><!-- /.btn-toolbar -->
 
@@ -133,7 +168,9 @@
             font-weight: bold;
             cursor: pointer;
         }
-
+        .bg-hub {
+            background-color: #76D7EA;
+        }
         .emutoday {
 
             background-color: #76D7EA;
@@ -199,51 +236,7 @@
             left: 18px;
             top: 0;
         }
-        .onoffswitch {
-            position: relative; width: 60px;
-            -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
-        }
-        .onoffswitch-checkbox {
-            display: none;
-        }
-        .onoffswitch-label {
-            display: block; overflow: hidden; cursor: pointer;
-            border: 2px solid #999999; border-radius: 50px;
-        }
-        .onoffswitch-inner {
-            display: block; width: 200%; margin-left: -100%;
-            transition: margin 0.3s ease-in 0s;
-        }
-        .onoffswitch-inner:before, .onoffswitch-inner:after {
-            display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;
-            font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
-            box-sizing: border-box;
-        }
-        .onoffswitch-inner:before {
-            content: "YES";
-            padding-left: 10px;
-            background-color: #605CA8; color: #FFFFFF;
-        }
-        .onoffswitch-inner:after {
-            content: "NO";
-            padding-right: 10px;
-            background-color: #EEEEEE; color: #999999;
-            text-align: right;
-        }
-        .onoffswitch-switch {
-            display: block; width: 22px; margin: 0px;
-            background: #FFFFFF;
-            position: absolute; top: 0; bottom: 0;
-            right: 38px;
-            border: 2px solid #999999; border-radius: 50px;
-            transition: all 0.3s ease-in 0s;
-        }
-        .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
-            margin-left: 0;
-        }
-        .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-            right: 0px;
-        }
+
 
         select.form-control {
             height:22px;
@@ -284,6 +277,7 @@ module.exports  = {
             response_approval: '',
             showBody: false,
             currentDate: {},
+            priorityOptions: [],
             record: {
                 user_id : '',
                 title: '',
@@ -294,16 +288,93 @@ module.exports  = {
                 show: false,
                 level: '',
                 msg: ''
-            }
+            },
+            initRecord: {
+                is_approved: 0,
+                priority: 0,
+                is_canceled: 0,
+                eventimage: ''
+            },
+            patchRecord: {
+                is_approved: 0,
+                priority: 0,
+                is_canceled: 0,
+                eventimage: ''
+            },
         }
     },
     created: function () {
 
     },
     ready: function() {
-
+        this.initRecord.is_approved = this.patchRecord.is_approved =  this.item.is_approved;
+        this.initRecord.priority = this.patchRecord.priority = this.item.priority;
+        this.initRecord.is_canceled = this.patchRecord.is_canceled = this.item.is_canceled;
+        this.initRecord.eventimage = this.patchRecord.eventimage = this.item.eventimage;
     },
     computed: {
+        isLiveColumn:function(){
+            if(this.pid === 'items-live'){
+                return true;
+            } else {
+                return false;
+            }
+        },
+        priorityOptions: function(){
+            let opts = [];
+            opts.push({ text: '0' , value: 0 });
+            for (var i=1, l = 10 ; i<l ; i++){
+                opts.push({ text: i.toString() , value: i })
+            }
+            for (var j=1, l2 = 10 ; j<l2 ; j++){
+                let jten = j * 10;
+                opts.push({ text: jten.toString() , value: jten })
+            }
+            opts.push({ text: '99' , value:  99 });
+            return opts;
+        },
+        hasPriorityChanged: function(){
+            if (this.initRecord.priority != this.patchRecord.priority){
+                return true
+            } else {
+                return false
+            }
+        },
+        hasIsApprovedChanged: function(){
+            if (this.initRecord.is_approved != this.patchRecord.is_approved){
+                console.log('is_approved => initRecord='+ this.initRecord.is_approved  + ' patchRecord=>' +this.patchRecord.is_approved );
+                return true
+            } else {
+                return false
+            }
+        },
+        connectedHubs:function(){
+            return this.item.pages;
+        },
+        connectedMags:function(){
+            return this.item.magazines;
+        },
+        isPartOfHub:function(){
+            if(this.item.pages.length > 0) {
+                return 1
+            } else {
+                return 0
+            }
+        },
+        isPartOfMag:function(){
+            if(this.item.magazines.length > 0) {
+                return 1
+            } else {
+                return 0
+            }
+        },
+        isPartOfHubOrMag:function(){
+            if(this.isPartOfHub === 1|| this.isPartOfMag === 1) {
+                return 1
+            } else {
+                return 0
+            }
+        },
         timefromNow:function() {
             return moment(this.item.start_date).fromNow()
         },
@@ -343,6 +414,18 @@ module.exports  = {
           }
           return lIcon
         },
+        linkedIcon: function(){
+            if (this.isPartOfHubOrMag) {
+                return 'fa fa-chain'
+            } else {
+                return ''
+            }
+            // if(this.item.magazines.length > 0 || this.item.pages.length > 0) {
+            //     return 'fa fa-chain'
+            // } else {
+            //     return ''
+            // }
+        },
         homeIcon: function() {
               if (this.item.tags.length > 0){
 
@@ -358,7 +441,7 @@ module.exports  = {
 
                       return hIcon
                   },
-                  archivedIcon: function() {
+                 archivedIcon: function() {
 
                       if (this.item.archived === 1){
                           aIcon = 'fa fa-archive'
@@ -425,6 +508,13 @@ module.exports  = {
                             return true;
                         }
                     },
+                disabledArchive:function(){
+                    if(this.isPartOfHubOrMag){
+                        return true
+                    } else {
+                        return false
+                    }
+                },
                   disabledPreview: function() {
                       if(this.recordIsReady){
                           return false
@@ -436,13 +526,24 @@ module.exports  = {
 
               },
               methods: {
+                  gotoHub: function(itemid){
+                       console.log(itemid);
+                      window.location.href = '/admin/page/'+itemid+'/edit';
+
+                  },
+                  gotoMag: function(itemid){
+                      console.log(itemid);
+                      window.location.href = '/admin/magazine/'+itemid+'/edit';
+
+                  },
                   editItem: function(ev) {
-
-
                       window.location.href = this.itemEditPath;
                   },
                   previewItem: function(ev) {
                       window.location.href = this.itemPreviewPath;
+                  },
+                  priorityChange(event){
+                      console.log('priority=' + this.item.priority)
                   },
                     toggleBody: function(ev) {
                         if(this.showBody == false) {
@@ -468,6 +569,53 @@ module.exports  = {
 
 
 
+                    },
+                    changeIsApproved: function(){
+                        this.patchRecord.is_approved = (this.item.is_approved === 0)?1:0;
+                        console.log('this.patchRecord.is_approved ='+this.patchRecord.is_approved );
+                        this.updateItem();
+
+                    },
+                    archiveItem: function(){
+                     //    this.patchRecord.is_approved = this.item.is_approved;
+                     //    this.patchRecord.priority = this.item.priority;
+                        this.patchRecord.is_archived = 1;
+
+                        this.$http.patch('/api/story/archiveItem/' + this.item.id , this.patchRecord , {
+                            method: 'PATCH'
+                        } )
+                        .then((response) => {
+                            console.log('good?'+ response)
+                            this.checkAfterUpdate(response.data.newdata)
+
+                            }, (response) => {
+                                console.log('bad?'+ response)
+                            });
+                    },
+                    updateItem: function(){
+                     //    this.patchRecord.is_approved = this.item.is_approved;
+                     //    this.patchRecord.priority = this.item.priority;
+                        this.patchRecord.is_archived = this.item.is_archived;
+
+                        this.$http.patch('/api/story/updateItem/' + this.item.id , this.patchRecord , {
+                            method: 'PATCH'
+                        } )
+                        .then((response) => {
+                            console.log('good?'+ response)
+                            this.checkAfterUpdate(response.data.newdata)
+
+                            }, (response) => {
+                                console.log('bad?'+ response)
+                            });
+                    },
+                    checkAfterUpdate: function(ndata){
+                        this.item.is_approved = this.initRecord.is_approved =   ndata.is_approved;
+                        this.item.priority = this.initRecord.priority =  ndata.priority;
+                        this.item.is_archived = this.initRecord.is_archived = ndata.is_archived;
+
+                        this.hasPriorityChanged = 0;
+
+                        console.log(ndata);
                     },
                     updateRecordStatus: function(){
                         // this.item.is_approved = (this.is_approved === 0)?1:0;

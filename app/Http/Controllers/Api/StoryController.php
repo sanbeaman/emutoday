@@ -313,6 +313,31 @@ class StoryController extends ApiController
     }
 
     /**
+     * [API Call from AnnouncementItem to change some variables]
+     * @param  [type]  $id      [description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function updateItem($id, Request $request)
+      {
+          $story = Story::findOrFail($id);
+          $story->is_approved = $request->get('is_approved',0);
+          $story->priority = $request->get('priority', 0);
+          $story->is_archived = $request->get('is_archived',0);
+
+
+          if($story->save()) {
+
+              $returnData = ['is_approved' => $story->is_approved,'priority'=> $story->priority, 'is_archived'=> $story->is_archived];
+              return $this->setStatusCode(201)
+              ->respondUpdatedWithData('story patched',$returnData );
+                  // return $this->setStatusCode(201)
+                  //             ->respondUpdated('Announcement successfully Updated!');
+                          }
+      }
+
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

@@ -38,6 +38,7 @@
                         <div :class="md8col">
                             <label>Building</label>
                             <v-select
+                                is="bldg"
                                 :debounce="250"
                                 :value.sync="building"
                                 :on-search="fetchForSelectBuildingList"
@@ -125,7 +126,7 @@
                         <v-select
                         :class="[formErrors.categories ? 'invalid-input' : '']"
                             :debounce="250"
-                            :value.sync="record.categories"
+                            :value.sync="record.eventcategories"
                             :on-search="fetchForSelectCategoriesList"
                             :options="zcats"
                             :multiple="true"
@@ -255,7 +256,7 @@
                 <div :class="md6col">
                     <div class="form-group">
                         <label for="reg-deadline">Registration Deadline</label>
-                        <input id="reg-deadline" type="text" v-model="record.reg_deadline" :value.sync="rdate" aria-describedby="errorRegDeadline"  />
+                        <input id="reg-deadline" type="text" v-model="record.reg_deadline" aria-describedby="errorRegDeadline"  />
                     </div>
                 </div><!-- /.md6col-->
             </div><!-- /.row -->
@@ -368,26 +369,28 @@
             <div class="row">
                 <div :class="md12col">
 
-                    <div :class="formGroup">
+                    <!-- <div :class="formGroup">
                         <label>Group Website Calendar <p class="help-text" id="minicalendar-helptext">If your groups website has a calendar that is fed from this one, and you would like this event to show up on it, please select it from the list below:</p>
                             <v-select
                                 :debounce="250"
-                                :value="record.mini_calendar"
+                                :value.sync="record.minicalendars"
                                 :on-search="fetchForSelectMiniCalendarList"
+                                :multiple="true"
                                 :options="minicals"
                                 placeholder="Select a minicalendar..."
                                 label="calendar">
                             </v-select>
                         </label>
-                    </div>
+                    </div> -->
                 </div><!-- /.md12col -->
 
                 <div :class="md12col">
                     <v-select
-                        :value.sync="minicals"
+                        :value.sync="record.minicalendars"
                         :options="minicalslist"
+                        :multiple="true"
                         placeholder="Select Mini Calendar"
-                        label="calendars">
+                        label="calendar">
                     </v-select>
 
                     <!-- <div :class="formGroup">
@@ -479,6 +482,9 @@
         input[type="text"]{
             margin: 0;
         }
+        form {
+            padding-bottom: 320px;
+        }
 </style>
 <script>
     import flatpickr from "flatpickr"
@@ -500,7 +506,9 @@
                         startDateMin: '',
                         startDateDefault: '',
                         endDateMin: '',
-                        endDateDefault: ''
+                        endDateDefault: '',
+                        regDateMin: '',
+                        regDateDefault: ''
                     },
                     linkText1: '',
                     linkUrl1: '',
@@ -536,6 +544,7 @@
                         title: 100,
                         description: 255
                     },
+                    building_in: [],
                     building: null,
                     buildings: [],
                     // newbuilding: '',
@@ -555,6 +564,7 @@
                         title: '',
                         description: '',
                         mini_calendar: '',
+                        building: '',
                         categories:[]
                     },
                     response: {
@@ -581,82 +591,6 @@
                 }
                 this.fetchMiniCalsList();
             },
-            // ready: function() {
-            //     this.record.author_id = this.authorid;
-            //     var self = this;
-            //
-            //
-            //     this.startdatePicker = flatpickr(document.getElementById("start-date"),{
-            //         minDate: "today",
-            //         enableTime: false,
-            //         altFormat: "m-d-Y",
-            //         altInput: true,
-            //         altInputClass:"form-control",
-            //         dateFormat: "Y-m-d",
-            //         onChange(dateObject, dateString) {
-            //             self.record.start_date = dateString;
-            //             self.startdatePicker.value = dateString;
-            //         }
-            //
-            //     });
-            //     this.enddatePicker = flatpickr(document.getElementById("end-date"),{
-            //         minDate: "today",
-            //         enableTime: false,
-            //         altFormat: "m-d-Y",
-            //         altInput: true,
-            //         altInputClass:"form-control",
-            //         dateFormat: "Y-m-d",
-            //         onChange(dateObject, dateString) {
-            //             self.record.end_date = dateString;
-            //             self.enddatePicker.value = dateString;
-            //         }
-            //
-            //     });
-            //     this.starttimePicker = flatpickr(document.getElementById("start-time"),{
-            //         noCalendar: true,
-            //         enableTime: true,
-            //         onChange(timeObject, timeString) {
-            //             self.record.start_time = timeString;
-            //             self.starttimePicker.value = timeString;
-            //         }
-            //
-            //     });
-            //     this.endtimePicker = flatpickr(document.getElementById("end-time"),{
-            //         noCalendar: true,
-            //         enableTime: true,
-            //         onChange(timeObject, timeString) {
-            //             self.record.end_time = timeString;
-            //             self.endtimePicker.value = timeString;
-            //         }
-            //
-            //     });
-            //
-            //     this.regdeadlinePicker = flatpickr(document.getElementById("reg-deadline"),{
-            //         minDate: "today",
-            //         enableTime: false,
-            //         altFormat: "m-d-Y",
-            //         altInput: true,
-            //         altInputClass:"form-control",
-            //         dateFormat: "Y-m-d",
-            //         onChange(dateObject, dateString) {
-            //             self.record.reg_deadline = dateString;
-            //             self.regdeadlinePicker.value = dateString;
-            //         }
-            //
-            //     });
-            //     //  this.fetchCategoryList();
-            //     // console.log('editevent='+ this.editevent)
-            //     console.log('eventexists'+ this.recordexists)
-            //
-            //     if(this.recordexists){
-            //         console.log('editeventid'+ this.recordid)
-            //         this.fetchCurrentRecord(this.recordid)
-            //
-            //     }
-            //
-            //
-            //     //this.fetchMiniCalendarList();
-            // },
 
 
             computed: {
@@ -695,10 +629,13 @@
 
                 },
 
+
+
                 computedLocation: function() {
                     let bldg,room;
+
                     if (this.building) {
-                        this.record.building = this.building.name
+                        this.record.building = this.building.name;
                         bldg = this.record.building
                         room = (this.record.room)?' - Room:' + this.record.room:'';
 
@@ -804,6 +741,8 @@
                         this.dateObject.endDateMin = this.record.start_date;
                         this.dateObject.endDateDefault = this.record.end_date;
                         this.dateObject.startTimeDefault = this.record.end_time;
+                        this.dateObject.regDateMin = this.record.start_date;
+                        this.dateObject.regDateDefault = this.record.reg_deadline;
                     }
                     this.startdatePicker = flatpickr(document.getElementById("start-date"), {
                         minDate: self.dateObject.startDateMin,
@@ -860,7 +799,8 @@
                     });
 
                     this.regdeadlinePicker = flatpickr(document.getElementById("reg-deadline"),{
-                        minDate: "today",
+                        minDate: self.dateObject.regDateMin,
+                        defaultDate: self.dateObject.regDateDefault,
                         enableTime: false,
                         altFormat: "m-d-Y",
                         altInput: true,
@@ -897,24 +837,30 @@
                     }).bind(this);
                 },
                 checkOverData: function() {
+                    if (this.record.location != null){
+                        if(this.record.building != null){
+                            this.record.on_campus = 1;
 
-                    if (this.record.building) {
-                        this.buildings.push(this.record.building);
-                    }
-                    if (this.record.room) {
-                        this.record.room = this.record.room;
-                    }
-
-                    if (this.record.eventcategories){
-                        for (var i= 0; i < this.record.eventcategories.length ; i++){
-                            var reduceobj = this.record.eventcategories[i].id;
-                            this.zcats.push(reduceobj)
-
+                            this.building= {id:0, name:this.convertFromSlug(this.record.building)};
+                            //this.building = this.record.building;
+                        } else {
+                            this.record.on_campus = 0;
+                            this.record.locationoffcampus = this.record.location;
                         }
-
-                        console.log('this.zcats'+ this.zcats.length)
                     }
 
+                    // if (this.record.eventcategories){
+                    //     for (var i= 0; i < this.record.eventcategories.length ; i++){
+                    //         var reduceobj = this.record.eventcategories[i].id;
+                    //         this.zcats.push(reduceobj)
+                    //
+                    //     }
+                    //
+                    //     console.log('this.zcats'+ this.zcats.length)
+                    //
+                    //
+                    // }
+                    this.setupDatePickers();
                     // this.newbuilding = this.record.building;
                     // this.zbuilding.push(this.record.building);
 
@@ -937,15 +883,15 @@
                         loading(false)
                     })
                 },
-                fetchForSelectMiniCalendarList(search,loading) {
-                    loading(true)
-                    this.$http.get('/api/minicals',{
-                        q: search
-                    }).then(resp => {
-                        this.minicals = resp.data;
-                        loading(false)
-                    })
-                },
+                // fetchForSelectMiniCalendarList(search,loading) {
+                //     loading(true)
+                //     this.$http.get('/api/minicals',{
+                //         q: search
+                //     }).then(resp => {
+                //         this.minicals = resp.data;
+                //         loading(false)
+                //     })
+                // },
                 fetchMiniCalendarList: function() {
                     this.$http.get('/api/minicalendars').then(function(response){
                         // console.log('response->minicalendars=' + JSON.stringify(response.data));
@@ -960,20 +906,35 @@
                 submitForm: function(e) {
                     //  console.log('this.eventform=' + this.eventform.$valid);
                     e.preventDefault();
-                    // this.record.start_date = this.sdate;
-                    // this.record.end_date = this.edate;
-                    // this.record.reg_deadline = this.rdate;
+
                     this.record.author_id = this.authorid;
-                    this.record.related_link_1 = this.relatedLink1;
+                    //this.record.related_link_1 = this.relatedLink1;
                     if(this.record.on_campus == true) {
-                        this.record.location = this.computedLocation;
+                        this.record.location = this.convertToSlug(this.computedLocation);
                     } else {
                         this.record.location = this.record.locationoffcampus;
                     }
                     // this.record.location = (this.on_campus)?this.computedLocation: this.record.location;
                     // this.record.categories = this.zcategories;
                     // console.log("cats="+ this.record.categories);
-                    this.$http.post('/api/event', this.record)
+                    //
+                    //
+                    this.record.minicals = (this.record.minicalendars)?this.record.minicalendars:null;
+                    this.record.categories = this.record.eventcategories;
+                    // let tempid;
+                    // if (typeof this.currentRecordId != 'undefined'){
+                    //     tempid = this.currentRecordId;
+                    // } else {
+                    //     tempid =this.record.id;
+                    // }
+                    let method = (this.recordexists) ? 'put' : 'post'
+                    let route =  (this.recordexists) ? '/api/event/' + this.record.id : '/api/event/';
+
+                    //   this.$http.post('/api/story', this.record)
+                    this.$http[method](route, this.record)
+
+
+                    // this.$http.post('/api/event', this.record)
 
                     .then((response) =>{
                         //response.status;
@@ -983,6 +944,7 @@
                         console.log('response.data=' + response.data.message);
                         this.formMessage.msg = response.data.message;
                         this.formMessage.isOk = response.ok;
+                        this.recordexists = true;
                     }, (response) => {
                         //error callback
                         // console.log("FORM ERRORS     "+ response.json() );
@@ -990,6 +952,16 @@
                         this.formErrors =  response.data.error.message;
 
                     }).bind(this);
+                },
+                convertToSlug:function(value){
+                    return value.toLowerCase()
+                                .replace(/[^a-z0-9-]+/g, '-')
+                                .replace(/^-+|-+$/g, '');
+                },
+                convertFromSlug:function(value){
+                    return value.replace(/-/g, " ").replace(/\b[a-z]/g, function () {
+                            return arguments[0].toUpperCase();
+                    });
                 }
             },
 

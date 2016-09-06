@@ -68,20 +68,6 @@ class EventController extends ApiController
 
      }
 
-
-
-
-
-
-
-  //
-  //       $cFullDateSub3Months = Carbon::now()->subMonths(6);
-  //       $fractal = new Manager();
-  //       $events = Event::where('end_date', '>', $cFullDateSub3Months)->get();
-  //       $resource = new Fractal\Resource\Collection($events->all(), new FractalEventTransformerModel);
-  //        // Turn all of that into a JSON string
-  //        return $fractal->createData($resource)->toArray();
-  // }
   public function otherItems()
   {
       $cFullDateSub3Months = Carbon::now()->subMonths(3);
@@ -211,15 +197,6 @@ class EventController extends ApiController
      */
     public function store(Request $request)
     {
-            //return some kind of Response
-            // 400  'bad request'
-            // 403 Forbidden
-            //
-            // 422 'unprocessable entity'
-            //
-        //  if (! Input::get('title') or ! Input::get('location'))
-
-
         $validation = \Validator::make( Input::all(), [
             'title'           => 'required',
             'location'        => 'required',
@@ -227,7 +204,7 @@ class EventController extends ApiController
             'start_date'      => 'required|date',
             'end_date'        => 'required|date',
             'categories'      => 'required',
-            'cost'						=> 'required',
+            'cost'			=> 'required',
             'description'     => 'required',
             'contact_person'  => 'required',
             'contact_phone'  => 'required',
@@ -238,22 +215,12 @@ class EventController extends ApiController
          {
              return $this->setStatusCode(422)
                          ->respondWithError($validation->errors()->getMessages());
-            //  return json_encode([
-            // 				 'errors' => $validation->errors()->getMessages(),
-            // 				 'code' => 422
-            // 			]);
-            //  return json_encode([
-            // 				 'errors' => $validation->errors()->getMessages(),
-            // 				 'code' => 422
-            // 			]);
-        //  } else {
-        // 	 Event::create($request->all());
-        // 	 return $this->setStatusCode(201)->respondCreated('Event successfully created.');
+
          }
          if($validation->passes())
          {
            $event = new Event;
-             $event->user_id       	=
+             $event->user_id       	= $request->get('user_id');
            $event->title           	= $request->get('title');
            $event->short_title     	= $request->get('short_title');
             // $templocation = $request->get('location');serialize($templocation);
@@ -317,8 +284,14 @@ class EventController extends ApiController
             // dd($categoriesRequest);
 
                     if($event->save()) {
-                        $categoriesRequest = $request->input('categories') == null ? [] : array_pluck($request->input('categories'),'id');
+
+                        $categoriesRequest = $request->input('categories') == null ? [] : array_pluck($request->input('categories'),'value');
+                        $minicalsRequest = $request->input('minicals') == null ? [] : array_pluck($request->input('minicals'),'value');
+
+                        // $categoriesRequest = $request->input('categories') == null ? [] : array_pluck($request->input('categories'),'id');
                         $event->eventcategories()->sync($categoriesRequest);
+                        // $minicalsRequest = $request->input('minicals') == null ? [] : array_pluck($request->input('minicals'),'id');
+                        $event->minicalendars()->sync($minicalsRequest);
                         $event->save();
                         return $this->setStatusCode(201)
                             ->respondCreated('Event successfully created.');
@@ -326,52 +299,7 @@ class EventController extends ApiController
                 }
 
               }
-        // if (! $request->input('title') or ! $request->input('location'))
-        //   {
-        //       return $this->setStatusCode(422)
-        //                   ->respondWithError('Parameters failed validation for an event');
-        //   }
 
-            // Event::create(Input::all());
-            // Event::create($request->all());
-            // return $this->setStatusCode(201)->respondCreated('Event successfully created.');
-            // $validation = \Illuminate\Support\Facades\Validator::make(
-            //   $request->only('title','location','start_date', 'start_time'),[
-            //    'title' => 'required|max:100',
-            //    'location'       => 'required',
-            //    'start_date'     => 'required',
-            //    'start_time'     => 'required',
-            //   ]);
-
-
-                // if($validation->passes())
-                // {
-                //   $event = new Event;
-
-                //   $event->title           = $request->get('title');
-                //   $event->short_title     = $request->get('short_title');
-                //   $event->location        = $request->get('location');
-                //   $event->start_date      = \Carbon\Carbon::parse($request->get(start_date));
-                //   $event->start_time     = \Carbon\Carbon::parse($request->get(start_time));
-                //
-                //   if($event->save()) {
-                //     return response()->json([
-                //             'success' => true,
-                //             'message' => 'record updated'
-                //         ], 200);
-                //   }
-                // }
-                //
-                // $errors = $validation->errors();
-                // $errors =  json_decode($errors);
-                //
-                // return response()->json([
-                //   'success' => false,
-                //   'message' => $errors
-                // ], 422);
-
-
-    // }
 
     /**
      * Display the specified resource.
@@ -393,12 +321,6 @@ class EventController extends ApiController
     public function edit($id)
     {
 
-        // if (\Auth::check()) {
-        // // The user is logged in...
-        //     $user = \Auth::user();
-        // } else {
-        //     return 'Need to Connect to LDAP';
-        // }
 
         $fractal = new Manager();
         // $fractal->setSerializer(new ArraySerializer());
@@ -409,18 +331,6 @@ class EventController extends ApiController
             // Turn all of that into a JSON string
         return $fractal->createData($resource)->toArray();
 
-    //    $event = $this->event->findOrFail($id);
-
-    //    $approved = $user->events->where('approved', '1');
-    //    $submitted = $user->events->where('approved', '0');
-
-
-
-        //return view('public.event.form', compact('event', 'approved','submitted'));
-
-            // $event = Event::with('eventcategories')->findOrFail($id);
-            // $eventcategories = $event->eventcategories;
-        // return $event;
     }
 
 
@@ -529,7 +439,107 @@ class EventController extends ApiController
      */
     public function update(Request $request, $id)
     {
-        //
+        $event = Event::findOrFail($id);
+        $validation = \Validator::make( Input::all(), [
+            'title'           => 'required',
+            'location'        => 'required',
+            'on_campus'		=> 'required',
+            'start_date'      => 'required|date',
+            'end_date'        => 'required|date',
+            'categories'      => 'required',
+            'cost'			=> 'required',
+            'description'     => 'required',
+            'contact_person'  => 'required',
+            'contact_phone'  => 'required',
+            'contact_email'  => 'required|email'
+        ]);
+
+         if( $validation->fails() )
+         {
+             return $this->setStatusCode(422)
+                         ->respondWithError($validation->errors()->getMessages());
+
+         }
+         if($validation->passes())
+         {
+
+            $event->author_id       = $request->get('author_id');
+           $event->title           	= $request->get('title');
+           $event->short_title     	= $request->get('short_title');
+            // $templocation = $request->get('location');serialize($templocation);
+            $event->on_campus					= $request->get('on_campus');
+            $event->building					= $request->get('building');
+            $event->room							= $request->get('room');
+           $event->location        	= $request->get('location');
+           $event->start_date      	= \Carbon\Carbon::parse($request->get('start_date'));
+           $event->start_time     		= \Carbon\Carbon::parse($request->get('start_time'));
+            $event->end_date      		= \Carbon\Carbon::parse($request->get('end_date'));
+            $event->end_time     			= \Carbon\Carbon::parse($request->get('end_time'));
+            $event->all_day						= $request->get('all_day');
+            $event->no_end_time				= $request->get('no_end_time');
+            $event->contact_person    = $request->get('contact_person');
+            $event->contact_phone     = $request->get('contact_phone');
+            $event->contact_email     = $request->get('contact_email');
+            $event->contact_fax				= $request->get('contact_fax');
+            $event->description     	= $request->get('description');
+
+            $event->related_link_1					= $request->get('related_link_1');
+            $event->related_link_2					= $request->get('related_link_2');
+            $event->related_link_3					= $request->get('related_link_3');
+            $event->reg_deadline						= $request->get('reg_deadline');
+            $event->free 										= $request->get('free');
+            $event->cost 										= $request->get('cost');
+            $event->participants						=$request->get('participants');
+            $event->tickets									=$request->get('tickets');
+            $event->ticket_details_phone		=$request->get('ticket_details_phone');
+            $event->ticket_details_online		=$request->get('ticket_details_online');
+            $event->ticket_details_office		=$request->get('ticket_details_office');
+            $event->ticket_details_other		=$request->get('ticket_details_other');
+
+            $event->mini_calendar						= $request->get('mini_calendar');
+            $event->lbc_reviewed						= $request->get('lbc_reviewed');
+            // $event->submission_date 				= \Carbon\Carbon::now();
+
+            // mini_calendar
+          // `ensemble` int(11) unsigned DEFAULT NULL,
+          // `mba` int(11) unsigned DEFAULT NULL,
+          // `mini_calendar_alt` int(11) unsigned DEFAULT NULL,
+
+
+          // `created_at` timestamp NULL DEFAULT NULL,
+          // `updated_at` timestamp NULL DEFAULT NULL,
+
+          // `mediafile_id` int(10) unsigned NOT NULL,
+            // `feature_image` varchar(255) DEFAULT NULL,
+
+          // `building_id` int(10) unsigned NOT NULL,
+            //
+            // `homepage` int(11) unsigned DEFAULT '0',
+            // `lbc_reviewed` int(11) unsigned DEFAULT '0',
+            // `approved_date` date DEFAULT NULL,
+            // `lbc_approved` int(11) unsigned DEFAULT NULL,
+            // `featured` int(11) unsigned DEFAULT '0',
+            // `approved` int(11) unsigned DEFAULT '0',
+            // `canceled` int(11) unsigned DEFAULT '0',
+            //
+            // `submitter` varchar(255) DEFAULT NULL,
+            // $categories_array =  $request->get('categories');
+            // dd($categoriesRequest);
+            $categoriesRequest = $request->input('categories') == null ? [] : array_pluck($request->input('categories'),'value');
+            $minicalsRequest = $request->input('minicals') == null ? [] : array_pluck($request->input('minicals'),'value');
+
+
+                    if($event->save()) {
+                        // $categoriesRequest = $request->input('categories') == null ? [] : array_pluck($request->input('categories'),'value');
+                        $event->eventcategories()->sync($categoriesRequest);
+                        // $minicalsRequest = $request->input('minicals') == null ? [] : array_pluck($request->input('minicals'),'value');
+                        $event->minicalendars()->sync($minicalsRequest);
+                        $event->save();
+                        return $this->setStatusCode(201)
+                            ->respondCreated('Event updated.');
+                    }
+                }
+
     }
 
     /**

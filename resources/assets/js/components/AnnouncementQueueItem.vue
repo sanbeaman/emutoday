@@ -59,7 +59,8 @@
               </div><!-- /.col-md-7 -->
               <div class="col-sm-3">
                   <div class="btn-group pull-right">
-                          <button v-on:click.prevent="editItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-pencil"></i></button>
+                     <button v-on:click.prevent="archiveItem" class="btn bg-orange btn-xs footer-btn" data-toggle="tooltip" data-placement="top" title="archive"><i class="fa fa-archive"></i></button>
+                      <button v-on:click.prevent="editItem" class="btn bg-orange btn-xs footer-btn" data-toggle="tooltip" data-placement="top" title="edit"><i class="fa fa-pencil"></i></button>
                           <!-- <button v-on:click.prevent="previewItem" class="btn bg-orange btn-xs footer-btn"><i class="fa fa-eye"></i></button> -->
                   </div><!-- /.btn-toolbar -->
 
@@ -120,7 +121,7 @@
         margin-bottom: 0;
     }
 
-    
+
     .box-footer {
         padding: 3px;
     }
@@ -257,7 +258,7 @@ module.exports  = {
 
             }
 
-            if (this.pid == 'items-other' && this.index === 3) {
+            if (this.pid == 'items-live' && this.index === 3) {
                 extrasep = 'last-special-event'
             } else {
                 extrasep = ''
@@ -296,8 +297,8 @@ module.exports  = {
         timeLeft: function() {
 
             if(moment(this.item.start_date).isSameOrBefore(moment())){
-                let tlft = this.timeDiffNow(this.item.end_date);
-
+                let tlft = this.timeDiffNow(this.item.end_date, 'hours');
+                console.log('id='+ this.item.id + '  -'+ tlft)
                 if (tlft < 0) {
                     return 'Event Ended ' + moment(this.item.end_date).fromNow()
                 } else {
@@ -313,8 +314,8 @@ module.exports  = {
 
     },
     methods: {
-        timeDiffNow:function(val){
-            return  moment(val).diff(moment(), 'minutes');
+        timeDiffNow:function(val, mod = 'minutes'){
+            return  moment(val).diff(moment(), mod);
 
         },
         editItem: function(ev) {
@@ -340,6 +341,21 @@ module.exports  = {
             console.log('this.patchRecord.is_approved ='+this.patchRecord.is_approved );
             this.updateItem();
 
+        },
+        archiveItem:function(){
+            this.patchRecord.is_archived = 1;
+
+            this.$http.patch('/api/announcement/archiveItem/' + this.item.id , this.patchRecord , {
+                method: 'PATCH'
+            } )
+            .then((response) => {
+                console.log('good?'+ response)
+
+                this.checkAfterUpdate(response.data.newdata)
+
+                }, (response) => {
+                    console.log('bad?'+ response)
+                });
         },
         updateItem: function(){
          //    this.patchRecord.is_approved = this.item.is_approved;

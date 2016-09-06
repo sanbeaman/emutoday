@@ -44,11 +44,11 @@
         <h3>Live</h3>
         <div id="items-other">
             <announcement-queue-item
-                pid="items-other"
+                pid="items-live"
                 v-for="item in itemsLive | orderBy 'priority' -1"
                 :item="item"
                 :index="$index"
-                :is="items-other"
+                :is="items-live"
             >
             </announcement-queue-item>
         </div>
@@ -126,54 +126,54 @@ export default {
         },
         filterItemsApproved: function(items) {
             return items.filter(function(item) {
-                return moment(item.start_date).isAfter(moment()) && item.is_approved === 1 && item.priority === 0;
+                return moment(item.start_date).isAfter(moment()) && item.is_approved === 1 && item.priority === 0 && item.is_archived === 0;
             });
         },
         filterItemsUnapproved: function(items) {
             return items.filter(function(item) {
-                return item.is_approved === 0
+                return item.is_approved === 0 && item.is_archived === 0;
             });
         },
         filterItemsLive: function(items) {
             return items.filter(function(item) {
-                return moment(item.start_date).isSameOrBefore(moment()) && item.is_approved === 1 || item.is_approved === 1 && item.priority > 0;  // true
+                return moment(item.start_date).isSameOrBefore(moment()) && item.is_approved === 1 && item.is_archived === 0 || item.is_approved === 1 && item.priority > 0 && item.is_archived === 0;  // true
 
             });
         },
-        moveToApproved: function(changeditem) {
-
-            // this.xitems.pop(changeditem);
-            console.log('moveToApproved' + changeditem.priority);
-            changeditem.is_approved = 1;
-            changeditem.priority = changeditem.priority;
-            this.updateRecord(changeditem)
-        },
-        moveToUnApproved: function(changeditem) {
-
-            // this.xitems.pop(changeditem);
-            console.log('moveToUnApproved' + changeditem)
-            changeditem.is_approved = 0;
-
-            this.updateRecord(changeditem)
-        },
-        itemyes: function(items) {
-            return items.filter(function(item) {
-                return item.is_approved === 1
-            });
-        },
-        itemno: function(items) {
-            return items.filter(function(item) {
-                return item.is_approved === 0
-            });
-        },
-        itemsByPriority: function(items) {
-            return items.sort(function(item) {
-                return item.is_approved === 0
-            });
-        },
-        movedItemIndex: function(mid) {
-            return this.xitems.findIndex(item => item.id == mid)
-        },
+        // moveToApproved: function(changeditem) {
+        //
+        //     // this.xitems.pop(changeditem);
+        //     console.log('moveToApproved' + changeditem.priority);
+        //     changeditem.is_approved = 1;
+        //     changeditem.priority = changeditem.priority;
+        //     this.updateRecord(changeditem)
+        // },
+        // moveToUnApproved: function(changeditem) {
+        //
+        //     // this.xitems.pop(changeditem);
+        //     console.log('moveToUnApproved' + changeditem)
+        //     changeditem.is_approved = 0;
+        //
+        //     this.updateRecord(changeditem)
+        // },
+        // itemyes: function(items) {
+        //     return items.filter(function(item) {
+        //         return item.is_approved === 1
+        //     });
+        // },
+        // itemno: function(items) {
+        //     return items.filter(function(item) {
+        //         return item.is_approved === 0
+        //     });
+        // },
+        // itemsByPriority: function(items) {
+        //     return items.sort(function(item) {
+        //         return item.is_approved === 0
+        //     });
+        // },
+        // movedItemIndex: function(mid) {
+        //     return this.xitems.findIndex(item => item.id == mid)
+        // },
         // updateRecord: function(item) {
         //     var movedid = item.id;
         //     var movedRecord = item;
@@ -247,21 +247,6 @@ export default {
 
         checkOverDataFilter: function() {
             console.log('items=' + this.items)
-                // var unapprovedItems = this.allitems.filter(function(item) {
-                // 	return item.is_approved === 0
-                // });
-                //
-                // this.xitems = unapprovedItems;
-                //
-                //
-                // var approvedItems = this.allitems.filter(function(item) {
-                // 	return item.is_approved === 1
-                // });
-                //
-                // this.items = approvedItems.sort(function(a,b){
-                // 	return parseFloat(b.priority) - parseFloat(a.priority);
-                // });
-
         }
     },
 

@@ -257,7 +257,10 @@ class MagazineController extends Controller
     public function edit($id)
     {
       $magazine = $this->magazine->findOrFail($id);
-            $storys = Story::where('story_type', 'article')
+            $storys = Story::where([
+                ['story_type', 'article'],
+                ['is_approved',1]
+                ])
                             ->with(['images' => function($query){
                                     $query->where('group','=','article');
                                     }])->get();

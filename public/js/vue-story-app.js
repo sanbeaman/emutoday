@@ -16456,7 +16456,7 @@ if (module.hot) {(function () {  module.hot.accept()
 })()}
 },{"../directives/iconradio.js":11,"./IconToggleBtn.vue":7,"./StoryPod.vue":9,"moment":1,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],9:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n.callout[_v-2522fd54] {\n    position: relative;\n    background: #ddd;\n    padding: 1em;\n    margin: 0;\n}\n.callout .callout-danger[_v-2522fd54] {\n    background: #ff0000;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.callout .callout-success[_v-2522fd54] {\n    background: #00ff00;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.Alert__close[_v-2522fd54] {\n    position: absolute;\n    top: 1em;\n    right: 1em;\n    font-weight: bold;\n    cursor: pointer;\n}\n\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    /*color: #1B1B1B;*/\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n.callout[_v-2522fd54] {\n    position: relative;\n    background: #ddd;\n    padding: 1em;\n    margin: 0;\n}\n.callout .callout-danger[_v-2522fd54] {\n    background: #ff0000;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.callout .callout-success[_v-2522fd54] {\n    background: #00ff00;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.Alert__close[_v-2522fd54] {\n    position: absolute;\n    top: 1em;\n    right: 1em;\n    font-weight: bold;\n    cursor: pointer;\n}\n.bg-hub[_v-2522fd54] {\n    background-color: #76D7EA;\n}\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    /*color: #1B1B1B;*/\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n")
 'use strict';
 
 var _moment = require('moment');
@@ -16479,6 +16479,7 @@ module.exports = {
             response_approval: '',
             showBody: false,
             currentDate: {},
+            priorityOptions: [],
             record: {
                 user_id: '',
                 title: '',
@@ -16489,12 +16490,91 @@ module.exports = {
                 show: false,
                 level: '',
                 msg: ''
+            },
+            initRecord: {
+                is_approved: 0,
+                priority: 0,
+                is_canceled: 0,
+                eventimage: ''
+            },
+            patchRecord: {
+                is_approved: 0,
+                priority: 0,
+                is_canceled: 0,
+                eventimage: ''
             }
         };
     },
     created: function created() {},
-    ready: function ready() {},
+    ready: function ready() {
+        this.initRecord.is_approved = this.patchRecord.is_approved = this.item.is_approved;
+        this.initRecord.priority = this.patchRecord.priority = this.item.priority;
+        this.initRecord.is_canceled = this.patchRecord.is_canceled = this.item.is_canceled;
+        this.initRecord.eventimage = this.patchRecord.eventimage = this.item.eventimage;
+    },
     computed: {
+        isLiveColumn: function isLiveColumn() {
+            if (this.pid === 'items-live') {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        priorityOptions: function priorityOptions() {
+            var opts = [];
+            opts.push({ text: '0', value: 0 });
+            for (var i = 1, l = 10; i < l; i++) {
+                opts.push({ text: i.toString(), value: i });
+            }
+            for (var j = 1, l2 = 10; j < l2; j++) {
+                var jten = j * 10;
+                opts.push({ text: jten.toString(), value: jten });
+            }
+            opts.push({ text: '99', value: 99 });
+            return opts;
+        },
+        hasPriorityChanged: function hasPriorityChanged() {
+            if (this.initRecord.priority != this.patchRecord.priority) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+        hasIsApprovedChanged: function hasIsApprovedChanged() {
+            if (this.initRecord.is_approved != this.patchRecord.is_approved) {
+                console.log('is_approved => initRecord=' + this.initRecord.is_approved + ' patchRecord=>' + this.patchRecord.is_approved);
+                return true;
+            } else {
+                return false;
+            }
+        },
+        connectedHubs: function connectedHubs() {
+            return this.item.pages;
+        },
+        connectedMags: function connectedMags() {
+            return this.item.magazines;
+        },
+        isPartOfHub: function isPartOfHub() {
+            if (this.item.pages.length > 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        },
+        isPartOfMag: function isPartOfMag() {
+            if (this.item.magazines.length > 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        },
+        isPartOfHubOrMag: function isPartOfHubOrMag() {
+            if (this.isPartOfHub === 1 || this.isPartOfMag === 1) {
+                return 1;
+            } else {
+                return 0;
+            }
+        },
         timefromNow: function timefromNow() {
             return (0, _moment2.default)(this.item.start_date).fromNow();
         },
@@ -16531,6 +16611,18 @@ module.exports = {
                 lIcon = '';
             }
             return lIcon;
+        },
+        linkedIcon: function linkedIcon() {
+            if (this.isPartOfHubOrMag) {
+                return 'fa fa-chain';
+            } else {
+                return '';
+            }
+            // if(this.item.magazines.length > 0 || this.item.pages.length > 0) {
+            //     return 'fa fa-chain'
+            // } else {
+            //     return ''
+            // }
         },
         homeIcon: function homeIcon() {
             if (this.item.tags.length > 0) {
@@ -16612,6 +16704,13 @@ module.exports = {
                     return true;
             }
         },
+        disabledArchive: function disabledArchive() {
+            if (this.isPartOfHubOrMag) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         disabledPreview: function disabledPreview() {
             if (this.recordIsReady) {
                 return false;
@@ -16622,13 +16721,24 @@ module.exports = {
 
     },
     methods: {
+        gotoHub: function gotoHub(itemid) {
+            console.log(itemid);
+            window.location.href = '/admin/page/' + itemid + '/edit';
+        },
+        gotoMag: function gotoMag(itemid) {
+            console.log(itemid);
+            window.location.href = '/admin/magazine/' + itemid + '/edit';
+        },
         editItem: function editItem(ev) {
-
             window.location.href = this.itemEditPath;
         },
         previewItem: function previewItem(ev) {
             window.location.href = this.itemPreviewPath;
         },
+        priorityChange: function priorityChange(event) {
+            console.log('priority=' + this.item.priority);
+        },
+
         toggleBody: function toggleBody(ev) {
             if (this.showBody == false) {
                 this.showBody = true;
@@ -16650,6 +16760,52 @@ module.exports = {
             }
 
             this.updateRecordStatus();
+        },
+        changeIsApproved: function changeIsApproved() {
+            this.patchRecord.is_approved = this.item.is_approved === 0 ? 1 : 0;
+            console.log('this.patchRecord.is_approved =' + this.patchRecord.is_approved);
+            this.updateItem();
+        },
+        archiveItem: function archiveItem() {
+            var _this = this;
+
+            //    this.patchRecord.is_approved = this.item.is_approved;
+            //    this.patchRecord.priority = this.item.priority;
+            this.patchRecord.is_archived = 1;
+
+            this.$http.patch('/api/story/archiveItem/' + this.item.id, this.patchRecord, {
+                method: 'PATCH'
+            }).then(function (response) {
+                console.log('good?' + response);
+                _this.checkAfterUpdate(response.data.newdata);
+            }, function (response) {
+                console.log('bad?' + response);
+            });
+        },
+        updateItem: function updateItem() {
+            var _this2 = this;
+
+            //    this.patchRecord.is_approved = this.item.is_approved;
+            //    this.patchRecord.priority = this.item.priority;
+            this.patchRecord.is_archived = this.item.is_archived;
+
+            this.$http.patch('/api/story/updateItem/' + this.item.id, this.patchRecord, {
+                method: 'PATCH'
+            }).then(function (response) {
+                console.log('good?' + response);
+                _this2.checkAfterUpdate(response.data.newdata);
+            }, function (response) {
+                console.log('bad?' + response);
+            });
+        },
+        checkAfterUpdate: function checkAfterUpdate(ndata) {
+            this.item.is_approved = this.initRecord.is_approved = ndata.is_approved;
+            this.item.priority = this.initRecord.priority = ndata.priority;
+            this.item.is_archived = this.initRecord.is_archived = ndata.is_archived;
+
+            this.hasPriorityChanged = 0;
+
+            console.log(ndata);
         },
         updateRecordStatus: function updateRecordStatus() {
             // this.item.is_approved = (this.is_approved === 0)?1:0;
@@ -16718,13 +16874,13 @@ module.exports = {
     }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div _v-2522fd54=\"\">\n\n\n    <div v-show=\"itemMsgStatus.show\" class=\"callout callout-{{itemMsgStatus.level}}\" _v-2522fd54=\"\">\n         <span class=\"Alert__close\" @click=\"itemMsgStatus.show = false\" _v-2522fd54=\"\">X</span>\n        <h5 _v-2522fd54=\"\">{{itemMsgStatus.msg}}</h5>\n    </div>\n    <div class=\"box box-solid {{item.group}}\" _v-2522fd54=\"\">\n        <div class=\"box-header with-border\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <div class=\"pull-left\" _v-2522fd54=\"\">\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.story_type}}\" _v-2522fd54=\"\"><span class=\"item-type-icon\" :class=\"typeIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" :title=\"isReadyStatus\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"readyIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Promoted\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"promotedIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Featured\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"featuredIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"on HomePage\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"homeIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Archived\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"archivedIcon\" _v-2522fd54=\"\"></span></label>\n                        </div><!-- /.pull-left -->\n                        <div class=\" form-inline pull-right\" _v-2522fd54=\"\">\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n                                <label _v-2522fd54=\"\">approved:</label>\n                            </div><!-- /.form-group -->\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n\n                                <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click=\"approveItem\" :value=\"isApproved\" _v-2522fd54=\"\">\n                                </vui-flip-switch>\n                            </div>\n                        </div><!-- /.pull-right -->\n                    </div><!-- /.col-md-12-->\n                </div><!-- /.row -->\n                <div class=\"row\" _v-2522fd54=\"\">\n                        <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <h6 class=\"box-title\" _v-2522fd54=\"\">{{item.title}}</h6>\n                    </div><!-- /.col-md-12 -->\n  </a>\n                </div><!-- /.row -->\n\n        </div>  <!-- /.box-header -->\n\n      <div v-if=\"showBody\" class=\"box-body\" _v-2522fd54=\"\">\n            <p _v-2522fd54=\"\">ID: {{item.id}}</p>\n            <p _v-2522fd54=\"\">Type: {{item.story_type}}</p>\n            <p _v-2522fd54=\"\">Title: {{item.title}}</p>\n            <p _v-2522fd54=\"\">Ready: {{item.is_ready}}</p>\n            <p _v-2522fd54=\"\">Approved: {{item.is_approved}}</p>\n            <p _v-2522fd54=\"\">Promoted: {{item.is_promoted}}</p>\n            <p _v-2522fd54=\"\">Featured: {{item.is_featured}}</p>\n            <p _v-2522fd54=\"\">Live: {{item.is_live}}</p>\n            <p _v-2522fd54=\"\">Archived: {{item.is_archived}}</p>\n            <p _v-2522fd54=\"\">Tags: {{item.tags | json}}</p>\n            <p _v-2522fd54=\"\">Start Date: {{item.start_date}}</p>\n            <p _v-2522fd54=\"\">User: {{item.user | json}}</p>\n            <p _v-2522fd54=\"\">Author: {{item.author | json}}</p>\n\n      </div><!-- /.box-body -->\n            <div class=\"box-footer list-footer\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-sm-7\" _v-2522fd54=\"\">\n                        <h5 _v-2522fd54=\"\">Live {{timefromNow}}</h5>\n                    </div><!-- /.col-md-7 -->\n                    <div class=\"col-sm-5\" _v-2522fd54=\"\">\n                        <div class=\"btn-group pull-right\" _v-2522fd54=\"\">\n                                <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" _v-2522fd54=\"\"><i class=\"fa fa-pencil\" _v-2522fd54=\"\"></i></button>\n                                <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\" :disabled=\"disabledPreview\" _v-2522fd54=\"\"><i class=\"fa fa-eye\" _v-2522fd54=\"\"></i></button>\n\n                        </div><!-- /.btn-toolbar -->\n\n                    </div><!-- /.col-md-7 -->\n                </div><!-- /.row -->\n\n\n            </div><!-- /.box-footer -->\n\n    </div><!-- /.box- -->\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n    <div _v-2522fd54=\"\">\n        <div v-show=\"itemMsgStatus.show\" class=\"callout callout-{{itemMsgStatus.level}}\" _v-2522fd54=\"\">\n         <span class=\"Alert__close\" @click=\"itemMsgStatus.show = false\" _v-2522fd54=\"\">X</span>\n        <h5 _v-2522fd54=\"\">{{itemMsgStatus.msg}}</h5>\n    </div>\n    <div class=\"box box-solid {{item.group}}\" _v-2522fd54=\"\">\n        <div class=\"box-header with-border\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <div class=\"pull-left\" _v-2522fd54=\"\">\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"{{item.story_type}}\" _v-2522fd54=\"\"><span class=\"item-type-icon\" :class=\"typeIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" :title=\"isReadyStatus\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"readyIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Promoted\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"promotedIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"Featured\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"featuredIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"on HomePage\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"homeIcon\" _v-2522fd54=\"\"></span></label>\n                            <label data-toggle=\"tooltip\" data-placement=\"top\" title=\"linked\" _v-2522fd54=\"\"><span class=\"item-featured-icon\" :class=\"linkedIcon\" _v-2522fd54=\"\"></span></label>\n                        </div><!-- /.pull-left -->\n                        <div class=\"form-inline pull-right\" _v-2522fd54=\"\">\n                            <template v-if=\"isLiveColumn\">\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n                                <button v-if=\"hasPriorityChanged\" @click.prevent=\"updateItem\" class=\"btn footer-btn bg-orange btn-xs\" href=\"#\" _v-2522fd54=\"\"><span class=\"fa fa-floppy-o\" _v-2522fd54=\"\"></span></button>\n                            </div><!-- /.form-group -->\n                          <div class=\"form-group\" _v-2522fd54=\"\">\n                            <label class=\"sr-only\" for=\"priority-number\" _v-2522fd54=\"\">Priority</label>\n                                <select id=\"priority-{{item.id}}\" v-model=\"patchRecord.priority\" @change=\"priorityChange($event)\" class=\"form-control\" number=\"\" _v-2522fd54=\"\">\n                                    <option v-for=\"option in priorityOptions\" v-bind:value=\"option.value\" _v-2522fd54=\"\">\n                                        {{option.text}}\n                                    </option>\n                                </select>\n                          </div>\n                          </template>\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n                                <label _v-2522fd54=\"\">approved:</label>\n                            </div><!-- /.form-group -->\n                            <div class=\"form-group\" _v-2522fd54=\"\">\n\n                                <vui-flip-switch id=\"switch-{{item.id}}\" v-on:click.prevent=\"changeIsApproved\" :value.sync=\"patchRecord.is_approved\" _v-2522fd54=\"\">\n                                </vui-flip-switch>\n                            </div>\n                        </div><!-- /.pull-right -->\n                    </div><!-- /.col-md-12-->\n                </div><!-- /.row -->\n                <div class=\"row\" _v-2522fd54=\"\">\n                        <a v-on:click.prevent=\"toggleBody\" href=\"#\" _v-2522fd54=\"\">\n                    <div class=\"col-md-12\" _v-2522fd54=\"\">\n                        <h6 class=\"box-title\" _v-2522fd54=\"\">{{item.title}}</h6>\n                    </div><!-- /.col-md-12 -->\n  </a>\n                </div><!-- /.row -->\n\n        </div>  <!-- /.box-header -->\n\n      <div v-if=\"showBody\" class=\"box-body\" _v-2522fd54=\"\">\n            <p _v-2522fd54=\"\">ID: {{item.id}}</p>\n            <p _v-2522fd54=\"\">Type: {{item.story_type}}</p>\n            <p _v-2522fd54=\"\">Title: {{item.title}}</p>\n            <p _v-2522fd54=\"\">Ready: {{item.is_ready}}</p>\n            <p _v-2522fd54=\"\">Approved: {{item.is_approved}}</p>\n            <p _v-2522fd54=\"\">Promoted: {{item.is_promoted}}</p>\n            <p _v-2522fd54=\"\">Featured: {{item.is_featured}}</p>\n            <p _v-2522fd54=\"\">Live: {{item.is_live}}</p>\n            <p _v-2522fd54=\"\">Archived: {{item.is_archived}}</p>\n            <p _v-2522fd54=\"\">Tags: {{item.tags | json}}</p>\n            <p _v-2522fd54=\"\">Start Date: {{item.start_date}}</p>\n            <p _v-2522fd54=\"\">User: {{item.user | json}}</p>\n            <p _v-2522fd54=\"\">Author: {{item.author | json}}</p>\n            <template v-if=\"isPartOfHub\">\n                <div class=\"btn-group btn-xs form-inline\" _v-2522fd54=\"\">\n                    <div class=\"form-group\" _v-2522fd54=\"\">\n                        <label _v-2522fd54=\"\">Hubs: </label>\n                    </div>\n                    <div class=\"form-group\" _v-2522fd54=\"\">\n                        <button v-for=\"hub in connectedHubs\" v-on:click.prevent=\"gotoHub(hub.id)\" class=\"btn bg-hub btn-xs\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"Edit Hub Id: {{hub.id}}\" _v-2522fd54=\"\"><i class=\"fa fa-newspaper-o\" _v-2522fd54=\"\"></i></button>\n                    </div>\n                </div>\n            </template>\n            <template v-if=\"isPartOfMag\">\n                <div class=\"btn-group btn-xs form-inline\" _v-2522fd54=\"\">\n                    <div class=\"form-group\" _v-2522fd54=\"\">\n                        <label _v-2522fd54=\"\">Mags: </label>\n                    </div>\n                    <div class=\"form-group\" _v-2522fd54=\"\">\n                        <button v-for=\"mag in connectedMags\" v-on:click.prevent=\"gotoMag(mag.id)\" class=\"btn bg-hub btn-xs\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"Edit Mag Id: {{mag.id}}\" _v-2522fd54=\"\"><i class=\"fa fa-book\" _v-2522fd54=\"\"></i></button>\n                    </div>\n                </div>\n            </template>\n\n\n\n\n      </div><!-- /.box-body -->\n            <div class=\"box-footer list-footer\" _v-2522fd54=\"\">\n                <div class=\"row\" _v-2522fd54=\"\">\n                    <div class=\"col-sm-7\" _v-2522fd54=\"\">\n                        <h5 _v-2522fd54=\"\">Live {{timefromNow}}</h5>\n                    </div><!-- /.col-md-7 -->\n                    <div class=\"col-sm-5\" _v-2522fd54=\"\">\n                        <div class=\"btn-group pull-right\" _v-2522fd54=\"\">\n                            <button v-on:click.prevent=\"archiveItem\" class=\"btn bg-orange btn-xs footer-btn\" :disabled=\"disabledArchive\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"archive\" _v-2522fd54=\"\"><i class=\"fa fa-archive\" _v-2522fd54=\"\"></i></button>\n                            <button v-on:click.prevent=\"editItem\" class=\"btn bg-orange btn-xs footer-btn\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"edit\" _v-2522fd54=\"\"><i class=\"fa fa-pencil\" _v-2522fd54=\"\"></i></button>\n                            <button v-on:click.prevent=\"previewItem\" class=\"btn bg-orange btn-xs footer-btn\" :disabled=\"disabledPreview\" data-toggle=\"tooltip\" data-placement=\"top\" title=\"preview\" _v-2522fd54=\"\"><i class=\"fa fa-eye\" _v-2522fd54=\"\"></i></button>\n\n                        </div><!-- /.btn-toolbar -->\n\n                    </div><!-- /.col-md-7 -->\n                </div><!-- /.row -->\n\n\n            </div><!-- /.box-footer -->\n\n    </div><!-- /.box- -->\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n.callout[_v-2522fd54] {\n    position: relative;\n    background: #ddd;\n    padding: 1em;\n    margin: 0;\n}\n.callout .callout-danger[_v-2522fd54] {\n    background: #ff0000;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.callout .callout-success[_v-2522fd54] {\n    background: #00ff00;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.Alert__close[_v-2522fd54] {\n    position: absolute;\n    top: 1em;\n    right: 1em;\n    font-weight: bold;\n    cursor: pointer;\n}\n\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    /*color: #1B1B1B;*/\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n.onoffswitch[_v-2522fd54] {\n    position: relative; width: 60px;\n    -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;\n}\n.onoffswitch-checkbox[_v-2522fd54] {\n    display: none;\n}\n.onoffswitch-label[_v-2522fd54] {\n    display: block; overflow: hidden; cursor: pointer;\n    border: 2px solid #999999; border-radius: 50px;\n}\n.onoffswitch-inner[_v-2522fd54] {\n    display: block; width: 200%; margin-left: -100%;\n    -webkit-transition: margin 0.3s ease-in 0s;\n    transition: margin 0.3s ease-in 0s;\n}\n.onoffswitch-inner[_v-2522fd54]:before, .onoffswitch-inner[_v-2522fd54]:after {\n    display: block; float: left; width: 50%; height: 18px; padding: 0; line-height: 18px;\n    font-size: 11px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;\n    box-sizing: border-box;\n}\n.onoffswitch-inner[_v-2522fd54]:before {\n    content: \"YES\";\n    padding-left: 10px;\n    background-color: #605CA8; color: #FFFFFF;\n}\n.onoffswitch-inner[_v-2522fd54]:after {\n    content: \"NO\";\n    padding-right: 10px;\n    background-color: #EEEEEE; color: #999999;\n    text-align: right;\n}\n.onoffswitch-switch[_v-2522fd54] {\n    display: block; width: 22px; margin: 0px;\n    background: #FFFFFF;\n    position: absolute; top: 0; bottom: 0;\n    right: 38px;\n    border: 2px solid #999999; border-radius: 50px;\n    -webkit-transition: all 0.3s ease-in 0s;\n    transition: all 0.3s ease-in 0s;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner[_v-2522fd54] {\n    margin-left: 0;\n}\n.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch[_v-2522fd54] {\n    right: 0px;\n}\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n"] = false
+    __vueify_insert__.cache["\n.box[_v-2522fd54] {\n    color: #1B1B1B;\n    margin-bottom: 10px;\n}\n.box-body[_v-2522fd54] {\n    background-color: #fff;\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n    margin:0;\n}\n\n.box-header[_v-2522fd54] {\n    padding: 3px;\n}\n.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nh5.box-footer[_v-2522fd54] {\n    padding: 3px;\n}\nbutton.footer-btn[_v-2522fd54] {\n    border-color: #1B1B1B;\n\n}\nh6.box-title[_v-2522fd54] {\n    font-size: 16px;\n    color: #1B1B1B;\n}\n.callout[_v-2522fd54] {\n    position: relative;\n    background: #ddd;\n    padding: 1em;\n    margin: 0;\n}\n.callout .callout-danger[_v-2522fd54] {\n    background: #ff0000;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.callout .callout-success[_v-2522fd54] {\n    background: #00ff00;\n    color:#000000;\n    /*border: 1px solid #000000;*/\n}\n\n.Alert__close[_v-2522fd54] {\n    position: absolute;\n    top: 1em;\n    right: 1em;\n    font-weight: bold;\n    cursor: pointer;\n}\n.bg-hub[_v-2522fd54] {\n    background-color: #76D7EA;\n}\n.emutoday[_v-2522fd54] {\n\n    background-color: #76D7EA;\n    border: 1px solid #76D7EA\n}\n.student[_v-2522fd54] {\n    color: #1B1B1B;\n    background-color: #FED85D;\n    border: 1px solid #FED85D\n}\n.news[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #cccccc;\n    border: 1px solid #cccccc;\n}\n.external[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #C9A0DC;\n    border: 1px solid #C9A0DC;\n}\n.article[_v-2522fd54]  {\n    color: #1B1B1B;\n    background-color: #29AB87;\n    border: 1px solid #29AB87;\n}\n.item-type-icon[_v-2522fd54] {\n    /*color: #1B1B1B;*/\n    /*position:absolute;\n    top: 5px;\n    left: 5px;*/\n\n}\n.zcallout[_v-2522fd54] {\n    border-radius: 5px;\n    /*margin: 0 0 20px 0;*/\n    /*padding: 15px 30px 15px 15px;*/\n    border-left: 50px solid #ff0000;\n}\n.zinfo-box-icon[_v-2522fd54] {\n    border-top-left-radius: 5px;\n    border-top-right-radius: 0;\n    border-bottom-right-radius: 0;\n    border-bottom-left-radius: 5px;\n    display: block;\n    float: left;\n    height: auto;\n    width: 60px;\n    text-align: center;\n    font-size: 45px;\n    line-height: 90px;\n    background: rgba(0,0,0,0.2);\n}\n.type-badge[_v-2522fd54] {\n    width: 30px;\n    height: 30px;\n    font-size: 15px;\n    line-height: 30px;\n    position: absolute;\n    color: #666;\n    background: #d2d6de;\n    border-radius: 50%;\n    text-align: center;\n    left: 18px;\n    top: 0;\n}\n\n\nselect.form-control[_v-2522fd54] {\n    height:22px;\n    border: 1px solid #999999;\n}\n\n\nh6[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\nh5[_v-2522fd54] {\n    margin-top: 0;\n    margin-bottom: 0;\n}\n.form-group[_v-2522fd54] {\n    /*border: 1px solid red;*/\n}\n.form-group label[_v-2522fd54]{\n    margin-bottom: 0;\n}\n/*.box.box-solid.box-default {\nborder: 1px solid #999999;\n}*/\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {

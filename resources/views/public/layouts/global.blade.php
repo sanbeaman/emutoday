@@ -11,13 +11,17 @@
     @include('include.js')
   </head>
   <body>
-        @yield('bodytop')
+    @yield('bodytop')
 
     <div class="off-canvas-wrapper">
+
       <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
         <!-- ***** off-canvas off-canvas right menu 'small' screen -->
+
         <div class="off-canvas position-right" id="offCanvasRight" data-off-canvas data-position="right">
+
           @section('offcanvaslist')
+
             <ul class="tier2-menu vertical dropdown menu" data-dropdown-menu>
               <li><a href="/emu-today/hub">Today</a></li>
               <li><a href="/emu-today/calendar">Calendar</a></li>
@@ -47,9 +51,18 @@
                                                     <h1><a href="/emu-today/hub"><span class="first-word">EMU</span> Today</a></h1>
                                                 </div>
                                                 <div class="large-7 medium-5 small-12 columns">
+
                                                     <div class="icon-menu float-right">
-                                                        <span class="search-area"><a href="#">Search <i class="fi-magnifying-glass"></i></a></span>
-                                                        <span class="menu-area show-for-small-only"><a href="#" data-toggle="offCanvasRight">Menu <i class="fi-list"></i></a></span>
+                                                        
+                                                        <div id="vue-search-form">
+                                                            <search-form>
+                                                                <input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                            </search-form>
+                                                        </div><!-- /#vue-event-form -->
+
+                                                        <span class="search-area"><a>Search <i class="fi-magnifying-glass"></i></a></span>
+                                                        <span class="menu-area show-for-small-only"><a data-toggle="offCanvasRight">Menu <i class="fi-list"></i></a></span>
+
                                                     </div> <!-- .icon-menu -->
 
 {{--

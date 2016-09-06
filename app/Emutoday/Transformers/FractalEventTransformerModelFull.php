@@ -80,7 +80,9 @@ class FractalEventTransformerModelFull extends Fractal\TransformerAbstract
             'on_campus'           => $event->on_campus,
             'medifile_id'           => $event->medifile_id,
             'building_id'           => $event->building_id,
-            'priority'           => $event->priority
+            'priority'           => $event->priority,
+            'minicalendars' => $event->minicalendars()->select('calendar', 'id as value')->get(),
+            'eventcategories' => $event->eventcategories()->select('category', 'id as value')->get()
 
         ];
     }

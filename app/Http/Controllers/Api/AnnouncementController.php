@@ -58,7 +58,6 @@ class AnnouncementController extends ApiController
     public function queueLoad()
     {
         $currentDate = Carbon::now();
-
         if (\Auth::check()) {
             $user = \Auth::user();
 
@@ -66,7 +65,11 @@ class AnnouncementController extends ApiController
                 // dd($user->id);
                 $announcements = $user->announcements()->get();
             } else {
-                $announcements = Announcement::where('end_date', '>=', $currentDate)->get();
+                // $announcements = Announcement::where('end_date', '>=', $currentDate)->get();
+
+                $announcements = Announcement::where([
+                    ['end_date', '>', $currentDate->subDay(2)]
+                    ])->get();
                 // Announcement::all();
             }
             $fractal = new Manager();
@@ -117,12 +120,7 @@ class AnnouncementController extends ApiController
         {
 
                 $fractal = new Manager();
-
                 $announcements = Announcement::where('is_approved', 0)->get();
-
-
-
-
                 $resource = new Fractal\Resource\Collection($announcements->all(), new FractalAnnouncementTransformerModel);
                     // Turn all of that into a JSON string
                     return $fractal->createData($resource)->toArray();
@@ -130,16 +128,7 @@ class AnnouncementController extends ApiController
                 //     'data' => $this->storyTransformer->transformCollection($storys->all())
                 // ]);
         }
-        // public function index()
-        // {
-        //
-        //
-        // 		$storys = Story::all();
-        //
-        // 		return $this->respond([
-        // 				'data' => $this->storyTransformer->transformCollection($storys->all())
-        // 		]);
-        // }
+
 
     /**
      * Show the form for creating a new resource.
@@ -177,7 +166,7 @@ class AnnouncementController extends ApiController
             $announcement->user_id       	= $request->get('user_id');
             $announcement->title           	= $request->get('title');
             $announcement->start_date      	= \Carbon\Carbon::parse($request->get('start_date'));
-            $announcement->end_date      		= \Carbon\Carbon::parse($request->get('end_date'));
+            $announcement->end_date      		= \Carbon\Carbon::parse($request->get('end_date'))->endOfDay();
             $announcement->announcement     	= $request->get('announcement');
             $announcement->submission_date 				= \Carbon\Carbon::now();
 
@@ -208,20 +197,7 @@ class AnnouncementController extends ApiController
                      }
 
              }
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request Request $request
-     * @return \Illuminate\Http\Response
-     */
-    // public function store(Request $request)
-    // {
-    //     return $this->setStatusCode(422)->respondWithError('Parameters failed validation for a story');
-    //     // if ( ! $request->input('title') or ! $request->input('body'))
-    //     // {
-    //     //     return $this->setStatusCode(422)->respondWithError('Parameters failed validation for a story');
-    //     // }
-    // }
+
 
     /**
      * Display the specified resource.
@@ -244,35 +220,6 @@ class AnnouncementController extends ApiController
         // ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    // public function edit($id)
-    // {
-        //
-        // 	$announcement = Announcement::find($id);
-        //
-        // 	if (! $announcement)
-        // 	{
-        // 	    return $this->respondNotFound('Announcement Does Not Exist!');
-        // 	}
-        //
-        // 	return $this->setStatusCode(201)
-        // 	->respond([
-        // 	    'data' => $this->announcementTransformer->transform($announcement)
-        //
-        // 	]);
-        // // $announcement = $this->announcement->findOrFail($id);
-        // //
-        // // $approved = $user->events->where('approved', '1');
-        // // $submitted = $user->events->where('approved', '0');
-        // //
-        // // return view('public.event.form', compact('event', 'approved','submitted'));
-        //
-    // }
         public function edit($id)
         {
             $fractal = new Manager();
@@ -283,24 +230,6 @@ class AnnouncementController extends ApiController
             $resource = new Fractal\Resource\Item($announcement, new FractalAnnouncementTransformerModel);
                 // Turn all of that into a JSON string
                 return $fractal->createData($resource)->toArray();
-            // $announcement = Announcement::find($id);
-            //
-            // if (! $announcement)
-            // {
-            // 		return $this->respondNotFound('Announcement Does Not Exist!');
-            // }
-            //
-            // return $this->setStatusCode(201)
-            // ->respond([
-            // 		'data' => $this->announcementTransformer->transform($announcement)
-            //
-            // ]);
-        // $announcement = $this->announcement->findOrFail($id);
-        //
-        // $approved = $user->events->where('approved', '1');
-        // $submitted = $user->events->where('approved', '0');
-        //
-        // return view('public.event.form', compact('event', 'approved','submitted'));
 
         }
 
@@ -335,7 +264,7 @@ class AnnouncementController extends ApiController
                $announcement->user_id       	= $request->get('user_id');
                $announcement->title           	= $request->get('title');
                $announcement->start_date      	= $request->get('start_date');
-               $announcement->end_date      	= $request->get('end_date');
+               $announcement->end_date      	=  \Carbon\Carbon::parse($request->get('end_date'))->endOfDay();
                $announcement->announcement     	= $request->get('announcement');
                $announcement->link              = $request->get('link', null);
                $announcement->link_txt          = $request->get('link_txt', null);
@@ -383,6 +312,30 @@ class AnnouncementController extends ApiController
                     //             ->respondUpdated('Announcement successfully Updated!');
                             }
         }
+
+        /**
+         * [API Call from AnnouncementItem to change some variables]
+         * @param  [type]  $id      [description]
+         * @param  Request $request [description]
+         * @return [type]           [description]
+         */
+        public function archiveItem($id, Request $request)
+          {
+              $announcement = Announcement::findOrFail($id);
+              $announcement->is_approved = $request->get('is_approved',0);
+              $announcement->priority = $request->get('priority', 0);
+              $announcement->is_archived = $request->get('is_archived',1);
+             
+
+              if($announcement->save()) {
+
+                  $returnData = ['is_approved' => $announcement->is_approved,'priority'=> $announcement->priority, 'is_archived'=> $announcement->is_archived];
+                  return $this->setStatusCode(201)
+                  ->respondUpdatedWithData('announcement updated',$returnData );
+                      // return $this->setStatusCode(201)
+                      //             ->respondUpdated('Announcement successfully Updated!');
+                              }
+          }
 
     /**
      * Remove the specified resource from storage.

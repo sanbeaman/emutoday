@@ -156,7 +156,16 @@ class StoryController extends Controller
         ]);
         return view('admin.story.queue', compact('storys','sroute', 'stypes'));
     }
+    public function queueType(Story $story, $stype) {
+        $storys = $this->story;
+        $sroute = 'news';
+        $stypes  = 'news';
 
+        \JavaScript::put([
+            'records' => $storys
+        ]);
+        return view('admin.story.queue', compact('storys','sroute', 'stypes'));
+    }
     public function queueArticle(Story $story) {
         $storys = $this->story;
         $sroute = 'magazine';

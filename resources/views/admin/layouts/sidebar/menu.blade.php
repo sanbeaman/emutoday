@@ -22,13 +22,14 @@
 <li class="treeview {{ set_active('admin/story*') }}">
     <a href="#"><i class="fa fa-file-text-o"></i> <span>Stories</span> <i class="fa fa-angle-left pull-right"></i></a>
     <ul class="treeview-menu">
-        {{-- @can('story_promote', $currentUser)
 
-        <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/queue"><i class="fa fa-rocket"></i> <span>Queue</span></a></li>
-        @endcan --}}
         @can('story_approve', $currentUser)
 
         <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/queue"><i class="fa fa-rocket"></i> <span>Queue</span></a></li>
+        @endcan
+        @can('story_promote', $currentUser)
+
+        <li class="{{ set_active('admin/story/news*') }}"><a href="/admin/story/news/queue"><i class="fa fa-rocket"></i> <span>News Queue</span></a></li>
         @endcan
         {{-- <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/all"><i class="fa fa-list"></i> <span>List All</span></a></li> --}}
         <li class="{{ set_active('admin/story*') }}"><a href="/admin/story/new/setup"><i class="fa fa-plus-square"></i><span>New Story</span></a></li>
@@ -39,7 +40,7 @@
 
 @can('admin', $currentUser)
 <li class="treeview {{ set_active('admin/page*') }}">
-    <a href="#"><i class="fa fa-newspaper-o"></i> <span>Pages</span> <i class="fa fa-angle-left pull-right"></i></a>
+    <a href="#"><i class="fa fa-newspaper-o"></i> <span>Hub</span> <i class="fa fa-angle-left pull-right"></i></a>
     <ul class="treeview-menu">
         <li class="{{ set_active('admin/page*') }}"><a href="/admin/page"><i class="fa fa-list"></i> <span>List</span></a></li>
         <li class="{{ set_active('admin/page*') }}"><a href="/admin/page/create"><i class="fa fa-plus-square"></i> <span>Create</span></a></li>

@@ -75,7 +75,7 @@
             <story-pod
                 pid="items-live"
                 :sroute="sroute"
-                v-for="item in itemsLive | orderBy 'start_date' 1 | filterBy filterLiveByStoryType"
+                v-for="item in itemsLive | orderBy 'priority' -1 | filterBy filterLiveByStoryType"
                 @item-change="moveToUnApproved"
 
                 :item="item"
@@ -126,16 +126,14 @@ import IconToggleBtn from './IconToggleBtn.vue'
 import iconradio from '../directives/iconradio.js'
 // import EventViewContent from './EventViewContent.vue'
 export default  {
-    components: {
-        StoryPod,IconToggleBtn
-    },
+    directives: {iconradio},
+    components: {StoryPod,IconToggleBtn},
     props: [
         'allrecords','stypes','cuser','role','sroute'
     ],
     created(){
         // this.currentDate = moment().format();
     },
-
     ready() {
         // this.resource = this.$resource('/api/announcement/:id');
         this.fetchAllRecords();
@@ -413,20 +411,17 @@ export default  {
         },
         filterItemsApproved: function(items) {
             return items.filter(function(item) {
-                return moment(item.start_date).isAfter(moment()) && item.is_approved === 1
+                return moment(item.start_date).isAfter(moment()) && item.is_approved === 1 && item.is_archived === 0;
             });
         },
         filterItemsUnapproved: function(items) {
             return items.filter(function(item) {
-                return item.is_approved === 0
+                return item.is_approved === 0 && item.is_archived === 0;
             });
         },
         filterItemsLive: function(items) {
             return items.filter(function(item) {
-                return moment(item.start_date).isSameOrBefore(moment()) && item.is_approved === 1;  // true
-
-                // return moment(item.start_date).isAfter(moment())
-                // return item.live === 1
+                return moment(item.start_date).isSameOrBefore(moment()) && item.is_approved === 1 && item.is_archived === 0;  // true
             });
         },
         movedItemIndex: function(mid){
@@ -521,9 +516,6 @@ export default  {
             console.log(result);
             return result;
           }
-    },
-    directives: {
-        iconradio
     },
 
     events: {

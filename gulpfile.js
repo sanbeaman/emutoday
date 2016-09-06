@@ -54,8 +54,6 @@ require('laravel-elixir-vueify');
                     'magazine-styles.css',
                     'media-queries.css',
                     'tweeks.css',
-                    'resources/assets/css/vendor-public/datedropper.css',
-                    'resources/assets/css/vendor-public/timedropper.css',
                 ], 'public/css/public-styles.css');
 
 
@@ -106,14 +104,14 @@ require('laravel-elixir-vueify');
                         'resources/assets/js/foundation-all.js',
                         'resources/assets/js/plugins/foundation-datepicker.js',
                         'resources/assets/js/vendor-public/select2.js',
-                        'resources/assets/js/vendor-public/datedropper.js',
-                        'resources/assets/js/vendor-public/timedropper.js',
                         'app.js'
                     ], 'public/js/public-scripts.js' );
 
                     mix.browserify('vue-caleventview.js', 'public/js/vue-caleventview.js');
                     mix.browserify('vue-event-form.js', 'public/js/vue-event-form.js');
                     mix.browserify('vue-announcement-form.js', 'public/js/vue-announcement-form.js');
+                    mix.browserify('vue-search-form.js', 'public/js/vue-search-form.js');
+
                     // mix.version(['css/public-styles.css','js/public-scripts.js']);
 
     });
