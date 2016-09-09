@@ -413,18 +413,18 @@ class StoryController extends Controller
 
 
     }
-
-    public function list($stype)
-    {
-        //$storys = $this->story->where('story_type', $stype)->get();
-        $stypes = $stype;
-        \JavaScript::put([
-            'stype' => $stype
-        ]);
-        return view('admin.story.index', compact('stype', 'stypes'));
-        // return view('admin.story.index', compact('stype'));
-
-    }
+    //
+    // public function list($stype)
+    // {
+    //     //$storys = $this->story->where('story_type', $stype)->get();
+    //     $stypes = $stype;
+    //     \JavaScript::put([
+    //         'stype' => $stype
+    //     ]);
+    //     return view('admin.story.index', compact('stype', 'stypes'));
+    //     // return view('admin.story.index', compact('stype'));
+    //
+    // }
 
     /**
     * [storyTypeSetUp description]

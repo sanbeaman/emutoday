@@ -7478,7 +7478,9 @@ a.magazine-article-button {
     padding: 0;
 
 }
-
+.search-results-form {
+    padding-top:10px;
+}
 ul.search-result-list {
     list-style-type: none;
     margin-left: 0;

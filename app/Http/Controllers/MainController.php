@@ -163,7 +163,7 @@ class MainController extends Controller
 
     public function search(Request $request)
     {
-        $searchTerm = $request->searchterm;
+        $searchTerm =  $request->input('searchterm');
 
         $searchResults = Story::search($searchTerm)->select('title','subtitle','teaser','id')->paginate(10);
 

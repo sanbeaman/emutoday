@@ -10,10 +10,10 @@
         </div>
         <div class="row">
             <div class="large-4 medium-6 small-12 columns">
-                <form class="form-inline" action="/emu-today/search" method="get">
+                <form class="search-results-form form-inline" action="/emu-today/search" method="get">
                     <div class="input-group tiny">
                         <span class="input-group-label">Search:</span>
-                        <input class="input-group-field" type="text" value="{{$searchTerm}}">
+                        <input class="input-group-field" type="text" name="searchterm" value="{{$searchTerm}}">
                         <div class="input-group-button">
                             <input type="submit" class="button" value="Submit">
                         </div>
@@ -37,7 +37,7 @@
                         @if($searchResult->subtitle)
                         <p>{{ $searchResult->subtitle }}</p>
                     @endif
-                        <p>{{ $searchResult->teaser }}</p>
+                        <p>{!! $searchResult->teaser !!}</p>
                     </div>
                   </li>
                 @endforeach

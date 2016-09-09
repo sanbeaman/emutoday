@@ -16040,6 +16040,8 @@ exports.insert = function (css) {
 }
 
 },{}],7:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n#calendar-content-bar[_v-3385334b] {\n    background-color: #bebdbd;\n}\n")
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -16103,18 +16105,22 @@ exports.default = {
   }
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"row\">\n    <div id=\"calendar-content-bar\">\n      <div class=\"medium-3 show-for-medium columns\">\n        <event-view-side-bar v-on:change-eobject=\"handleEventFetch\"></event-view-side-bar>\n    </div>\n    <div class=\"medium-9 small-12 columns\">\n      <!-- <event-view-content :elist.sync=\"eventlist\"></event-view-content> -->\n      <event-view-content :elist.sync=\"eventlist\"></event-view-content>\n    </div>\n  </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n  <div class=\"row\" _v-3385334b=\"\">\n    <div id=\"calendar-content-bar\" _v-3385334b=\"\">\n      <div class=\"medium-3 show-for-medium columns\" _v-3385334b=\"\">\n        <event-view-side-bar v-on:change-eobject=\"handleEventFetch\" _v-3385334b=\"\"></event-view-side-bar>\n    </div>\n    <div class=\"medium-9 small-12 columns\" _v-3385334b=\"\">\n      <!-- <event-view-content :elist.sync=\"eventlist\"></event-view-content> -->\n      <event-view-content :elist.sync=\"eventlist\" _v-3385334b=\"\"></event-view-content>\n    </div>\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n#calendar-content-bar[_v-3385334b] {\n    background-color: #bebdbd;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
   if (!module.hot.data) {
     hotAPI.createRecord("_v-3385334b", module.exports)
   } else {
     hotAPI.update("_v-3385334b", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"./EventViewContent.vue":8,"./EventViewSideBar.vue":9,"vue":5,"vue-hot-reload-api":3}],8:[function(require,module,exports){
+},{"./EventViewContent.vue":8,"./EventViewSideBar.vue":9,"vue":5,"vue-hot-reload-api":3,"vueify/lib/insert-css":6}],8:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.calendar-bar {\n    background: #bebdbd;\n}\n.calendar-bar h4 {\n  text-transform: uppercase;\n  color: #fff;\n  font-size: 1.2rem;\n  margin-top: 0.5rem;\n  margin-bottom: 0.5rem;\n}\n\n.calendar-content-title {\n  padding-top: 0.8rem;\n}\n\n.calendar-content-title h4{\n  text-transform: uppercase;\n  color: #fff;\n    margin-top: 0.5rem;\n}\n.calendar-content-content{\n  background: #fff;\n}\n.calendar-content-content h4 {\n  line-height: 1.4rem;\n  font-size: 1.3rem;\n  font-weight: 600;\n}\n\n.event-day {\n    margin: 0.8rem 0 0 0;\n}\n")
 'use strict';

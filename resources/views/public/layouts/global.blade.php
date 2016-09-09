@@ -53,14 +53,14 @@
                                                 <div class="large-7 medium-5 small-12 columns">
 
                                                     <div class="icon-menu float-right">
-                                                        
+
                                                         <div id="vue-search-form">
                                                             <search-form>
                                                                 <input slot="csrf" type="hidden" name="_token" value="{{ csrf_token() }}">
                                                             </search-form>
                                                         </div><!-- /#vue-event-form -->
 
-                                                        <span class="search-area"><a>Search <i class="fi-magnifying-glass"></i></a></span>
+                                                        {{-- <span class="search-area"><a>Search <i class="fi-magnifying-glass"></i></a></span> --}}
                                                         <span class="menu-area show-for-small-only"><a data-toggle="offCanvasRight">Menu <i class="fi-list"></i></a></span>
 
                                                     </div> <!-- .icon-menu -->

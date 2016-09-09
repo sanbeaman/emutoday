@@ -11845,7 +11845,7 @@ exports.insert = function (css) {
 
 },{}],6:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n\n\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.search-form-wrapper[_v-014e55d0] {\n    /*display: inline;\n    float:right;*/\n}\nform.search-form[_v-014e55d0]  {\n    /*width: 100%;*/\n    display: inline;\n    float:right;\n}\nlabel[_v-014e55d0]{\n    display: inline;\n    padding-right: 5px;\n}\nbutton[_v-014e55d0]{\n    display: inline;\n    padding-left: 5px;\n}\ninput[type=text][_v-014e55d0] {\n        display: inline;\n        width: 150px;\n        height: 1rem;\n        font-size: 0.8rem;\n        margin-bottom: 0;\n}\n\n")
 'use strict';
 
 module.exports = {
@@ -11866,20 +11866,27 @@ module.exports = {
     methods: {
         openSearchForm: function openSearchForm(evt) {
             this.searchFormIsOpen = true;
+        },
+        closeSearchForm: function closeSearchForm(evt) {
+            this.searchFormIsOpen = false;
         }
+        // submitSearch: function (e) {
+        //     this.$http.get('/emu-today/search', this.searchterm);
+        // },
+
     },
     watch: {},
     filters: {},
     events: {}
 };
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form action=\"/emu-today/search\" method=\"get\" _v-014e55d0=\"\">\n    <slot name=\"csrf\" _v-014e55d0=\"\"></slot>\n    <template v-if=\"searchFormIsOpen\">\n\n        <span class=\"search-area\" _v-014e55d0=\"\">Search:<input type=\"text\" name=\"searchterm\" placeholder=\"Search\" v-model=\"searchterm\" _v-014e55d0=\"\"><button type=\"submit\" _v-014e55d0=\"\"><i class=\"fi-magnifying-glass\" _v-014e55d0=\"\"></i></button></span>\n\n    </template>\n    <template v-else=\"\">\n        <span class=\"search-area\" _v-014e55d0=\"\"><a @click.prevent=\"openSearchForm\" _v-014e55d0=\"\">Search <i class=\"fi-magnifying-glass\" _v-014e55d0=\"\"></i></a></span>\n    </template>\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"search-form-wrapper\" _v-014e55d0=\"\">\n    <template v-if=\"searchFormIsOpen\">\n        <form action=\"/emu-today/search\" method=\"get\" class=\"search-form\" _v-014e55d0=\"\">\n            <slot name=\"csrf\" _v-014e55d0=\"\"></slot>\n        <label _v-014e55d0=\"\">Search:</label><input type=\"text\" name=\"searchterm\" placeholder=\"Search\" v-model=\"searchterm\" _v-014e55d0=\"\"><button type=\"submit\" _v-014e55d0=\"\"><i class=\"fi-magnifying-glass\" _v-014e55d0=\"\"></i></button><button @click.prevent=\"closeSearchForm\" _v-014e55d0=\"\"><i class=\"fi-x\" _v-014e55d0=\"\"></i></button>\n    </form>\n    </template>\n    <template v-else=\"\">\n        <span class=\"search-area\" _v-014e55d0=\"\"><a @click.prevent=\"openSearchForm\" _v-014e55d0=\"\">Search <i class=\"fi-magnifying-glass\" _v-014e55d0=\"\"></i></a></span>\n    </template>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n\n\n"] = false
+    __vueify_insert__.cache["\n.search-form-wrapper[_v-014e55d0] {\n    /*display: inline;\n    float:right;*/\n}\nform.search-form[_v-014e55d0]  {\n    /*width: 100%;*/\n    display: inline;\n    float:right;\n}\nlabel[_v-014e55d0]{\n    display: inline;\n    padding-right: 5px;\n}\nbutton[_v-014e55d0]{\n    display: inline;\n    padding-left: 5px;\n}\ninput[type=text][_v-014e55d0] {\n        display: inline;\n        width: 150px;\n        height: 1rem;\n        font-size: 0.8rem;\n        margin-bottom: 0;\n}\n\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {

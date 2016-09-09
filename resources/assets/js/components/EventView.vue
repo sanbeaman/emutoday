@@ -11,6 +11,11 @@
     </div>
   </div>
 </template>
+<style scoped>
+#calendar-content-bar {
+    background-color: #bebdbd;
+}
+</style>
 <script>
     import EventViewSideBar from './EventViewSideBar.vue'
     import EventViewContent from './EventViewContent.vue'
